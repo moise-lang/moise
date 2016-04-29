@@ -1,0 +1,567 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>ora4mas-basic</TITLE>
+<META NAME="description" CONTENT="ora4mas-basic">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="style.css">
+
+</HEAD>
+
+<BODY >
+
+<P>
+
+    <h0>Basic References for ORA4MAS-NOPL</h0>
+
+<P>
+<BR>
+
+<H2><A NAME="SECTION00010000000000000000">
+Contents</A>
+</H2>
+<!--Table of Contents-->
+
+<UL>
+<LI><A NAME="tex2html16"
+  HREF="ora4mas-basic.html#SECTION00020000000000000000">Introduction</A>
+<UL>
+<LI><A NAME="tex2html17"
+  HREF="ora4mas-basic.html#SECTION00021000000000000000">A brief history of MOISE OMIs</A>
+</UL><BR>
+<LI><A NAME="tex2html18"
+  HREF="ora4mas-basic.html#SECTION00030000000000000000">Organisational Artifacts Specification</A>
+<LI><A NAME="tex2html19"
+  HREF="ora4mas-basic.html#SECTION00040000000000000000">Java integration</A>
+<LI><A NAME="tex2html20"
+  HREF="ora4mas-basic.html#SECTION00050000000000000000">Jason Integration</A>
+<UL>
+<LI><A NAME="tex2html21"
+  HREF="ora4mas-basic.html#SECTION00051000000000000000">Organisational actions</A>
+<LI><A NAME="tex2html22"
+  HREF="ora4mas-basic.html#SECTION00052000000000000000">Organisational perception</A>
+<LI><A NAME="tex2html23"
+  HREF="ora4mas-basic.html#SECTION00053000000000000000">Example</A>
+</UL><BR>
+<LI><A NAME="tex2html24"
+  HREF="ora4mas-basic.html#SECTION00060000000000000000">Bibliography</A>
+</UL>
+<!--End of Table of Contents-->
+<P>
+
+<H1><A NAME="SECTION00020000000000000000">
+Introduction</A>
+</H1>
+
+<P>
+This document very briefly describes how to use the MOISE platform
+based on CARTAGO. It follows the new approach to implement OMI
+(Organisation Management Infrastructure): based on a normative
+language and artifacts. The conceptual view of this approach is
+presented in [<A
+ HREF="ora4mas-basic.html#hubner:09e">2</A>], which is strongly based on ORA4MAS
+[<A
+ HREF="ora4mas-basic.html#hubner:09c">4</A>].
+
+<P>
+
+<H2><A NAME="SECTION00021000000000000000">
+A brief history of MOISE OMIs</A>
+</H2>
+
+<P>
+
+<UL>
+<LI>S-MOISE: a tier based centralised proposal. It adds an
+  organisational layer on top of the communication layer. Agents use
+  this new layer to interact/coordinate/.... It is centralised due a
+  component called OrgManager that manages all the organisational
+  layer [<A
+ HREF="ora4mas-basic.html#hubner:05a">5</A>].
+</LI>
+<LI>SYNAI: an extension of S-MOISE with context specification and
+  more suitable normative specification [<A
+ HREF="ora4mas-basic.html#gateau:07">1</A>].
+</LI>
+<LI>J-MOISE (for S-MOISE): is the integration of S-MOISE for Jason
+  agents [<A
+ HREF="ora4mas-basic.html#hubner:07">6</A>]. 
+</LI>
+<LI>J-MOISE (for ORA4MAS): an integration of ORA4MAS with Jason
+  similar to J-MOISE (for S-MOISE). This project was  discontinued,
+  Jason agents access organisational artifacts as any other artifact.
+</LI>
+<LI>ORA4MAS: the OMI based on artifacts. In the initial version the
+  organisational artifacts are implemented in Java
+  [<A
+ HREF="ora4mas-basic.html#hubner:09c">4</A>]. In a more recent version, the artifacts are
+  programmed in NPL (Normative Programming Language)
+  [<A
+ HREF="ora4mas-basic.html#hubner:10b">3</A>].
+</LI>
+</UL>
+
+<P>
+
+<H1><A NAME="SECTION00030000000000000000">
+Organisational Artifacts Specification</A>
+</H1>
+
+<P>
+Two kinds of artifacts are implemented: <TT>GroupBoard</TT> and
+<TT>SchemeBoard</TT>. The usage interface (operations, observable
+properties, and signals) of them are available in the following links
+
+<UL>
+<LI><A HREF="../api/ora4mas/nopl/GroupBoard.html">Group API</A> and
+</LI>
+<LI><A HREF="../api/ora4mas/nopl/SchemeBoard.html">Scheme API</A> respectively.
+</LI>
+</UL>
+
+<P>
+
+    <img src=ora4mas-arts-impl.png width=600/>
+
+<P>
+
+<H1><A NAME="SECTION00040000000000000000">
+Java integration</A>
+</H1>
+
+<P>
+There is a generic GUI to create organisational artifact and agents
+enabling the user to test the specification (it is similar to the
+SimOE program in S-MOISE+). To run it:
+<PRE>
+ant run-art
+</PRE>
+
+<P>
+We can then set the organisational specification for the system and
+create groups, schemes, and generic GUI based agents.
+
+<P>
+You can also read the code of a simulator to learn how to program Java
+agents to use these artifacts. The source is available at
+<A HREF="../../src/ora4mas/nopl/simulator/ConsoleSimulator.java">src/ora4mas/nopl/simulator/ConsoleSimulator.java</A>
+
+<P>
+
+<H1><A NAME="SECTION00050000000000000000">
+Jason Integration</A>
+</H1>
+
+<P>
+
+<H2><A NAME="SECTION00051000000000000000">
+Organisational actions</A>
+</H2>
+
+<P>
+The actions are the action provided by the OrgArts.
+
+<P>
+
+<H2><A NAME="SECTION00052000000000000000">
+Organisational perception</A>
+</H2>
+
+<P>
+Observable properties of the artifacts (which are Java objects) are
+mapped to the beliefs inside agents by Cartago-Jason bridge. All of
+them are annotated with <TT>artifact(<I>artifact id</I>)</TT> as shown
+in the mind inspector:
+
+<P>
+
+    <img src=org-bels.png />
+
+<P>
+The beliefs are the following (see API documentation of artifacts for more details):
+
+<UL>
+<LI><TT>specification(....)</TT> for groups (see <TT><A NAME="tex2html1"
+  HREF="../../doc/api/moise/os/ss/Group.html#getAsProlog()">../../doc/api/moise/os/ss/Group.html#getAsProlog()</A></TT>)
+</LI>
+<LI><TT>specification(....)</TT> for schemes (see <TT><A NAME="tex2html2"
+  HREF="../../doc/api/moise/os/fs/Scheme.html#getAsProlog()">../../doc/api/moise/os/fs/Scheme.html#getAsProlog()</A></TT>)
+</LI>
+<LI><TT>play(agent, role, group)</TT>
+</LI>
+<LI><TT>commitment(agent, mission, scheme)</TT>
+</LI>
+<LI><TT>goalState(scheme, goal, list of committed agents, list of agent that achieved the goal, state of the goal)</TT>
+</LI>
+<LI><TT>obligation(agent,norm,goal,deadline)</TT>: the current active obligations.
+</LI>
+<LI>others (see observable properties of the artifacts)
+</LI>
+</UL>
+
+<P>
+The following signals are also translated to Jason events (see the
+organisational artifacts specification for more details):
+
+<UL>
+<LI><TT>oblCreated(obligation)</TT>: the state of the obligation is changed to ``created'' 
+</LI>
+<LI><TT>oblFulfilled(obligation)</TT>
+</LI>
+<LI><TT>oblUnfulfilled(obligation)</TT>
+</LI>
+<LI><TT>oblInactive(obligation)</TT>
+</LI>
+<LI><TT>normFailure(details)</TT>: some norm failure is thrown. 
+</LI>
+<LI><TT>destroyed(artifact id)</TT>: the artifact was destroyed.
+</LI>
+</UL>
+
+<P>
+
+<H2><A NAME="SECTION00053000000000000000">
+Example</A>
+</H2>
+
+<P>
+We use the traditional <I>writing paper</I> example to illustrate the
+use of Jason - ORA4MAS integration [<A
+ HREF="ora4mas-basic.html#hubner:09c">4</A>]. In this example
+we have three agents:
+
+<UL>
+<LI>Bob: will create one group, and two schemes to write two
+  papers. He adopts editor in the group and mManager in the schemes.
+</LI>
+<LI>Alice: this agent waits for the group creation and then adopts
+  the role write and commits to the missions mColaborator and mBib.
+</LI>
+<LI>Carol: this agent also waits for the group creation and then adopts
+  the role write and commits to the mission mColaborator.
+</LI>
+</UL>
+
+<P>
+The Jason project is:
+
+<P>
+<BR>
+<PRE>/* 
+  (Traditional) Writing paper example
+  
+  the platform is ora4mas (based on artifacts)
+  
+  by Jomi (2010)
+*/
+
+MAS wp {
+
+    infrastructure: JaCaMo
+
+    agents:
+        bob;
+        alice;
+        carol;
+
+}
+</PRE>
+<P>
+The code of the agents follows.
+
+<H3><A NAME="SECTION00053100000000000000">
+Bob</A>
+</H3>
+
+<P>
+<BR>
+<PRE>// This agent creates the group/scheme to write a paper
+// and adopts the role "editor" in the group
+
+{ include("common-moise.asl") } // some common plans for obedient agents
+
+/* Initial goals */
+
+!start.
+
+/* Plans */
+
++!start 
+  &lt;- .my_name(Me);
+     createWorkspace("ora4mas");
+     joinWorkspace("ora4mas",O4MWsp);
+     
+     makeArtifact("mypaper","ora4mas.nopl.GroupBoard",["../wp-os.xml", wpgroup, false, true ],GrArtId);
+     setOwner(Me);
+	 
+     focus(GrArtId);
+     .print("group created");
+	 
+     adoptRole(editor)[artifact_id(GrArtId)];
+	 
+     // wait for alice
+     ?play(alice,writer,mypaper);
+     
+     // wait for carol
+     ?play(carol,writer,mypaper);
+	 
+     !run_scheme(sch1).
+
+// general error handler for goal start 
+-!start[error(I),error_msg(M)] &lt;- .print("failure in starting! ",I,": ",M).
+     
++!run_scheme(S)
+   &lt;- makeArtifact(S,"ora4mas.nopl.SchemeBoard",["../wp-os.xml", writePaperSch, false, true ],SchArtId);
+      focus(SchArtId);
+      .print("scheme ",S," created");
+      addScheme(S)[artifact_name("mypaper")]; 
+      .print("scheme is linked to responsible group");	 
+      commitMission(mManager)[artifact_id(SchArtId)].
+-!run_scheme(S)[error(I),error_msg(M)] &lt;- .print("failure creating scheme ",S," -- ",I,": ",M).
+
+// application domain goals
++!wtitle     &lt;- .wait(500); .print("writing title...").
++!wabs       &lt;- .print("writing abstract...").
++!wsectitles &lt;- .print("writing section title...").
++!wconc	     &lt;- .print("writing conclusion...").
++!wp         &lt;- .print("paper finished!").
+
++goalState(sch1, wp, _, _, satisfied)         
+   &lt;- .wait(1000);
+      lookupArtifact(sch1,SchId);      
+      destroy[artifact_id(SchId)];
+      disposeArtifact(SchId);
+      .print("starting a new scheme...");
+      !run_scheme(sch2).
+
++?play(A,R,G) &lt;- .wait({+play(_,_,_)},100,_); ?play(A,R,G).
+    
+// signals
++normFailure(N)  &lt;- .print("norm failure event: ", N).
++destroyed(Art)  &lt;- .print("Artifact ",Art," destroyed").      
+
+// for debug (prints out the new states of goals)
+//+goalState(Sch,Goal,CommittedAgs,AchievedBy,State)
+//   &lt;- .print("                         goal changed: ", goalState(Sch,Goal,CommittedAgs,AchievedBy,State)).
+   </PRE>
+<P>
+The included file is:
+<BR>
+<PRE>/* auxiliary organisational plans for agents */
+
+// keep focused on schemes that my groups are responsible for
++schemes(L)
+   &lt;- !focus_on_schemes(L).
+   
++!focus_on_schemes([]).
++!focus_on_schemes([S|R])
+   &lt;- lookupArtifact(S,ArtId);
+      focus(ArtId);
+      !focus_on_schemes(R).
+-!focus_on_schemes(L)[error_msg("Artifact Not Available.")]
+  &lt;- .wait(100); // try latter
+     !focus_on_schemes(L).
+
+/* plans to handle obligations */
+
+// obligation to commit to a mission
++obligation(Ag,Norm,committed(Ag,Mission,Scheme),Deadline)[artifact_id(ArtId)]
+    : .my_name(Ag)
+   &lt;- .print("I am obliged to commit to ",Mission," on ",Scheme,"... doing so");
+      commitMission(Mission)[artifact_id(ArtId)]. 
+
+// obligation to achieve a goal      
++obligation(Ag,Norm,achieved(Scheme,Goal,Ag),Deadline)[artifact_id(ArtId)]
+    : .my_name(Ag)
+   &lt;- //.print(" ---&gt; working to achieve ",Goal," in scheme ",Scheme);
+      !Goal[scheme(Scheme)];
+      //.print(" &lt;--- done");
+      goalAchieved(Goal)[artifact_id(ArtId)].
+
+// an unknown type of obligation was received
++obligation(Ag,Norm,What,DeadLine)  
+   : .my_name(Ag)
+   &lt;- .print("I am obliged to ",What,", but I don't know what to do!").
+</PRE>
+<P>
+
+<H3><A NAME="SECTION00053200000000000000">
+Alice</A>
+</H3>
+<BR>
+<PRE>// this agent waits for the group creation and then
+// adopts the role write and
+// commits to the missions mColaborator and mBib
+
+{ include("common.asl") }
+{ include("common-moise.asl") }
+
+/* Initial goals */
+
+/* Plans */
+
+// application domain goals
++!wsecs &lt;- .print("writing sections...").
++!wrefs &lt;- .print("organising bibliography...").
+
+// conditions to leave missions
+@lgss1[atomic]
++goalState(Scheme,wsecs,_,_,satisfied)
+    : .my_name(Me) &amp; commitment(Me,mColaborator,Scheme)
+   &lt;- !quit_mission(mColaborator,Scheme).
+      
+@lgss2[atomic]
++goalState(Scheme,wrefs,_,_,satisfied)
+    : .my_name(Me) &amp; commitment(Me,mBib,Scheme)
+   &lt;- !quit_mission(mBib,Scheme).
+</PRE>
+<P>
+The common.asl file:
+<BR>
+<PRE>/* Common code for Alice and Carol */
+
+/* useful rules */
+
+/* Initial goals */
+
+!start.
+!join.
+
+/* Plans */
+
++!start 
+   &lt;- lookupArtifact("mypaper",GrId); 
+      adoptRole(writer)[artifact_id(GrId)];
+      focus(GrId).     
+-!start
+   &lt;- .wait(100);
+      !start.
+	 
++!join 
+   &lt;- .my_name(Me); 
+       joinWorkspace("ora4mas",_).
+-!join
+   &lt;- .wait(200);
+      !!join.
+            
++!quit_mission(M,S)
+   &lt;- .print("leaving my mission ",M," on ",S,"....");
+      leaveMission(M)[artifact_name(S)].            
+              </PRE>
+<P>
+
+<H3><A NAME="SECTION00053300000000000000">
+Carol</A>
+</H3>
+<BR>
+<PRE>// this agent waits for the group creation and then
+// adopts the role write and
+// commits to the mission mColaborator
+
+{ include("common.asl") }
+
+/* Initial goals */
+
+/* Plans */
+
+// application domain goals
++!wsecs[scheme(S)]
+   &lt;- .print("writing sections for scheme ",S,"...").
+
+// when my goal in the scheme is satisfied, leave my mission 
+@lqm[atomic]
++goalState(Scheme,wsecs,_,_,satisfied)
+    : .my_name(Me) &amp; commitment(Me,mColaborator,Scheme)
+   &lt;- !quit_mission(mColaborator, Scheme).
+
+
+// plans to handle obligations
+
+// only commits to mColaborator!
++obligation(Ag,Norm,committed(Ag,mColaborator,Scheme),DeadLine)
+    : .my_name(Ag)
+   &lt;- .print("I am obliged to commit to ",mColaborator);
+      commitMission(mColaborator)[artifact_name(Scheme)].
+      
++obligation(Ag,Norm,achieved(Scheme,Goal,Ag),DeadLine)
+    : .my_name(Ag)
+   &lt;- .print("I am obliged to achieve goal ",Goal);
+      !Goal[scheme(Scheme)];
+      goalAchieved(Goal)[artifact_name(Scheme)].
+             </PRE>
+<P>
+
+<H2><A NAME="SECTION00060000000000000000">
+Bibliography</A>
+</H2><DL COMPACT><DD><P></P><DT><A NAME="gateau:07">1</A>
+<DD>
+Benjamin G&#226;teau, Olivier Boissier, Djamel Khadraoui, and Eric Dubois.
+<BR>Controlling an interactive game with a multi-agent based normative
+  organisational model.
+<BR>In P.&nbsp;Noriega, J.&nbsp;V&#225;zquez-Salceda, G.&nbsp;Boella, V.&nbsp;Boissier,
+  O.;&nbsp;Dignum, N.&nbsp;Fornara, and E.&nbsp;Matson, editors, <EM>AAMAS 2006 and ECAI 2006
+  International Workshops, COIN 2006 Hakodate, Japan, May 9, 2006 Riva del
+  Garda, Italy, August 28, 2006</EM>, volume 4386 of <EM>LNAI</EM>, pages 86-100.
+  Springer, 2007.
+<BR>Revised Selected Papers.
+
+<P></P><DT><A NAME="hubner:09e">2</A>
+<DD>
+Jomi&nbsp;F. H&#252;bner, Olivier Boissier, and Rafael&nbsp;H. Bordini.
+<BR>Normative programming for organisation management infrastructures.
+<BR>In Axel Polleres and Julian Padget, editors, <EM>Workshop on
+  Coordination, Organization, Institutions and Norms in agent systems
+  (COIN09@MALLOW) Torino, Italy, 7th-11th September</EM>, volume 494. CEUR, 2009.
+
+<P></P><DT><A NAME="hubner:10b">3</A>
+<DD>
+Jomi&nbsp;Fred H&#252;bner, Olivier Boissier, and Rafael&nbsp;H. Bordini.
+<BR>A normative organisation programming language for organisation
+  management infrastructures.
+<BR>In Julian&nbsp;Padget et&nbsp;al., editor, <EM>Coordination, Organizations,
+  Institutions and Norms in Agent Systems V</EM>, volume 6069 of <EM>LNAI</EM>, pages
+  114-129. Springer, 2010.
+
+<P></P><DT><A NAME="hubner:09c">4</A>
+<DD>
+Jomi&nbsp;Fred H&#252;bner, Olivier Boissier, Rosine Kitio, and Alessandro Ricci.
+<BR>Instrumenting multi-agent organisations with organisational artifacts
+  and agents: ``giving the organisational power back to the agents''.
+<BR><EM>Journal of Autonomous Agents and Multi-Agent Systems</EM>,
+  20(3):369-400, 2010.
+
+<P></P><DT><A NAME="hubner:05a">5</A>
+<DD>
+Jomi&nbsp;Fred H&#252;bner, Jaime&nbsp;Sim&#227;o Sichman, and Olivier Boissier.
+<BR>S-MOISE+: A middleware for developing organised multi-agent
+  systems.
+<BR>In Olivier Boissier, Virginia Dignum, Eric Matson, and
+  Jaime&nbsp;Sim&#227;o Sichman, editors, <EM>Coordination, Organizations,
+  Institutions, and Norms in Multi-Agent Systems</EM>, volume 3913 of <EM>LNCS</EM>,
+  pages 64-78. Springer, 2006.
+
+<P></P><DT><A NAME="hubner:07">6</A>
+<DD>
+Jomi&nbsp;Fred H&#252;bner, Jaime&nbsp;Sim&#227;o Sichman, and Olivier Boissier.
+<BR>Developing organised multi-agent systems using the MOISE+ model:
+  Programming issues at the system and agent levels.
+<BR><EM>International Journal of Agent-Oriented Software Engineering</EM>,
+  1(3/4):370-395, 2007.
+</DL>
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

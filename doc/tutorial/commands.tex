@@ -1,0 +1,196 @@
+
+%
+% Packages
+% ========
+%
+
+
+\usepackage[latin1]{inputenc}
+\usepackage[a4paper,pdftex,top=2cm,left=3.5cm,right=3.5cm,bottom=2cm]{geometry}
+
+%\usepackage[brazil]{babel}
+\usepackage{graphicx}                 % figuras
+%\usepackage{floatflt}                % figuras como ``frames'' a direita
+%\usepackage{wrapfig}                 % idem a floatflt, mas parece funcionar melhor 
+\usepackage{subfigure}
+
+\usepackage{latexsym}                 % mais s{\'\i}mbolos matem{\'a}ticos
+\usepackage{amssymb}                  % mais s{\'\i}mbolos matem{\'a}ticos
+%\usepackage{oz2e}                     % Z notation
+\usepackage{theorem}
+
+\usepackage{enumerate}                % permite apresentar um exemplo de como ser{\'a} a enumera{\c c}{\~a}o
+\usepackage{tabularx}                 
+\usepackage{booktabs}                 % melhora o desenho das tabelas com \toprule \midrule e \bottomrule
+%\usepackage{showkeys}                % mostra os ref..... op{\c c}{\~o}es: [notref,notcite,final]
+
+%\usepackage{makeidx}                  % {\'\i}ndice
+%\makeindex
+\usepackage{verbatim}
+
+
+\RequirePackage[bf,center]{caption}
+\RequirePackage{color}
+\RequirePackage{url}
+\RequirePackage{hyperref}        % PDF com links (pode-se usar como opção: dvipdfm, dvips, ...)
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue} % colorido
+\RequirePackage{setspace}
+
+
+\usepackage{algorithmic}
+\usepackage[vlined, linesnumbered]{algorithm2e}
+
+\newenvironment{remark}{\medskip\noindent \textsc{Remarks.}} {\medskip}
+
+
+%\usepackage{listings}                 % for java listings
+%\lstset{basicstyle=\footnotesize\sffamily,labelstep=1,labelstyle=\tiny,indent=1.2cm,extendedchars=true,frame=}
+%\lstset{basicstyle=\footnotesize\sffamily,extendedchars=true,frame=}
+
+\usepackage{xspace}
+
+\usepackage{prettyref}                % facilita a constru{\c c}{\~a}o de refer{\^e}ncias, deve-se usar \prettyref{...}
+\newrefformat{fig}{Figure~\ref{#1}}
+\newrefformat{tab}{Table~\ref{#1}}
+\newrefformat{sec}{Section~\ref{#1}}
+\newrefformat{eq} {equation~(\ref{#1})}
+\newrefformat{chp}{Chapter~\ref{#1}}
+\newrefformat{ex} {example~\ref{#1}}
+\newrefformat{ap} {appendix~\ref{#1}}
+\newrefformat{alg}{algorithm~\ref{#1}}
+
+
+%\usepackage{abnt-alf} % para as ref. no formato ABNT
+
+\usepackage[sort]{natbib} % melhora as referencias (citep, citet, citeauthor, ...)
+%\bibpunct{(}{)}{e}{a}{,}{,} 
+
+\usepackage{acronym}
+
+\sloppy
+
+% Commands
+% ========
+%
+\newcommand{\email}[2]{\href{mailto:#2}{#1}}
+\renewcommand{\and}[0]{\\\vspace{6pt}}
+
+\newcommand{\srctutorial}[0]{../../examples/tutorial}
+\newcommand{\srcwritepaper}[0]{../../examples/writePaper}
+\newcommand{\wpjason}[0]{jmoise/example/writePaper}
+
+\newcommand{\toindex}[1]{\index{#1}\marginpar{\scriptsize{\textsf{i:#1}}}}
+\newcommand{\indexdef}[1]{\index{#1|textsl}\marginpar{\scriptsize{\textsf{id:#1}}}}
+
+\newcommand{\defEventoOrg}[5]{
+  \vspace{.5cm}
+  \noindent
+  \begin{tabular}{l l}
+    \toprule
+    Evento         & #1 \\
+    \midrule
+    Argumentos     & #2 \\
+    \midrule
+    Pr{\'e}-condi{\c c}{\~o}es  & #3 \\
+    \midrule
+    Efeitos        & #4 \\
+    \bottomrule
+  \end{tabular}
+  \vspace{.5cm}
+
+  \noindent #5
+}
+
+
+\newcommand{\tdef}[0]{\; =_{\textrm{\tiny{def}}} \;} %stackrel{\triangle}{=}
+\newcommand{\tq}[0]{\;\;\textrm{tal que}\;\;}
+\newcommand{\subrole}[0]{\sqsubset}
+
+\newcommand{\ie}[0]{isto {\'e}}
+\newcommand{\eg}[0]{por exemplo}
+
+\theorembodyfont{\rmfamily}
+\newtheorem{tdefn}{Defini{\c c}{\~a}o}[chapter]
+\newtheorem{texplo}{Exemplo}[chapter]
+  
+\newenvironment{defn}[1]
+   {\begin{tdefn}\label{def:#1}}
+   {\hfill$\Box$\end{tdefn}}
+\newenvironment{definicao}[2]
+   {\begin{tdefn}\label{def:#2}\textbf{(\textsl{#1})}}
+   {\hfill$\Box$\end{tdefn}}
+\newenvironment{explo}
+   {\begin{texplo}}
+   {\hfill$\Box$\end{texplo}}
+
+
+\newcommand{\pendencia}[1]{~[\textsc{Pend{\^e}ncia}\footnote{\textbf{#1}}]~}
+%\newcommand{\pendencia}[1]{}
+
+\newcommand{\processo}[1]{\textsc{#1}}
+\newcommand{\RETURN}[0]{\textbf{return}\xspace}
+\newcommand{\evento}[1]{\textsl{#1}}
+\newcommand{\papel}[1]{\textsl{#1}}
+\newcommand{\relacao}[1]{\textsf{#1}}
+%\newcommand{\pode}[2]{#1 \relacao{pode} #2}
+%\newcommand{\deve}[2]{#1 \relacao{deve} #2}
+\newcommand{\pode}[0]{permission}
+\newcommand{\deve}[0]{obligation}
+\newcommand{\compat}[0]{\bowtie}
+
+%\newcommand{\compat}[2]{#1 \relacao{compat} #2}
+
+\newcommand{\group}[1]{\texttt{#1}}
+\newcommand{\role}[1]{\textsf{#1}}
+\newcommand{\agent}[1]{$#1$}
+\newcommand{\goal}[1]{\textsl{#1}}
+
+\newcommand{\igroup}[0]{grupo\xspace}
+\newcommand{\igroups}[0]{grupos\xspace}
+\newcommand{\tgroup}[0]{especifica{\c c}{\~a}o de grupo\xspace}
+\newcommand{\tgroups}[0]{especifica{\c c}{\~a}o de grupos\xspace}
+
+
+\newcommand{\Taems}[0]{{\sc T{\ae}ms}\xspace}
+\newcommand{\taems}[0]{{\sc t{\ae}ms}\xspace}
+\newcommand{\aalaadin}[0]{{\sc Aalaadin}\xspace}
+%\newcommand{\Moise}[0]{{\sc Moise}\xspace}
+%\newcommand{\moise}[0]{{\sc moise}\xspace}
+
+% o \textsc n{\~a}o funcina dentro de t{\'\i}tulos
+\newcommand{\moise}[0]{$\mathcal{M}${\sc{oise}}\xspace}
+\newcommand{\moisem}[0]{$\mathcal{M}${\sc{oise}}$^{+}$\xspace}
+\newcommand{\smoisem}{\mbox{$\mathcal{S}$-\moisem}\xspace}
+\newcommand{\jmoisem}{\mbox{$\mathcal{J}$-\moisem}\xspace}
+\newcommand{\saci}[0]{\textsc{Saci}\xspace}
+\newcommand{\Jason}{\textit{\textbf{Jason}}\xspace}
+\hyphenation{Jason}
+
+
+
+% \renewcommand{\maketitle}{
+%   \newpage
+%   \thispagestyle{empty}
+%   \null
+%   \begin{center}
+
+
+%     \begin{spacing}{2}
+%       \vspace{\stretch{1}}
+%       \textbf{\huge \@title}
+%     \end{spacing}
+%     \vspace{1cm}
+    
+%     \@author
+%     \vspace{24pt}
+    
+%     %\@institution
+
+%     \vspace{\stretch{2}}
+%     %\@place \\ 
+%     \@date
+
+%   \end{center}
+
+%   \hypersetup{pdftitle=\@title,pdfauthor=\@author}
+% }
