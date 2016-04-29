@@ -12,7 +12,6 @@ src/examples/performance/case1/profiling*
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
