@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet href='brief-oe.xsl' type='text/xsl' ?>
+
+<organisational-entity os="jason-cowboys">
+<goal committed-ags="[]" root="true" satisfied-ags="[]" specification="noprop" state="possible"/>
+<agents>
+<agent id="gaucho3">ok<possible-goal goal="share_seen_cows" scheme="sch_herd_sch_12"/>
+<possible-goal goal="be_in_formation" scheme="sch_herd_sch_12"/>
+</agent>
+<agent id="gaucho4">ok<possible-goal goal="share_seen_cows" scheme="sch_herd_sch_12"/>
+<possible-goal goal="be_in_formation" scheme="sch_herd_sch_12"/>
+</agent>
+<agent id="gaucho5">ok<possible-goal goal="share_seen_cows" scheme="sch_herd_sch_12"/>
+<possible-goal goal="be_in_formation" scheme="sch_herd_sch_12"/>
+</agent>
+<agent id="gaucho6">ok<possible-goal goal="share_seen_cows" scheme="sch_herd_sch_12"/>
+<possible-goal goal="be_in_formation" scheme="sch_herd_sch_12"/>
+</agent>
+<agent id="gaucho1">ok<possible-goal goal="define_formation" scheme="sch_herd_sch_12"/>
+<possible-goal goal="recruit" scheme="sch_herd_sch_12"/>
+<possible-goal goal="share_seen_cows" scheme="sch_herd_sch_12"/>
+<possible-goal goal="be_in_formation" scheme="sch_herd_sch_12"/>
+<possible-goal goal="change_to_exploring" scheme="sch_herd_sch_12"/>
+</agent>
+<agent id="gaucho2">ok<possible-goal goal="share_seen_cows" scheme="sch_herd_sch_12"/>
+<possible-goal goal="be_in_formation" scheme="sch_herd_sch_12"/>
+</agent>
+</agents>
+<groups>
+<group id="gr_team_01" owner="gaucho1" specification="team">
+<well-formed>ok</well-formed>
+<subgroups>
+<group id="gr_herding_grp_13" owner="gaucho1" specification="herding_grp">
+<well-formed>ok</well-formed>
+<players>
+<role-player agent="gaucho4" role="herdboy"/>
+<role-player agent="gaucho5" role="herdboy"/>
+<role-player agent="gaucho6" role="herdboy"/>
+<role-player agent="gaucho1" role="herder"/>
+<role-player agent="gaucho3" role="herdboy"/>
+<role-player agent="gaucho2" role="herdboy"/>
+</players>
+</group>
+</subgroups>
+</group>
+</groups>
+<schemes>
+<scheme id="sch_herd_sch_12" owner="gaucho1" root-goal="herd_cows" specification="herd_sch">
+<well-formed>ok</well-formed>
+<players>
+<mission-player agent="gaucho4" mission="help_herder"/>
+<mission-player agent="gaucho5" mission="help_herder"/>
+<mission-player agent="gaucho2" mission="help_herder"/>
+<mission-player agent="gaucho6" mission="help_herder"/>
+<mission-player agent="gaucho3" mission="help_herder"/>
+<mission-player agent="gaucho1" mission="herd"/>
+</players>
+<responsible-groups>
+<group id="gr_herding_grp_13"/>
+</responsible-groups>
+<goals>
+<goal committed-ags="[gaucho1]" root="false" satisfied-ags="[]" specification="recruit" state="possible"/>
+<goal committed-ags="[gaucho1]" root="false" satisfied-ags="[]" specification="define_formation" state="possible"/>
+<goal committed-ags="[gaucho4, gaucho1, gaucho2, gaucho5, gaucho6, gaucho3]" root="false" satisfied-ags="[]" specification="share_seen_cows" state="possible"/>
+<goal committed-ags="[gaucho4, gaucho1, gaucho2, gaucho5, gaucho6, gaucho3]" root="false" satisfied-ags="[]" specification="be_in_formation" state="possible"/>
+<goal committed-ags="[]" root="true" satisfied-ags="[]" specification="herd_cows" state="waiting">
+<plan operator="parallel">
+<goal ds="recruit more herdboys depending on the size of the cows cluster" id="recruit" min="all" type="maintenance"/>
+<goal ds="compute the ideal location of each member of the group and share this information with them" id="define_formation" min="all" type="maintenance"/>
+<goal ds="go to the place allocated to the agent in the formation" id="be_in_formation" min="all" type="maintenance"/>
+<goal ds="share seen cows with other agents in the scheme" id="share_seen_cows" min="all" type="maintenance"/>
+<goal ds="verify if necessary to finish the herding group and create the exploring groups" id="change_to_exploring" min="all" type="maintenance"/>
+</plan>
+</goal>
+<goal committed-ags="[gaucho1]" root="false" satisfied-ags="[]" specification="change_to_exploring" state="possible"/>
+</goals>
+</scheme>
+</schemes>
+</organisational-entity>

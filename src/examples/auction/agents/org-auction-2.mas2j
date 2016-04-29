@@ -1,0 +1,19 @@
+/*
+
+The Jason auction example implemented with 
+Moise organisation and ORA4MAS platform.
+
+See readme.txt for more information.
+
+*/
+
+MAS auction {
+   infrastructure: JaCaMo
+   
+   agents:
+
+       bob auctioneer;
+       ag1;
+	   ag2;
+       ag3;
+}

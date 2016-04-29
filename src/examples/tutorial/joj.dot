@@ -1,0 +1,90 @@
+digraph joj {
+    rankdir=BT;
+    compound=true;
+
+
+    subgraph cluster_SS { label="Structure" labelloc=t labeljust=r fontname="Italic" 
+        // role hierarchy
+        player [shape=box,style=rounded,fontname="Italic"];
+        player -> soc [arrowhead=onormal,arrowsize=1.5];
+        goalkeeper [shape=box,style=rounded,fontname="Helvetic"];
+        goalkeeper -> back [arrowhead=onormal,arrowsize=1.5];
+        coach [shape=box,style=rounded,fontname="Helvetic"];
+        coach -> soc [arrowhead=onormal,arrowsize=1.5];
+        leader [shape=box,style=rounded,fontname="Helvetic"];
+        leader -> player [arrowhead=onormal,arrowsize=1.5];
+        attacker [shape=box,style=rounded,fontname="Helvetic"];
+        attacker -> player [arrowhead=onormal,arrowsize=1.5];
+        back [shape=box,style=rounded,fontname="Helvetic"];
+        back -> player [arrowhead=onormal,arrowsize=1.5];
+        middle [shape=box,style=rounded,fontname="Helvetic"];
+        middle -> player [arrowhead=onormal,arrowsize=1.5];
+        soc [shape=box,style=rounded,fontname="Italic"];
+
+        // group team
+        team [shape=tab, fontname="Courier-Bold",style=filled];
+        team -> coach  [arrowtail=odiamond, arrowhead=none, label="1..2",fontname="Times",arrowsize=1.5];
+        team -> defense  [arrowtail=odiamond, arrowhead=none, label="1..1",fontname="Times",arrowsize=1.5];
+
+        // group defense
+        defense [shape=tab, fontname="Courier-Bold",style=filled];
+        defense -> goalkeeper  [arrowtail=odiamond, arrowhead=none, label="1..1",fontname="Times",arrowsize=1.5];
+        defense -> leader  [arrowtail=odiamond, arrowhead=none, label="0..1",fontname="Times",arrowsize=1.5];
+        defense -> back  [arrowtail=odiamond, arrowhead=none, label="3..3",fontname="Times",arrowsize=1.5];
+        team -> attack  [arrowtail=odiamond, arrowhead=none, label="1..1",fontname="Times",arrowsize=1.5];
+
+        // group attack
+        attack [shape=tab, fontname="Courier-Bold",style=filled];
+        attack -> leader  [arrowtail=odiamond, arrowhead=none, label="0..1",fontname="Times",arrowsize=1.5];
+        attack -> attacker  [arrowtail=odiamond, arrowhead=none, label="2..2",fontname="Times",arrowsize=1.5];
+        attack -> middle  [arrowtail=odiamond, arrowhead=none, label="5..5",fontname="Times",arrowsize=1.5];
+    }
+
+    subgraph cluster_sideAttack { label="sideAttack" labelloc=t labeljust=r fontname="Italic" 
+        // goals
+        scoreGoal [shape=plaintext,fontname="Helvetic"]; 
+        g1 -> scoreGoal [samehead=true,arrowhead=none];
+        g1 [shape=plaintext,fontname="Helvetic"]; 
+        g2 -> scoreGoal [samehead=true,arrowhead=none];
+        g2 [shape=plaintext,fontname="Helvetic"]; 
+        g7 -> g2 [samehead=true,arrowhead=tee];
+        g7 [shape=plaintext,fontname="Helvetic"]; 
+        g8 -> g2 [samehead=true,arrowhead=tee];
+        g8 [shape=plaintext,fontname="Helvetic"]; 
+        g9 -> g2 [samehead=true,arrowhead=tee];
+        g9 [shape=plaintext,fontname="Helvetic"]; 
+        g3 -> scoreGoal [samehead=true,arrowhead=none];
+        g3 [shape=plaintext,fontname="Helvetic"]; 
+        g4 -> scoreGoal [samehead=true,arrowhead=none];
+        g4 [shape=plaintext,fontname="Helvetic"]; 
+        g5 -> scoreGoal [samehead=true,arrowhead=none];
+        g5 [shape=plaintext,fontname="Helvetic"]; 
+        g6 -> scoreGoal [samehead=true,arrowhead=none];
+        g6 [shape=plaintext,fontname="Helvetic"]; 
+
+        // missions
+        m2 [fontname="Helvetic", shape=diamond, style=rounded];
+        m2 -> g8 [arrowsize=0.5];
+        m2 -> g5 [arrowsize=0.5];
+        m2 -> g4 [arrowsize=0.5];
+        m3 [fontname="Helvetic", shape=diamond, style=rounded];
+        m3 -> g9 [arrowsize=0.5];
+        m3 -> g6 [arrowsize=0.5];
+        m1 [fontname="Helvetic", shape=diamond, style=rounded];
+        m1 -> g7 [arrowsize=0.5];
+        m1 -> g1 [arrowsize=0.5];
+        m1 -> g3 [arrowsize=0.5];
+    }
+
+
+    // NS
+        back [shape=box,style=rounded,fontname="Helvetic"];
+        m1 [fontname="Helvetic", shape=diamond, style=rounded];
+        back -> m1 [arrowhead=inv,style=filled,label=""];
+        attacker [shape=box,style=rounded,fontname="Helvetic"];
+        m3 [fontname="Helvetic", shape=diamond, style=rounded];
+        attacker -> m3 [arrowhead=inv,style=bold,label=""];
+        middle [shape=box,style=rounded,fontname="Helvetic"];
+        m2 [fontname="Helvetic", shape=diamond, style=rounded];
+        middle -> m2 [arrowhead=inv,style=bold,label=""];
+}

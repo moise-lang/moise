@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification 
+
+    id="testsg"
+    os-version="0.8"
+  
+    xmlns='http://moise.sourceforge.net/os'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='http://moise.sourceforge.net/os
+                        http://moise.sourceforge.net/xml/os.xsd' >
+    
+    <structural-specification>
+
+        <role-definitions>
+            <role id="r1" />
+            <role id="r2" />
+            <role id="r3" />
+            <role id="r4" />
+        </role-definitions>
+
+        <group-specification id="g1" >
+            <roles>
+                <role id="r1" />
+            </roles>
+            
+            <subgroups>
+                <group-specification id="g2" min="1" max="1">
+                    <roles>
+                        <role id="r2" min="1"/>
+                    </roles>
+                    <subgroups>
+                        <group-specification id="g3" min="1">
+		                    <roles>
+		                        <role id="r3" min="1"/>
+		                    </roles>
+                        </group-specification>
+                    </subgroups>
+                </group-specification>
+                <group-specification id="g4" min="1" max="1">
+		            <roles>
+		                <role id="r4" min="1"/>
+		            </roles>
+                </group-specification>
+            </subgroups>
+        </group-specification>
+    </structural-specification>
+
+
+
+    <functional-specification>
+        <scheme id="writePaperSch" monitoring-scheme="monitoringSch">
+
+            <goal id="wp" ttf="5 seconds">
+                <plan operator="sequence" >
+                    <goal id="fdv" ds="First Draft Version">
+                        <plan operator="sequence">
+                            <goal id="wtitle"     ttf="1 day" ds="Write a title"/>
+                            <goal id="wabs"       ttf="1 day" ds="Write an abstract"/>
+                            <goal id="wsectitles" ttf="1 day" ds="Write the sections' title" />
+                        </plan>
+                    </goal>
+                    <goal id="sv" ds="Submission Version">
+                        <plan operator="sequence">
+                            <goal id="wsecs"  ttf="7 days" ds="Write sections"/>
+                            <goal id="finish" ds="Finish paper">
+                                <plan operator="parallel">
+                                    <goal id="wconc"  ttf="1 day"  ds="Write a conclusion"/>
+                                    <goal id="wrefs"  ttf="1 hour" ds="Complete references and link them to text"/>
+                                </plan>
+                            </goal>
+                        </plan>
+                    </goal>
+                </plan>
+            </goal>
+
+            <mission id="mColaborator" min="1" max="5">
+                <goal id="wsecs"/>
+            </mission>
+
+            <mission id="mManager" min="1" max="1">
+                <goal id="wabs"/>
+                <goal id="wp"/>
+                <goal id="wtitle"/>
+                <goal id="wconc"/>
+                <goal id="wsectitles"/>
+            </mission>
+
+            <mission id="mBib" min="1" max="1">
+                <goal id="wrefs"/>
+                <preferred mission="mColaborator"/>
+                <preferred mission="mManager"/>
+            </mission>
+        </scheme>
+        
+    </functional-specification>
+
+    <normative-specification>
+        <norm id = "n1" 
+                          type="obligation" 
+                          role="r4" mission="mManager" />
+        <norm id = "n2" 
+                          type="obligation" 
+                          role="r3" mission="mBib"             
+                          time-constraint="1 day"  />
+        <norm id = "n3" 
+                          type="obligation" 
+                          role="r2" mission="mColaborator"
+                          time-constraint="1 day"  />
+       
+    </normative-specification>
+</organisational-specification>
+

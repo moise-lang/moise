@@ -1,0 +1,18 @@
+/* 
+  (Traditional) Writing paper example
+  
+  the platform is ora4mas (based on artifacts)
+  
+  by Jomi (2010)
+*/
+
+MAS wp {
+
+    infrastructure: JaCaMo
+
+    agents:
+        bob;
+        alice;
+        carol;
+
+}

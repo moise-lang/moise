@@ -1,0 +1,14 @@
+/* 
+  test for subgroup
+  
+*/
+
+MAS sb {
+
+    infrastructure: JaCaMo
+
+    agents:
+        bob;
+
+}
+

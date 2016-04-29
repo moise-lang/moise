@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<organisational-specification 
+    id="ReorgGr"
+    os-version="0.4"
+  
+    xmlns='http://moise.sourceforge.net/os'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='http://moise.sourceforge.net/os http://moise.sourceforge.net/xml/os.xsd'>
+    
+    <structural-specification>
+        <role-definitions>
+            <role id="Reorg" />
+
+            <role id="Selector">          <extends role="Reorg"/>     </role>
+            <role id="Historian">         <extends role="Reorg"/>     </role>
+            <role id="Designer">          <extends role="Reorg"/>     </role>
+            <role id="OrgParticipant">    <extends role="Designer"/>  </role>
+            <role id="OrgManager"/>
+            <role id="Monitor">           <extends role="Reorg"/>     </role>
+            <role id="ReorgExpert">       <extends role="Designer"/>  </role>
+            <role id="Monitored"/>
+        </role-definitions>
+        
+        <group-specification id="reorgGr">
+            <roles>
+                <role id="Selector"   min="1" max="1" />
+                <role id="Historian"  min="1" max="1" />
+                <role id="OrgManager" min="1" max="1" />
+                <role id="OrgParticipant"/>
+                <role id="Monitor"/>
+                <role id="ReorgExpert"/>
+            </roles>
+            <links>
+                <link from="OrgManager" to="soc" type="authority" scope="intra-group" extends-subgroups="false" bi-dir="false"/>
+                <link from="Reorg" to="OrgManager" type="communication" scope="intra-group" extends-subgroups="false" bi-dir="false"/>
+                <link from="Monitor" to="Monitored" type="authority" scope="inter-group" extends-subgroups="false" bi-dir="false"/>
+                <link from="Reorg" to="Reorg" type="communication" scope="intra-group" extends-subgroups="false" bi-dir="false"/>
+            </links>
+            <formation-constraints>
+                <compatibility from="soc" to="OrgParticipant" type="compatibility" scope="intra-group" extends-subgroups="false" bi-dir="true"/>
+                <compatibility from="soc" to="OrgParticipant" type="compatibility" scope="inter-group" extends-subgroups="false" bi-dir="true"/>
+                <compatibility from="OrgManager" to="Historian" type="compatibility" scope="intra-group" extends-subgroups="false" bi-dir="true"/>
+            </formation-constraints>
+        </group-specification>
+    </structural-specification>
+    
+    <functional-specification>
+        <scheme id="reorganization" >
+            <goal id="reorganization">
+                <plan operator="sequence" >
+                    <goal id="monitoring"/>
+                    <goal id="design">
+                        <plan operator="sequence" >
+                            <goal id="invitation"/>
+                            <goal id="waitDes">
+                                <plan operator="parallel" >
+                                    <goal id="expertDes"/>
+                                    <goal id="practiceDes"/>
+                                </plan>
+                            </goal>
+                        </plan>
+                    </goal>
+                    <goal id="selection"/>
+                    <goal id="implementation"/>
+                </plan>
+            </goal>
+            
+            <mission id="m1" min="1">
+                <goal id="invitation"/>
+                <goal id="implementation"/>
+                <goal id="design"/>
+                <goal id="waitDes"/>
+            </mission>
+            <mission id="m2">
+                <goal id="monitoring"/>
+            </mission>
+            <mission id="m4">
+                <goal id="expertDes"/>
+            </mission>
+            <mission id="m5">
+                <goal id="practiceDes"/>
+                <preferred mission="m2"/>
+            </mission>
+            <mission id="m6" min="1">
+                <goal id="selection"/>
+            </mission>
+        </scheme>
+    </functional-specification>
+    
+    <normative-specification>
+        <norm id="n1" type="obligation" role="OrgManager"     mission="m1" />
+        <norm id="n2" type="permission" role="OrgParticipant" mission="m5" />
+        <norm id="n3" type="obligation" role="Monitor"        mission="m2" />
+        <norm id="n4" type="obligation" role="Selector"       mission="m6" />
+        <norm id="n5" type="obligation" role="ReorgExpert"    mission="m4" />
+    </normative-specification>
+</organisational-specification>
+

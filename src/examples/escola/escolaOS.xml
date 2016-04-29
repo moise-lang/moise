@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<organisational-specification 
+    id="escola"
+    os-version="0.3"
+  
+    xmlns='http://moise.sourceforge.net/os'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='http://moise.sourceforge.net/os http://moise.sourceforge.net/xml/os.xsd'>
+    
+    <structural-specification>
+        <role-definitions>
+            <role id="docente" />
+            <role id="aluno" />
+            <role id="funcionario" />
+            <role id="candidato" />
+            
+            <role id="membro">
+                <extends role="docente"/>
+            </role>
+            <role id="secretario">
+                <extends role="funcionario"/>
+            </role>
+            <role id="diretor">
+                <extends role="docente"/>
+            </role>
+            <role id="presidente">
+                <extends role="membro"/>
+            </role>
+            <role id="professor">
+                <extends role="docente"/>
+            </role>
+        </role-definitions>
+
+        <group-specification id="escola">
+            <links>
+                <link from="docente" to="docente" type="communication" scope="inter-group" extends-sub-groups="true" bi-dir="false"/>
+            </links>
+            <sub-groups>
+                <group-specification id="turma">
+                    <roles>
+                        <role id="aluno"/>
+                        <role id="professor"/>
+                    </roles>
+                    <links>
+                        <link from="aluno" to="aluno" type="communication" scope="inter-group" extends-sub-groups="true" bi-dir="false"/>
+                        <link from="docente" to="aluno" type="authority" scope="intra-group" extends-sub-groups="true" bi-dir="false"/>
+                        <link from="aluno" to="docente" type="acquaintance" scope="intra-group" extends-sub-groups="true" bi-dir="false"/>
+                        <link from="aluno" to="professor" type="communication" scope="intra-group" extends-sub-groups="true" bi-dir="false"/>
+                    </links>
+                    <formation-constraints>
+                        <cardinality min="5" max="30" object="role" id="aluno"/>
+                        <cardinality min="1" max="1" object="role" id="professor"/>
+                        <compatibility from="aluno" to="professor" type="compatibility" scope="inter-group" extends-sub-groups="false" bi-dir="true"/>
+                    </formation-constraints>
+                </group-specification>
+                <group-specification id="selecao">
+                    <roles>
+                        <role id="membro"/>
+                        <role id="secretario"/>
+                        <role id="presidente"/>
+                        <role id="candidato"/>
+                    </roles>
+                    <links>
+                        <link from="funcionario" to="docente" type="communication" scope="inter-group" extends-sub-groups="false" bi-dir="true"/>
+                        <link from="presidente" to="secretario" type="authority" scope="intra-group" extends-sub-groups="false" bi-dir="false"/>
+                        <link from="membro" to="candidato" type="communication" scope="intra-group" extends-sub-groups="false" bi-dir="true"/>
+                        <link from="candidato" to="secretario" type="communication" scope="intra-group" extends-sub-groups="false" bi-dir="true"/>
+                        <link from="funcionario" to="funcionario" type="communication" scope="inter-group" extends-sub-groups="false" bi-dir="false"/>
+                    </links>
+                    <formation-constraints>
+                        <cardinality min="3" max="15" object="role" id="membro"/>
+                        <cardinality min="1" max="2" object="role" id="secretario"/>
+                        <cardinality min="1" max="1" object="role" id="presidente"/>
+                        <cardinality min="0" max="40" object="role" id="candidato"/>
+                        <compatibility from="membro" to="presidente" type="compatibility" scope="intra-group" extends-sub-groups="false" bi-dir="false"/>
+                    </formation-constraints>
+                </group-specification>
+                <group-specification id="corpodoc">
+                    <roles>
+                        <role id="diretor"/>
+                        <role id="professor"/>
+                    </roles>
+                    <links>
+                        <link from="diretor" to="professor" type="authority" scope="intra-group" extends-sub-groups="true" bi-dir="false"/>
+                    </links>
+                    <formation-constraints>
+                        <cardinality min="1" max="1" object="role" id="diretor"/>
+                        <compatibility from="professor" to="diretor" type="compatibility" scope="intra-group" extends-sub-groups="false" bi-dir="false"/>
+                    </formation-constraints>
+                </group-specification>
+            </sub-groups>
+            <formation-constraints>
+                <cardinality min="0" max="300" object="role" id="aluno"/>
+                <cardinality min="1" max="1" object="group" id="corpodoc"/>
+            </formation-constraints>
+        </group-specification>
+    </structural-specification>
+    
+    <functional-specification>
+        <scheme id="prova1" >
+            <goal id="realizarProva" >
+                <plan operator="sequence" >
+                    <goal id="prepararProva"/>
+                    <goal id="reponderProva"/>
+                </plan>
+            </goal>
+
+            <mission id="m42" min="1" max="1">
+                <goal id="prepararProva"/>
+                <goal id="realizarProva"/>
+            </mission>
+            <mission id="m43">
+                <goal id="reponderProva"/>
+                <preferred mission="m42"/>
+            </mission>
+        </scheme>
+
+        <scheme id="ingressoPos" >
+            <goal id="aceito">
+                <plan operator="sequence" >
+                    <goal id="docPrazo">
+                        <plan operator="sequence">
+                            <goal id="g1">
+                                <plan operator="parallel" >
+                                    <goal id="temDoc"/>
+                                    <goal id="temOri"/>
+                                </plan>
+                            </goal>
+                            <goal id="insSub">
+                                <plan operator="choice" >
+                                    <goal id="subEle"/>
+                                    <goal id="subCor"/>
+                                </plan>
+                            </goal>
+                        </plan>
+                    </goal>
+                    <goal id="docOk"/>
+                    <goal id="aprovado">
+                        <plan operator="sequence" >
+                            <goal id="g2">
+                                <plan operator="parallel" >
+                                    <goal id="reuniaoOk"/>
+                                    <goal id="relatorOk"/>
+                                </plan>
+                            </goal>
+                            <goal id="projAval"/>
+                        </plan>
+                    </goal>
+                    <goal id="formPree"/>
+                </plan>
+            </goal>
+
+            <mission id="m4">
+                <goal id="aceito"/>
+                <goal id="relatorOk"/>
+            </mission>
+            <mission id="m3">
+                <goal id="reuniaoOk"/>
+            </mission>
+            <mission id="m1">
+                <goal id="insSub"/>
+                <goal id="docPrazo"/>
+                <goal id="subCor"/>
+                <goal id="subEle"/>
+                <goal id="temDoc"/>
+                <goal id="temOri"/>
+            </mission>
+            <mission id="m5">
+                <goal id="projAval"/>
+            </mission>
+            <mission id="m2">
+                <goal id="docOk"/>
+            </mission>
+        </scheme>
+    </functional-specification>
+    
+    <deontic-specification>
+        <deontic-relation type="permission" role="secretario" mission="m3" />
+        <deontic-relation type="obligation" role="aluno" mission="m43" />
+        <deontic-relation type="permission" role="candidato" mission="m1" />
+        <deontic-relation type="permission" role="presidente" mission="m4" />
+        <deontic-relation type="permission" role="secretario" mission="m2" />
+        <deontic-relation type="obligation" role="professor" mission="m42" />
+        <deontic-relation type="permission" role="membro" mission="m5" />
+    </deontic-specification>
+</organisational-specification>
+

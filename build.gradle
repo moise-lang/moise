@@ -1,0 +1,82 @@
+/* 
+   Moise Gradle file
+
+   https://github.com/jomifred/moise
+   
+*/
+
+defaultTasks 'jar'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
+version '0.9-SNAPSHOT'
+group   'org.jacamo'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+    
+    maven {
+        url "http://jacamo.sourceforge.net/maven2"
+    }
+    
+    flatDir {
+	   dirs 'lib'
+    }
+}
+
+dependencies {
+    compile group: 'net.sf.jason', name: 'jason', version: '2.0.beta'
+    compile group: 'org.jacamo', name: 'npl' , version: '0.2-SNAPSHOT'
+    compile name: 'cartago'
+    compile name: 'c4jason'
+    compile name: 'jacamo'
+    
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+/*sourceSets {
+    main {
+        java {
+            srcDirs 'src/main/java', 'src/examples'
+        }
+    }
+}
+*/
+
+jar {
+    baseName 'moise'
+}
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            
+            artifactId 'moise'
+        }
+    }
+}
+
+// transfer local maven artifact to our maven2 repository at sourceforge
+task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) << {
+    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jacamo/moise'
+    def tdir = 'jomifred,jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jacamo/moise'
+    exec {
+        commandLine 'scp', '-r', project.version, tdir
+        workingDir wdir
+    }
+    exec {
+        commandLine 'cp', 'maven-metadata-local.xml', 'maven-metadata.xml'
+        workingDir wdir
+    }
+    exec {
+        commandLine 'scp', 'maven-metadata.xml', tdir
+        workingDir wdir
+    }
+}

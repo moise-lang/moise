@@ -1,3 +1,11 @@
+bin
+build
+
+mas.log
+
+src/examples/performance/case1/profiling*
+.stop___MAS
+
 *.class
 
 # Mobile Tools for Java (J2ME)

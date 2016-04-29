@@ -1,0 +1,32 @@
+/* 
+  Example used to test performance of ORA4MAS
+  
+  by Jomi (2011)
+*/
+
+MAS ora4masPerf {
+
+    infrastructure: Centralised
+
+    environment: c4jason.CartagoEnvironment // the environment is cartago
+
+    agents:
+	    starter agentArchClass c4jason.CAgentArch;
+		
+        agA ag.asl [beliefs="role_to_play(r011)"] agentArchClass c4jason.CAgentArch #2;
+        agB ag.asl [beliefs="role_to_play(r012)"] agentArchClass c4jason.CAgentArch #2;
+        agC ag.asl [beliefs="role_to_play(r013)"] agentArchClass c4jason.CAgentArch #2;
+        agD ag.asl [beliefs="role_to_play(r014)"] agentArchClass c4jason.CAgentArch #2;
+        agE ag.asl [beliefs="role_to_play(r015)"] agentArchClass c4jason.CAgentArch #2;
+        agF ag.asl [beliefs="role_to_play(r016)"] agentArchClass c4jason.CAgentArch #2;
+        agG ag.asl [beliefs="role_to_play(r021)"] agentArchClass c4jason.CAgentArch #2;
+        agH ag.asl [beliefs="role_to_play(r022)"] agentArchClass c4jason.CAgentArch #2;
+        agI ag.asl [beliefs="role_to_play(r023)"] agentArchClass c4jason.CAgentArch #2;
+        agJ ag.asl [beliefs="role_to_play(r024)"] agentArchClass c4jason.CAgentArch #2;
+        agK ag.asl [beliefs="role_to_play(r025)"] agentArchClass c4jason.CAgentArch #2;
+        agL ag.asl [beliefs="role_to_play(r026)"] agentArchClass c4jason.CAgentArch #2;
+
+    classpath: "../../../../lib/moise.jar";   // moise: where the artifacts are included 
+               
+}
+

@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification 
+
+    id="performance_test"
+    os-version="0.8"
+  
+    xmlns='http://moise.sourceforge.net/os'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='http://moise.sourceforge.net/os
+                        http://moise.sourceforge.net/xml/os.xsd' >
+    
+    <structural-specification>
+
+        <role-definitions>
+            <role id="r0" />
+            <role id="r01"> <extends role="r0"/> </role>
+            <role id="r011"> <extends role="r01"/> </role>
+            <role id="r012"> <extends role="r01"/> </role>
+            <role id="r013"> <extends role="r01"/> </role>
+            <role id="r014"> <extends role="r01"/> </role>
+            <role id="r015"> <extends role="r01"/> </role>
+            <role id="r016"> <extends role="r01"/> </role>
+
+            <role id="r02"> <extends role="r0"/> </role>
+            <role id="r021"> <extends role="r02"/> </role>
+            <role id="r022"> <extends role="r02"/> </role>
+            <role id="r023"> <extends role="r02"/> </role>
+            <role id="r024"> <extends role="r02"/> </role>
+            <role id="r025"> <extends role="r02"/> </role>
+            <role id="r026"> <extends role="r02"/> </role>
+        </role-definitions>
+
+        <group-specification id="gspec" >
+            <roles>
+                <role id="r011"   min="2" max="2" />
+                <role id="r012"   min="2" max="2" />
+                <role id="r013"   min="2" max="2" />
+                <role id="r014"   min="2" max="2" />
+                <role id="r015"   min="2" max="2" />
+                <role id="r016"   min="2" max="2" />
+                <role id="r021"   min="2" max="2" />
+                <role id="r022"   min="2" max="2" />
+                <role id="r023"   min="2" max="2" />
+                <role id="r024"   min="2" max="2" />
+                <role id="r025"   min="2" max="2" />
+                <role id="r026"   min="2" max="2" />
+            </roles>
+        </group-specification>
+    </structural-specification>
+
+
+
+    <functional-specification>
+        <scheme id="sspec" >
+
+            <goal id="rg" ttf="5 seconds">
+                <plan operator="sequence" >
+                    <goal id="g1" >
+                        <plan operator="parallel">
+                            <goal id="g11">
+                                <plan operator="sequence">
+                                    <goal id="g11a" />
+                                    <goal id="g11b" />
+                                </plan>
+                            </goal>
+                            <goal id="g12">
+                                <plan operator="sequence">
+                                    <goal id="g12a" />
+                                    <goal id="g12b" />
+                                </plan>
+                            </goal>
+                            <goal id="g13">
+                                <plan operator="sequence">
+                                    <goal id="g13a" />
+                                    <goal id="g13b" />
+                                </plan>
+                            </goal>
+                            <goal id="g14">
+                                <plan operator="sequence">
+                                    <goal id="g14a" />
+                                    <goal id="g14b" />
+                                </plan>
+                            </goal>
+                        </plan>
+                    </goal>
+
+                    <goal id="g2" >
+                        <plan operator="parallel">
+                            <goal id="g21">
+                                <plan operator="sequence">
+                                    <goal id="g21a" />
+                                    <goal id="g21b" />
+                                </plan>
+                            </goal>
+                            <goal id="g22">
+                                <plan operator="sequence">
+                                    <goal id="g22a" />
+                                    <goal id="g22b" />
+                                </plan>
+                            </goal>
+                            <goal id="g23">
+                                <plan operator="sequence">
+                                    <goal id="g23a" />
+                                    <goal id="g23b" />
+                                </plan>
+                            </goal>
+                            <goal id="g24">
+                                <plan operator="sequence">
+                                    <goal id="g24a" />
+                                    <goal id="g24b" />
+                                </plan>
+                            </goal>
+                        </plan>
+                    </goal>
+                    
+                    <goal id="g3" >
+                        <plan operator="parallel">
+                            <goal id="g31">
+                                <plan operator="sequence">
+                                    <goal id="g31a" />
+                                    <goal id="g31b" />
+                                </plan>
+                            </goal>
+                            <goal id="g32">
+                                <plan operator="sequence">
+                                    <goal id="g32a" />
+                                    <goal id="g32b" />
+                                </plan>
+                            </goal>
+                            <goal id="g33">
+                                <plan operator="sequence">
+                                    <goal id="g33a" />
+                                    <goal id="g33b" />
+                                </plan>
+                            </goal>
+                            <goal id="g34">
+                                <plan operator="sequence">
+                                    <goal id="g34a" />
+                                    <goal id="g34b" />
+                                </plan>
+                            </goal>
+                        </plan>
+                    </goal>           
+                    
+                    <goal id="g4" >
+                        <plan operator="parallel">
+                            <goal id="g41">
+                                <plan operator="sequence">
+                                    <goal id="g41a" />
+                                    <goal id="g41b" />
+                                </plan>
+                            </goal>
+                            <goal id="g42">
+                                <plan operator="sequence">
+                                    <goal id="g42a" />
+                                    <goal id="g42b" />
+                                </plan>
+                            </goal>
+                            <goal id="g43">
+                                <plan operator="sequence">
+                                    <goal id="g43a" />
+                                    <goal id="g43b" />
+                                </plan>
+                            </goal>
+                            <goal id="g44">
+                                <plan operator="sequence">
+                                    <goal id="g44a" />
+                                    <goal id="g44b" />
+                                </plan>
+                            </goal>
+                        </plan>
+                    </goal>
+                </plan>
+            </goal>
+
+            <mission id="m1" min="3" max="3">
+                <goal id="g11a"/>
+                <goal id="g21a"/>
+                <goal id="g31a"/>
+                <goal id="g41a"/>
+                <goal id="g14a"/>
+                <goal id="g24a"/>
+                <goal id="g34a"/>
+                <goal id="g44a"/>
+            </mission>
+            <mission id="m2" min="3" max="3">
+                <goal id="g11b"/>
+                <goal id="g21b"/>
+                <goal id="g31b"/>
+                <goal id="g41b"/>
+                <goal id="g14b"/>
+                <goal id="g24b"/>
+                <goal id="g34b"/>
+                <goal id="g44b"/>
+            </mission>
+            <mission id="m3" min="3" max="3">
+                <goal id="g12a"/>
+                <goal id="g22a"/>
+                <goal id="g32a"/>
+                <goal id="g42a"/>
+            </mission>
+            <mission id="m4" min="3" max="3">
+                <goal id="g12b"/>
+                <goal id="g22b"/>
+                <goal id="g32b"/>
+                <goal id="g42b"/>
+            </mission>
+            <mission id="m5" min="3" max="3">
+                <goal id="g13a"/>
+                <goal id="g23a"/>
+                <goal id="g33a"/>
+                <goal id="g43a"/>
+            </mission>
+            <mission id="m6" min="3" max="3">
+                <goal id="g13b"/>
+                <goal id="g23b"/>
+                <goal id="g33b"/>
+                <goal id="g43b"/>
+            </mission>
+
+        </scheme>
+        
+    </functional-specification>
+
+    <normative-specification>
+        <norm id="n01"   type="obligation"  role="r011" mission="m1" />
+        <norm id="n02"   type="obligation"  role="r012" mission="m1" />
+        <norm id="n03"   type="obligation"  role="r013" mission="m2" />
+        <norm id="n04"   type="obligation"  role="r014" mission="m2" />
+        <norm id="n05"   type="obligation"  role="r015" mission="m3" />
+        <norm id="n06"   type="obligation"  role="r016" mission="m3" />
+        <norm id="n07"   type="obligation"  role="r021" mission="m4" />
+        <norm id="n08"   type="obligation"  role="r022" mission="m4" />
+        <norm id="n09"   type="obligation"  role="r023" mission="m5" />
+        <norm id="n10"   type="obligation"  role="r024" mission="m5" />
+        <norm id="n11"   type="obligation"  role="r025" mission="m6" />
+        <norm id="n12"   type="obligation"  role="r026" mission="m6" />
+    </normative-specification>
+</organisational-specification>
+

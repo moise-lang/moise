@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
+<organisational-specification 
+    id="mining-robots"
+    os-version="0.3"
+  
+    xmlns='http://moise.sourceforge.net/os'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='http://moise.sourceforge.net/os http://moise.sourceforge.net/xml/os.xsd' >
+    
+    <structural-specification>
+        <role-definitions>
+            <role id="miner"/>
+            <role id="leader">
+                <extends role="miner"/>
+            </role>
+            <role id="courier">
+                <extends role="miner"/>
+            </role>
+        </role-definitions>
+
+        <link-types>
+            <link-type id="authority"/>
+            <link-type id="acquaintance"/>
+            <link-type id="communication"/>
+        </link-types>
+
+
+        <group-specification id="team">
+            <roles>
+                <role id="miner"/>
+                <role id="leader"/>
+                <role id="courier"/>
+            </roles>
+            <links>
+                <link from="miner" to="miner" 
+                type="communication" 
+                scope="intra-group" 
+                bi-dir="false"/>
+                <link from="leader" to="miner" 
+                type="authority" 
+                scope="intra-group" 
+                bi-dir="false"/>
+            </links>
+
+            <formation-constraints>
+                <cardinality min="4" max="4" object="role" id="miner"/>
+                <cardinality min="1" max="1" object="role" id="leader"/>
+                <cardinality min="1" max="1" object="role" id="courier"/>
+                <compatibility from="miner" to="leader" type="compatibility" scope="intra-group" extends-subgroups="false" bi-dir="true"/>
+                <compatibility from="miner" to="courier" type="compatibility" scope="intra-group" extends-subgroups="false" bi-dir="true"/>
+                <compatibility from="courier" to="leader" type="compatibility" scope="intra-group" extends-subgroups="false" bi-dir="true"/>
+            </formation-constraints>
+        </group-specification>
+
+    </structural-specification>
+
+    <functional-specification>
+
+        <scheme id="meeting_point" >
+            <goal id="mp(X,Y)" >
+                <plan operator="sequence" >
+                    <goal id="proposeMP" />
+                    <goal id="goldAtDepot" min="1" >
+                        <plan operator="choice" >
+                            <goal id="option1">
+                                <plan operator="sequence" >
+                                    <goal id="agreeMP"/>
+                                    <goal id="gotoMP"/>
+                                    <goal id="courierCarryGoldToDepot"/>
+                                </plan>
+                            </goal>
+                            <goal id="option2">
+                                <plan operator="sequence" >
+                                    <goal id="refuseMP"/>
+                                    <goal id="minerCarryGoldToDepot"/>
+                                </plan>
+                            </goal>
+                        </plan>
+                    </goal>
+                </plan>
+            </goal>
+  
+            <mission id="mMiner" min="1" max="1">
+                <goal id="mp"/>
+                <goal id="proposeMP"/>
+                <goal id="goldAtDepot"/>
+                <goal id="gotoMP"/>
+                <goal id="minerCarryGoldToDepot"/>
+            </mission>
+
+            <mission id="mCourier" min="1" max="1">
+                <goal id="goldAtDepot"/>
+                <goal id="option1"/>
+                <goal id="option2"/>
+                <goal id="agreeMP"/>
+                <goal id="refuseMP"/>
+                <goal id="courierCarryGoldToDepot"/>
+            </mission>
+        </scheme>
+
+    </functional-specification>
+
+
+    <normative-specification>
+        <norm id="n1" type="permission"   role="miner" mission="mMiner" />
+        <norm id="n2" type="obligation"   role="courier" mission="mCourier" />
+    </normative-specification>
+
+</organisational-specification>
+

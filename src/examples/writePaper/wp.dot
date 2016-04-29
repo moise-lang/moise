@@ -1,0 +1,93 @@
+digraph wp {
+    rankdir=BT;
+    compound=true;
+
+
+    subgraph cluster_SS { label="Structure" labelloc=t labeljust=r fontname="Italic" 
+        // role hierarchy
+        author [shape=box,style=rounded,fontname="Italic"];
+        author -> soc [arrowhead=onormal,arrowsize=1.5];
+        editor [shape=box,style=rounded,fontname="Helvetic"];
+        editor -> author [arrowhead=onormal,arrowsize=1.5];
+        writer [shape=box,style=rounded,fontname="Helvetic"];
+        writer -> author [arrowhead=onormal,arrowsize=1.5];
+        soc [shape=box,style=rounded,fontname="Italic"];
+
+        // group wpgroup
+        wpgroup [shape=tab, fontname="Courier-Bold",style=filled];
+        wpgroup -> editor  [arrowtail=odiamond, arrowhead=none, label="1..1",fontname="Times",arrowsize=1.5];
+        wpgroup -> writer  [arrowtail=odiamond, arrowhead=none, label="1..5",fontname="Times",arrowsize=1.5];
+        author -> author [arrowhead=dot,style=dotted];
+        editor -> writer [arrowhead=normal,style=dotted];
+        writer -> editor [arrowhead=vee,style=dotted];
+        editor -> writer  [arrowhead=diamond,arrowtail=diamond,style=dotted];
+    }
+
+    subgraph cluster_writePaperSch { label="writePaperSch" labelloc=t labeljust=r fontname="Italic" 
+        // goals
+        wp [shape=plaintext,fontname="Helvetic"]; 
+        fdv -> wp [samehead=true,arrowhead=none];
+        fdv [shape=plaintext,fontname="Helvetic"]; 
+        wtitle -> fdv [samehead=true,arrowhead=none];
+        wtitle [shape=plaintext,fontname="Helvetic"]; 
+        wabs -> fdv [samehead=true,arrowhead=none];
+        wabs [shape=plaintext,fontname="Helvetic"]; 
+        wsectitles -> fdv [samehead=true,arrowhead=none];
+        wsectitles [shape=plaintext,fontname="Helvetic"]; 
+        sv -> wp [samehead=true,arrowhead=none];
+        sv [shape=plaintext,fontname="Helvetic"]; 
+        wsecs -> sv [samehead=true,arrowhead=none];
+        wsecs [shape=plaintext,fontname="Helvetic"]; 
+        finish -> sv [samehead=true,arrowhead=none];
+        finish [shape=plaintext,fontname="Helvetic"]; 
+        wconc -> finish [samehead=true,arrowhead=tee];
+        wconc [shape=plaintext,fontname="Helvetic"]; 
+        wrefs -> finish [samehead=true,arrowhead=tee];
+        wrefs [shape=plaintext,fontname="Helvetic"]; 
+
+        // missions
+        mManager [fontname="Helvetic", shape=diamond, style=rounded];
+        mManager -> wtitle [arrowsize=0.5];
+        mManager -> wsectitles [arrowsize=0.5];
+        mManager -> wabs [arrowsize=0.5];
+        mManager -> wconc [arrowsize=0.5];
+        mManager -> wp [arrowsize=0.5];
+        mColaborator [fontname="Helvetic", shape=diamond, style=rounded];
+        mColaborator -> wsecs [arrowsize=0.5];
+        mBib [fontname="Helvetic", shape=diamond, style=rounded];
+        mBib -> wrefs [arrowsize=0.5];
+    }
+
+    subgraph cluster_monitoringSch { label="monitoringSch" labelloc=t labeljust=r fontname="Italic" 
+        // goals
+        monitor [shape=plaintext,fontname="Helvetic"]; 
+        sanction -> monitor [samehead=true,arrowhead=vee];
+        sanction [shape=plaintext,fontname="Helvetic"]; 
+        reward -> monitor [samehead=true,arrowhead=vee];
+        reward [shape=plaintext,fontname="Helvetic"]; 
+
+        // missions
+        ms [fontname="Helvetic", shape=diamond, style=rounded];
+        ms -> sanction [arrowsize=0.5];
+        mr [fontname="Helvetic", shape=diamond, style=rounded];
+        mr -> reward [arrowsize=0.5];
+    }
+
+
+    // NS
+        editor [shape=box,style=rounded,fontname="Helvetic"];
+        mManager [fontname="Helvetic", shape=diamond, style=rounded];
+        editor -> mManager [arrowhead=inv,style=filled,label=""];
+        editor [shape=box,style=rounded,fontname="Helvetic"];
+        mr [fontname="Helvetic", shape=diamond, style=rounded];
+        editor -> mr [arrowhead=inv,style=bold,label=""];
+        editor [shape=box,style=rounded,fontname="Helvetic"];
+        ms [fontname="Helvetic", shape=diamond, style=rounded];
+        editor -> ms [arrowhead=inv,style=bold,label=""];
+        writer [shape=box,style=rounded,fontname="Helvetic"];
+        mColaborator [fontname="Helvetic", shape=diamond, style=rounded];
+        writer -> mColaborator [arrowhead=inv,style=bold,label=""];
+        writer [shape=box,style=rounded,fontname="Helvetic"];
+        mBib [fontname="Helvetic", shape=diamond, style=rounded];
+        writer -> mBib [arrowhead=inv,style=bold,label=""];
+}

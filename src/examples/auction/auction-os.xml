@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
+<organisational-specification 
+    id="auction"
+    os-version="0.7"
+  
+    xmlns='http://moise.sourceforge.net/os'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='http://moise.sourceforge.net/os
+                        http://moise.sourceforge.net/xml/os.xsd' >
+    
+<structural-specification>
+
+<role-definitions>
+ <role id="auctioneer" />
+ <role id="participant" />
+</role-definitions>
+
+<group-specification id="auctionGroup">
+ <roles>
+  <role id="auctioneer"  min="1" max="1"/>
+  <role id="participant" min="0" max="300"/>
+ </roles>
+
+ <links>
+  <link from="auctioneer" to="participant" type="communication" scope="intra-group" 
+        extends-subgroups="false" bi-dir="true"/>
+  <link from="participant" to="participant" type="communication" scope="intra-group" 
+        extends-subgroups="false" bi-dir="false"/>
+ </links>
+
+</group-specification>
+</structural-specification>
+
+<functional-specification>
+ <scheme id="doAuction">
+   <goal id="auction">
+     <argument id="N" />
+     <plan operator="sequence">
+       <goal id="start" />
+       <goal id="bid"    ttf="10 minutes" />
+       <goal id="winner" ttf="1 hour">
+         <argument id="W" />
+       </goal>
+     </plan>
+   </goal>
+   <mission id="mAuctioneer" min="1" max="1">
+     <goal id="auction"/>
+     <goal id="start" />
+     <goal id="winner" />
+   </mission>
+   <mission id="mParticipant" min="1" >
+     <goal id="bid" />
+   </mission>
+ </scheme>
+</functional-specification>
+
+<normative-specification>
+<norm id="n1"     type="permission" 
+                  role="auctioneer" 
+                  mission="mAuctioneer" />
+<norm id="n2"     type="obligation" 
+                  role="participant" 
+                  mission="mParticipant" />
+</normative-specification>
+
+</organisational-specification>
+

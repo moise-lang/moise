@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification 
+
+    id="testsg"
+    os-version="0.8"
+  
+    xmlns='http://moise.sourceforge.net/os'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='http://moise.sourceforge.net/os
+                        http://moise.sourceforge.net/xml/os.xsd' >
+    
+    <structural-specification>
+
+        <role-definitions>
+            <role id="r1" />
+            <role id="r2" />
+            <role id="r3" />
+            <role id="r4" />
+        </role-definitions>
+
+        <group-specification id="g1" >
+
+            <subgroups>
+                <group-specification id="g2" min="1" max="1">
+                    <roles>
+                        <role id="r2" min="1"/>
+                    </roles>
+                    <subgroups>
+                        <group-specification id="g3" min="1">
+		                    <roles>
+		                        <role id="r3" min="1"/>
+		                    </roles>
+                        </group-specification>
+                    </subgroups>
+                </group-specification>
+                <group-specification id="g4" min="1" max="1">
+		            <roles>
+		                <role id="r4" min="1"/>
+		            </roles>
+                </group-specification>
+            </subgroups>
+        </group-specification>
+    </structural-specification>
+
+
+
+    <functional-specification>
+        
+    </functional-specification>
+
+    <normative-specification>
+       
+    </normative-specification>
+</organisational-specification>
+

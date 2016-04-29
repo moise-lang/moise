@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<organisational-specification 
+
+    id="e-alliance1"
+    os-version="0.4"
+  
+    xmlns='http://moise.sourceforge.net/os'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='http://moise.sourceforge.net/os http://moise.sourceforge.net/xml/os.xsd'>
+    
+    <structural-specification>
+        <role-definitions>
+            <role id="Printshop" />
+        </role-definitions>
+
+        <group-specification id="alliance">
+            <roles>
+                <role id="Printshop"/>
+            </roles>
+            <links>
+                <link from="Printshop" to="Printshop" type="communication" scope="intra-group" extends-subgroups="true" bi-dir="false"/>
+            </links>
+            
+            <subgroups>
+                <include-group-specification uri="ReorgGr.xml" />
+            </subgroups>
+            
+            <formation-constraints>
+                <cardinality min="1" max="1" object="group" id="reorgGr"/>
+                <compatibility from="Monitor"  to="Printshop" type="compatibility" scope="inter-group" extends-subgroups="true" bi-dir="true"/>
+                <compatibility from="Selector" to="Printshop" type="compatibility" scope="inter-group" extends-subgroups="true" bi-dir="true"/>
+                <compatibility from="OrgParticipant" to="Printshop" type="compatibility" scope="inter-group" extends-subgroups="true" bi-dir="true"/>
+            </formation-constraints>
+        </group-specification>
+    </structural-specification>
+
+    <functional-specification>
+        <scheme id="test" >
+            <goal id="test">
+                <plan operator="sequence">
+                    <goal id="a" >
+                        <argument id="Z" />
+                        <plan operator="choice">
+                            <goal id="f" />
+                            <goal id="g" />
+                            <goal id="h" />
+                        </plan>
+                    </goal>
+                    <goal id="b" >
+                        <argument id="X" />
+                        <argument id="Y" />
+                        <plan operator="sequence">
+                            <goal id="c" />
+                            <goal id="d" />
+                        </plan>
+                    </goal>
+                </plan>
+            </goal>
+            <mission id="m1" min="1" max="3">
+                <goal id="test" />
+                <goal id="d" />
+            </mission>
+
+            <mission id="m2">
+                <goal id="a" />
+            </mission>
+        </scheme>
+
+    </functional-specification>
+
+    <normative-specification>
+        <deontic-relation type="permission" 
+                     role="Printshop"     
+                     mission="test.m1"  />
+    </normative-specification>
+</organisational-specification>
+
