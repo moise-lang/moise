@@ -9,7 +9,7 @@ Some papers describing Moise are available in the folder [publications](https://
 
     git clone https://github.com/jomifred/moise.git
     cd moise
-    gradle dist
+    gradle build
     gradle eclipse
 
 
