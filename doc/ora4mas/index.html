@@ -258,24 +258,7 @@ The Jason project is:
 
 <P>
 <BR>
-<PRE>/* 
-  (Traditional) Writing paper example
-  
-  the platform is ora4mas (based on artifacts)
-  
-  by Jomi (2010)
-*/
-
-MAS wp {
-
-    infrastructure: JaCaMo
-
-    agents:
-        bob;
-        alice;
-        carol;
-
-}
+<PRE>/Users/jomi/bin/latex/latex-beamer-3.07/base/../../examples/writePaper/agents/writing-paper.mas2j
 </PRE>
 <P>
 The code of the agents follows.
@@ -286,113 +269,12 @@ Bob</A>
 
 <P>
 <BR>
-<PRE>// This agent creates the group/scheme to write a paper
-// and adopts the role "editor" in the group
-
-{ include("common-moise.asl") } // some common plans for obedient agents
-
-/* Initial goals */
-
-!start.
-
-/* Plans */
-
-+!start 
-  &lt;- .my_name(Me);
-     createWorkspace("ora4mas");
-     joinWorkspace("ora4mas",O4MWsp);
-     
-     makeArtifact("mypaper","ora4mas.nopl.GroupBoard",["../wp-os.xml", wpgroup, false, true ],GrArtId);
-     setOwner(Me);
-	 
-     focus(GrArtId);
-     .print("group created");
-	 
-     adoptRole(editor)[artifact_id(GrArtId)];
-	 
-     // wait for alice
-     ?play(alice,writer,mypaper);
-     
-     // wait for carol
-     ?play(carol,writer,mypaper);
-	 
-     !run_scheme(sch1).
-
-// general error handler for goal start 
--!start[error(I),error_msg(M)] &lt;- .print("failure in starting! ",I,": ",M).
-     
-+!run_scheme(S)
-   &lt;- makeArtifact(S,"ora4mas.nopl.SchemeBoard",["../wp-os.xml", writePaperSch, false, true ],SchArtId);
-      focus(SchArtId);
-      .print("scheme ",S," created");
-      addScheme(S)[artifact_name("mypaper")]; 
-      .print("scheme is linked to responsible group");	 
-      commitMission(mManager)[artifact_id(SchArtId)].
--!run_scheme(S)[error(I),error_msg(M)] &lt;- .print("failure creating scheme ",S," -- ",I,": ",M).
-
-// application domain goals
-+!wtitle     &lt;- .wait(500); .print("writing title...").
-+!wabs       &lt;- .print("writing abstract...").
-+!wsectitles &lt;- .print("writing section title...").
-+!wconc	     &lt;- .print("writing conclusion...").
-+!wp         &lt;- .print("paper finished!").
-
-+goalState(sch1, wp, _, _, satisfied)         
-   &lt;- .wait(1000);
-      lookupArtifact(sch1,SchId);      
-      destroy[artifact_id(SchId)];
-      disposeArtifact(SchId);
-      .print("starting a new scheme...");
-      !run_scheme(sch2).
-
-+?play(A,R,G) &lt;- .wait({+play(_,_,_)},100,_); ?play(A,R,G).
-    
-// signals
-+normFailure(N)  &lt;- .print("norm failure event: ", N).
-+destroyed(Art)  &lt;- .print("Artifact ",Art," destroyed").      
-
-// for debug (prints out the new states of goals)
-//+goalState(Sch,Goal,CommittedAgs,AchievedBy,State)
-//   &lt;- .print("                         goal changed: ", goalState(Sch,Goal,CommittedAgs,AchievedBy,State)).
-   </PRE>
+<PRE>/Users/jomi/bin/latex/latex-beamer-3.07/base/../../examples/writePaper/agents/bob.asl
+</PRE>
 <P>
 The included file is:
 <BR>
-<PRE>/* auxiliary organisational plans for agents */
-
-// keep focused on schemes that my groups are responsible for
-+schemes(L)
-   &lt;- !focus_on_schemes(L).
-   
-+!focus_on_schemes([]).
-+!focus_on_schemes([S|R])
-   &lt;- lookupArtifact(S,ArtId);
-      focus(ArtId);
-      !focus_on_schemes(R).
--!focus_on_schemes(L)[error_msg("Artifact Not Available.")]
-  &lt;- .wait(100); // try latter
-     !focus_on_schemes(L).
-
-/* plans to handle obligations */
-
-// obligation to commit to a mission
-+obligation(Ag,Norm,committed(Ag,Mission,Scheme),Deadline)[artifact_id(ArtId)]
-    : .my_name(Ag)
-   &lt;- .print("I am obliged to commit to ",Mission," on ",Scheme,"... doing so");
-      commitMission(Mission)[artifact_id(ArtId)]. 
-
-// obligation to achieve a goal      
-+obligation(Ag,Norm,achieved(Scheme,Goal,Ag),Deadline)[artifact_id(ArtId)]
-    : .my_name(Ag)
-   &lt;- //.print(" ---&gt; working to achieve ",Goal," in scheme ",Scheme);
-      !Goal[scheme(Scheme)];
-      //.print(" &lt;--- done");
-      goalAchieved(Goal)[artifact_id(ArtId)].
-
-// an unknown type of obligation was received
-+obligation(Ag,Norm,What,DeadLine)  
-   : .my_name(Ag)
-   &lt;- .print("I am obliged to ",What,", but I don't know what to do!").
+<PRE>/Users/jomi/bin/latex/latex-beamer-3.07/base/../../examples/writePaper/agents/common-moise.asl
 </PRE>
 <P>
 
@@ -400,106 +282,21 @@ The included file is:
 Alice</A>
 </H3>
 <BR>
-<PRE>// this agent waits for the group creation and then
-// adopts the role write and
-// commits to the missions mColaborator and mBib
-
-{ include("common.asl") }
-{ include("common-moise.asl") }
-
-/* Initial goals */
-
-/* Plans */
-
-// application domain goals
-+!wsecs &lt;- .print("writing sections...").
-+!wrefs &lt;- .print("organising bibliography...").
-
-// conditions to leave missions
-@lgss1[atomic]
-+goalState(Scheme,wsecs,_,_,satisfied)
-    : .my_name(Me) &amp; commitment(Me,mColaborator,Scheme)
-   &lt;- !quit_mission(mColaborator,Scheme).
-      
-@lgss2[atomic]
-+goalState(Scheme,wrefs,_,_,satisfied)
-    : .my_name(Me) &amp; commitment(Me,mBib,Scheme)
-   &lt;- !quit_mission(mBib,Scheme).
+<PRE>/Users/jomi/bin/latex/latex-beamer-3.07/base/../../examples/writePaper/agents/alice.asl
 </PRE>
 <P>
 The common.asl file:
 <BR>
-<PRE>/* Common code for Alice and Carol */
-
-/* useful rules */
-
-/* Initial goals */
-
-!start.
-!join.
-
-/* Plans */
-
-+!start 
-   &lt;- lookupArtifact("mypaper",GrId); 
-      adoptRole(writer)[artifact_id(GrId)];
-      focus(GrId).     
--!start
-   &lt;- .wait(100);
-      !start.
-	 
-+!join 
-   &lt;- .my_name(Me); 
-       joinWorkspace("ora4mas",_).
--!join
-   &lt;- .wait(200);
-      !!join.
-            
-+!quit_mission(M,S)
-   &lt;- .print("leaving my mission ",M," on ",S,"....");
-      leaveMission(M)[artifact_name(S)].            
-              </PRE>
+<PRE>/Users/jomi/bin/latex/latex-beamer-3.07/base/../../examples/writePaper/agents/common.asl
+</PRE>
 <P>
 
 <H3><A NAME="SECTION00053300000000000000">
 Carol</A>
 </H3>
 <BR>
-<PRE>// this agent waits for the group creation and then
-// adopts the role write and
-// commits to the mission mColaborator
-
-{ include("common.asl") }
-
-/* Initial goals */
-
-/* Plans */
-
-// application domain goals
-+!wsecs[scheme(S)]
-   &lt;- .print("writing sections for scheme ",S,"...").
-
-// when my goal in the scheme is satisfied, leave my mission 
-@lqm[atomic]
-+goalState(Scheme,wsecs,_,_,satisfied)
-    : .my_name(Me) &amp; commitment(Me,mColaborator,Scheme)
-   &lt;- !quit_mission(mColaborator, Scheme).
-
-
-// plans to handle obligations
-
-// only commits to mColaborator!
-+obligation(Ag,Norm,committed(Ag,mColaborator,Scheme),DeadLine)
-    : .my_name(Ag)
-   &lt;- .print("I am obliged to commit to ",mColaborator);
-      commitMission(mColaborator)[artifact_name(Scheme)].
-      
-+obligation(Ag,Norm,achieved(Scheme,Goal,Ag),DeadLine)
-    : .my_name(Ag)
-   &lt;- .print("I am obliged to achieve goal ",Goal);
-      !Goal[scheme(Scheme)];
-      goalAchieved(Goal)[artifact_name(Scheme)].
-             </PRE>
+<PRE>/Users/jomi/bin/latex/latex-beamer-3.07/base/../../examples/writePaper/agents/carol.asl
+</PRE>
 <P>
 
 <H2><A NAME="SECTION00060000000000000000">
