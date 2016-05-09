@@ -46,10 +46,9 @@ image::ora4mas-arts-impl.png[width="60%"]
 == Java integration
 
 There is a generic GUI to create organisational artifact and agents
-enabling the user to test the specification (it is similar to the
-SimOE program in S-MOISE+). To run it:
+enabling the user to test the specification. To run it:
 
-    gradle run-art
+    gradle intsim
 
 We can then set the organisational specification for the system and
 create groups, schemes, and generic GUI based agents.
@@ -57,6 +56,9 @@ create groups, schemes, and generic GUI based agents.
 You can also read the code of a simulator to learn how to program Java
 agents to use these artifacts. The source is available
 https://github.com/jomifred/moise/blob/master/src/main/java/ora4mas/nopl/simulator/ConsoleSimulator.java[here]
+and can be run with
+
+    gradle sim
 
 == Jason Integration
 

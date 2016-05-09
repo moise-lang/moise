@@ -1,8 +1,5 @@
 package ora4mas.nopl.simulator;
 
-import jason.infra.centralised.RunCentralisedMAS;
-import jason.runtime.RuntimeServicesInfraTier;
-
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -19,9 +16,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+import cartago.CartagoException;
+import cartago.CartagoService;
+import cartago.util.agent.CartagoBasicContext;
+import jason.infra.centralised.RunCentralisedMAS;
+import jason.runtime.RuntimeServicesInfraTier;
 import ora4mas.nopl.GroupBoard;
 import ora4mas.nopl.SchemeBoard;
-import cartago.util.agent.CartagoBasicContext;
 
 public class SimulatorGUI {
     List<AgentGUI> ags = new ArrayList<AgentGUI>();
@@ -135,5 +136,13 @@ public class SimulatorGUI {
 
     public void addAg(AgentGUI a) {
         ags.add(a);
+    }
+    
+    public static void main(String[] args) throws CartagoException {
+        CartagoService.startNode();
+        CartagoService.installInfrastructureLayer("default"); 
+        CartagoService.startInfrastructureService("default");
+        
+        SimulatorGUI.getInstance();
     }
 }

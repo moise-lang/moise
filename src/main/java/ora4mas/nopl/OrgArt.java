@@ -261,15 +261,18 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
         if (wspEng == null) {
             wspEng = new Ora4masWSPRuleEngine();
-            CartagoBasicContext cartagoCtx = new CartagoBasicContext("OrgArt setup","default");
-            try {
-                cartagoCtx.doAction(new Op("setWSPRuleEngine", wspEng), -1);
-            } catch (CartagoException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } 
+            new Thread() {
+                public void run() {
+                    try {
+                        CartagoBasicContext cartagoCtx = new CartagoBasicContext("OrgArt setup","default");
+                        cartagoCtx.doAction(new Op("setWSPRuleEngine", wspEng), -1);
+                        wspEng.addListener(OrgArt.this);    
+                    } catch (CartagoException e) {
+                        e.printStackTrace();
+                    } 
+                };
+            }.start();
         }
-        wspEng.addListener(this);    
     }
     
     abstract public void agKilled(String agName);

@@ -1,9 +1,5 @@
 package ora4mas.nopl.simulator;
 
-import jason.architecture.AgArch;
-import jason.asSyntax.ASSyntax;
-import jason.util.asl2html;
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -20,12 +16,15 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.border.TitledBorder;
 
-import ora4mas.nopl.OrgArt;
 import cartago.ArtifactId;
 import cartago.ArtifactInfo;
 import cartago.CartagoService;
 import cartago.ICartagoController;
 import cartago.OpDescriptor;
+import jason.architecture.AgArch;
+import jason.asSyntax.ASSyntax;
+import jason.util.asl2html;
+import ora4mas.nopl.OrgArt;
 
 public class AgentGUI {
 
@@ -78,6 +77,8 @@ public class AgentGUI {
                 ASSyntax.createAtom(op),
                 ASSyntax.parseList("["+args+"]")),
             null);
+        
+        jasonAg.getTS().getUserAgArch().wakeUpDeliberate();
         
         /*
         if (args.length() == 0) {

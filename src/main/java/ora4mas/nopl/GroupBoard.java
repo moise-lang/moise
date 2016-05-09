@@ -125,10 +125,12 @@ public class GroupBoard extends OrgArt {
         defineObsProperty(obsPropSpec, new JasonTermWrapper(spec.getAsProlog()));
         defineObsProperty(obsPropSubgroups, getGrpState().getSubgroupsAsProlog());
         defineObsProperty(obsPropParentGroup, new JasonTermWrapper(getGrpState().getParentGroup()));
-        
+
         // load normative program
         initNormativeEngine(os, "group("+grType+")");
         installNormativeSignaler();
+
+        // install monitor of agents quiting the system
         initWspRuleEngine();
         
         //final ArtifactId myArtId = getId();

@@ -11,6 +11,8 @@ public class SimOrgAgent extends CAgentArch {
     
     @Override
     public void init() throws Exception {
+        super.init();
+        
         // creates the general gui
         SimulatorGUI.getInstance();
         
@@ -21,4 +23,5 @@ public class SimOrgAgent extends CAgentArch {
     public AgentGUI getMyGUI() {
         return myGUI;
     }
+    
 }

@@ -52,6 +52,24 @@ jar {
     baseName 'moise'
 }
 
+clean {
+    delete 'bin'
+}
+
+task intsim (type: JavaExec, dependsOn: 'jar') {
+    description 'runs an interactive simulation of some organisation'
+    main = 'jason.infra.centralised.RunCentralisedMAS'
+    args 'org-simulator.mas2j'
+    classpath sourceSets.main.runtimeClasspath
+    workingDir project.projectDir.absolutePath + '/src/examples/sim' 
+}
+
+task sim (type: JavaExec, dependsOn: 'jar') {
+    description 'runs a program that simulates some dynamics of an organisation'
+    main = 'ora4mas.nopl.simulator.ConsoleSimulator'
+    classpath sourceSets.main.runtimeClasspath
+}
+
 
 publishing {
     publications {
@@ -63,8 +81,9 @@ publishing {
     }
 }
 
-// transfer local maven artifact to our maven2 repository at sourceforge
 task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) << {
+    description 'transfer local maven artifact to our maven2 repository at sourceforge'
+    
     def wdir = System.getProperty("user.home")+'/.m2/repository/org/jacamo/moise'
     def tdir = 'jomifred,jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jacamo/moise'
     exec {
