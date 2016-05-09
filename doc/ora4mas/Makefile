@@ -7,10 +7,10 @@ clean:
 	rm *-ref.adoc
 
 adoc:
-	asciidoc-bib -b ~/pubs/bib/jomi.bib ora4mas.adoc
-	asciidoctor ora4mas-ref.adoc
-	mv ora4mas-ref.html index.html
-	rm ora4mas.html
+	asciidoc-bib -b ~/pubs/bib/jomi.bib readme.adoc
+	asciidoctor readme-ref.adoc
+	mv readme-ref.html index.html
+	rm readme.html
 
 publish:
 	scp index.html jomifred,moise@web.sf.net:/home/project-web/moise/htdocs/doc/ora4mas
