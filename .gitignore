@@ -8,6 +8,7 @@ src/examples/performance/case1/profiling*
 
 *~
 *.class
+*.log
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

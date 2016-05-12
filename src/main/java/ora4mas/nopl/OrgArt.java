@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -40,7 +38,6 @@ import cartago.AgentQuitRequestInfo;
 import cartago.Artifact;
 import cartago.ArtifactId;
 import cartago.CartagoException;
-import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
 import cartago.Op;
 import cartago.OperationException;
@@ -52,7 +49,6 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.PredicateIndicator;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
-import jason.util.Pair;
 import moise.common.MoiseException;
 import moise.os.OS;
 import moise.xml.DOMUtils;
@@ -109,7 +105,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         if (scope == null)
             throw new MoiseException("scope for "+type+" does not exist!");            
         nengine.setScope(scope);
-        execInternalOp("NPISignals");                
+        //execInternalOp("NPISignals");                
     }
     
     public NPLInterpreter getNormativeEngine() {
@@ -153,7 +149,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         myNPLListener = new NormativeListener() {
             public void created(DeonticModality o) {  
                 defineObsProperty(o.getFunctor(), getTermsAsProlog(o));
-                signalsQueue.offer(new Pair<String, Structure>(sglOblCreated, o));
+                //signalsQueue.offer(new Pair<String, Structure>(sglOblCreated, o));
             }
             public void fulfilled(DeonticModality o) {
                 try {
@@ -162,7 +158,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                     // signalQueue is toooo slow!
                     
                     //signal(sglOblFulfilled, new JasonTermWrapper(o));
-                    signalsQueue.offer(new Pair<String, Structure>(sglOblFulfilled, o));
+                    //signalsQueue.offer(new Pair<String, Structure>(sglOblFulfilled, o));
                 } catch (java.lang.IllegalArgumentException e) {
                     // ignore, the obligations was not there anymore
                 }
@@ -170,12 +166,12 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             public void unfulfilled(DeonticModality o) { 
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
                 //signal(sglOblUnfulfilled, new JasonTermWrapper(o));
-                signalsQueue.offer(new Pair<String, Structure>(sglOblUnfulfilled, o));
+                //signalsQueue.offer(new Pair<String, Structure>(sglOblUnfulfilled, o));
             }
             public void inactive(DeonticModality o) {    
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
                 //signal(sglOblInactive, new JasonTermWrapper(o));
-                signalsQueue.offer(new Pair<String, Structure>(sglOblInactive, o));
+                //signalsQueue.offer(new Pair<String, Structure>(sglOblInactive, o));
             }
             
             public void failure(Structure f) {     
@@ -186,9 +182,11 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     }
     
     // Manage the signal related to changes in NPI ===> too slow!
+    // TODO: wait for a better solution from cartago
     
-    Queue<Pair<String, Structure>> signalsQueue = new ConcurrentLinkedQueue<Pair<String,Structure>>();
+    //Queue<Pair<String, Structure>> signalsQueue = new ConcurrentLinkedQueue<Pair<String,Structure>>();
     
+    /*
     @INTERNAL_OPERATION void NPISignals() {
         Pair<String,Structure> s = null;
         while (running) {
@@ -201,7 +199,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             await_time(500);
         }
     }
-    
+    */
     
     static Object[] getTermsAsProlog(Literal o) {
         Object[] terms = new Object[o.getArity()];

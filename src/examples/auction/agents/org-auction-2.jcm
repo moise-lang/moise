@@ -7,13 +7,10 @@ See readme.txt for more information.
 
 */
 
-MAS auction {
-   infrastructure: JaCaMo
+mas auction {
    
-   agents:
-
-       bob auctioneer;
-       ag1;
-	   ag2;
-       ag3;
+   agent bob: auctioneer.asl
+   agent ag1
+   agent ag2
+   agent ag3
 }

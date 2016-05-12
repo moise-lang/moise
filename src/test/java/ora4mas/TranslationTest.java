@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.StringReader;
 
+import jason.asSyntax.ASSyntax;
 import junit.framework.TestCase;
 import moise.os.OS;
 import npl.NormativeProgram;
@@ -24,6 +25,7 @@ public class TranslationTest extends TestCase {
         out.close();
         NormativeProgram p = new NormativeProgram();
         new nplp(new StringReader(np)).program(p, null);
+        assertEquals(11, p.getRoot().getScope(ASSyntax.parseLiteral("scheme(writePaperSch)")).getNorms().size());
     }
 
     public void testGgroupWithoutRole() throws ParseException, Exception {
