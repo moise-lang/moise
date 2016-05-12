@@ -38,6 +38,7 @@ import cartago.AgentQuitRequestInfo;
 import cartago.Artifact;
 import cartago.ArtifactId;
 import cartago.CartagoException;
+import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
 import cartago.Op;
 import cartago.OperationException;
@@ -159,6 +160,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                     
                     //signal(sglOblFulfilled, new JasonTermWrapper(o));
                     //signalsQueue.offer(new Pair<String, Structure>(sglOblFulfilled, o));
+                    execInternalOp("NPISignals", sglOblFulfilled, o);
                 } catch (java.lang.IllegalArgumentException e) {
                     // ignore, the obligations was not there anymore
                 }
@@ -167,6 +169,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
                 //signal(sglOblUnfulfilled, new JasonTermWrapper(o));
                 //signalsQueue.offer(new Pair<String, Structure>(sglOblUnfulfilled, o));
+                execInternalOp("NPISignals", sglOblUnfulfilled, o);
             }
             public void inactive(DeonticModality o) {    
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
@@ -175,7 +178,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             }
             
             public void failure(Structure f) {     
-                signal(sglNormFailure, new JasonTermWrapper(f));                
+                //signal(sglNormFailure, new JasonTermWrapper(f));                
+                execInternalOp("NPISignals", sglNormFailure, f);
             }
         };
         nengine.addListener(myNPLListener);
@@ -183,6 +187,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     
     // Manage the signal related to changes in NPI ===> too slow!
     // TODO: wait for a better solution from cartago
+    // solved now by exec int op
     
     //Queue<Pair<String, Structure>> signalsQueue = new ConcurrentLinkedQueue<Pair<String,Structure>>();
     
@@ -200,6 +205,10 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         }
     }
     */
+
+    @INTERNAL_OPERATION void NPISignals(String signal, Term arg) {
+        signal(signal, new JasonTermWrapper(arg));
+    }
     
     static Object[] getTermsAsProlog(Literal o) {
         Object[] terms = new Object[o.getArity()];
