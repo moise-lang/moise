@@ -526,7 +526,7 @@ enabling the user to test the specification. To run it:</p>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>gradle intsim</pre>
+<pre class="nowrap">gradle intsim</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -541,7 +541,7 @@ and can be run with</p>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>gradle sim</pre>
+<pre class="nowrap">gradle sim</pre>
 </div>
 </div>
 </div>
@@ -650,24 +650,21 @@ the role <em>writer</em> and commits to the mission <em>mColaborator</em>.</p>
 <p>The Jason project is:</p>
 </div>
 <div class="listingblock">
-<div class="title">writing-paper.mas2j</div>
+<div class="title">writing-paper.jcm</div>
 <div class="content">
-<pre class="highlight"><code class="language-mas2j" data-lang="mas2j">/*
+<pre class="highlight nowrap"><code class="language-jcm" data-lang="jcm">/*
   (Traditional) Writing paper example
 
-  the platform is ora4mas (based on artifacts)
+  to be run as a JaCaMo application
 
   by Jomi (2010)
 */
 
-MAS wp {
+mas wp {
 
-    infrastructure: JaCaMo
-
-    agents:
-        bob;
-        alice;
-        carol;
+    agent bob
+    agent alice
+    agent carol
 
 }</code></pre>
 </div>
@@ -678,7 +675,7 @@ MAS wp {
 <div class="listingblock">
 <div class="title">bob.asl</div>
 <div class="content">
-<pre class="highlight"><code class="language-asl" data-lang="asl">// This agent creates the group/scheme to write a paper
+<pre class="highlight nowrap"><code class="language-asl" data-lang="asl">// This agent creates the group/scheme to write a paper
 // and adopts the role "editor" in the group
 
 { include("common-moise.asl") } // some common plans for obedient agents
@@ -754,7 +751,7 @@ MAS wp {
 <div class="listingblock">
 <div class="title">common-moise.asl</div>
 <div class="content">
-<pre class="highlight"><code class="language-asl" data-lang="asl">/* auxiliary organisational plans for agents */
+<pre class="highlight nowrap"><code class="language-asl" data-lang="asl">/* auxiliary organisational plans for agents */
 
 // keep focused on schemes that my groups are responsible for
 +schemes(L)
@@ -794,7 +791,7 @@ MAS wp {
 <div class="listingblock">
 <div class="title">alice.asl</div>
 <div class="content">
-<pre class="highlight"><code class="language-asl" data-lang="asl">// this agent waits for the group creation and then
+<pre class="highlight nowrap"><code class="language-asl" data-lang="asl">// this agent waits for the group creation and then
 // adopts the role write and
 // commits to the missions mColaborator and mBib
 
@@ -824,7 +821,7 @@ MAS wp {
 <div class="listingblock">
 <div class="title">common.asl</div>
 <div class="content">
-<pre class="highlight"><code class="language-asl" data-lang="asl">/* Common code for Alice and Carol */
+<pre class="highlight nowrap"><code class="language-asl" data-lang="asl">/* Common code for Alice and Carol */
 
 /* useful rules */
 
@@ -858,7 +855,7 @@ MAS wp {
 <div class="listingblock">
 <div class="title">carol.asl</div>
 <div class="content">
-<pre class="highlight"><code class="language-asl" data-lang="asl">// this agent waits for the group creation and then
+<pre class="highlight nowrap"><code class="language-asl" data-lang="asl">// this agent waits for the group creation and then
 // adopts the role write and
 // commits to the mission mColaborator
 
@@ -901,7 +898,7 @@ MAS wp {
 <h2 id="_references">References</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a id="gateau07"></a>Gâateau, B., Boissier, O., Khadraoui, D., &amp; Dubois, E. (2007). Controlling an Interactive Game with a Multi-agent Based Normative Organisational Model. In P. Noriega, J. Váazquez-Salceda, G. Boella, V. Boissier O.; Dignum, N. Fornara, &amp; E. Matson (Eds.), <em>AAMAS 2006 and ECAI 2006 International Workshops, COIN 2006 Hakodate, Japan, May 9, 2006 Riva del Garda, Italy, August 28, 2006</em> (Vol. 4386, pp. 86–100). Springer.</p>
+<p><a id="gateau07"></a>Gâateau, B., Boissier, O., Khadraoui, D., &amp; Dubois, E. (2007). Controlling an Interactive Game with a Multi-agent Based Normative Organisational Model. In P. Noriega, J. Váazquez-Salceda, G. Boella, V. Boissier O.; Dignum, N. Fornara, &amp; E. Matson (Eds.), <em>AAMAS 2006 and ECAI 2006 International Workshops, COIN 2006 Hakodate, Japan, May 9, 2006 Riva del Garda, Italy, August 28, 2006</em> (Vol. 4386, pp. 86–100). Springer. <a href="http://doi.org/10.1007/978-3-540-74459-7_6" class="bare">http://doi.org/10.1007/978-3-540-74459-7_6</a></p>
 </div>
 <div class="paragraph">
 <p><a id="hubner09e"></a>Hübner, J. F., Boissier, O., &amp; Bordini, R. H. (2009). Normative Programming for Organisation Management Infrastructures. In A. Polleres &amp; J. Padget (Eds.), <em>Workshop on Coordination, Organization, Institutions and Norms in agent systems (COIN09@MALLOW) Torino, Italy, 7th&#8212;&#8203;11th September</em> (Vol. 494). CEUR. Retrieved from <a href="http://www.das.ufsc.br/~jomi/pubs/2009/moise-nopl-coin-mallow09.pdf" class="bare">http://www.das.ufsc.br/~jomi/pubs/2009/moise-nopl-coin-mallow09.pdf</a></p>
@@ -910,7 +907,7 @@ MAS wp {
 <p><a id="hubner10b"></a>Hübner, J. F., Boissier, O., &amp; Bordini, R. H. (2010). A Normative Organisation Programming Language for Organisation Management Infrastructures. In J. P. et al. (Ed.), <em>Coordination, Organizations, Institutions and Norms in Agent Systems V</em> (Vol. 6069, pp. 114–129). Springer. <a href="http://doi.org/10.1007/978-3-642-14962-7_8" class="bare">http://doi.org/10.1007/978-3-642-14962-7_8</a></p>
 </div>
 <div class="paragraph">
-<p><a id="hubner09c"></a>Hübner, J. F., Boissier, O., Kitio, R., &amp; Ricci, A. (2010). Instrumenting Multi-Agent Organisations with Organisational Artifacts and Agents: ``Giving the organisational power back to the agents''. <em>Journal of Autonomous Agents and Multi-Agent Systems</em>, <em>20</em>(3), 369–400. <a href="http://doi.org/10.1007/s10458-009-9084-y" class="bare">http://doi.org/10.1007/s10458-009-9084-y</a></p>
+<p><a id="hubner09c"></a>Hübner, J. F., Boissier, O., Kitio, R., &amp; Ricci, A. (2010). Instrumenting Multi-Agent Organisations with Organisational Artifacts and Agents: "Giving the organisational power back to the agents". <em>Journal of Autonomous Agents and Multi-Agent Systems</em>, <em>20</em>(3), 369–400. <a href="http://doi.org/10.1007/s10458-009-9084-y" class="bare">http://doi.org/10.1007/s10458-009-9084-y</a></p>
 </div>
 <div class="paragraph">
 <p><a id="hubner05a"></a>Hübner, J. F., Sichman, J. S., &amp; Boissier, O. (2006). S-MOISE+: A middleware for developing Organised Multi-Agent Systems. In O. Boissier, V. Dignum, E. Matson, &amp; J. S. Sichman (Eds.), <em>Coordination, Organizations, Institutions, and Norms in Multi-Agent Systems</em> (Vol. 3913, pp. 64–78). Springer. <a href="http://doi.org/10.1007/11775331_5" class="bare">http://doi.org/10.1007/11775331_5</a></p>
@@ -923,7 +920,7 @@ MAS wp {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-09 20:11:20 CEST
+Last updated 2016-05-12 17:10:47 CEST
 </div>
 </div>
 </body>

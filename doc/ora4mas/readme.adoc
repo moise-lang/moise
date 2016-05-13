@@ -1,6 +1,7 @@
 = ORA4MAS (Moise platform based on artifacts)
 Basic Reference
 :toc: right
+:prewrap!:
 
 == Introduction
 
@@ -114,10 +115,10 @@ we have three agents:
 The Jason project is:
 
 
-[source,mas2j]
-.writing-paper.mas2j
+[source,jcm]
+.writing-paper.jcm
 ----
-include::../../src/examples/writePaper/agents/writing-paper.mas2j[]
+include::../../src/examples/writePaper/agents/writing-paper.jcm[]
 ----
 
 The code of the agents follows.

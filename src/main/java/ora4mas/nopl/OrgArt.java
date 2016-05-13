@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -43,7 +44,6 @@ import cartago.OPERATION;
 import cartago.Op;
 import cartago.OperationException;
 import cartago.util.agent.CartagoBasicContext;
-import jacamo.util.Config;
 import jason.architecture.MindInspectorWeb;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
@@ -440,7 +440,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                                 responseHeaders.set("Content-Type", "image/svg+xml");
                                 String program = null;
                                 try {
-                                    program = Config.get().getDotPath();
+                                    program = getDotPath();
                                 } catch (java.lang.NoClassDefFoundError e) {}
                                 //for (String s: exchange.getRequestHeaders().keySet())
                                 //    System.out.println("* "+s+" = "+exchange.getRequestHeaders().getFirst(s));
@@ -487,7 +487,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                                     responseBody.write(("<html><head><title>"+id+"</title><meta http-equiv=\"refresh\" content=\""+refreshInterval+"\"></head><body>").getBytes());
                                     StringWriter so = new StringWriter();
                                     try {
-                                        if (Config.get().getDotPath() != null)
+                                        if (getDotPath() != null)
                                             transformer.setParameter("show-oe-img", "true");
                                     } catch (java.lang.NoClassDefFoundError e) {}
                                     transformer.transform(new DOMSource(DOMUtils.getAsXmlDocument(oe)),new StreamResult(so)); //OrgArtNormativeGUI.getParser().parse(si)), new StreamResult(so));
@@ -518,6 +518,26 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             e.printStackTrace();
         }
         return null;
+    }
+    
+    String dpath = null;
+    String getDotPath() throws Exception {
+        if (dpath == null) {
+            Properties p = new Properties();
+            p.load(new FileInputStream( new File(System.getProperties().get("user.home") + File.separator + ".jacamo/user.properties") ));
+            String r = p.getProperty("dotPath");
+            if (r == null)
+                r = "/opt/local/bin/dot";
+            if (new File(r).exists()) {
+                dpath = r;
+            } else { 
+                r = "/usr/bin/dot";
+                if (new File(r).exists()) {
+                    dpath = r;
+                }            
+            }            
+        }
+        return dpath;
     }
 
     String registerOSBrowserView(String oeId, String osId, final String osSpec) {        
