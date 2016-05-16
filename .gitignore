@@ -5,6 +5,8 @@ mas.log
 
 src/examples/performance/case1/profiling*
 .stop___MAS
+.gradle
+.settings
 
 *~
 *.class
