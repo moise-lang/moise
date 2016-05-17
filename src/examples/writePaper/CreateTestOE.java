@@ -23,8 +23,8 @@ class CreateTestOE {
             jomi.adoptRole("writer", wpgroup);
             gustavo.adoptRole("writer", wpgroup);
             
-    	    // start a scheme from the specification writePaperSch
-    	    SchemeInstance sa = currentOE.startScheme("writePaperSch");
+            // start a scheme from the specification writePaperSch
+            SchemeInstance sa = currentOE.startScheme("writePaperSch");
             sa.addResponsibleGroup(wpgroup);
             
             // Commit to missions
@@ -44,11 +44,11 @@ class CreateTestOE {
             // OE creation
             OE currentOE = OE.createOE("writePaperSoc", "wp-os.xml");
             if (currentOE != null) {
-	            createSS(currentOE);
-	            
-	            //System.out.println("final OE in XML format:\n"+OEGenerateXML.generateOE(currentOE));
-	            
-	            new moise.tools.SimOE(currentOE);
+                createSS(currentOE);
+                
+                //System.out.println("final OE in XML format:\n"+OEGenerateXML.generateOE(currentOE));
+                
+                new moise.tools.SimOE(currentOE);
             }
         } catch (Exception e) {
             e.printStackTrace();

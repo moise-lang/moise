@@ -72,7 +72,7 @@
             </subgroups>
             
             <formation-constraints>
-             	<!-- subgroups scope cardinality -->
+                <!-- subgroups scope cardinality -->
                 <cardinality min="1" max="1" object="role" id="leader"/>
             </formation-constraints>
         </group-specification>

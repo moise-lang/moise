@@ -1,8 +1,6 @@
 /* 
    Moise Gradle file
 
-   https://github.com/jomifred/moise
-   
 */
 
 defaultTasks 'jar'
@@ -67,6 +65,12 @@ publishing {
         }
     }
 }
+
+task fixTab {
+    ant.fixcrlf(eol: 'lf',  includes: '**/*.txt,**/*.bat, **/*.adoc', srcdir: '.')
+    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml', srcdir: 'src')
+}
+
 
 task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) << {
     description 'transfer local maven artifact to our maven2 repository at sourceforge'

@@ -185,7 +185,7 @@ public class SchemeBoard extends OrgArt {
         }.start();
     }
     /**
-     * The agent executing this operation tries to delete the scheme board artifact	
+     * The agent executing this operation tries to delete the scheme board artifact 
      */
     @OPERATION public void destroy() {
         super.destroy();

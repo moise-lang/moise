@@ -194,7 +194,7 @@ public class GroupBoard extends OrgArt {
     
     /**
      * The agent executing this operation tries to destroy the instance of the group     
-     *    								
+     *                                  
      */
     @OPERATION public void destroy() {        
         if (parentGroup != null) {
@@ -228,7 +228,7 @@ public class GroupBoard extends OrgArt {
     /**
      * The agent executing this operation tries to connect the group to a parentGroup     
      *  
-     * @param parentGroupId 								the group Id to connect to
+     * @param parentGroupId                                 the group Id to connect to
      */
     @OPERATION public void setParentGroup(String parentGroupId) throws OperationException {
         parentGroup = lookupArtifact(parentGroupId);

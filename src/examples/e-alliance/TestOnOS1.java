@@ -48,16 +48,16 @@ class TestOnOS1 {
             sch.addResponsibleGroup(all);
             
             // setting goal's arguments
-			GoalInstance gA = sch.getGoal("a");
+            GoalInstance gA = sch.getGoal("a");
             gA.setArgumentValue("Z", "120");
 
             // Mission commitment
             c.commitToMission("test.m1", sch);
 
-			// mission m1 is satisfied my C
-			sch.getGoal("d").setAchieved(c);
-			sch.getGoal("test").setAchieved(c);
-			
+            // mission m1 is satisfied my C
+            sch.getGoal("d").setAchieved(c);
+            sch.getGoal("test").setAchieved(c);
+            
             //c.removeMission("test.m1", sch);
             
             System.out.println("final OE in XML format:\n"+DOMUtils.dom2txt(currentOE));

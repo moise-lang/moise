@@ -60,7 +60,7 @@ public class TutorialSS {
             // OE creation
             OE currentOE = OE.createOE("winGame", "jojSS.xml");
 
-			createSS(currentOE);
+            createSS(currentOE);
             
             System.out.println("final OE in XML format:\n"+DOMUtils.dom2txt(currentOE));
             

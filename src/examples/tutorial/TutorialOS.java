@@ -23,10 +23,10 @@ public class TutorialOS {
             currentOE.getAgent("Ronaldo").commitToMission("m3", sch);
             currentOE.getAgent("Lucio").commitToMission("m1", sch);
 
-			// Satisfy the goal g1
-			GoalInstance g1 = sch.getGoal("g1");
-			g1.setAchieved(currentOE.getAgent("Lucio"));
-			
+            // Satisfy the goal g1
+            GoalInstance g1 = sch.getGoal("g1");
+            g1.setAchieved(currentOE.getAgent("Lucio"));
+            
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
