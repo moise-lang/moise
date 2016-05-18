@@ -25,12 +25,12 @@ repositories {
 }
 
 dependencies {
-    compile group: 'net.sf.jason', name: 'jason', version: '2.0.beta', changing: true
-    compile group: 'org.jacamo', name: 'npl' , version: '0.2-SNAPSHOT', changing: true
-    compile group: 'org.jacamo', name: 'cartago' , version: '2.0.2'
-    compile group: 'org.jacamo', name: 'c4jason' , version: '2.0.2'
+    compile group: 'org.jason-lang', name: 'jason',    version: '2.0-SNAPSHOT', changing: true
+    compile group: 'org.jacamo',     name: 'npl' ,     version: '0.2-SNAPSHOT', changing: true
+    compile group: 'org.jacamo',     name: 'cartago' , version: '2.0.2'
+    compile group: 'org.jacamo',     name: 'c4jason' , version: '2.0.2'
     
-    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile group: 'junit',      name: 'junit', version: '4.+'
 }
 
 jar {
