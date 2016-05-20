@@ -27,7 +27,7 @@
       <xsl:if test="@owner">
          , owner is 
          <xsl:call-template name="AgentRef">
-      	    <xsl:with-param name="id"><xsl:value-of select="@owner"/></xsl:with-param>
+            <xsl:with-param name="id"><xsl:value-of select="@owner"/></xsl:with-param>
          </xsl:call-template>
       </xsl:if>
       <br/>
@@ -37,12 +37,12 @@
       <br/>
 
       <xsl:if test="$show-oe-img='true'">
-	      <img alt="" style="max-width:100%;width: expression(this.width > 100% ? 100%: true);" >
-	            <xsl:attribute name="src">
-	                <xsl:value-of select="@id"/><xsl:text>.svg</xsl:text>
-	            </xsl:attribute>      
-	      </img>
-	  </xsl:if>
+          <img alt="" style="max-width:100%;width: expression(this.width > 100% ? 100%: true);" >
+                <xsl:attribute name="src">
+                    <xsl:value-of select="@id"/><xsl:text>.svg</xsl:text>
+                </xsl:attribute>      
+          </img>
+      </xsl:if>
       
       <xsl:apply-templates select="players" />
       <xsl:apply-templates select="goals" />

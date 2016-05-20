@@ -129,7 +129,7 @@
 
 
 <xsl:template match="deontic-relation">
-	 <li>
+     <li>
          has <i><xsl:value-of select="@type"/> </i>
          for the mission
          <xsl:call-template name="MissionRef">
@@ -138,7 +138,7 @@
          <xsl:if test="@time-constraint != ''">
              with the "<xsl:value-of select="@time-constraint"/>"  time constraint
          </xsl:if>
-	 </li>
+     </li>
 </xsl:template>
 
 

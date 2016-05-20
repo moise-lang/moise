@@ -13,9 +13,9 @@
 
 <xsl:template match="/">
     <xsl:for-each select="//os:goal[@id=$goalId]" >
-    	<xsl:if test="position()=1">
-	    	<xsl:apply-templates select="." />
-    	</xsl:if>
+        <xsl:if test="position()=1">
+            <xsl:apply-templates select="." />
+        </xsl:if>
     </xsl:for-each>
 </xsl:template>
 
@@ -33,32 +33,32 @@
       <xsl:apply-templates select="os:properties" />
       
       <xsl:if test="count(os:argument)>0" >
-	      <p/>Arguments:
-	      <ul>
-	      <xsl:for-each select="os:argument">
-				<li>
-				<xsl:value-of select="@id" />
-	            <xsl:if test="string-length(@value)>0">
-					<xsl:text> default value is </xsl:text>
-					<xsl:value-of select="@value" />
-            	</xsl:if>
-	            </li>
-	      </xsl:for-each>
-	      </ul>
+          <p/>Arguments:
+          <ul>
+          <xsl:for-each select="os:argument">
+                <li>
+                <xsl:value-of select="@id" />
+                <xsl:if test="string-length(@value)>0">
+                    <xsl:text> default value is </xsl:text>
+                    <xsl:value-of select="@value" />
+                </xsl:if>
+                </li>
+          </xsl:for-each>
+          </ul>
       </xsl:if>
       
       <xsl:if test="count(os:plan)>0" >
-	      <p/>Plan:
-	      <ul>
-	      <xsl:apply-templates select="os:plan"/>
-	      </ul>
+          <p/>Plan:
+          <ul>
+          <xsl:apply-templates select="os:plan"/>
+          </ul>
       </xsl:if>
       
       <xsl:if test="../@operator != ''" >
-	      <p/>In plan:
-	      <ul>
-	      <xsl:apply-templates select=".."/>
-	      </ul>
+          <p/>In plan:
+          <ul>
+          <xsl:apply-templates select=".."/>
+          </ul>
       </xsl:if>
 </xsl:template>
 

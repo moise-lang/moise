@@ -36,28 +36,28 @@
           <th valign="top" style="{$th-style2}">scheme</th>
           </tr>
           <xsl:for-each select="obligation">
-          	<tr style="{$trh-style}">
-          	<td style="{$td-style}">
+            <tr style="{$trh-style}">
+            <td style="{$td-style}">
                <xsl:call-template name="RoleRef">
                     <xsl:with-param name="id"><xsl:value-of select="@role"/></xsl:with-param>
                </xsl:call-template>
-          	</td>
-          	<td style="{$td-style}">
+            </td>
+            <td style="{$td-style}">
                <xsl:call-template name="GroupRef">
                     <xsl:with-param name="id"><xsl:value-of select="@group"/></xsl:with-param>
                </xsl:call-template>
             </td>
-          	<td style="{$td-style}">
+            <td style="{$td-style}">
                <xsl:call-template name="MissionRef">
                     <xsl:with-param name="id"><xsl:value-of select="@mission"/></xsl:with-param>
                </xsl:call-template>
-          	</td>
-          	<td style="{$td-style}">
+            </td>
+            <td style="{$td-style}">
                <xsl:call-template name="SchemeRef">
                     <xsl:with-param name="id"><xsl:value-of select="@scheme"/></xsl:with-param>
                </xsl:call-template>
             </td>
-          	</tr>
+            </tr>
           </xsl:for-each>
           </table>
           </blockquote>
@@ -87,28 +87,28 @@
           <th valign="top" style="{$th-style2}">scheme</th>
           </tr>
           <xsl:for-each select="permission">
-          	<tr style="{$trh-style}">
-          	<td style="{$td-style}">
+            <tr style="{$trh-style}">
+            <td style="{$td-style}">
                <xsl:call-template name="RoleRef">
                     <xsl:with-param name="id"><xsl:value-of select="@role"/></xsl:with-param>
                </xsl:call-template>
-          	</td>
-          	<td style="{$td-style}">
+            </td>
+            <td style="{$td-style}">
                <xsl:call-template name="GroupRef">
                     <xsl:with-param name="id"><xsl:value-of select="@group"/></xsl:with-param>
                </xsl:call-template>
             </td>
-          	<td style="{$td-style}">
+            <td style="{$td-style}">
                <xsl:call-template name="MissionRef">
                     <xsl:with-param name="id"><xsl:value-of select="@mission"/></xsl:with-param>
                </xsl:call-template>
-          	</td>
-          	<td style="{$td-style}">
+            </td>
+            <td style="{$td-style}">
                <xsl:call-template name="SchemeRef">
                     <xsl:with-param name="id"><xsl:value-of select="@scheme"/></xsl:with-param>
                </xsl:call-template>
             </td>
-          	</tr>
+            </tr>
           </xsl:for-each>
           </table>
           </td>
@@ -125,18 +125,18 @@
           <th valign="top" style="{$th-style2}">scheme</th>
           </tr>
           <xsl:for-each select="possibleGoal">
-          	<tr style="{$trh-style}">
-          	<td style="{$td-style}">
+            <tr style="{$trh-style}">
+            <td style="{$td-style}">
                <xsl:call-template name="GoalRef">
                     <xsl:with-param name="id"><xsl:value-of select="@goal"/></xsl:with-param>
                </xsl:call-template>
-          	</td>
-          	<td style="{$td-style}">
+            </td>
+            <td style="{$td-style}">
                <xsl:call-template name="SchemeRef">
                     <xsl:with-param name="id"><xsl:value-of select="@scheme"/></xsl:with-param>
                </xsl:call-template>
             </td>
-          	</tr>
+            </tr>
           </xsl:for-each>
           </table>
           </td>
@@ -153,7 +153,7 @@
 </xsl:template>
 
 <xsl:template match="subgroups">
-	 <xsl:apply-templates select="group" />
+     <xsl:apply-templates select="group" />
 </xsl:template>
 
 <xsl:template match="scheme">
@@ -161,8 +161,8 @@
 </xsl:template>
 
 <xsl:template match="players">
-	 <xsl:apply-templates select="role-player" />
-	 <xsl:apply-templates select="mission-player" />
+     <xsl:apply-templates select="role-player" />
+     <xsl:apply-templates select="mission-player" />
 </xsl:template>
 
 

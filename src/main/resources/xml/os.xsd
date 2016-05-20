@@ -1,71 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xsd:schema xmlns:moise="http://moise.sourceforge.net/os"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-	targetNamespace="http://moise.sourceforge.net/os">
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="http://moise.sourceforge.net/os">
 
-	<xsd:element name="organisational-specification" type="moise:osType"/>
+    <xsd:element name="organisational-specification" type="moise:osType"/>
 
-	<xsd:complexType name="osType">
-		<xsd:sequence>
-			<xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
-			<xsd:element maxOccurs="1" minOccurs="1" name="structural-specification"
-				type="moise:ssType"/>
-			<xsd:element maxOccurs="1" minOccurs="0" name="functional-specification"
-				type="moise:fsType"/>
-			<xsd:element maxOccurs="1" minOccurs="0" name="normative-specification"
-				type="moise:nsType"/>
-		</xsd:sequence>
-		<xsd:attribute name="id" type="xsd:string"/>
-		<xsd:attribute name="os-version" type="xsd:string" use="required"/>
-	</xsd:complexType>
+    <xsd:complexType name="osType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="properties"               type="moise:propertiesType"/>
+            <xsd:element maxOccurs="1" minOccurs="1" name="structural-specification" type="moise:ssType"/>
+            <xsd:element maxOccurs="1" minOccurs="0" name="functional-specification" type="moise:fsType"/>
+            <xsd:element maxOccurs="1" minOccurs="0" name="normative-specification"  type="moise:nsType"/>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:string"/>
+        <xsd:attribute name="os-version" type="xsd:string" use="required"/>
+    </xsd:complexType>
 
-	<xsd:complexType name="ssType">
-		<xsd:sequence>
-			<xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
-			<xsd:element maxOccurs="1" minOccurs="0" name="role-definitions">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element maxOccurs="unbounded" minOccurs="0" name="role"
-							type="moise:roleDefType"/>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element maxOccurs="1" minOccurs="0" name="link-types">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element maxOccurs="unbounded" minOccurs="1" name="link-type">
-							<xsd:complexType>
-								<xsd:attribute name="id" type="xsd:string" use="required"/>
-							</xsd:complexType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element maxOccurs="1" minOccurs="0" name="group-specification"
-				type="moise:groupSpecificationType"> </xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
+    <xsd:complexType name="ssType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
+            <xsd:element maxOccurs="1" minOccurs="0" name="role-definitions">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="unbounded" minOccurs="0" name="role" type="moise:roleDefType"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="link-types">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="unbounded" minOccurs="1" name="link-type">
+                            <xsd:complexType>
+                                <xsd:attribute name="id" type="xsd:string" use="required"/>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="group-specification"
+                type="moise:groupSpecificationType"> </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
 
-	<xsd:complexType name="fsType">
-		<xsd:sequence>
-			<xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="scheme">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element maxOccurs="1" minOccurs="0" name="properties"
-							type="moise:propertiesType"/>
-						<xsd:element maxOccurs="1" minOccurs="1" name="goal" type="moise:goalDefType"/>
+    <xsd:complexType name="fsType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="scheme">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="1" minOccurs="0" name="properties"
+                            type="moise:propertiesType"/>
+                        <xsd:element maxOccurs="1" minOccurs="1" name="goal" type="moise:goalDefType"/>
 
-						<xsd:element maxOccurs="unbounded" minOccurs="0" name="mission" type="moise:missionType"/>
-					</xsd:sequence>
+                        <xsd:element maxOccurs="unbounded" minOccurs="0" name="mission" type="moise:missionType"/>
+                    </xsd:sequence>
 
-					<xsd:attribute name="id" type="xsd:string"/>
-					<xsd:attribute name="monitoring-scheme" type="xsd:string"> </xsd:attribute>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
+                    <xsd:attribute name="id" type="xsd:string"/>
+                    <xsd:attribute name="monitoring-scheme" type="xsd:string"> </xsd:attribute>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
 
     <xsd:complexType name="missionType">
         <xsd:sequence>
@@ -86,194 +82,193 @@
         <xsd:attribute name="max" type="xsd:nonNegativeInteger"/>
     </xsd:complexType>
 
-	<xsd:complexType name="nsType">
-		<xsd:sequence>
-			<xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="norm">
-				<xsd:complexType>
-					<xsd:attribute name="id" type="xsd:string" use="required"> </xsd:attribute>
-					<xsd:attribute name="condition" type="xsd:string" use="optional"> </xsd:attribute>
-					<xsd:attribute name="role" type="xsd:string" use="required"/>
-					<xsd:attribute name="type" type="moise:deonticType" use="required"/>
-					<xsd:attribute name="mission" type="xsd:string" use="required"/>
-					<xsd:attribute name="time-constraint" type="xsd:string" use="optional"/>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
+    <xsd:complexType name="nsType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="norm">
+                <xsd:complexType>
+                    <xsd:attribute name="id" type="xsd:string" use="required"> </xsd:attribute>
+                    <xsd:attribute name="condition" type="xsd:string" use="optional"> </xsd:attribute>
+                    <xsd:attribute name="role" type="xsd:string" use="required"/>
+                    <xsd:attribute name="type" type="moise:deonticType" use="required"/>
+                    <xsd:attribute name="mission" type="xsd:string" use="required"/>
+                    <xsd:attribute name="time-constraint" type="xsd:string" use="optional"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
 
-	<xsd:complexType name="propertiesType">
-		<xsd:sequence maxOccurs="unbounded" minOccurs="1">
-			<xsd:element name="property">
-				<xsd:complexType>
-					<xsd:attribute name="id" type="xsd:string" use="required"/>
-					<xsd:attribute name="value" type="xsd:string" use="required"/>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
-
-
-	<xsd:complexType name="roleDefType">
-		<xsd:sequence>
-			<xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="extends">
-				<xsd:complexType>
-					<xsd:attribute name="role" type="xsd:string"/>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-		<xsd:attribute name="id" type="xsd:string" use="required"/>
-	</xsd:complexType>
-
-	<xsd:simpleType name="scopeType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="intra-group"/>
-			<xsd:enumeration value="inter-group"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-
-	<xsd:simpleType name="cardinalityObjectType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="role"/>
-			<xsd:enumeration value="group"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-
-	<xsd:complexType name="groupSpecificationType">
-		<xsd:sequence>
-			<xsd:element maxOccurs="1" minOccurs="0" name="roles">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element maxOccurs="unbounded" minOccurs="1" name="role">
-							<xsd:complexType>
-								<xsd:attribute name="id" type="xsd:string"/>
-								<xsd:attribute name="min" type="xsd:nonNegativeInteger"
-									use="optional"/>
-								<xsd:attribute name="max" type="xsd:nonNegativeInteger"
-									use="optional"/>
-							</xsd:complexType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element maxOccurs="1" minOccurs="0" name="links">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element maxOccurs="unbounded" minOccurs="1" name="link">
-							<xsd:complexType>
-								<xsd:attribute name="from" type="xsd:string"/>
-								<xsd:attribute name="to" type="xsd:string"/>
-								<xsd:attribute name="type" type="xsd:string"/>
-								<xsd:attribute default="intra-group" name="scope"
-									type="moise:scopeType"/>
-								<xsd:attribute default="false" name="extends-subgroups"
-									type="xsd:boolean"/>
-								<xsd:attribute default="false" name="bi-dir" type="xsd:boolean"/>
-							</xsd:complexType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="subgroups">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element maxOccurs="unbounded" minOccurs="0"
-							name="include-group-specification">
-							<xsd:complexType>
-								<xsd:attribute name="uri" type="xsd:string"/>
-							</xsd:complexType>
-						</xsd:element>
-						<xsd:element maxOccurs="unbounded" minOccurs="0" name="group-specification"
-							type="moise:groupSpecificationType"/>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-
-			<xsd:element maxOccurs="1" minOccurs="0" name="formation-constraints">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element maxOccurs="unbounded" minOccurs="0" name="cardinality">
-							<xsd:complexType>
-								<xsd:attribute name="min" type="xsd:nonNegativeInteger"
-									use="optional"/>
-								<xsd:attribute name="max" type="xsd:nonNegativeInteger"
-									use="optional"/>
-								<xsd:attribute name="object" type="moise:cardinalityObjectType"
-									use="required"/>
-								<xsd:attribute name="id" type="xsd:string" use="required"/>
-							</xsd:complexType>
-						</xsd:element>
-						<xsd:element maxOccurs="unbounded" minOccurs="0" name="compatibility">
-							<xsd:complexType>
-								<xsd:attribute name="from" type="xsd:string" use="required"/>
-								<xsd:attribute name="to" type="xsd:string" use="required"/>
-								<xsd:attribute default="intra-group" name="scope"
-									type="moise:scopeType"/>
-								<xsd:attribute default="false" name="extends-subgroups"
-									type="xsd:boolean"/>
-								<xsd:attribute default="false" name="bi-dir" type="xsd:boolean"/>
-								<xsd:attribute name="type" type="xsd:string"/>
-							</xsd:complexType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-		<xsd:attribute name="id" type="xsd:string" use="required"/>
-		<xsd:attribute name="min" type="xsd:nonNegativeInteger" use="optional"/>
-		<xsd:attribute name="max" type="xsd:nonNegativeInteger" use="optional"/>
-		<xsd:attribute name="monitoring-scheme" type="xsd:string"/>
-	</xsd:complexType>
+    <xsd:complexType name="propertiesType">
+        <xsd:sequence maxOccurs="unbounded" minOccurs="1">
+            <xsd:element name="property">
+                <xsd:complexType>
+                    <xsd:attribute name="id" type="xsd:string" use="required"/>
+                    <xsd:attribute name="value" type="xsd:string" use="required"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
 
 
+    <xsd:complexType name="roleDefType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="extends">
+                <xsd:complexType>
+                    <xsd:attribute name="role" type="xsd:string"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:string" use="required"/>
+    </xsd:complexType>
 
-	<xsd:complexType name="planType">
-		<xsd:sequence>
-			<xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
-			<xsd:element maxOccurs="unbounded" minOccurs="1" name="goal" type="moise:goalDefType"/>
-		</xsd:sequence>
-		<xsd:attribute name="operator" type="moise:planOperatorType" use="required"/>
-		<xsd:attribute name="success-rate" type="xsd:double" use="optional"/>
-	</xsd:complexType>
+    <xsd:simpleType name="scopeType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="intra-group"/>
+            <xsd:enumeration value="inter-group"/>
+        </xsd:restriction>
+    </xsd:simpleType>
 
-	<xsd:complexType name="goalDefType">
-		<xsd:sequence>
-			<xsd:element maxOccurs="unbounded" minOccurs="0" name="argument" type="moise:argumentType"/>
+    <xsd:simpleType name="cardinalityObjectType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="role"/>
+            <xsd:enumeration value="group"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="groupSpecificationType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="roles">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="unbounded" minOccurs="1" name="role">
+                            <xsd:complexType>
+                                <xsd:attribute name="id" type="xsd:string"/>
+                                <xsd:attribute name="min" type="xsd:nonNegativeInteger"
+                                    use="optional"/>
+                                <xsd:attribute name="max" type="xsd:nonNegativeInteger"
+                                    use="optional"/>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="links">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="unbounded" minOccurs="1" name="link">
+                            <xsd:complexType>
+                                <xsd:attribute name="from" type="xsd:string"/>
+                                <xsd:attribute name="to" type="xsd:string"/>
+                                <xsd:attribute name="type" type="xsd:string"/>
+                                <xsd:attribute default="intra-group" name="scope"
+                                    type="moise:scopeType"/>
+                                <xsd:attribute default="false" name="extends-subgroups"
+                                    type="xsd:boolean"/>
+                                <xsd:attribute default="false" name="bi-dir" type="xsd:boolean"/>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="subgroups">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="unbounded" minOccurs="0"
+                            name="include-group-specification">
+                            <xsd:complexType>
+                                <xsd:attribute name="uri" type="xsd:string"/>
+                            </xsd:complexType>
+                        </xsd:element>
+                        <xsd:element maxOccurs="unbounded" minOccurs="0" name="group-specification"
+                            type="moise:groupSpecificationType"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element maxOccurs="1" minOccurs="0" name="formation-constraints">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="unbounded" minOccurs="0" name="cardinality">
+                            <xsd:complexType>
+                                <xsd:attribute name="min" type="xsd:nonNegativeInteger"
+                                    use="optional"/>
+                                <xsd:attribute name="max" type="xsd:nonNegativeInteger"
+                                    use="optional"/>
+                                <xsd:attribute name="object" type="moise:cardinalityObjectType"
+                                    use="required"/>
+                                <xsd:attribute name="id" type="xsd:string" use="required"/>
+                            </xsd:complexType>
+                        </xsd:element>
+                        <xsd:element maxOccurs="unbounded" minOccurs="0" name="compatibility">
+                            <xsd:complexType>
+                                <xsd:attribute name="from" type="xsd:string" use="required"/>
+                                <xsd:attribute name="to" type="xsd:string" use="required"/>
+                                <xsd:attribute default="intra-group" name="scope"
+                                    type="moise:scopeType"/>
+                                <xsd:attribute default="false" name="extends-subgroups"
+                                    type="xsd:boolean"/>
+                                <xsd:attribute default="false" name="bi-dir" type="xsd:boolean"/>
+                                <xsd:attribute name="type" type="xsd:string"/>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:string" use="required"/>
+        <xsd:attribute name="min" type="xsd:nonNegativeInteger" use="optional"/>
+        <xsd:attribute name="max" type="xsd:nonNegativeInteger" use="optional"/>
+        <xsd:attribute name="monitoring-scheme" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="planType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
+            <xsd:element maxOccurs="unbounded" minOccurs="1" name="goal" type="moise:goalDefType"/>
+        </xsd:sequence>
+        <xsd:attribute name="operator" type="moise:planOperatorType" use="required"/>
+        <xsd:attribute name="success-rate" type="xsd:double" use="optional"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="goalDefType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="argument" type="moise:argumentType"/>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="depends-on" type="moise:dependOnType"/>
-			<xsd:element maxOccurs="1" minOccurs="0" name="plan" type="moise:planType"/>
-		</xsd:sequence>
-		<xsd:attribute name="id" type="xsd:string" use="required"/>
-		<xsd:attribute name="min" type="xsd:nonNegativeInteger" use="optional"/>
-		<xsd:attribute name="ds" type="xsd:string" use="optional"/>
-		<xsd:attribute name="type" type="moise:goalType"/>
-		<xsd:attribute name="ttf" type="xsd:string" use="optional"/>
-	</xsd:complexType>
+            <xsd:element maxOccurs="1" minOccurs="0" name="plan" type="moise:planType"/>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:string" use="required"/>
+        <xsd:attribute name="min" type="xsd:nonNegativeInteger" use="optional"/>
+        <xsd:attribute name="ds" type="xsd:string" use="optional"/>
+        <xsd:attribute name="type" type="moise:goalType"/>
+        <xsd:attribute name="ttf" type="xsd:string" use="optional"/>
+    </xsd:complexType>
 
-	<xsd:complexType name="argumentType">
-		<xsd:attribute name="id" type="xsd:string" use="required"/>
-		<xsd:attribute name="value" type="xsd:string" use="optional"/>
-	</xsd:complexType>
+    <xsd:complexType name="argumentType">
+        <xsd:attribute name="id" type="xsd:string" use="required"/>
+        <xsd:attribute name="value" type="xsd:string" use="optional"/>
+    </xsd:complexType>
 
     <xsd:complexType name="dependOnType">
         <xsd:attribute name="goal" type="xsd:string" use="required"/>
     </xsd:complexType>
 
-	<xsd:simpleType name="planOperatorType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="sequence"/>
-			<xsd:enumeration value="choice"/>
-			<xsd:enumeration value="parallel"/>
-		</xsd:restriction>
-	</xsd:simpleType>
+    <xsd:simpleType name="planOperatorType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="sequence"/>
+            <xsd:enumeration value="choice"/>
+            <xsd:enumeration value="parallel"/>
+        </xsd:restriction>
+    </xsd:simpleType>
 
-	<xsd:simpleType name="goalType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="achievement"/>
-			<xsd:enumeration value="maintenance"/>
-		</xsd:restriction>
-	</xsd:simpleType>
+    <xsd:simpleType name="goalType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="performance"/>
+            <xsd:enumeration value="achievement"/>
+            <xsd:enumeration value="maintenance"/>
+        </xsd:restriction>
+    </xsd:simpleType>
 
     <xsd:simpleType name="deonticType">
         <xsd:restriction base="xsd:string">

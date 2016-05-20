@@ -167,9 +167,9 @@
             <xsl:value-of select="@scope" />
             
             <xsl:if test="$soExtends='false'">
-            	<xsl:text>, </xsl:text>
-	            <xsl:if test="@extends-subgroups='true'">extends to subgroups</xsl:if>
-    	        <xsl:if test="@extends-subgroups='false'">does not extend to subgroups</xsl:if>
+                <xsl:text>, </xsl:text>
+                <xsl:if test="@extends-subgroups='true'">extends to subgroups</xsl:if>
+                <xsl:if test="@extends-subgroups='false'">does not extend to subgroups</xsl:if>
             </xsl:if>
             <xsl:text>)</xsl:text>
             <xsl:apply-templates select="os:properties" />
@@ -205,9 +205,9 @@
         <xsl:for-each select="os:cardinality">
             <li style="{$txt-style}"><xsl:text>cardinality of </xsl:text>
                 <xsl:if test="(@object='role')">
-	                <xsl:call-template name="RoleRef">
-    	                <xsl:with-param name="id"><xsl:value-of select="@id" /></xsl:with-param>
-        	        </xsl:call-template>
+                    <xsl:call-template name="RoleRef">
+                        <xsl:with-param name="id"><xsl:value-of select="@id" /></xsl:with-param>
+                    </xsl:call-template>
                 </xsl:if>
                 <xsl:if test="(@object='group')">
                     <xsl:call-template name="GrSpecRef">
@@ -256,10 +256,10 @@
                     <xsl:if test="$soExtends='false'">
                         <xsl:text> (this compatibility </xsl:text>
                         <xsl:if test="@extends-subgroups='true'">
-                        	<xsl:text>is extended to subgroups</xsl:text>
+                            <xsl:text>is extended to subgroups</xsl:text>
                         </xsl:if>
                         <xsl:if test="@extends-subgroups='false'">
-                        	<xsl:text>is not extended to subgroups</xsl:text>
+                            <xsl:text>is not extended to subgroups</xsl:text>
                         </xsl:if>
                         <xsl:text>)</xsl:text>
                     </xsl:if>
@@ -400,14 +400,14 @@
         <td style="{$td-style}">
         <xsl:if test="count(os:argument)>0" >
           <xsl:text>{</xsl:text>
-	      <xsl:for-each select="os:argument">
-				<xsl:value-of select="@id" />
-	            <xsl:if test="string-length(@value)>0">
-					<xsl:text>=</xsl:text>
-					<xsl:value-of select="@value" />
-            	</xsl:if>
-	            <xsl:if test="not(position()=last())"><xsl:text>, </xsl:text></xsl:if>
-	      </xsl:for-each>
+          <xsl:for-each select="os:argument">
+                <xsl:value-of select="@id" />
+                <xsl:if test="string-length(@value)>0">
+                    <xsl:text>=</xsl:text>
+                    <xsl:value-of select="@value" />
+                </xsl:if>
+                <xsl:if test="not(position()=last())"><xsl:text>, </xsl:text></xsl:if>
+          </xsl:for-each>
           <xsl:text>}</xsl:text>
         </xsl:if>
         </td>
@@ -485,35 +485,35 @@
 <xsl:template match="os:mission">
     <li>
      <span style="{$txt-style}">
-	     <xsl:call-template name="MissionRef">
-	         <xsl:with-param name="id"><xsl:value-of select="@id"/></xsl:with-param>
-	     </xsl:call-template>
-	     <xsl:text>: goals = {</xsl:text>
-	         <xsl:for-each select="os:goal">
-	                 <xsl:call-template name="GoalRef">
-	                     <xsl:with-param name="id"><xsl:value-of select="@id"/></xsl:with-param>
-	                 </xsl:call-template>
-	             <xsl:if test="not(position()=last())"><xsl:text>, </xsl:text></xsl:if>
-	         </xsl:for-each>
-	     <xsl:text>}</xsl:text>
-	     <xsl:if test="@min">
-	             <xsl:text>, cardinality = </xsl:text>
-	             <xsl:call-template name="show-cardinality">
-	                 <xsl:with-param name="min"><xsl:value-of select="@min" /></xsl:with-param>
-	                 <xsl:with-param name="max"><xsl:value-of select="@max" /></xsl:with-param>
-	             </xsl:call-template>
-	     </xsl:if>
-	
-	     <xsl:variable name="misId" select='@id'/> 
-	     <xsl:if test="count(os:preferred)>0">
-	         <br/><xsl:text>preferred = </xsl:text>
-	         <xsl:for-each select="os:preferred">
-	             <xsl:call-template name="MissionRef">
-	                 <xsl:with-param name="id"><xsl:value-of select="@mission"/></xsl:with-param>
-	             </xsl:call-template>
-	             <xsl:if test="not(position()=last())"><xsl:text>, </xsl:text></xsl:if>
-	         </xsl:for-each>
-	     </xsl:if>
+         <xsl:call-template name="MissionRef">
+             <xsl:with-param name="id"><xsl:value-of select="@id"/></xsl:with-param>
+         </xsl:call-template>
+         <xsl:text>: goals = {</xsl:text>
+             <xsl:for-each select="os:goal">
+                     <xsl:call-template name="GoalRef">
+                         <xsl:with-param name="id"><xsl:value-of select="@id"/></xsl:with-param>
+                     </xsl:call-template>
+                 <xsl:if test="not(position()=last())"><xsl:text>, </xsl:text></xsl:if>
+             </xsl:for-each>
+         <xsl:text>}</xsl:text>
+         <xsl:if test="@min">
+                 <xsl:text>, cardinality = </xsl:text>
+                 <xsl:call-template name="show-cardinality">
+                     <xsl:with-param name="min"><xsl:value-of select="@min" /></xsl:with-param>
+                     <xsl:with-param name="max"><xsl:value-of select="@max" /></xsl:with-param>
+                 </xsl:call-template>
+         </xsl:if>
+    
+         <xsl:variable name="misId" select='@id'/> 
+         <xsl:if test="count(os:preferred)>0">
+             <br/><xsl:text>preferred = </xsl:text>
+             <xsl:for-each select="os:preferred">
+                 <xsl:call-template name="MissionRef">
+                     <xsl:with-param name="id"><xsl:value-of select="@mission"/></xsl:with-param>
+                 </xsl:call-template>
+                 <xsl:if test="not(position()=last())"><xsl:text>, </xsl:text></xsl:if>
+             </xsl:for-each>
+         </xsl:if>
      </span>
     </li>
 </xsl:template>
@@ -535,9 +535,9 @@
     <th style="{$th-style}">time constraint</th>
     <th style="{$th-style}">properties</th>
     </tr>
-	<xsl:apply-templates select="os:norm" >
-	   <xsl:sort select="@id" />
-	</xsl:apply-templates>
+    <xsl:apply-templates select="os:norm" >
+       <xsl:sort select="@id" />
+    </xsl:apply-templates>
     </table>
 </xsl:template>
 

@@ -36,8 +36,8 @@
       
       <xsl:if test="@owner">
          - owner is 
-    	 <xsl:call-template name="AgentRef">
-   	        <xsl:with-param name="id"><xsl:value-of select="@owner"/></xsl:with-param>
+         <xsl:call-template name="AgentRef">
+            <xsl:with-param name="id"><xsl:value-of select="@owner"/></xsl:with-param>
          </xsl:call-template>
       </xsl:if>
 
@@ -46,11 +46,11 @@
       <xsl:apply-templates select="well-formed" />
       
       <xsl:if test="$show-oe-img='true'">
-	      <img alt="" style="max-width:100%;width: expression(this.width > 100% ? 100%: true);" >
-	            <xsl:attribute name="src">
-	                <xsl:value-of select="@id"/><xsl:text>.svg</xsl:text>
-	            </xsl:attribute>      
-	      </img>
+          <img alt="" style="max-width:100%;width: expression(this.width > 100% ? 100%: true);" >
+                <xsl:attribute name="src">
+                    <xsl:value-of select="@id"/><xsl:text>.svg</xsl:text>
+                </xsl:attribute>      
+          </img>
       </xsl:if>
       
       <xsl:apply-templates select="players" />
@@ -59,16 +59,16 @@
         
         <p><b style="{$txt-style}">Responsible for the following schemes:</b>
         <ul>
-	    <xsl:for-each select="responsible-for/scheme">
-	        <li> <span style="{$txt-style}">
+        <xsl:for-each select="responsible-for/scheme">
+            <li> <span style="{$txt-style}">
                  <xsl:call-template name="SchemeRef">
                     <xsl:with-param name="id"><xsl:value-of select="@id"/></xsl:with-param>
                 </xsl:call-template>
-	            </span>
-	        </li>
-	    </xsl:for-each>
-	    </ul>
-	    </p>  
+                </span>
+            </li>
+        </xsl:for-each>
+        </ul>
+        </p>  
     </xsl:if>
     
     <xsl:if test="count(subgroups) > 0">
@@ -91,19 +91,19 @@
                 <xsl:if test="count(players/role-player) > 0">
                     :
                     <ul>
-	                <xsl:for-each select="players/role-player">
-	                      <li>
+                    <xsl:for-each select="players/role-player">
+                          <li>
                              <xsl:call-template name="AgentRef">
                                 <xsl:with-param name="id"><xsl:value-of select="@agent"/></xsl:with-param>
                              </xsl:call-template>
-	                       
-	                      plays 
+                           
+                          plays 
                              <xsl:call-template name="RoleRef">
                                 <xsl:with-param name="id"><xsl:value-of select="@role"/></xsl:with-param>
                              </xsl:call-template>
-	                      </li>
-	                </xsl:for-each>
-	                </ul>       
+                          </li>
+                    </xsl:for-each>
+                    </ul>       
                 </xsl:if>
                 <xsl:if test="count(subgroups) > 0">
                     <xsl:apply-templates select="subgroups" />

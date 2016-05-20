@@ -31,11 +31,11 @@
 
 <xsl:template match="agents">
   <hr/><h3 style="{$h3-style}">Agents</h3>
-	 <ul>
-	 <xsl:apply-templates select="agent" >
-	     <xsl:sort select="@id" />
-	 </xsl:apply-templates>
-	 </ul>
+     <ul>
+     <xsl:apply-templates select="agent" >
+         <xsl:sort select="@id" />
+     </xsl:apply-templates>
+     </ul>
 </xsl:template>
 
 
@@ -51,9 +51,9 @@
 </xsl:template>
 
 <xsl:template match="roles">
-	 <ul>
-	 <xsl:apply-templates select="role-player" />
-	 </ul>
+     <ul>
+     <xsl:apply-templates select="role-player" />
+     </ul>
 </xsl:template>
 
 
@@ -75,11 +75,11 @@
 
 <xsl:template match="groups">
   <hr/><h3 style="{$h3-style}">Groups</h3>
-	 <ul>
-	 <xsl:apply-templates select="group" >
-	     <xsl:sort select="@id" />
-	 </xsl:apply-templates>
-	 </ul>
+     <ul>
+     <xsl:apply-templates select="group" >
+         <xsl:sort select="@id" />
+     </xsl:apply-templates>
+     </ul>
 </xsl:template>
 
 <xsl:template match="group">
@@ -114,31 +114,31 @@
 
 <xsl:template match="players">
     <br/><b style="{$txt-style}">Players</b>
-	<ul>
-	<xsl:apply-templates select="role-player" >
-	     <xsl:sort select="@agent" />
-	</xsl:apply-templates>
-	<xsl:apply-templates select="mission-player" >
-	     <xsl:sort select="@agent" />
-	</xsl:apply-templates>
-	</ul>
+    <ul>
+    <xsl:apply-templates select="role-player" >
+         <xsl:sort select="@agent" />
+    </xsl:apply-templates>
+    <xsl:apply-templates select="mission-player" >
+         <xsl:sort select="@agent" />
+    </xsl:apply-templates>
+    </ul>
 </xsl:template>
 
 <xsl:template match="subgroups">
     <br/><b style="{$txt-style}">Subgroups</b>
-	 <ul>
-	 <xsl:apply-templates select="group" >
-	     <xsl:sort select="@id" />
-	 </xsl:apply-templates>
-	 </ul>
+     <ul>
+     <xsl:apply-templates select="group" >
+         <xsl:sort select="@id" />
+     </xsl:apply-templates>
+     </ul>
 </xsl:template>
 
 
 <xsl:template match="schemes">
   <hr/><h3 style="{$h3-style}">Schemes</h3>
-	 <ul>
-	 <xsl:apply-templates select="scheme" />
-	 </ul>
+     <ul>
+     <xsl:apply-templates select="scheme" />
+     </ul>
 </xsl:template>
 
 <xsl:template match="scheme">
@@ -204,7 +204,7 @@
          <th valign="top" style="{$th-style}">arguments</th>
          <th valign="top" style="{$th-style}">plan : dependencies </th> 
          </tr>
-    	 <xsl:apply-templates select="goal[@root='true']" />
+         <xsl:apply-templates select="goal[@root='true']" />
          </table>
 </xsl:template>
 
@@ -233,19 +233,19 @@
 
       <td style="{$td-style}">
       <xsl:if test="count(plan)>0">
-	      <xsl:apply-templates select="plan" />
+          <xsl:apply-templates select="plan" />
       </xsl:if>
       <xsl:if test="count(depends-on)>0">
           <font size="-1">
-	      <xsl:if test="count(plan)>0">
+          <xsl:if test="count(plan)>0">
               <xsl:text> : </xsl:text>
-	      </xsl:if>
+          </xsl:if>
           <xsl:text> { </xsl:text>
           <i>           
           <xsl:for-each select="depends-on" >
-     	        <xsl:if test="@explicit = 'true'">
-	               <b><xsl:value-of select="@goal"/></b>
-	            </xsl:if>
+                <xsl:if test="@explicit = 'true'">
+                   <b><xsl:value-of select="@goal"/></b>
+                </xsl:if>
                 <xsl:if test="count(@explicit) = 0">
                    <xsl:value-of select="@goal"/>
                 </xsl:if>
@@ -259,8 +259,8 @@
       
       <xsl:if test="count(plan)>0">
           <xsl:for-each select="plan/goal" >
-	          <xsl:variable name="subGoal" select="@id" />
-	          <xsl:apply-templates select="../../../goal[@specification=$subGoal]"/>
+              <xsl:variable name="subGoal" select="@id" />
+              <xsl:apply-templates select="../../../goal[@specification=$subGoal]"/>
           </xsl:for-each>
       </xsl:if>
       

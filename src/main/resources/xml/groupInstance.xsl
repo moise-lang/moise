@@ -27,8 +27,8 @@
       </xsl:call-template>
       <xsl:if test="@owner">
          , owner is 
-    	 <xsl:call-template name="AgentRef">
-   	        <xsl:with-param name="id"><xsl:value-of select="@owner"/></xsl:with-param>
+         <xsl:call-template name="AgentRef">
+            <xsl:with-param name="id"><xsl:value-of select="@owner"/></xsl:with-param>
          </xsl:call-template>
       </xsl:if>
 
