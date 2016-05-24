@@ -23,5 +23,4 @@ src/examples/performance/case1/profiling*
 hs_err_pid*
 
 src/examples/test/groupwithoutrole.npl
-src/examples/writePaper/wp-gen.npl
 src/examples/test/groupwithoutrole.npl
