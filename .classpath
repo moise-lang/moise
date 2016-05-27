@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="lib" path="/Users/jomi/.gradle/caches/modules-2/files-2.1/net.sf.jason/jason/2.0.beta/42187987d47c5ec9b4450cb00a5132540485160a/jason-2.0.beta.jar" sourcepath="/Users/jomi/.gradle/caches/modules-2/files-2.1/net.sf.jason/jason/2.0.beta/115751ccb80256b343cfb867386a8cbc649f2c6e/jason-2.0.beta-sources.jar"/>
-	<classpathentry kind="lib" path="/Users/jomi/.gradle/caches/modules-2/files-2.1/org.jacamo/npl/0.2-SNAPSHOT/ca87c5dbb2d80cf50d7438b93ea62dd807417c34/npl-0.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/Users/jomi/.gradle/caches/modules-2/files-2.1/org.jason-lang/jason/2.0-SNAPSHOT/86260a306c518528c51a5177d21830c1b9488782/jason-2.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/Users/jomi/.gradle/caches/modules-2/files-2.1/org.jacamo/npl/0.2-SNAPSHOT/b8ebadedc6e81b8dbd0f3b5d09e5e45e6d00f8a1/npl-0.2-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="/Users/jomi/.gradle/caches/modules-2/files-2.1/org.jacamo/cartago/2.0.2/b45be7a501deeba13699bebd72eaeadf3405e33d/cartago-2.0.2.jar"/>
 	<classpathentry kind="lib" path="/Users/jomi/.gradle/caches/modules-2/files-2.1/org.jacamo/c4jason/2.0.2/393bc413db1cbd16e13245e79ffd37052e68eea5/c4jason-2.0.2.jar"/>
 	<classpathentry kind="lib" path="/Users/jomi/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar" sourcepath="/Users/jomi/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/a6c32b40bf3d76eca54e3c601e5d1470c86fcdfa/junit-4.12-sources.jar"/>

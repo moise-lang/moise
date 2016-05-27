@@ -1,7 +1,7 @@
 /*
     This program was automatically generated from
     the organisation specification 'wp'
-    on May 24, 2016 - 20:43:54
+    on May 27, 2016 - 12:31:16
 
     This is a MOISE tool, see more at http://moise.sourceforge.net
 
@@ -254,10 +254,10 @@ scope scheme(writePaperSch) {
         -> obligation(A,n3,committed(A,mColaborator,S), `now`+`1 day`).
    norm pn3: 
            scheme_id(S) & responsible(Gr,S) &
-           mplayers(mColaborator,S,V) & mission_cardinality(mColaborator,MMinCard,MMaxCard) & V < MMaxCard &
+           mplayers(mColaborator,S,V) & mission_cardinality(mColaborator,MMinCard,MMaxCard) & V < MMaxCard & V >= MMinCard &
            fplay(A,writer,Gr) &
            not mission_accomplished(S,mColaborator) // if all mission's goals are satisfied, the agent is not obliged to commit to the mission
-        -> permission(A,n3,committed(A,mColaborator,S), `now`+`1 day`).
+        -> permission(A,pn3,committed(A,mColaborator,S), `now`+`1 day`).
 
    // --- Goals ---
    // agents are obliged to fulfill their enabled goals

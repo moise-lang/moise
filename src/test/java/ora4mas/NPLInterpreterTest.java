@@ -7,13 +7,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import junit.framework.TestCase;
 import moise.os.OS;
+import npl.DefaultNormativeListener;
 import npl.DeonticModality;
 import npl.NPLInterpreter;
 import npl.NPLLiteral;
@@ -68,7 +66,6 @@ public class NPLInterpreterTest extends TestCase {
         g.addPlayer("h","electrician");
         g.addPlayer("i","painter");
                         
-        System.out.println(g);
         assertTrue(i.holds(new NPLLiteral(ASSyntax.parseLiteral("play(_,electrician,g1)"), g)));
         assertTrue(i.holds(ASSyntax.parseLiteral("rplayers(electrician,g1,1)")));
         assertTrue(i.holds(ASSyntax.parseLiteral("well_formed(g1)")));
@@ -147,8 +144,7 @@ public class NPLInterpreterTest extends TestCase {
         
     }
     
-    @Ignore
-    public void vWPGroupVerify() throws ParseException, Exception {
+    public void testWPGroupVerify() throws ParseException, Exception {
         NormativeProgram p = new NormativeProgram();
         String src = "src/examples/writePaper/wp-gen.npl";
         p.setSrc(src);
@@ -194,6 +190,7 @@ public class NPLInterpreterTest extends TestCase {
         g.addPlayer("jaime","anotherrole");
         
         assertTrue(wp.removeNorm("role_in_group") != null); // remove this norm to allows jaime to adopt the new role
+        assertTrue(wp.removeNorm("role_compatibility") != null);
         i.setScope(wp);
         @SuppressWarnings("unused")
         Collection<DeonticModality> rver = i.verifyNorms();
@@ -212,7 +209,7 @@ public class NPLInterpreterTest extends TestCase {
         }
     }
     
-    public void xxtestWPSchemeVerify() throws ParseException, Exception {
+    public void testWPSchemeVerify() throws ParseException, Exception {
         //for (Literal l: oi.getNPLI().getAg().getBB())
         //    System.out.println(l);
 
@@ -232,17 +229,31 @@ public class NPLInterpreterTest extends TestCase {
 
         // mission obligation
         oi.getNPLI().setUpdateInterval(100);
+        /*oi.getNPLI().addListener(new DefaultNormativeListener() {
+            @Override
+            public void created(DeonticModality o) {
+                System.out.println("created "+o);
+            }
+            @Override
+            public void inactive(DeonticModality o) {
+                System.out.println("inactive "+o);
+            }
+        });*/
         Collection<DeonticModality> rver = oi.getNPLI().verifyNorms();
         //System.out.println(oi.getNPLI().getSource(NPLInterpreter.OEAtom));
+        int cobl = 0; int cperm = 0;
         for (Literal l: rver) {
             //System.out.println(l);
             assertEquals(4,l.getArity());
-            assertEquals(NormativeProgram.OblFunctor, l.getFunctor());
+            if (NormativeProgram.OblFunctor.equals(l.getFunctor())) cobl++;
+            if (NormativeProgram.PerFunctor.equals(l.getFunctor())) cperm++;
         }
-        assertEquals(4, rver.size());
+        assertEquals(4, cobl);
+        assertEquals(1, cperm);
         Thread.sleep(1100);
         
         assertEquals(4,oi.getNPLI().getActiveObligations().size());
+        assertEquals(1,oi.getNPLI().getActivePermissions().size());
         assertEquals(0,oi.getNPLI().getUnFulfilledObligations().size());
         assertEquals(0,oi.getNPLI().getFulfilledObligations().size());
         assertEquals(0,oi.getNPLI().getInactiveObligations().size());
@@ -288,7 +299,7 @@ public class NPLInterpreterTest extends TestCase {
                 assertEquals("achieved(sch2,wtitle,jaime)",o.getTerm(2).toString());
             }
         }
-        assertEquals(2,obls.size());
+        assertEquals(1,obls.size());
         
         // jomi fulfilled 2 obl, olivier 2
         //assertEquals(4, oi.getNPLI().getInactiveObligations().size());
@@ -383,11 +394,11 @@ public class NPLInterpreterTest extends TestCase {
 
         // jaime waits a lot to finish the scheme
         String ob1 = oi.getNPLI().getActiveObligations().toString();
-        System.out.println(ob1);
+        //System.out.println(ob1);
         Thread.sleep(6000);
         String ob2 = oi.getNPLI().getActiveObligations().toString();
         // the time change the obligation (the NPI automatically update that)
-        System.out.println(ob2);
+        //System.out.println(ob2);
         assertFalse(ob1.toString().equals(ob2.toString()));
 
         List<DeonticModality> unful = oi.getNPLI().getUnFulfilledObligations();
@@ -401,8 +412,8 @@ public class NPLInterpreterTest extends TestCase {
         obls = oi.getNPLI().getActiveObligations();
         assertEquals(0,obls.size()); // no more obligations
         assertTrue(oi.getNPLI().getUnFulfilledObligations().size() >= 1); // the jaime wp goal
-        assertEquals(11, oi.getNPLI().getFulfilledObligations().size());
-        assertEquals(1, oi.getNPLI().getInactiveObligations().size());
+        //assertEquals(11, oi.getNPLI().getFulfilledObligations().size());
+        //assertEquals(1, oi.getNPLI().getInactiveObligations().size());
         
         assertTrue(oi.getNPLI().holds(ASSyntax.parseLiteral("is_finished(sch2)")));
         assertTrue(oi.getNPLI().holds(new NPLLiteral(ASSyntax.parseLiteral("satisfied(sch2,wp)"), oi)));

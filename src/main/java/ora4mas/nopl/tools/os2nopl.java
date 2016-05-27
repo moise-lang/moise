@@ -446,23 +446,25 @@ public class os2nopl {
         condition        = condition + "scheme_id(S) & responsible(Gr,S)";
         String mplayers  = "mplayers("+m+",S,V) & mission_cardinality("+m+",MMinCard,MMaxCard) & ";
         String fplay     = "fplay(A,"+nrm.getRole().getId()+",Gr)";
-        String cons      = "A,"+id+args+",committed(A,"+m+",S), `now`"+tc+").\n";
+        String cons      = args+",committed(A,"+m+",S), `now`"+tc+").\n";
         if (card.getMin() > 0 && nrm.getType() == OpTypes.obligation) { // the obligation
             np.append("   norm "+id+": "+comment+"\n");
             np.append("           "+condition);
             np.append(" &\n           "+mplayers+"V < MMinCard");
             np.append(" &\n           "+fplay);
             np.append(" &\n           "+extraCond);
-            np.append("\n        -> obligation("+cons);
+            np.append("\n        -> obligation("+"A,"+id+cons);
             id = "p"+id;
         }
         if (card.getMin() < card.getMax() || nrm.getType() == OpTypes.permission) { // the permission
             np.append("   norm "+id+": "+comment+"\n");
             np.append("           "+condition);
             np.append(" &\n           "+mplayers+"V < MMaxCard");
+            if (nrm.getType() == OpTypes.obligation) // an obl was created
+                np.append(" & V >= MMinCard");
             np.append(" &\n           fplay(A,"+nrm.getRole().getId()+",Gr)");
             np.append(" &\n           "+extraCond);
-            np.append("\n        -> permission("+cons);
+            np.append("\n        -> permission("+"A,"+id+cons);
         }
     }
     
