@@ -1,17 +1,26 @@
 package ora4mas;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
-import junit.framework.TestCase;
 import moise.os.OS;
-import npl.DefaultNormativeListener;
 import npl.DeonticModality;
 import npl.NPLInterpreter;
 import npl.NPLLiteral;
@@ -24,8 +33,18 @@ import npl.parser.nplp;
 import ora4mas.nopl.oe.Group;
 import ora4mas.nopl.tools.os2nopl;
 
-public class NPLInterpreterTest extends TestCase {
+public class NPLInterpreterTest {
 
+    @Before
+    public void setUp() throws Exception {
+        OS os = OS.loadOSFromURI("src/examples/writePaper/wp-os.xml");
+        String np = os2nopl.transform(os);
+        BufferedWriter out = new BufferedWriter(new FileWriter("src/examples/writePaper/wp-gen.npl"));
+        out.write(np);
+        out.close();
+    }
+    
+    @Test
     public void testWPGroupHJouse() throws ParseException, Exception {
         String fName = "src/examples/test/house-os.xml";
         if (! new File(fName).exists()) {
@@ -72,6 +91,7 @@ public class NPLInterpreterTest extends TestCase {
 
     }
     
+    @Test
     public void testWPGroup1() throws ParseException, Exception {
         NormativeProgram p = new NormativeProgram();
         String src = "src/examples/writePaper/wp-gen.npl";
@@ -114,6 +134,7 @@ public class NPLInterpreterTest extends TestCase {
         assertFalse(i.holds(ASSyntax.parseFormula("play(jaime,R1,Gr) & play(jaime,R2,Gr) & R1 < R2 & not compatible(R1,R2)")));
     }
 
+    @Test
     public void testWPGroup2() throws ParseException, Exception {
         OS os = OS.loadOSFromURI("src/examples/auction/auction-os.xml");
         String np = os2nopl.transform(os);
@@ -144,6 +165,7 @@ public class NPLInterpreterTest extends TestCase {
         
     }
     
+    @Test
     public void testWPGroupVerify() throws ParseException, Exception {
         NormativeProgram p = new NormativeProgram();
         String src = "src/examples/writePaper/wp-gen.npl";
@@ -209,6 +231,7 @@ public class NPLInterpreterTest extends TestCase {
         }
     }
     
+    @Test
     public void testWPSchemeVerify() throws ParseException, Exception {
         //for (Literal l: oi.getNPLI().getAg().getBB())
         //    System.out.println(l);
@@ -488,6 +511,7 @@ public class NPLInterpreterTest extends TestCase {
         
     }*/
     
+    @Test
     public void testTimeTerm() throws Exception {
         TimeTerm t1 = new TimeTerm(1,"day");
         TimeTerm t2 = new TimeTerm(24,"hours");
@@ -520,8 +544,5 @@ public class NPLInterpreterTest extends TestCase {
         Thread.sleep(100);
         t2 = (TimeTerm)t1.clone();
         assertEquals(t1,t2);
-        
-        
-    }
-    
+    }    
 }

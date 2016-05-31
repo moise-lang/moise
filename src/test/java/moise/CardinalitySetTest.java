@@ -1,12 +1,16 @@
 package moise;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
 import moise.os.Cardinality;
 import moise.os.CardinalitySet;
 import moise.os.ss.Role;
 
-public class CardinalitySetTest extends TestCase {
+public class CardinalitySetTest {
 
+    @Test
     public void testAdd() {
         Cardinality c1 = new Cardinality(1,2);
         Role r1 = new Role("player",null);
@@ -25,7 +29,5 @@ public class CardinalitySetTest extends TestCase {
         assertEquals(roles.getCardinality(r1), Cardinality.defaultValue);
         assertEquals(roles.getCardinality(new Role("player",null)), Cardinality.defaultValue);
         assertEquals(roles.getCardinality(new Role("coach",null)), c1);
-        
-        
     }
 }

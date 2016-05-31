@@ -1,11 +1,14 @@
 package ora4mas;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.StringReader;
 
+import org.junit.Test;
+
 import jason.asSyntax.ASSyntax;
-import junit.framework.TestCase;
 import moise.os.OS;
 import npl.NormativeProgram;
 import npl.parser.ParseException;
@@ -13,8 +16,9 @@ import npl.parser.nplp;
 import ora4mas.nopl.tools.os2nopl;
 
 /** JUnit test case for syntax package */
-public class TranslationTest extends TestCase {
+public class TranslationTest {
 
+    @Test
     public void testWP() throws ParseException, Exception {
         OS os = OS.loadOSFromURI("src/examples/writePaper/wp-os.xml");
         
@@ -28,6 +32,7 @@ public class TranslationTest extends TestCase {
         assertEquals(11, p.getRoot().getScope(ASSyntax.parseLiteral("scheme(writePaperSch)")).getNorms().size());
     }
 
+    @Test
     public void testGgroupWithoutRole() throws ParseException, Exception {
         OS os = OS.loadOSFromURI("src/examples/test/groupwithoutrole.xml");
         

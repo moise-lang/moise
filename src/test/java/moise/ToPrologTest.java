@@ -1,22 +1,27 @@
 package moise;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import moise.oe.GoalInstance;
 import moise.oe.OE;
 import moise.oe.SchemeInstance;
 import moise.os.fs.Goal;
 
-public class ToPrologTest extends TestCase {
+public class ToPrologTest {
 
     OE oe;
     SchemeInstance sch;
     
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         oe = OE.createOE("test", "src/examples/tutorial/jojOS.xml");
         sch = oe.startScheme("sideAttack");
     }
 
+    @Test
     public void testGoalInstance() throws Exception {
         GoalInstance gi = sch.getGoal("g3");
         assertEquals(gi.getAsProlog(),"g3(M2Ag)");
@@ -24,6 +29,7 @@ public class ToPrologTest extends TestCase {
         assertEquals(gi.getAsProlog(),"g3(carlos)");
     }
     
+    @Test
     public void testGoalSpec() {
         Goal g = sch.getSpec().getGoal("g3");
         assertEquals("goal(g3,performance,\"kick the ball to the m2Ag\",1,\"infinity\",[M2Ag],noplan)", g.getAsProlog());
@@ -32,6 +38,7 @@ public class ToPrologTest extends TestCase {
         System.out.println(sch.getSpec().getAsProlog());
     }
 
+    @Test
     public void testGroupToProlog() {
         //Group g = oe.getOS().getSS().getRootGrSpec().findSubGroup("attack");
         // the order changes always, improve this test

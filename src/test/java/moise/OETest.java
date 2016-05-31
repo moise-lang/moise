@@ -1,23 +1,29 @@
 package moise;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import moise.common.MoiseCardinalityException;
 import moise.common.MoiseConsistencyException;
 import moise.oe.GoalInstance;
+import moise.oe.GoalInstance.GoalState;
 import moise.oe.GroupInstance;
 import moise.oe.OE;
 import moise.oe.OEAgent;
 import moise.oe.SchemeInstance;
-import moise.oe.GoalInstance.GoalState;
 
-public class OETest extends TestCase {
+public class OETest {
 
     OE currentOE;
     OEAgent lucio, roberto, rivaldo;
     SchemeInstance sa;
     
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         try {
             currentOE = OE.createOE("winGame", "src/examples/tutorial/jojOS.xml");
 
@@ -75,18 +81,21 @@ public class OETest extends TestCase {
         }
     }
 
+    @Test
     public void testGroupWellForm() {
         GroupInstance team = currentOE.findInstancesOf("team").iterator().next();
         assertTrue(team != null);
         assertEquals(team.wellFormedStatus(),"ok");
     }
 
+    @Test
     public void testSchemeWellFormed() {
         SchemeInstance sa = currentOE.findInstancesOfSchSpec("sideAttack").iterator().next();
         assertTrue(sa != null);
         assertEquals(sa.wellFormedStatus(),"ok");
     }
     
+    @Test
     public void testMissionQty() {
         try {
             SchemeInstance sa = currentOE.findInstancesOfSchSpec("sideAttack").iterator().next();
@@ -104,6 +113,7 @@ public class OETest extends TestCase {
         }
     }
     
+    @Test
     public void testPossibleGoals() throws MoiseConsistencyException, MoiseCardinalityException {
         GoalInstance g1 = sa.getGoal("g1");
         GoalInstance g2 = sa.getGoal("g2");
