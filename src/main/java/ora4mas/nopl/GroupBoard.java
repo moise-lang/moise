@@ -1,9 +1,5 @@
 package ora4mas.nopl;
 
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.Literal;
-import jason.asSyntax.Term;
-
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,19 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import moise.common.MoiseException;
-import moise.oe.GroupInstance;
-import moise.oe.RolePlayer;
-import moise.os.OS;
-import moise.tools.os2dot;
-import moise.xml.DOMUtils;
-import npl.NormativeFailureException;
-import npl.parser.ParseException;
-import ora4mas.nopl.oe.CollectiveOE;
-import ora4mas.nopl.oe.Group;
-import ora4mas.nopl.oe.Player;
-import ora4mas.nopl.tools.os2nopl;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,6 +17,20 @@ import cartago.CartagoException;
 import cartago.LINK;
 import cartago.OPERATION;
 import cartago.OperationException;
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Literal;
+import jason.asSyntax.Term;
+import moise.common.MoiseException;
+import moise.oe.GroupInstance;
+import moise.oe.RolePlayer;
+import moise.os.OS;
+import moise.tools.os2dot;
+import moise.xml.DOMUtils;
+import npl.NormativeFailureException;
+import npl.parser.ParseException;
+import ora4mas.nopl.oe.Group;
+import ora4mas.nopl.oe.Player;
+import ora4mas.nopl.tools.os2nopl;
 
 /**
  * Artifact to manage a group instance.
@@ -249,47 +246,39 @@ public class GroupBoard extends OrgArt {
     @OPERATION public void adoptRole(String role)  {
         adoptRole(getOpUserName(), role);
     }
-    private void adoptRole(String ag, String role) {
-        if (!running) return;
-        boolean oldStatus = isWellFormed();
-        CollectiveOE bak = orgState.clone();
-        orgState.addPlayer(ag, role);
-        try {
-            nengine.verifyNorms();
-            
-            boolean status = isWellFormed();
-            if (parentGroup != null) {
-                execLinkedOp(parentGroup, "updateSubgroupPlayers", orgState.getId(), orgState.getPlayers());
-                if (status != oldStatus) {
-                    logger.fine(orgState.getId()+": informing parent group that now my formation is "+status);
-                    execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
-                }
-            }
-            notifyObservers();
-
-            defineObsProperty(obsPropPlay, 
-                    new JasonTermWrapper(ag), 
-                    new JasonTermWrapper(role), 
-                    new JasonTermWrapper(this.getId().getName()));            
-            if (status != oldStatus) { 
-                getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
+    private void adoptRole(final String ag, final String role) {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                boolean oldStatus = isWellFormed();
+                orgState.addPlayer(ag, role);
+    
+                nengine.verifyNorms();
                 
-                while (!futureSchemes.isEmpty()) {
-                    String sch = futureSchemes.remove(0);
-                    //logger.info("Since the group "+orgState.getId()+" is now well formed, adding scheme "+sch);
-                    addScheme(sch);
+                boolean status = isWellFormed();
+                if (parentGroup != null) {
+                    execLinkedOp(parentGroup, "updateSubgroupPlayers", orgState.getId(), orgState.getPlayers());
+                    if (status != oldStatus) {
+                        logger.fine(orgState.getId()+": informing parent group that now my formation is "+status);
+                        execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
+                    }
+                }
+                notifyObservers();
+    
+                defineObsProperty(obsPropPlay, 
+                        new JasonTermWrapper(ag), 
+                        new JasonTermWrapper(role), 
+                        new JasonTermWrapper(GroupBoard.this.getId().getName()));            
+                if (status != oldStatus) { 
+                    getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
+                    
+                    while (!futureSchemes.isEmpty()) {
+                        String sch = futureSchemes.remove(0);
+                        //logger.info("Since the group "+orgState.getId()+" is now well formed, adding scheme "+sch);
+                        addScheme(sch);
+                    }
                 }
             }
-            updateGuiOE();            
-        } catch (NormativeFailureException e) {
-            e.printStackTrace();
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed("Error adopting role "+role, "reason", new JasonTermWrapper(e.getFail()));
-        } catch (Exception e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            e.printStackTrace();
-            failed(e.toString());
-        }   
+        }, "Error adopting role "+role);
     }
     
     /**
@@ -297,26 +286,20 @@ public class GroupBoard extends OrgArt {
      * 
      * @param role                        the role being removed/leaved
      */
-    @OPERATION public void leaveRole(String role)  {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        boolean oldStatus = isWellFormed();
-        orgState.removePlayer(getOpUserName(), role);
-        try {
-            nengine.verifyNorms();
-            boolean status = leaveRoleWithoutVerify(getOpUserName(), role, oldStatus);
-            notifyObservers();
-            if (parentGroup != null) {
-                execLinkedOp(parentGroup, "updateSubgroupPlayers", orgState.getId(), orgState.getPlayers());
-                execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
+    @OPERATION public void leaveRole(final String role)  {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                boolean oldStatus = isWellFormed();
+                orgState.removePlayer(getOpUserName(), role);
+                nengine.verifyNorms();
+                boolean status = leaveRoleWithoutVerify(getOpUserName(), role, oldStatus);
+                notifyObservers();
+                if (parentGroup != null) {
+                    execLinkedOp(parentGroup, "updateSubgroupPlayers", orgState.getId(), orgState.getPlayers());
+                    execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
+                }
             }
-        } catch (NormativeFailureException e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed("Error leaving role "+role, "reason", new JasonTermWrapper(e.getFail()));
-        } catch (Exception e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed(e.toString());
-        }   
+        }, "Error leaving role "+role);
     }
 
 
@@ -353,33 +336,25 @@ public class GroupBoard extends OrgArt {
      * 
      * @param schId                        the scheme Id being added
      */ 
-    @OPERATION public void addScheme(String schId) {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        try {
-            ArtifactId schAr = lookupArtifact(schId);
-            getGrpState().addResponsibleForScheme(schId);
-            nengine.verifyNorms();
-            
-            getObsProperty(obsPropSchemes).updateValue(getGrpState().getResponsibleForAsProlog());
-            
-            schemes.add(schAr);
-            notifyObservers();
-            updateGuiOE();
-
-            // update in subgroups
-            for (Group sg: getGrpState().getSubgroups()) {
-                ArtifactId sgid = lookupArtifact(sg.getId());
-                execLinkedOp(sgid, "addScheme", schId);                
-            }
-            
-        } catch (NormativeFailureException e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed("Error adding scheme "+schId, "reason", new JasonTermWrapper(e.getFail()));
-        } catch (Exception e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed(e.toString());
-        }   
+    @OPERATION public void addScheme(final String schId) {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                ArtifactId schAr = lookupArtifact(schId);
+                getGrpState().addResponsibleForScheme(schId);
+                nengine.verifyNorms();
+                
+                getObsProperty(obsPropSchemes).updateValue(getGrpState().getResponsibleForAsProlog());
+                
+                schemes.add(schAr);
+                notifyObservers();
+    
+                // update in subgroups
+                for (Group sg: getGrpState().getSubgroups()) {
+                    ArtifactId sgid = lookupArtifact(sg.getId());
+                    execLinkedOp(sgid, "addScheme", schId);                
+                }
+            }                
+        }, "Error adding scheme "+schId);
     }
 
     /**
@@ -401,27 +376,19 @@ public class GroupBoard extends OrgArt {
      * 
      * @param schId                        the scheme Id being removed
      */ 
-    @OPERATION public void removeScheme(String schId) {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        try {
-            ArtifactId schAid = lookupArtifact(schId); 
-            getGrpState().removeResponsibleForScheme(schId);
-            nengine.verifyNorms();
-            execLinkedOp(schAid, "removeResponsibleGroup", orgState.getId());
-
-            getObsProperty(obsPropSchemes).updateValue(getGrpState().getResponsibleForAsProlog());
-
-            schemes.remove(schAid);
-            updateGuiOE();
-
-        } catch (NormativeFailureException e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed("Error removing scheme "+schId, "reason", new JasonTermWrapper(e.getFail()));
-        } catch (Exception e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed(e.toString());
-        }
+    @OPERATION public void removeScheme(final String schId) {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                ArtifactId schAid = lookupArtifact(schId); 
+                getGrpState().removeResponsibleForScheme(schId);
+                nengine.verifyNorms();
+                execLinkedOp(schAid, "removeResponsibleGroup", orgState.getId());
+    
+                getObsProperty(obsPropSchemes).updateValue(getGrpState().getResponsibleForAsProlog());
+    
+                schemes.remove(schAid);
+            }
+        }, "Error removing scheme "+schId);
     }
 
     @LINK public void addListener(String artId) {
@@ -450,133 +417,96 @@ public class GroupBoard extends OrgArt {
         }
     }
     
-    @LINK void updateSubgroupPlayers(String grId, Collection<Player> rp) throws NormativeFailureException, CartagoException {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        boolean oldStatus = isWellFormed();
+    @LINK void updateSubgroupPlayers(final String grId, final Collection<Player> rp) {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                boolean oldStatus = isWellFormed();
 
-        try {
-            Group g = getGrpState().getSubgroup(grId);
-            g.clearPlayers();
-            for (Player p: rp) 
-                g.addPlayer(p.getAg(), p.getTarget());
-            
-            nengine.verifyNorms();
-    
-            boolean status = isWellFormed();
-            if (status != oldStatus)
-                getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
-            
-            if (parentGroup != null) {
-                execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status); // my new formation status
-                execLinkedOp(parentGroup, "updateSubgroupPlayers", grId, rp);
-            }
-            updateGuiOE();
-        } catch (NormativeFailureException e) {
-            e.printStackTrace();
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed(e.getFail().toString());
-        } catch (Exception e) {
-            orgState = bak; 
-            e.printStackTrace();
-            failed(e.toString());
-        }
-    }
-
-    
-    @LINK void updateSubgroupFormationStatus(String grId, boolean isWellFormed) throws NormativeFailureException, CartagoException {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        boolean oldStatus = isWellFormed();
-
-        try {
-            logger.fine("updating status of "+grId+" to "+isWellFormed);
-            getGrpState().setSubgroupWellformed(grId, isWellFormed);
-
-            nengine.verifyNorms();
-    
-            boolean status = isWellFormed();
-            if (status != oldStatus) {
-                logger.fine("now I, "+orgState.getId()+", am "+status);
-                getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
-            }
-            if (parentGroup != null) {
-                execLinkedOp(parentGroup, "updateSubgroupFormationStatus", grId, isWellFormed);
-                execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
-            }
-
-            updateGuiOE();
-        } catch (NormativeFailureException e) {
-            e.printStackTrace();
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed(e.getFail().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            orgState = bak; 
-            failed(e.toString());
-        }
-    }
-    
-    @LINK void addSubgroup(String grId, String grType, String parentGr) throws NormativeFailureException, CartagoException {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        boolean oldStatus = isWellFormed();
+                Group g = getGrpState().getSubgroup(grId);
+                g.clearPlayers();
+                for (Player p: rp) 
+                    g.addPlayer(p.getAg(), p.getTarget());
+                
+                nengine.verifyNorms();
         
-        try {
-            getGrpState().addSubgroup(grId, grType, parentGr);
-            
-            nengine.verifyNorms();
-
-            boolean status = isWellFormed();
-            if (status != oldStatus)
-                getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
-            getObsProperty(obsPropSubgroups).updateValue(getGrpState().getSubgroupsAsProlog());
-
-            if (parentGroup != null) {
-                execLinkedOp(parentGroup, "addSubgroup", grId, grType, parentGr);    
-                execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
+                boolean status = isWellFormed();
+                if (status != oldStatus)
+                    getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
+                
+                if (parentGroup != null) {
+                    execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status); // my new formation status
+                    execLinkedOp(parentGroup, "updateSubgroupPlayers", grId, rp);
+                }
             }
-            updateGuiOE();
-        } catch (NormativeFailureException e) {
-            e.printStackTrace();
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed(e.getFail().toString());
-        } catch (Exception e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed(e.toString());
-            e.printStackTrace();
-        }
+        }, null);
     }
 
-    @LINK void removeSubgroup(String grId) throws NormativeFailureException, CartagoException {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        boolean oldStatus = isWellFormed();
+    
+    @LINK void updateSubgroupFormationStatus(final String grId, final boolean isWellFormed) {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                boolean oldStatus = isWellFormed();
+    
+                logger.fine("updating status of "+grId+" to "+isWellFormed);
+                getGrpState().setSubgroupWellformed(grId, isWellFormed);
+    
+                nengine.verifyNorms();
         
-        try {
-            getGrpState().removeSubgroup(grId);
-
-            nengine.verifyNorms();
-
-            boolean status = isWellFormed();
-            if (status != oldStatus)
-                getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
-            getObsProperty(obsPropSubgroups).updateValue(getGrpState().getSubgroupsAsProlog());
-
-            if (parentGroup != null) {
-                execLinkedOp(parentGroup, "removeSubgroup", grId);    
-                execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);  // update my formation status
+                boolean status = isWellFormed();
+                if (status != oldStatus) {
+                    logger.fine("now I, "+orgState.getId()+", am "+status);
+                    getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
+                }
+                if (parentGroup != null) {
+                    execLinkedOp(parentGroup, "updateSubgroupFormationStatus", grId, isWellFormed);
+                    execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
+                }
             }
-            updateGuiOE();
-        } catch (NormativeFailureException e) {
-            e.printStackTrace();
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed(e.getFail().toString());
-        } catch (Exception e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed(e.toString());
-            e.printStackTrace();
-        }
+        }, null);
+    }
+    
+    @LINK void addSubgroup(final String grId, final String grType, final String parentGr) {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                boolean oldStatus = isWellFormed();
+        
+                getGrpState().addSubgroup(grId, grType, parentGr);
+                
+                nengine.verifyNorms();
+    
+                boolean status = isWellFormed();
+                if (status != oldStatus)
+                    getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
+                getObsProperty(obsPropSubgroups).updateValue(getGrpState().getSubgroupsAsProlog());
+    
+                if (parentGroup != null) {
+                    execLinkedOp(parentGroup, "addSubgroup", grId, grType, parentGr);    
+                    execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
+                }
+            }
+        }, null);
+    }
+
+    @LINK void removeSubgroup(final String grId) {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                boolean oldStatus = isWellFormed();
+        
+                getGrpState().removeSubgroup(grId);
+    
+                nengine.verifyNorms();
+    
+                boolean status = isWellFormed();
+                if (status != oldStatus)
+                    getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
+                getObsProperty(obsPropSubgroups).updateValue(getGrpState().getSubgroupsAsProlog());
+    
+                if (parentGroup != null) {
+                    execLinkedOp(parentGroup, "removeSubgroup", grId);    
+                    execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);  // update my formation status
+                }
+            }
+        }, null);
     }
 
     
