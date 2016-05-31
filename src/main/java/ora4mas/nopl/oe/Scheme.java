@@ -238,6 +238,10 @@ public class Scheme extends CollectiveOE {
         return changed;
     }
     
+    public void setAsSatisfied(String g) {
+        satisfiedGoals.add(g);
+    }
+    
     public boolean isSatisfied(Goal g) {
         if (satisfiedGoals.contains(g.getId()))
             return true;

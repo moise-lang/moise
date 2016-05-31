@@ -393,6 +393,7 @@ public class SchemeBoard extends OrgArt {
     }
 
     @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException {
+        if (!running) return;
         // this operation is available only for the owner of the artifact
         if ((!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager")) {   
             failed("Error: agent '"+getOpUserName()+"' is not allowed to run "+cmd,"reason",new JasonTermWrapper("not_allowed_to_start(admCommand)"));
@@ -402,8 +403,31 @@ public class SchemeBoard extends OrgArt {
                 goalAchieved(fixAgName(lCmd.getTerm(0).toString()), lCmd.getTerm(1).toString());
             } else if (lCmd.getFunctor().equals("commitMission")) {
                 commitMission(fixAgName(lCmd.getTerm(0).toString()), lCmd.getTerm(1).toString());
+            } else if (lCmd.getFunctor().equals("goalSatisfied")) {
+                enableSatisfied(lCmd.getTerm(0).toString());
             }
         }
+    }
+    
+    protected void enableSatisfied(String goal) {
+        CollectiveOE bak = orgState.clone();
+        getSchState().setAsSatisfied(goal);
+        try {
+            getSchState().computeSatisfiedGoals();
+            nengine.verifyNorms();
+            updateMonitorScheme();
+
+            updateGoalStateObsProp();
+
+            updateGuiOE();
+        } catch (NormativeFailureException e) {
+            orgState = bak; // takes the backup as the current model since the action failed
+            failed("Error setting goal "+goal+" as satisfied", "reason", new JasonTermWrapper(e.getFail()));
+        } catch (Exception e) {
+            orgState = bak; 
+            failed(e.toString());
+            e.printStackTrace();
+        }        
     }
     
     // used by Maicon in the interaction implementation
