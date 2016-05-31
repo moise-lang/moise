@@ -1,7 +1,7 @@
 /*
     This program was automatically generated from
     the organisation specification 'wp'
-    on May 27, 2016 - 12:31:16
+    on May 31, 2016 - 15:11:16
 
     This is a MOISE tool, see more at http://moise.sourceforge.net
 
@@ -104,9 +104,9 @@ scope scheme(monitoringSch) {
    mission_goal(mr,reward).
 
    // goal(missions, goal id, dependence (on goal statisfaction), type, #ags to satisfy, ttf)
-   goal([mr],reward,dep(and,[]),achievement,all,`1 year`).
-   goal([ms],sanction,dep(and,[]),achievement,all,`1 year`).
-   goal([],monitor,dep(or,[sanction, reward]),achievement,0,`1 year`).
+   goal([mr],reward,dep(and,[]),performance,all,`1 year`).
+   goal([ms],sanction,dep(and,[]),performance,all,`1 year`).
+   goal([],monitor,dep(or,[sanction, reward]),performance,0,`1 year`).
    super_goal(monitor, reward).
    super_goal(monitor, sanction).
 
@@ -130,10 +130,12 @@ scope scheme(monitoringSch) {
    // --- Goals ---
    // agents are obliged to fulfill their enabled goals
    norm ngoal: 
-           committed(A,M,S) & mission_goal(M,G) & goal(_,G,_,achievement,_,D) &
+           committed(A,M,S) & mission_goal(M,G) & 
+           ((goal(_,G,_,achievement,_,D) & What = satisfied(S,G)) | 
+            (goal(_,G,_,performance,_,D) & What = done(S,G,A))) &
            well_formed(S) & not satisfied(S,G) & enabled(S,G) & 
            not super_satisfied(S,G)
-        -> obligation(A,ngoal(S,M,G),achieved(S,G,A),`now` + D).
+        -> obligation(A,ngoal(S,M,G),What,`now` + D).
 
    // --- Properties check ---
    norm goal_non_compliance: 
@@ -158,13 +160,13 @@ scope scheme(monitoringSch) {
            MP > MMax
         -> fail(mission_cardinality(M,S,MP,MMax)).
    norm ach_not_enabled_goal: 
-           achieved(S,G,Agt) &
+           done(S,G,Agt) &
            mission_goal(M,G) &
            not mission_accomplished(S,M) &
            not enabled(S,G)
         -> fail(ach_not_enabled_goal(S,G,Agt)).
    norm ach_not_committed_goal: 
-           achieved(S,G,Agt) &
+           done(S,G,Agt) &
            .findall(M, mission_goal(M,G) &
            (committed(Agt,M,S) | mission_accomplished(S,M)), [])
         -> fail(ach_not_committed_goal(S,G,Agt)).
@@ -194,16 +196,16 @@ scope scheme(writePaperSch) {
    mission_goal(mBib,wrefs).
 
    // goal(missions, goal id, dependence (on goal statisfaction), type, #ags to satisfy, ttf)
-   goal([],sv,dep(and,[finish]),achievement,0,`1 year`).
-   goal([mManager],wconc,dep(and,[wsecs]),achievement,all,`1 day`).
-   goal([mManager],wsectitles,dep(and,[wabs]),achievement,all,`1 day`).
-   goal([mManager],wtitle,dep(and,[]),achievement,all,`1 day`).
-   goal([mBib],wrefs,dep(and,[wsecs]),achievement,all,`1 hour`).
-   goal([],fdv,dep(and,[wsectitles]),achievement,0,`1 year`).
-   goal([mManager],wp,dep(and,[sv]),achievement,all,`5 seconds`).
-   goal([],finish,dep(and,[wconc, wrefs]),achievement,0,`1 year`).
-   goal([mColaborator],wsecs,dep(and,[fdv]),achievement,all,`7 days`).
-   goal([mManager],wabs,dep(and,[wtitle]),achievement,all,`1 day`).
+   goal([],sv,dep(and,[finish]),performance,0,`1 year`).
+   goal([mManager],wconc,dep(and,[wsecs]),performance,all,`1 day`).
+   goal([mManager],wsectitles,dep(and,[wabs]),performance,all,`1 day`).
+   goal([mManager],wtitle,dep(and,[]),performance,all,`1 day`).
+   goal([mBib],wrefs,dep(and,[wsecs]),performance,all,`1 hour`).
+   goal([],fdv,dep(and,[wsectitles]),performance,0,`1 year`).
+   goal([mManager],wp,dep(and,[sv]),performance,all,`5 seconds`).
+   goal([],finish,dep(and,[wconc, wrefs]),performance,0,`1 year`).
+   goal([mColaborator],wsecs,dep(and,[fdv]),performance,all,`7 days`).
+   goal([mManager],wabs,dep(and,[wtitle]),performance,all,`1 day`).
    super_goal(wp, sv).
    super_goal(finish, wconc).
    super_goal(fdv, wsectitles).
@@ -262,10 +264,12 @@ scope scheme(writePaperSch) {
    // --- Goals ---
    // agents are obliged to fulfill their enabled goals
    norm ngoal: 
-           committed(A,M,S) & mission_goal(M,G) & goal(_,G,_,achievement,_,D) &
+           committed(A,M,S) & mission_goal(M,G) & 
+           ((goal(_,G,_,achievement,_,D) & What = satisfied(S,G)) | 
+            (goal(_,G,_,performance,_,D) & What = done(S,G,A))) &
            well_formed(S) & not satisfied(S,G) & enabled(S,G) & 
            not super_satisfied(S,G)
-        -> obligation(A,ngoal(S,M,G),achieved(S,G,A),`now` + D).
+        -> obligation(A,ngoal(S,M,G),What,`now` + D).
 
    // --- Properties check ---
    norm goal_non_compliance: 
@@ -290,13 +294,13 @@ scope scheme(writePaperSch) {
            MP > MMax
         -> fail(mission_cardinality(M,S,MP,MMax)).
    norm ach_not_enabled_goal: 
-           achieved(S,G,Agt) &
+           done(S,G,Agt) &
            mission_goal(M,G) &
            not mission_accomplished(S,M) &
            not enabled(S,G)
         -> fail(ach_not_enabled_goal(S,G,Agt)).
    norm ach_not_committed_goal: 
-           achieved(S,G,Agt) &
+           done(S,G,Agt) &
            .findall(M, mission_goal(M,G) &
            (committed(Agt,M,S) | mission_accomplished(S,M)), [])
         -> fail(ach_not_committed_goal(S,G,Agt)).

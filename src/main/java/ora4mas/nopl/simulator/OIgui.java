@@ -132,7 +132,7 @@ public class OIgui implements DynamicFactsProvider {
         if (action.getFunctor().equals("commitMission")) {
             sch.addPlayer(action.getTerm(0).toString(), action.getTerm(1).toString());
         } else if (action.getFunctor().equals("setGoalAchieved")) {
-            sch.addGoalAchieved(action.getTerm(0).toString(), action.getTerm(1).toString());
+            sch.addDoneGoal(action.getTerm(0).toString(), action.getTerm(1).toString());
         }
         txtLog.setText("action "+action+ " in oe "+sch.transform()+"\n");
         try {

@@ -57,6 +57,7 @@ import moise.xml.ToXML;
 import npl.DeonticModality;
 import npl.DynamicFactsProvider;
 import npl.NPLInterpreter;
+import npl.NormativeFailureException;
 import npl.NormativeListener;
 import npl.NormativeProgram;
 import npl.Scope;
@@ -121,6 +122,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         else
             failed("you can not change the owner");
     }
+    
     protected void destroy() {
         if (ownerAgent != null && getOpUserId() != null && (!getOpUserName().equals(ownerAgent)) ) {
             failed("you can not destroy the artifact, only the owner can!");
@@ -208,6 +210,25 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
     @INTERNAL_OPERATION void NPISignals(String signal, Term arg) {
         signal(signal, new JasonTermWrapper(arg));
+    }
+    
+    protected void ora4masOperationTemplate(Operation op, String errorMsg) {
+        if (!running) return;
+        CollectiveOE bak = orgState.clone();
+        try {
+            op.exec();
+            updateGuiOE();
+        } catch (NormativeFailureException e) {
+            orgState = bak; // takes the backup as the current model since the action failed
+            if (errorMsg == null)
+                failed(e.getFail().toString());
+            else
+                failed(errorMsg, "reason", new JasonTermWrapper(e.getFail()));
+        } catch (Exception e) {
+            orgState = bak; 
+            failed(e.toString());
+            e.printStackTrace();
+        }
     }
     
     static Object[] getTermsAsProlog(Literal o) {

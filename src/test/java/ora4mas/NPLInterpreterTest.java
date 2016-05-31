@@ -296,7 +296,7 @@ public class NPLInterpreterTest extends TestCase {
             assertEquals(NormativeProgram.OblFunctor, o.getFunctor());
             if (o.getTerm(0).toString().equals("jaime")) {
                 //assertEquals("ngoal(sch2,mManager,wtitle)",o.getTerm(1).toString());
-                assertEquals("achieved(sch2,wtitle,jaime)",o.getTerm(2).toString());
+                assertEquals("done(sch2,wtitle,jaime)",o.getTerm(2).toString());
             }
         }
         assertEquals(1,obls.size());
@@ -334,14 +334,14 @@ public class NPLInterpreterTest extends TestCase {
         
         // jaime do setgoalachieved
         r = oi.execute(ASSyntax.parseLiteral("setGoalAchieved(bob,wtitle)"));
-        assertEquals("fail(ach_not_committed_goal(sch2,wtitle,bob))", r.toString());
         assertNotNull(r);
+        assertEquals("fail(ach_not_committed_goal(sch2,wtitle,bob))", r.toString());
         assertNull(oi.execute(ASSyntax.parseLiteral("setGoalAchieved(jaime,wtitle)")));
         // only one obligation: wabs
         Thread.sleep(300);  
         obls = oi.getNPLI().getActiveObligations();
         assertEquals(1,obls.size());
-        assertEquals("achieved(sch2,wabs,jaime)", obls.get(0).getTerm(2).toString());
+        assertEquals("done(sch2,wabs,jaime)", obls.get(0).getTerm(2).toString());
 
         // other goals of jaime
         System.out.println("abs");
@@ -355,8 +355,8 @@ public class NPLInterpreterTest extends TestCase {
         obls = oi.getNPLI().getActiveObligations();
         assertEquals(2,obls.size()); // obls for jomi and olivier
         Collections.sort(obls);
-        assertEquals("achieved(sch2,wsecs,jomi)", obls.get(0).getTerm(2).toString());
-        assertEquals("achieved(sch2,wsecs,olivier)", obls.get(1).getTerm(2).toString());
+        assertEquals("done(sch2,wsecs,jomi)", obls.get(0).getTerm(2).toString());
+        assertEquals("done(sch2,wsecs,olivier)", obls.get(1).getTerm(2).toString());
 
         assertNotNull(oi.execute(ASSyntax.parseLiteral("setGoalAchieved(jaime,wconc)"))); // the goal is not enabled yet
 

@@ -60,7 +60,7 @@ public class OI implements DynamicFactsProvider {
         } else if (action.getFunctor().equals("leaveMission")) {
             sch.removePlayer(action.getTerm(0).toString(), action.getTerm(1).toString());
         } else if (action.getFunctor().equals("setGoalAchieved")) {
-            sch.addGoalAchieved(action.getTerm(0).toString(), action.getTerm(1).toString());
+            sch.addDoneGoal(action.getTerm(0).toString(), action.getTerm(1).toString());
         }
         //System.out.println("** action "+action+ " oe: "+oe2np.transform(sch));
         try {

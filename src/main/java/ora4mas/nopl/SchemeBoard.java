@@ -1,5 +1,22 @@
 package ora4mas.nopl;
 
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import cartago.ArtifactConfig;
+import cartago.ArtifactId;
+import cartago.CartagoException;
+import cartago.LINK;
+import cartago.OPERATION;
+import cartago.ObsProperty;
+import cartago.OperationException;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
@@ -9,14 +26,6 @@ import jason.asSyntax.PredicateIndicator;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
-
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
-
 import moise.common.MoiseException;
 import moise.oe.GoalInstance;
 import moise.oe.MissionPlayer;
@@ -29,22 +38,10 @@ import moise.xml.DOMUtils;
 import npl.NPLLiteral;
 import npl.NormativeFailureException;
 import npl.parser.ParseException;
-import ora4mas.nopl.oe.CollectiveOE;
 import ora4mas.nopl.oe.Group;
 import ora4mas.nopl.oe.Player;
 import ora4mas.nopl.oe.Scheme;
 import ora4mas.nopl.tools.os2nopl;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import cartago.ArtifactConfig;
-import cartago.ArtifactId;
-import cartago.CartagoException;
-import cartago.LINK;
-import cartago.OPERATION;
-import cartago.ObsProperty;
-import cartago.OperationException;
 
 /**
  * Artifact to manage a scheme instance.
@@ -63,21 +60,22 @@ import cartago.OperationException;
  * <b>Observable properties</b>:
  * <ul>
  * <li>commitment(ag,mission,sch): agent ag is committed to the mission in the scheme (we have as many obs prop as commitments).</br>
- *     e.g. <code>commitment(bob,mission1,"s1")</code>
+ *     e.g. <code>commitment(bob,mission1,s1)</code>
  * <li>groups: a list of groups responsible for the scheme.</br>
- *     e.g. <code>groups(["g1"])</code>
+ *     e.g. <code>groups([g1])</code>
  * <li>goalState(schId, goal, list of committed agents, list of agents that achieved the goal, state); where states are: waiting, enabled, satisfied).</br>
- *     e.g. <code>goalState("s1",g5,[alice,bob],[alice],satisfied)</code>
+ *     e.g. <code>goalState(s1,g5,[alice,bob],[alice],satisfied)</code>
  * <li>specification: the specification of the scheme in the OS (a prolog like representation).
  * <li>obligation(ag,reason,goal,deadline): current active obligations.</br>
- *     e.g. <code>obligation(bob,ngoal("s1",mission1,g5),achieved("s1",g5,bob),1475417322254)</code>
+ *     e.g. <code>obligation(bob,ngoal(s1,mission1,g5),done(s1,bid,bob),1475417322254)</code>
  * </ul>
  * 
  * <b>Signals</b> (obligations has the form: obligation(to whom, maintenance condition, what, deadline)):
  * <ul>
  * <li>oblCreated(o): the obligation <i>o</i> is created.
  * <li>oblFulfilled(o): the obligation <i>o</i> is fulfilled
- * <li>oblUnfulfilled(o): the obligation <i>o</i> is unfulfilled (e.g. by timeout)
+ * <li>oblUnfulfilled(o): the obligation <i>o</i> is unfulfilled (e.g. by timeout).</br>
+ *    e.g. <code>o = obligation(Ag,_,done(Sch,bid,Ag), TTF)</code>.
  * <li>oblInactive(o): the obligation <i>o</i> is inactive (e.g. its maintenance condition does not hold anymore)
  * <li>normFailure(f): the failure <i>f</i> has happened (e.g. due some regimentation).</br>
  *    e.g. <code>f = fail(mission_permission(Ag,M,Sch))</code>. The f comes from the normative program.
@@ -238,29 +236,21 @@ public class SchemeBoard extends OrgArt {
     @OPERATION public void commitMission(String mission) throws CartagoException {
         commitMission(getOpUserName(), mission);
     }
-    private void commitMission(String ag, String mission) throws CartagoException {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        orgState.addPlayer(ag, mission);
-        try {
-            nengine.verifyNorms();
-            
-            defineObsProperty(obsPropCommitment, 
-                    new JasonTermWrapper(ag), 
-                    new JasonTermWrapper(mission), 
-                    new JasonTermWrapper(this.getId().getName()));
-            updateGoalStateObsProp();
-            
-            updateMonitorScheme();
-            updateGuiOE();
-        } catch (NormativeFailureException e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed("Error committing to mission "+mission, "reason", new JasonTermWrapper(e.getFail()));
-        } catch (Exception e) {
-            orgState = bak; 
-            failed(e.toString());
-            e.printStackTrace();
-        }
+    private void commitMission(final String ag, final String mission) throws CartagoException {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                orgState.addPlayer(ag, mission);
+                nengine.verifyNorms();
+                
+                defineObsProperty(obsPropCommitment, 
+                        new JasonTermWrapper(ag), 
+                        new JasonTermWrapper(mission), 
+                        new JasonTermWrapper(SchemeBoard.this.getId().getName()));
+                updateGoalStateObsProp();
+                
+                updateMonitorScheme();
+            }
+        }, "Error committing to mission "+mission);
     }
     
     /**
@@ -276,29 +266,21 @@ public class SchemeBoard extends OrgArt {
      * @throws CartagoException           some cartago problem
      * @throws MoiseException             some moise inconsistency (the agent is not committed to the mission)
      */
-    @OPERATION public void leaveMission(String mission) throws CartagoException, MoiseException {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        if (orgState.removePlayer(getOpUserName(), mission)) {
-            try {
-                nengine.verifyNorms();
-    
-                removeObsPropertyByTemplate(obsPropCommitment, 
-                        new JasonTermWrapper(getOpUserName()), 
-                        new JasonTermWrapper(mission), 
-                        new JasonTermWrapper(this.getId().getName()));
-                
-                updateMonitorScheme();
-                updateGuiOE();
-            } catch (NormativeFailureException e) {
-                orgState = bak; // takes the backup as the current model since the action failed
-                failed("Error leaving mission "+mission, "reason", new JasonTermWrapper(e.getFail()));
-            } catch (Exception e) {
-                orgState = bak; 
-                failed(e.toString());
-                e.printStackTrace();
+    @OPERATION public void leaveMission(final String mission) throws CartagoException, MoiseException {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                if (orgState.removePlayer(getOpUserName(), mission)) {
+                    nengine.verifyNorms();
+                    
+                    removeObsPropertyByTemplate(obsPropCommitment, 
+                            new JasonTermWrapper(getOpUserName()), 
+                            new JasonTermWrapper(mission), 
+                            new JasonTermWrapper(SchemeBoard.this.getId().getName()));
+                    
+                    updateMonitorScheme();
+                }                
             }
-        }
+        },"Error leaving mission "+mission);
     }
     
     /** The agent executing this operation set the goal as achieved by it.
@@ -312,29 +294,20 @@ public class SchemeBoard extends OrgArt {
         goalAchieved(getOpUserName(), goal);
     }
     
-    private void goalAchieved(String agent, String goal) throws CartagoException {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        getSchState().addGoalAchieved(agent, goal);
-        try {
-            nengine.verifyNorms();
-            if (getSchState().computeSatisfiedGoals()) { // add satisfied goals
-                //nengine.setDynamicFacts(orgState.transform());        
+    private void goalAchieved(final String agent, final String goal) throws CartagoException {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                getSchState().addDoneGoal(agent, goal);
                 nengine.verifyNorms();
+                if (getSchState().computeSatisfiedGoals()) { // add satisfied goals
+                    //nengine.setDynamicFacts(orgState.transform());        
+                    nengine.verifyNorms();
+                }
+                updateMonitorScheme();
+    
+                updateGoalStateObsProp();
             }
-            updateMonitorScheme();
-
-            updateGoalStateObsProp();
-
-            updateGuiOE();
-        } catch (NormativeFailureException e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed("Error achieving goal "+goal, "reason", new JasonTermWrapper(e.getFail()));
-        } catch (Exception e) {
-            orgState = bak; 
-            failed(e.toString());
-            e.printStackTrace();
-        }
+        },"Error achieving goal "+goal);
     }
     
     /** The agent executing this operation sets a value for a goal argument.
@@ -343,53 +316,34 @@ public class SchemeBoard extends OrgArt {
      *  @param var 						name of the variable to which the value is modified
      *  @param value					value set to the variable of the goal
      */
-    @OPERATION public void setArgumentValue(String goal, String var, Object  value) throws CartagoException {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        getSchState().setGoalArgValue(goal, var, value.toString());
-        try {
-            nengine.verifyNorms();
-            updateMonitorScheme();
-
-            updateGoalStateObsProp();
-
-            updateGuiOE();
-        } catch (NormativeFailureException e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed("Error setting value of argument "+var+" of "+goal+" as "+value, "reason", new JasonTermWrapper(e.getFail()));
-        } catch (Exception e) {
-            orgState = bak; 
-            failed(e.toString());
-            e.printStackTrace();
-        }
+    @OPERATION public void setArgumentValue(final String goal, final String var, final Object value) throws CartagoException {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                getSchState().setGoalArgValue(goal, var, value.toString());
+                nengine.verifyNorms();
+                updateMonitorScheme();
+    
+                updateGoalStateObsProp();
+            }
+        },"Error setting value of argument "+var+" of "+goal+" as "+value);
     }
     
     /** The agent executing this operation reset some goal.
      * It becomes not achieved, also goals that depends on it or sub-goals are set as unachieved    
      * @param goal						The goal to be reset
      */
-    @OPERATION public void resetGoal(String goal) throws CartagoException {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        try {
-            if (getSchState().resetGoal(spec.getGoal(goal))) {
-                getSchState().computeSatisfiedGoals();
+    @OPERATION public void resetGoal(final String goal) throws CartagoException {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                if (getSchState().resetGoal(spec.getGoal(goal))) {
+                    getSchState().computeSatisfiedGoals();
+                }
+                nengine.verifyNorms();
+                updateMonitorScheme();
+    
+                updateGoalStateObsProp();
             }
-            nengine.verifyNorms();
-            updateMonitorScheme();
-
-            updateGoalStateObsProp();
-
-            updateGuiOE();
-        } catch (NormativeFailureException e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            System.err.println("Error reseting goal "+goal+": "+e.getFail());
-            failed("Error reseting goal "+goal, "reason", new JasonTermWrapper(e.getFail()));
-        } catch (Exception e) {
-            orgState = bak; 
-            failed(e.toString());
-            e.printStackTrace();
-        }
+        }, "Error reseting goal "+goal);
     }
 
     @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException {
@@ -409,25 +363,17 @@ public class SchemeBoard extends OrgArt {
         }
     }
     
-    protected void enableSatisfied(String goal) {
-        CollectiveOE bak = orgState.clone();
-        getSchState().setAsSatisfied(goal);
-        try {
-            getSchState().computeSatisfiedGoals();
-            nengine.verifyNorms();
-            updateMonitorScheme();
-
-            updateGoalStateObsProp();
-
-            updateGuiOE();
-        } catch (NormativeFailureException e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed("Error setting goal "+goal+" as satisfied", "reason", new JasonTermWrapper(e.getFail()));
-        } catch (Exception e) {
-            orgState = bak; 
-            failed(e.toString());
-            e.printStackTrace();
-        }        
+    protected void enableSatisfied(final String goal) {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                getSchState().setAsSatisfied(goal);
+                getSchState().computeSatisfiedGoals();
+                nengine.verifyNorms();
+                updateMonitorScheme();
+    
+                updateGoalStateObsProp();
+            }
+        }, "Error setting goal "+goal+" as satisfied");
     }
     
     // used by Maicon in the interaction implementation
@@ -438,50 +384,36 @@ public class SchemeBoard extends OrgArt {
         }
     }
     
-    @LINK void updateRolePlayers(String grId, Collection<Player> rp) throws NormativeFailureException, CartagoException {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        try {
-            Group g = new Group(grId);
-            for (Player p: rp)
-                g.addPlayer(p.getAg(), p.getTarget());
-            g.addResponsibleForScheme(orgState.getId());
-            if (spec.isMonitorSch())
-                g.setMonitorSch(orgState.getId());
-            getSchState().addGroupResponsibleFor(g);
-    
-            nengine.verifyNorms();
-    
-            updateMonitorScheme();
-            getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
+    @LINK void updateRolePlayers(final String grId, final Collection<Player> rp) throws NormativeFailureException, CartagoException {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                Group g = new Group(grId);
+                for (Player p: rp)
+                    g.addPlayer(p.getAg(), p.getTarget());
+                g.addResponsibleForScheme(orgState.getId());
+                if (spec.isMonitorSch())
+                    g.setMonitorSch(orgState.getId());
+                getSchState().addGroupResponsibleFor(g);
         
-            updateGuiOE();
-        } catch (NormativeFailureException e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed(e.getFail().toString());
-        } catch (Exception e) {
-            orgState = bak; 
-            failed(e.toString());
-            e.printStackTrace();
-        }
+                nengine.verifyNorms();
+        
+                updateMonitorScheme();
+                getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
+            }
+        }, null);
     }
 
-    @LINK void removeResponsibleGroup(String grId) throws CartagoException {
-        if (!running) return;
-        CollectiveOE bak = orgState.clone();
-        try {
-            getSchState().removeGroupResponsibleFor( new Group(grId) );
-    
-            nengine.verifyNorms();
-            updateMonitorScheme();
-
-            getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
+    @LINK void removeResponsibleGroup(final String grId) throws CartagoException {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                getSchState().removeGroupResponsibleFor( new Group(grId) );
         
-            updateGuiOE();
-        } catch (NormativeFailureException e) {
-            orgState = bak; // takes the backup as the current model since the action failed
-            failed(e.getFail().toString());
-        }
+                nengine.verifyNorms();
+                updateMonitorScheme();
+    
+                getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
+            }
+        }, null);
     }
     
     List<ObsProperty> goalStObsProps = new ArrayList<ObsProperty>();
@@ -600,7 +532,7 @@ public class SchemeBoard extends OrgArt {
             // achieved by
             ListTerm lAchievedBy = new ListTermImpl();
             ListTerm tail = lAchievedBy;
-            for (Literal p: getSchState().getAchievedGoals()) {
+            for (Literal p: getSchState().getDoneGoals()) {
                 if (p.getTerm(1).equals(aGoal))
                     tail = tail.append(p.getTerm(2));
             }

@@ -69,9 +69,9 @@ public class os2nopl {
         condCode.put(PROP_MissionPermission,     "committed(Agt,M,S) & not (mission_role(M,R) & responsible(Gr,S) & fplay(Agt,R,Gr))");
         condCode.put(PROP_LeaveMission,          "leaved_mission(Agt,M,S) & not mission_accomplished(S,M)");
         condCode.put(PROP_MissionCardinality,    "scheme_id(S) & mission_cardinality(M,_,MMax) & mplayers(M,S,MP) & MP > MMax");
-        condCode.put(PROP_AchNotEnabledGoal,     "achieved(S,G,Agt) & mission_goal(M,G) & not mission_accomplished(S,M) & not enabled(S,G)");
-        //condCode.put(PROP_AchNotCommGoal,        "achieved(S,G,Agt) & mission_goal(M,G) & not mission_accomplished(S,M) & not committed(Agt,M,S)");
-        condCode.put(PROP_AchNotCommGoal,        "achieved(S,G,Agt) & .findall(M, mission_goal(M,G) & (committed(Agt,M,S) | mission_accomplished(S,M)), [])");
+        condCode.put(PROP_AchNotEnabledGoal,     "done(S,G,Agt) & mission_goal(M,G) & not mission_accomplished(S,M) & not enabled(S,G)");
+        //condCode.put(PROP_AchNotCommGoal,        "done(S,G,Agt) & mission_goal(M,G) & not mission_accomplished(S,M) & not committed(Agt,M,S)");
+        condCode.put(PROP_AchNotCommGoal,        "done(S,G,Agt) & .findall(M, mission_goal(M,G) & (committed(Agt,M,S) | mission_accomplished(S,M)), [])");
         condCode.put(PROP_NotCompGoal,           "obligation(Agt,"+NGOA+"(S,M,G),Obj,TTF) & not Obj & `now` > TTF");
     }
     // arguments that 'explains' the property
@@ -366,10 +366,12 @@ public class os2nopl {
         
         np.append("   // agents are obliged to fulfill their enabled goals\n");
         np.append("   norm "+NGOA+": \n");
-        np.append("           committed(A,M,S) & mission_goal(M,G) & goal(_,G,_,achievement,_,D) &\n");
+        np.append("           committed(A,M,S) & mission_goal(M,G) & \n");
+        np.append("           ((goal(_,G,_,achievement,_,D) & What = satisfied(S,G)) | \n");
+        np.append("            (goal(_,G,_,performance,_,D) & What = done(S,G,A))) &\n");
         np.append("           well_formed(S) & not satisfied(S,G) & enabled(S,G) & \n");
         np.append("           not super_satisfied(S,G)\n");
-        np.append("        -> obligation(A,"+NGOA+"(S,M,G),achieved(S,G,A),`now` + D).\n"); 
+        np.append("        -> obligation(A,"+NGOA+"(S,M,G),What,`now` + D).\n"); 
         // TODO: maintenance goals
         //np.append("   // maintenance goals\n");
         

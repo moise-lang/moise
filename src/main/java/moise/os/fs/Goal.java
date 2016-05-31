@@ -27,13 +27,13 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
     
     private static final long serialVersionUID = 1L;
 
-    public enum GoalType { achievement, maintenance };
+    public enum GoalType { performance, achievement, maintenance };
     
     protected Plan     plan = null;   // the plan to achieve this goal (in case the goal is the head of a plan)
     protected Plan     inPlan = null; // the plan where this goal belongs
     protected Scheme   sch = null;    // the scheme of this goal
     protected String   desc = null;
-    protected GoalType type = GoalType.achievement;
+    protected GoalType type = GoalType.performance;
     protected int      minAgToSat = -1; // the minimum number of agents to satisfy the goal (-1 means all committed)
     protected Map<String,Object> args = null; // arguments and their default values
     protected String   ttf = ""; // time to fulfill
@@ -164,6 +164,9 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
     }
     public void setType(GoalType t) {
         type = t;
+        if (t == GoalType.achievement) {
+            setMinAgToSatisfy(1);
+        }
     }
     
     public String getTTF() {
@@ -279,6 +282,9 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             setType(GoalType.valueOf(ele.getAttribute("type")));
         }
         if (ele.getAttribute("min").length() > 0) {
+            if (getType() == GoalType.achievement) {
+                System.out.println("Achievement goal "+getId()+" should not have the min attribute defined!");
+            }
             setMinAgToSatisfy(Integer.parseInt(ele.getAttribute("min")));
         }
         if (ele.getAttribute("ttf").length() > 0) {

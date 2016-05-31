@@ -40,7 +40,7 @@ public class Scheme extends CollectiveOE {
         createLiteral("scheme_id", new VarTerm("SID")),
         createLiteral("committed", new VarTerm("Ag"), new VarTerm("Mis"), new VarTerm("SID")),
         createLiteral("leaved_mission", new VarTerm("Ag"), new VarTerm("Mis"), new VarTerm("SID")),
-        createLiteral("achieved", new VarTerm("SID"), new VarTerm("Goal"), new VarTerm("Ag") ),
+        createLiteral("done", new VarTerm("SID"), new VarTerm("Goal"), new VarTerm("Ag") ),
         createLiteral("satisfied", new VarTerm("SID"), new VarTerm("Goal")),
         createLiteral(Group.playPI.getFunctor(), new VarTerm("Ag"), new VarTerm("Role"), new VarTerm("Gr")), // from group
         createLiteral(Group.responsiblePI.getFunctor(), new VarTerm("Gr"), new VarTerm("Sch"))               // from group
@@ -50,7 +50,7 @@ public class Scheme extends CollectiveOE {
     public final static PredicateIndicator schemePI      = dynamicFacts[0].getPredicateIndicator();
     public final static PredicateIndicator committedPI   = dynamicFacts[1].getPredicateIndicator();
     public final static PredicateIndicator exCommittedPI = dynamicFacts[2].getPredicateIndicator();
-    public final static PredicateIndicator achievedPI    = dynamicFacts[3].getPredicateIndicator();
+    public final static PredicateIndicator donePI        = dynamicFacts[3].getPredicateIndicator();
     public final static PredicateIndicator satisfiedPI   = dynamicFacts[4].getPredicateIndicator();
 
     // specification
@@ -59,8 +59,8 @@ public class Scheme extends CollectiveOE {
     // responsible groups
     private ConcurrentSkipListSet<Group>   groups  = new ConcurrentSkipListSet<Group>();
     
-    // the literal is achieved(schemeId, goalId, agent name)
-    private ConcurrentSkipListSet<Literal> achievedGoals = new ConcurrentSkipListSet<Literal>();
+    // the literal is done(schemeId, goalId, agent name)
+    private ConcurrentSkipListSet<Literal> doneGoals = new ConcurrentSkipListSet<Literal>();
     
     // values for goal arguments (key = goal + arg, value = value)
     private HashMap<Pair<String,String>,String> goalArgs = new HashMap<Pair<String,String>,String>();
@@ -73,12 +73,12 @@ public class Scheme extends CollectiveOE {
         this.spec = spec;
     }
 
-    public void addGoalAchieved(String ag, String goal) {
-        achievedGoals.add(createLiteral(achievedPI.getFunctor(), termId, createAtom(goal), createAtom(ag)));
+    public void addDoneGoal(String ag, String goal) {
+        doneGoals.add(createLiteral(donePI.getFunctor(), termId, createAtom(goal), createAtom(ag)));
     }
 
-    public Set<Literal> getAchievedGoals() {
-        return (Set<Literal>)achievedGoals.clone();
+    public Set<Literal> getDoneGoals() {
+        return (Set<Literal>)doneGoals.clone();
     }
     
     public boolean resetGoal(Goal goal) {
@@ -100,7 +100,7 @@ public class Scheme extends CollectiveOE {
     private boolean resetGoalAndPreConditions(Goal goal) {
         boolean changed = false;
         Atom gAtom = createAtom(goal.toString());
-        Iterator<Literal> iAchGoals = achievedGoals.iterator();
+        Iterator<Literal> iAchGoals = doneGoals.iterator();
         while (iAchGoals.hasNext()) {
             Literal l = iAchGoals.next();
             if (l.getTerm(1).equals(gAtom)) {
@@ -179,8 +179,8 @@ public class Scheme extends CollectiveOE {
             else
                 return LogExpr.EMPTY_UNIF_LIST.iterator(); 
             
-        } else if (pi.equals(achievedPI)) {
-            return consult(l, u, achievedGoals);
+        } else if (pi.equals(donePI)) {
+            return consult(l, u, doneGoals);
     
         } else if (pi.equals(satisfiedPI)) {
             Term lCopy = l.getTerm(1).capply(u);
@@ -266,7 +266,7 @@ public class Scheme extends CollectiveOE {
         }
 
         int a = 0; // qty of achieved
-        for (Literal p: achievedGoals)
+        for (Literal p: doneGoals)
             if (p.getTerm(1).toString().equals(g.getId()))
                 a++;
 
@@ -296,7 +296,7 @@ public class Scheme extends CollectiveOE {
         g.players.addAll(this.players);
         g.exPlayers.addAll(this.exPlayers);
         g.groups.addAll(this.groups);
-        g.achievedGoals.addAll(this.achievedGoals);
+        g.doneGoals.addAll(this.doneGoals);
         //g.accomplisedMissions.addAll(this.accomplisedMissions);
         g.satisfiedGoals.addAll(this.satisfiedGoals);
         g.goalArgs.putAll(this.goalArgs);
@@ -313,8 +313,8 @@ public class Scheme extends CollectiveOE {
         out.append("  responsible groups: ");
         for (Group s: groups)
             out.append(s.getId()+" ");
-        out.append("\n  achieved goals:\n");
-        for (Literal g: achievedGoals)
+        out.append("\n  done goals:\n");
+        for (Literal g: doneGoals)
             out.append("    "+g+"\n");
         out.append("  satisfied goals:\n");
         for (String g: satisfiedGoals)
