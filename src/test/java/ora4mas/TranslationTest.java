@@ -23,7 +23,7 @@ public class TranslationTest {
         OS os = OS.loadOSFromURI("src/examples/writePaper/wp-os.xml");
         
         String np = os2nopl.transform(os);
-        //System.out.println(np);
+        System.out.println(np);
         BufferedWriter out = new BufferedWriter(new FileWriter("src/examples/writePaper/wp-gen.npl"));
         out.write(np);
         out.close();

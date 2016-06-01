@@ -181,7 +181,7 @@ public class NPLInterpreterTest {
         g.addPlayer("olivier", "writer");
         g.addPlayer("jomi", "writer");
         assertTrue(i.holds(ASSyntax.parseLiteral("well_formed(wp1)")));
-        assertEquals(0, i.verifyNorms().size());
+        assertEquals(0, i.getActiveObligations().size());
         
         // simulates a role that cannot be played
         g.addPlayer("bob", "role1");

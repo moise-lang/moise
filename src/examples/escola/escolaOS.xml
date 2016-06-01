@@ -33,24 +33,24 @@
 
         <group-specification id="escola">
             <links>
-                <link from="docente" to="docente" type="communication" scope="inter-group" extends-sub-groups="true" bi-dir="false"/>
+                <link from="docente" to="docente" type="communication" scope="inter-group"  bi-dir="false"/>
             </links>
-            <sub-groups>
+            <subgroups>
                 <group-specification id="turma">
                     <roles>
                         <role id="aluno"/>
                         <role id="professor"/>
                     </roles>
                     <links>
-                        <link from="aluno" to="aluno" type="communication" scope="inter-group" extends-sub-groups="true" bi-dir="false"/>
-                        <link from="docente" to="aluno" type="authority" scope="intra-group" extends-sub-groups="true" bi-dir="false"/>
-                        <link from="aluno" to="docente" type="acquaintance" scope="intra-group" extends-sub-groups="true" bi-dir="false"/>
-                        <link from="aluno" to="professor" type="communication" scope="intra-group" extends-sub-groups="true" bi-dir="false"/>
+                        <link from="aluno" to="aluno" type="communication" scope="inter-group"  bi-dir="false"/>
+                        <link from="docente" to="aluno" type="authority" scope="intra-group"  bi-dir="false"/>
+                        <link from="aluno" to="docente" type="acquaintance" scope="intra-group"  bi-dir="false"/>
+                        <link from="aluno" to="professor" type="communication" scope="intra-group"  bi-dir="false"/>
                     </links>
                     <formation-constraints>
                         <cardinality min="5" max="30" object="role" id="aluno"/>
                         <cardinality min="1" max="1" object="role" id="professor"/>
-                        <compatibility from="aluno" to="professor" type="compatibility" scope="inter-group" extends-sub-groups="false" bi-dir="true"/>
+                        <compatibility from="aluno" to="professor" type="compatibility" scope="inter-group" extends-subgroups="false" bi-dir="true"/>
                     </formation-constraints>
                 </group-specification>
                 <group-specification id="selecao">
@@ -61,18 +61,18 @@
                         <role id="candidato"/>
                     </roles>
                     <links>
-                        <link from="funcionario" to="docente" type="communication" scope="inter-group" extends-sub-groups="false" bi-dir="true"/>
-                        <link from="presidente" to="secretario" type="authority" scope="intra-group" extends-sub-groups="false" bi-dir="false"/>
-                        <link from="membro" to="candidato" type="communication" scope="intra-group" extends-sub-groups="false" bi-dir="true"/>
-                        <link from="candidato" to="secretario" type="communication" scope="intra-group" extends-sub-groups="false" bi-dir="true"/>
-                        <link from="funcionario" to="funcionario" type="communication" scope="inter-group" extends-sub-groups="false" bi-dir="false"/>
+                        <link from="funcionario" to="docente" type="communication" scope="inter-group" extends-subgroups="false" bi-dir="true"/>
+                        <link from="presidente" to="secretario" type="authority" scope="intra-group" extends-subgroups="false" bi-dir="false"/>
+                        <link from="membro" to="candidato" type="communication" scope="intra-group" extends-subgroups="false" bi-dir="true"/>
+                        <link from="candidato" to="secretario" type="communication" scope="intra-group" extends-subgroups="false" bi-dir="true"/>
+                        <link from="funcionario" to="funcionario" type="communication" scope="inter-group" extends-subgroups="false" bi-dir="false"/>
                     </links>
                     <formation-constraints>
                         <cardinality min="3" max="15" object="role" id="membro"/>
                         <cardinality min="1" max="2" object="role" id="secretario"/>
                         <cardinality min="1" max="1" object="role" id="presidente"/>
                         <cardinality min="0" max="40" object="role" id="candidato"/>
-                        <compatibility from="membro" to="presidente" type="compatibility" scope="intra-group" extends-sub-groups="false" bi-dir="false"/>
+                        <compatibility from="membro" to="presidente" type="compatibility" scope="intra-group" extends-subgroups="false" bi-dir="false"/>
                     </formation-constraints>
                 </group-specification>
                 <group-specification id="corpodoc">
@@ -81,14 +81,14 @@
                         <role id="professor"/>
                     </roles>
                     <links>
-                        <link from="diretor" to="professor" type="authority" scope="intra-group" extends-sub-groups="true" bi-dir="false"/>
+                        <link from="diretor" to="professor" type="authority" scope="intra-group"  bi-dir="false"/>
                     </links>
                     <formation-constraints>
                         <cardinality min="1" max="1" object="role" id="diretor"/>
-                        <compatibility from="professor" to="diretor" type="compatibility" scope="intra-group" extends-sub-groups="false" bi-dir="false"/>
+                        <compatibility from="professor" to="diretor" type="compatibility" scope="intra-group" extends-subgroups="false" bi-dir="false"/>
                     </formation-constraints>
                 </group-specification>
-            </sub-groups>
+            </subgroups>
             <formation-constraints>
                 <cardinality min="0" max="300" object="role" id="aluno"/>
                 <cardinality min="1" max="1" object="group" id="corpodoc"/>
@@ -174,14 +174,14 @@
         </scheme>
     </functional-specification>
     
-    <deontic-specification>
-        <deontic-relation type="permission" role="secretario" mission="m3" />
-        <deontic-relation type="obligation" role="aluno" mission="m43" />
-        <deontic-relation type="permission" role="candidato" mission="m1" />
-        <deontic-relation type="permission" role="presidente" mission="m4" />
-        <deontic-relation type="permission" role="secretario" mission="m2" />
-        <deontic-relation type="obligation" role="professor" mission="m42" />
-        <deontic-relation type="permission" role="membro" mission="m5" />
-    </deontic-specification>
+    <normative-specification>
+        <norm id="n1" type="permission" role="secretario" mission="m3" />
+        <norm id="n2" type="obligation" role="aluno" mission="m43" />
+        <norm id="n3" type="permission" role="candidato" mission="m1" />
+        <norm id="n4" type="permission" role="presidente" mission="m4" />
+        <norm id="n5" type="permission" role="secretario" mission="m2" />
+        <norm id="n6" type="obligation" role="professor" mission="m42" />
+        <norm id="n7" type="permission" role="membro" mission="m5" />
+    </normative-specification>
 </organisational-specification>
 

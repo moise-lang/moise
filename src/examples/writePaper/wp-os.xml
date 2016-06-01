@@ -20,7 +20,7 @@
             <role id="editor"> <extends role="author"/> </role>
         </role-definitions>
 
-        <group-specification id="wpgroup" monitoring-scheme="monitoringSch">
+        <group-specification id="wpgroup" >
             <roles>
                 <role id="writer" min="1" max="5" />
                 <role id="editor" min="1" max="1" />
@@ -45,7 +45,7 @@
 
 
     <functional-specification>
-        <scheme id="writePaperSch" monitoring-scheme="monitoringSch">
+        <scheme id="writePaperSch" >
 
             <goal id="wp" ttf="5 seconds">
                 <plan operator="sequence" >
@@ -87,25 +87,15 @@
                 <preferred mission="mColaborator"/>
                 <preferred mission="mManager"/>
             </mission>
-        </scheme>
-        
-        <scheme id="monitoringSch">
-            <goal id="monitor">
-                <plan operator="choice">
-                    <goal id="sanction" ds="Sanction the agent that is not doing its job!"/>
-                    <goal id="reward"   ds="Reward some agent for doing a good job!"/>
-                </plan>
-            </goal>
-            <mission id="ms" min="1" max="1" >
-                <goal id="sanction"/>
-            </mission>
-            <mission id="mr" min="1" max="1" >
-                <goal id="reward"/>
-            </mission>
-        </scheme>
+        </scheme>        
     </functional-specification>
 
     <normative-specification>
+        <properties>
+            <property id="role_compatibility" value="prohibition" />
+            <property id="mission_cardinality" value="prohibition" />
+        </properties>
+    
         <norm id = "n1" 
                           type="permission" 
                           role="editor" mission="mManager" />
@@ -117,7 +107,7 @@
                           type="obligation" 
                           role="writer" mission="mColaborator"
                           time-constraint="1 day"  />
-        <norm id = "n4" 
+        <!-- norm id = "n4" 
                           type="obligation" 
                           condition="unfulfilled(obligation(_,n2,_,_))" 
                           role="editor" mission="ms" 
@@ -139,7 +129,7 @@
                           type="obligation" condition="#mission_cardinality" 
                           role="editor" mission="ms" 
                           time-constraint="1 hour"/>
-        <!-- norm id = "n9" 
+        <norm id = "n9" 
                           type="obligation" condition="#role_cardinality" 
                           role="editor" mission="ms" 
                           time-constraint="30 minutes"/-->

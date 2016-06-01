@@ -169,8 +169,8 @@ public class os2nopl {
 
         np.append("\n   // ** Properties check \n");
         
-        boolean hasMonSch = gr.getMonitoringSch() != null;
-        generateProperties(NOP_GR_PROPS, gr.getSS(), np, gr.getSS().getOS().getNS(), "group_id(Gr)", hasMonSch);
+        //boolean hasMonSch = gr.getMonitoringSch() != null;
+        generateProperties(NOP_GR_PROPS, gr.getSS().getOS().getNS(), np); //gr.getSS(), np,  "group_id(Gr)", hasMonSch);
 
         np.append("} // end of group "+gr.getId()+"\n");
 
@@ -376,9 +376,9 @@ public class os2nopl {
         //np.append("   // maintenance goals\n");
         
         np.append("\n   // --- Properties check ---\n");
-        boolean hasMonSch = sch.getMonitoringSch() != null;
+        //boolean hasMonSch = sch.getMonitoringSch() != null;
 
-        generateProperties(NOP_SCH_PROPS, sch, np, sch.getFS().getOS().getNS(), "scheme_id(S) & responsible(Gr,S)", hasMonSch);
+        generateProperties(NOP_SCH_PROPS, sch.getFS().getOS().getNS(), np); //sch, np, , "scheme_id(S) & responsible(Gr,S)"); //, hasMonSch);
 
         /*
         if (hasMonSch) {
@@ -394,11 +394,11 @@ public class os2nopl {
         return np.toString();
     }
     
-    private static void generateProperties(String[] props, MoiseElement ele, StringBuilder np, NS ns, String getReferee, boolean hasMonitoringSch) {
+    private static void generateProperties(String[] props, NS ns, StringBuilder np) { //MoiseElement ele, String getReferee, boolean hasMonitoringSch) {
         for (String prop: props) {            
             // check if some norm exist for the propriety
-            boolean hasNorm = false;
-            /*if (hasMonitoringSch) { //!ele.getId().startsWith("monitoring")) {
+            /*boolean hasNorm = false;
+            if (hasMonitoringSch) { //!ele.getId().startsWith("monitoring")) {
                 for (Norm dr: ns.getNorms()) {
                     String condition = dr.getCondition();
                     if (dr.getType() == OpTypes.obligation && condition.substring(1).equals(prop)) {
@@ -410,18 +410,28 @@ public class os2nopl {
                 if (hasNorm)
                     continue;
             }*/
-            np.append("   norm "+prop+": \n"); 
+            
+            String conf = ns.getStrProperty(prop, "fail");
+            np.append("   norm "+prop+": "); 
+
+            if (conf.equals("fail")) {
+                np.append(" \n"); 
+            } else {
+                np.append("true\n");                 
+                np.append("        -> prohibition(Agt,true,\n");
+            }
+
             String sep = "";
             for (String t: condCode.get(prop).split("&")) {
                 np.append(sep+"           "+t.trim());
                 sep = " &\n";
             }
             
-            // the case of fail
-            String args    = argsCode.get(prop);
-            //String propValue = ele.getStrProperty(NOP_Prefix+prop, "fail");
-            //if (propValue.equals("fail"))
-            np.append("\n        -> fail("+prop+"("+args+")).\n");            
+            if (conf.equals("fail")) {
+                np.append("\n        -> fail("+prop+"("+argsCode.get(prop)+")).\n");
+            } else {
+                np.append(",`never`).\n");                
+            }
         }
     }
     
@@ -433,12 +443,13 @@ public class os2nopl {
         String args    = "";
         String condition = nrm.getCondition();                
         // macro condition
-        if (condition.startsWith("#")) {
+        /*if (condition.startsWith("#")) {
             condition = condition.substring(1);
             comment   = " // "+condition;
             args      = "("+argsCode.get(condition)+")";
             condition = condCode.get(condition) + " &\n           ";
-        } else if (condition.equals("true")) {
+        } else*/
+        if (condition.equals("true")) {
             condition = "";
         } else {
             condition = condition + " &\n           ";

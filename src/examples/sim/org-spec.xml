@@ -20,7 +20,7 @@
             <role id="editor"> <extends role="author"/> </role>
         </role-definitions>
 
-        <group-specification id="wpgroup" monitoring-scheme="monitoringSch">
+        <group-specification id="wpgroup" >
             <roles>
                 <role id="writer" min="1" max="5" />
                 <role id="editor" min="1" max="1" />
@@ -92,6 +92,10 @@
     </functional-specification>
 
     <normative-specification>
+        <properties>
+            <property id="role_cardinality" value="prohibition" />
+        </properties>
+    
         <norm id = "n1" 
                           type="permission" 
                           role="editor" mission="mManager" />

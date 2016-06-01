@@ -4,6 +4,8 @@ build
 mas.log
 
 src/examples/performance/case1/profiling*
+src/examples/writePaper/wp-gen.npl
+
 .stop___MAS
 .gradle
 .settings

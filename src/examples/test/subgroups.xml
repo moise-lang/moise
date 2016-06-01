@@ -51,7 +51,7 @@
 
 
     <functional-specification>
-        <scheme id="writePaperSch" monitoring-scheme="monitoringSch">
+        <scheme id="writePaperSch" >
 
             <goal id="wp" ttf="5 seconds">
                 <plan operator="sequence" >
