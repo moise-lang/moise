@@ -48,8 +48,7 @@
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="scheme">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element maxOccurs="1" minOccurs="0" name="properties"
-                            type="moise:propertiesType"/>
+                        <xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
                         <xsd:element maxOccurs="1" minOccurs="1" name="goal" type="moise:goalDefType"/>
 
                         <xsd:element maxOccurs="unbounded" minOccurs="0" name="mission" type="moise:missionType"/>
@@ -223,15 +222,15 @@
 
     <xsd:complexType name="goalDefType">
         <xsd:sequence>
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="argument" type="moise:argumentType"/>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="argument"   type="moise:argumentType"/>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="depends-on" type="moise:dependOnType"/>
-            <xsd:element maxOccurs="1" minOccurs="0" name="plan" type="moise:planType"/>
+            <xsd:element maxOccurs="1"         minOccurs="0" name="plan"       type="moise:planType"/>
         </xsd:sequence>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="min" type="xsd:nonNegativeInteger" use="optional"/>
-        <xsd:attribute name="ds" type="xsd:string" use="optional"/>
+        <xsd:attribute name="id"   type="xsd:string"             use="required"/>
+        <xsd:attribute name="min"  type="xsd:nonNegativeInteger" use="optional"/>
+        <xsd:attribute name="ds"   type="xsd:string"             use="optional"/>
         <xsd:attribute name="type" type="moise:goalType"/>
-        <xsd:attribute name="ttf" type="xsd:string" use="optional"/>
+        <xsd:attribute name="ttf"  type="xsd:string"             use="optional"/>
     </xsd:complexType>
 
     <xsd:complexType name="argumentType">

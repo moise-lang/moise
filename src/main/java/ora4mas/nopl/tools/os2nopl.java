@@ -28,8 +28,6 @@ import moise.os.ss.SS;
 /** translate an OS to a NP */
 public class os2nopl {
     
-    //public static final String NOP_Prefix       = "nop_";
-    
     // constants for properties
     public static final String PROP_RoleInGroup           = "role_in_group";
     public static final String PROP_RoleCardinality       = "role_cardinality";
@@ -59,7 +57,6 @@ public class os2nopl {
     static {
         condCode.put(PROP_RoleInGroup,           "play(Agt,R,Gr) & group_id(Gr) & not role_cardinality(R,_,_)");
         condCode.put(PROP_RoleCardinality,       "group_id(Gr) & role_cardinality(R,_,RMax) & rplayers(R,Gr,RP) & RP > RMax");
-        //condCode.put(PROP_RoleCompatibility,     "play(Agt,R1,Gr) & play(Agt,R2,Gr) & R1 < R2 & not compatible(R1,R2,gr_inst)"); // TODO: revise and use fcompatible
         condCode.put(PROP_RoleCompatibility,     "play(Agt,R1,Gr) & play(Agt,R2,Gr) & group_id(Gr) & R1 < R2 & not fcompatible(R1,R2,gr_inst)"); // note that is have to be play and not fplay
 
         condCode.put(PROP_SubgroupInGroup,       "group_id(Gr) & subgroup(G,GT,Gr) & not subgroup_cardinality(GT,_,_)");
@@ -70,7 +67,6 @@ public class os2nopl {
         condCode.put(PROP_LeaveMission,          "leaved_mission(Agt,M,S) & not mission_accomplished(S,M)");
         condCode.put(PROP_MissionCardinality,    "scheme_id(S) & mission_cardinality(M,_,MMax) & mplayers(M,S,MP) & MP > MMax");
         condCode.put(PROP_AchNotEnabledGoal,     "done(S,G,Agt) & mission_goal(M,G) & not mission_accomplished(S,M) & not enabled(S,G)");
-        //condCode.put(PROP_AchNotCommGoal,        "done(S,G,Agt) & mission_goal(M,G) & not mission_accomplished(S,M) & not committed(Agt,M,S)");
         condCode.put(PROP_AchNotCommGoal,        "done(S,G,Agt) & .findall(M, mission_goal(M,G) & (committed(Agt,M,S) | mission_accomplished(S,M)), [])");
         condCode.put(PROP_NotCompGoal,           "obligation(Agt,"+NGOA+"(S,M,G),Obj,TTF) & not Obj & `now` > TTF");
     }
@@ -123,8 +119,6 @@ public class os2nopl {
         
         np.append("   // ** Facts from OS\n");
         
-        //np.append( roleHirarchy(gr.getSS()) +"\n");
-        
         CardinalitySet<Role> roles = gr.getRoles();
         for (Role r: roles) {
             Cardinality c = roles.getCardinality(r);
@@ -169,8 +163,7 @@ public class os2nopl {
 
         np.append("\n   // ** Properties check \n");
         
-        //boolean hasMonSch = gr.getMonitoringSch() != null;
-        generateProperties(NOP_GR_PROPS, gr.getSS().getOS().getNS(), np); //gr.getSS(), np,  "group_id(Gr)", hasMonSch);
+        generateProperties(NOP_GR_PROPS, gr.getSS().getOS().getNS(), np);
 
         np.append("} // end of group "+gr.getId()+"\n");
 
@@ -178,17 +171,6 @@ public class os2nopl {
             np.append("\n\n// ** Group "+sgr.getId()+", subgroup of "+gr.getId()+"\n");
             np.append( transform(sgr) + "\n");
         }
-        
-          
-        /*
-        if (hasMonSch) {
-            Scheme monSch = gr.getSS().getOS().getFS().findScheme( gr.getMonitoringSch() );
-            if (monSch != null) {
-                np.append("\n// monitoring scheme for the group "+gr.getId()+"\n");
-                np.append( transform(monSch) );
-            }
-        }
-        */
         
         return np.toString();
     }
@@ -211,20 +193,10 @@ public class os2nopl {
         np.append(  "   fplay(A,R,G) :- play(A,R,G).\n");
         np.append(  "   fplay(A,R,G) :- subrole(R1,R) & fplay(A,R1,G).\n\n");
         np.append(  "   // fcompatible(R1,R2,S) is true if R1 or its sub-roles are compatible with R2 in scope S\n");
-        /*
-        //np.append(  "   fcompatible(R1,R2,S) :- tsubrole(R1,R2).\n");  // produces an error all is compatiple with all due to all being compatible with soc
-        np.append(  "   fcompatible(R1,R2,S) :- tcompatible(R1,R2,S).\n");
-        np.append(  "   fcompatible(R1,R2,S) :- subrole(R1,R2).\n");
-        //np.append(  "   fcompatible(R1,R2,S) :- subrole(R1,R) & fcompatible(R,R2,S).\n"); // Didn' work see house example
-        np.append(  "   fcompatible(R1,R2,S) :- subrole(R2,R) & fcompatible(R1,R,S).\n\n");
-        np.append(  "   tcompatible(R1,R2,S) :- compatible(R1,R2,S).\n");
-        np.append(  "   tcompatible(R1,R2,S) :- compatible(R1,R3,S) & tcompatible(R3,R2,S).\n");
-        */
         np.append(  "   fcompatible(R1,R2,S) :- tsubrole(R1,R2).\n");
         np.append(  "   fcompatible(R1,R2,S) :- tsubrole(R1,R1a) & tsubrole(R2,R2a) & compatible(R1a,R2a,S).\n");
         np.append(  "   fcompatible(R1,R2,S) :- tcompatible(R1,R2,S,[R1,R2]).\n");
 
-        //np.append(  "   tcompatible(R1,R2,S) :- compatible(R1,R2,S).\n");
         // member is there to avoid infinity loops
         np.append(  "   tcompatible(R1,R2,S,Path) :- compatible(R1,R3,S) & not .member(R3,Path) & tcompatible(R3,R2,S,[R3|Path]).\n");
 
@@ -256,8 +228,6 @@ public class os2nopl {
                 }
             }
         }
-        //np.append("   fmission_role(M,R) :- mission_role(M,R).\n");
-        //np.append("   fmission_role(M,R) :- subrole(R,R1) & fmission_role(M,R1).\n\n");
         np.append("\n   // mission_goal(mission id, goal id)\n");
         for (Mission m: sch.getMissions()) {
             for (Goal g: m.getGoals()) {
@@ -281,22 +251,9 @@ public class os2nopl {
             }
             smis.append("]");
             
-            //String smis  = "nomission";
-            //if (mis != null) smis = mis.getId(); 
             String ttf = g.getTTF();
             if (ttf.length() == 0) ttf = "1 year";
             List<Goal> precond = g.getPreConditionGoals();
-            /*
-            permitted.append("   permitted(S,"+g.getId()+") :- ");
-            String sep = "";
-            for (Goal dg: precond) {
-                permitted.append(sep+"satisfied(S,"+dg.getId()+")");
-                sep = " & ";
-            }
-            if (precond.isEmpty()) 
-                permitted.append("true");
-            permitted.append(".\n");                                
-            */
             String prec = precond.toString();
             if (g.hasPlan() && g.getPlan().getOp() == PlanOpType.choice)
                 prec = "dep(or,"+prec+")";
@@ -324,19 +281,6 @@ public class os2nopl {
         np.append("   is_finished(S) :- satisfied(S,"+sch.getRoot().getId()+").\n");
         np.append("   mission_accomplished(S,M) :- .findall(Goal, mission_goal(M,Goal), MissionGoals) & all_satisfied(S,MissionGoals).\n");
         
-        //np.append( roleHirarchy(sch.getFS().getOS().getSS()) );
-        /*
-        // satisfied is a dynamic facts (it cannot be computed form the state: once satisfied, satisfied forever, independently of goal states -- see leaveMission issue)
-        np.append("\n   // conditions for satisfiability\n");
-        np.append("   satisfied(S,G) :-     // no agents have to achieve -- automatically satisfied by its pre-conditions\n");
-        np.append("      goal(_,G,PCG,_,0,_) & all_satisfied(S,PCG).\n");  
-        np.append("   satisfied(S,G) :-     // all committed agents have to achieve\n");
-        //np.append("      goal(M,G,_,_,all,_) & mission_cardinality(M,Min,_) & .count(achieved(S,G,A),AA) & AA >= Min.\n");  
-        np.append("      goal(M,G,_,_,all,_) & well_formed(S) & mplayers(M,S,V)  & .count(achieved(S,G,A),AA) & AA >= V.\n");  
-        np.append("   satisfied(S,G) :-     // some agents have to achieve\n");
-        np.append("      goal(_,G,_,_,X,_)  & X > 0 & .count( achieved(S,G,A), X ).\n\n");  
-        */
-        
         np.append("   all_satisfied(_,[]).\n");
         np.append("   all_satisfied(S,[G|T]) :- satisfied(S,G) & all_satisfied(S,T).\n");
         np.append("   any_satisfied(S,[G|_]) :- satisfied(S,G).\n");
@@ -346,7 +290,6 @@ public class os2nopl {
         np.append("   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & NP \\== 0 & any_satisfied(S,PCG).\n");
         np.append("   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & NP \\== 0 & all_satisfied(S,PCG).\n");
 
-        //np.append("   super_satisfied(S,G) :- not super_goal(_,G).\n");
         np.append("   super_satisfied(S,G) :- super_goal(SG,G) & satisfied(S,SG).\n");
         
         if (!sch.isMonitorSch()) {
@@ -376,54 +319,32 @@ public class os2nopl {
         //np.append("   // maintenance goals\n");
         
         np.append("\n   // --- Properties check ---\n");
-        //boolean hasMonSch = sch.getMonitoringSch() != null;
 
-        generateProperties(NOP_SCH_PROPS, sch.getFS().getOS().getNS(), np); //sch, np, , "scheme_id(S) & responsible(Gr,S)"); //, hasMonSch);
-
-        /*
-        if (hasMonSch) {
-            Scheme monSch = sch.getFS().findScheme( sch.getMonitoringSch() );
-            if (monSch != null) {
-                np.append("\n// monitoring scheme for the scheme "+sch.getId()+"\n");
-                np.append( transform(monSch) );
-            }
-        }
-        */       
+        generateProperties(NOP_SCH_PROPS, sch.getFS().getOS().getNS(), np);
 
         np.append("} // end of scheme "+sch.getId()+"\n");
         return np.toString();
     }
     
-    private static void generateProperties(String[] props, NS ns, StringBuilder np) { //MoiseElement ele, String getReferee, boolean hasMonitoringSch) {
+    private static void generateProperties(String[] props, NS ns, StringBuilder np) {
+        String defaultM = ns.getStrProperty("default_management", "fail");
         for (String prop: props) {            
             // check if some norm exist for the propriety
-            /*boolean hasNorm = false;
-            if (hasMonitoringSch) { //!ele.getId().startsWith("monitoring")) {
-                for (Norm dr: ns.getNorms()) {
-                    String condition = dr.getCondition();
-                    if (dr.getType() == OpTypes.obligation && condition.substring(1).equals(prop)) {
-                        hasNorm = true;
-                        generateNormEntry(dr, null, getReferee+" & monitor_scheme(MonSch)", "MonSch", np, null);
-                        break; // skip this property
-                    }
-                }
-                if (hasNorm)
-                    continue;
-            }*/
-            
-            String conf = ns.getStrProperty(prop, "fail");
+            String conf = ns.getStrProperty(prop, defaultM);
             np.append("   norm "+prop+": "); 
 
+            String space = "           ";
             if (conf.equals("fail")) {
                 np.append(" \n"); 
             } else {
                 np.append("true\n");                 
                 np.append("        -> prohibition(Agt,true,\n");
+                space += "    ";
             }
 
             String sep = "";
             for (String t: condCode.get(prop).split("&")) {
-                np.append(sep+"           "+t.trim());
+                np.append(sep+space+t.trim());
                 sep = " &\n";
             }
             
@@ -443,13 +364,12 @@ public class os2nopl {
         String args    = "";
         String condition = nrm.getCondition();                
         // macro condition
-        /*if (condition.startsWith("#")) {
+        if (condition.startsWith("#")) {
             condition = condition.substring(1);
             comment   = " // "+condition;
             args      = "("+argsCode.get(condition)+")";
             condition = condCode.get(condition) + " &\n           ";
-        } else*/
-        if (condition.equals("true")) {
+        } else if (condition.equals("true")) {
             condition = "";
         } else {
             condition = condition + " &\n           ";

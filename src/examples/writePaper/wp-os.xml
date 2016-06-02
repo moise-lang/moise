@@ -92,7 +92,8 @@
 
     <normative-specification>
         <properties>
-            <property id="role_compatibility" value="prohibition" />
+            <property id="default_management"  value="fail" />
+            <property id="role_compatibility"  value="prohibition" />
             <property id="mission_cardinality" value="prohibition" />
         </properties>
     
