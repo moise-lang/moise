@@ -14,7 +14,8 @@
      createWorkspace("ora4mas");
      joinWorkspace("ora4mas",O4MWsp);
      
-     makeArtifact("mypaper","ora4mas.nopl.GroupBoard",["../wp-os.xml", wpgroup, false, true ],GrArtId);
+     makeArtifact("mypaper","ora4mas.nopl.GroupBoard",["../wp-os.xml", wpgroup],GrArtId);
+     startGUI[artifact_id(GrArtId)];
      setOwner(Me);
 	 
      focus(GrArtId);
@@ -34,7 +35,8 @@
 -!start[error(I),error_msg(M)] <- .print("failure in starting! ",I,": ",M).
      
 +!run_scheme(S)
-   <- makeArtifact(S,"ora4mas.nopl.SchemeBoard",["../wp-os.xml", writePaperSch, false, true ],SchArtId);
+   <- makeArtifact(S,"ora4mas.nopl.SchemeBoard",["../wp-os.xml", writePaperSch],SchArtId);
+      startGUI[artifact_id(SchArtId)];
       focus(SchArtId);
       .print("scheme ",S," created");
       addScheme(S)[artifact_name("mypaper")]; 

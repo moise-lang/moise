@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import cartago.ArtifactConfig;
 import cartago.ArtifactId;
 import cartago.CartagoException;
 import cartago.LINK;
@@ -26,6 +25,7 @@ import jason.asSyntax.PredicateIndicator;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
+import jason.util.Config;
 import moise.common.MoiseException;
 import moise.oe.GoalInstance;
 import moise.oe.MissionPlayer;
@@ -112,7 +112,7 @@ public class SchemeBoard extends OrgArt {
      * @throws ParseException  if the OS file is not correct
      * @throws MoiseException  if schType was not specified
      */
-    public void init(final String osFile, final String schType, final boolean createMonitoring, final boolean hasGUI) throws ParseException, MoiseException {
+    public void init(final String osFile, final String schType) throws ParseException, MoiseException {
         final OS os = OS.loadOSFromURI(osFile);
         spec = os.getFS().findScheme(schType);
         
@@ -132,56 +132,35 @@ public class SchemeBoard extends OrgArt {
         defineObsProperty(obsPropGroups,  getSchState().getResponsibleGroupsAsProlog());
         defineObsProperty(obsPropSpec, new JasonTermWrapper(spec.getAsProlog()));
         
-        //isMonitorSch = spec.isMonitorSch();
-        
-        // use a thread to create GUI/Monitor (to not block the init)
-        new Thread() {
-            @Override public void run() {
-                try {
-                    startHttpServer();
-                    
-                    String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
-                    String osSpec = specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("os"))); 
-                    
-                    //String nplURL = registerNPLBrowserView("/scheme/",schType,srcNPL);
-                    //String osURL  = 
-                    String oeId = getCreatorId().getWorkspaceId().getName();
-                    registerOSBrowserView(oeId, os.getId(),osSpec);
-                    //String oeURL  = 
-                    registerOEBrowserView(oeId, "/scheme/",schId,srcNPL,SchemeBoard.this,getStyleSheet());
-                    
-                    // start GUI
-                    if (hasGUI) {
-                        /*if (Desktop.isDesktopSupported()) {
-                            //if (nplURL != null) Desktop.getDesktop().browse(new URI(nplURL));
-                            //if (osURL  != null) Desktop.getDesktop().browse(new URI(osURL));
-                            if (oeURL  != null) Desktop.getDesktop().browse(new URI(oeURL));
-                        } else {*/
-                        gui = OrgArtNormativeGUI.add(schId, "... Scheme Board "+schId+" ("+schType+") ...", nengine);
-                        
-                        updateGUIThread = new UpdateGuiThread();
-                        updateGUIThread.start();
-                     
-                        updateGuiOE();
-                        
-                        gui.addNormativeProgram(srcNPL);
-                        gui.addSpecification(specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));                                        
-                         //}
-                    }
-                    
-                    // create monitoring scheme
-                    if (createMonitoring && spec.getMonitoringSch() != null) {
-                        String schMonId = schId+"_monitor";
-                        monitorSchArt = makeArtifact(schMonId, SchemeBoard.class.getName(), new ArtifactConfig(schMonId, osFile, spec.getMonitoringSch(), false, hasGUI));
-                        //    (ArtifactId)invokeOp(getFactoryId(), new Op("makeArtifactProc", schMonId, SchemeBoard.class.getName(), new ArtifactConfig(schMonId, osFile, spec.getMonitoringSch(), false, hasGUI)));
-                        orgState.setMonitorSch(schMonId);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        if (! "false".equals(Config.get().getProperty(Config.START_WEB_OI))) {
+            String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
+            startHttpServer();
+            try {
+                String osSpec = specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("os"))); 
+                String oeId = getCreatorId().getWorkspaceId().getName();
+                registerOSBrowserView(oeId, os.getId(),osSpec);
+                registerOEBrowserView(oeId, "/scheme/",schId,srcNPL,SchemeBoard.this,getStyleSheet());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }.start();
+        }                    
     }
+    
+    @OPERATION public void startGUI() throws Exception {
+        String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
+        final String schId = getId().getName();
+
+        gui = OrgArtNormativeGUI.add(schId, "... Scheme Board "+schId+" ("+spec.getId()+") ...", nengine);
+        
+        updateGUIThread = new UpdateGuiThread();
+        updateGUIThread.start();
+     
+        updateGuiOE();
+        
+        gui.addNormativeProgram(srcNPL);
+        gui.addSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));                                                
+    }
+    
     /**
      * The agent executing this operation tries to delete the scheme board artifact 
      */

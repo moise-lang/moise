@@ -16,8 +16,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+import cartago.ArtifactId;
 import cartago.CartagoException;
 import cartago.CartagoService;
+import cartago.Op;
 import cartago.util.agent.CartagoBasicContext;
 import jason.infra.centralised.RunCentralisedMAS;
 import jason.runtime.RuntimeServicesInfraTier;
@@ -60,7 +62,8 @@ public class SimulatorGUI {
             crGrBT.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        ctxt.makeArtifact(gIdTF.getText().trim(),  GroupBoard.class.getName(),  new Object[] { fileTF.getText().trim(), gTypeTF.getText().trim(), false, true });
+                        ArtifactId aid = ctxt.makeArtifact(gIdTF.getText().trim(),  GroupBoard.class.getName(),  new Object[] { fileTF.getText().trim(), gTypeTF.getText().trim() });
+                        ctxt.doAction(aid, new Op("startGUI", new Object[] {} ));
                         for (AgentGUI a: ags) {
                             a.initArtsCBmodel();
                             a.initOpsCBmodel();
@@ -86,7 +89,9 @@ public class SimulatorGUI {
             crSchBT.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        ctxt.makeArtifact(sIdTF.getText().trim(),  SchemeBoard.class.getName(),  new Object[] { fileTF.getText().trim(), sTypeTF.getText().trim(), false, true });
+                        ArtifactId aid = ctxt.makeArtifact(sIdTF.getText().trim(),  SchemeBoard.class.getName(),  new Object[] { fileTF.getText().trim(), sTypeTF.getText().trim()});
+                        ctxt.doAction(aid, new Op("startGUI", new Object[] {} ));
+                        
                         for (AgentGUI a: ags) {
                             a.initArtsCBmodel();
                             a.initOpsCBmodel();

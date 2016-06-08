@@ -304,6 +304,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     }
     
     abstract public void agKilled(String agName);
+
     
     /** Http Server for GUI */
     

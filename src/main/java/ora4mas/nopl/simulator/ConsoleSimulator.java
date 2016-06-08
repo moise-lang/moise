@@ -30,11 +30,14 @@ public class ConsoleSimulator {
     }
 
     static void runWritePaper(WorkspaceKernel ora4masKernel, ICartagoContext ora4masCxt) throws Exception {
-        ora4masKernel.makeArtifact(ora4masCxt.getAgentId(), "g1",   GroupBoard.class.getName(),  new ArtifactConfig("src/examples/writePaper/wp-os.xml", "wpgroup",       false, true));
-        ora4masKernel.makeArtifact(ora4masCxt.getAgentId(), "sch1", SchemeBoard.class.getName(), new ArtifactConfig("src/examples/writePaper/wp-os.xml", "writePaperSch", false, true));
+        ora4masKernel.makeArtifact(ora4masCxt.getAgentId(), "g1",   GroupBoard.class.getName(),  new ArtifactConfig("src/examples/writePaper/wp-os.xml", "wpgroup"));
+        ora4masKernel.makeArtifact(ora4masCxt.getAgentId(), "sch1", SchemeBoard.class.getName(), new ArtifactConfig("src/examples/writePaper/wp-os.xml", "writePaperSch"));
         MyAgent jaime = new MyAgent("jaime", ora4masKernel);      jaime.start();
         MyAgent olivier = new MyAgent("olivier", ora4masKernel);  olivier.start();
         MyAgent jomi = new MyAgent("jomi", ora4masKernel);        jomi.start();
+
+        jaime.execOp("g1", "startGUI", "");
+        jaime.execOp("sch1", "startGUI", "");
 
         Thread.sleep(200);
         

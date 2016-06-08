@@ -7,6 +7,7 @@
 * while *achievement* goals have `satisfied(Sch,Goal)` as the _what_
 - *permissions* are perceived by the agents (with the same arguments as obligations)
 - use NPL prohibitions when we don't want to regiment some property (like role cardinality). See normative specification of src/examples/writePaper/wp-os.xml.
+- the group and scheme boards initialization have only the first two parameters (the xml file and the type). The last two boolean parameters were removed and a new operation `startGUI` added.
 - move to gradle
 - move to GitHub
 

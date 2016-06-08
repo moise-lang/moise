@@ -351,7 +351,7 @@ public class os2nopl {
             if (conf.equals("fail")) {
                 np.append("\n        -> fail("+prop+"("+argsCode.get(prop)+")).\n");
             } else {
-                np.append(",`never`).\n");                
+                np.append(",\n"+space+"`never`).\n");                
             }
         }
     }

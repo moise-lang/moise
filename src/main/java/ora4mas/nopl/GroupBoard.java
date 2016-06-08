@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import cartago.ArtifactConfig;
 import cartago.ArtifactId;
 import cartago.CartagoException;
 import cartago.LINK;
@@ -20,6 +19,7 @@ import cartago.OperationException;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
+import jason.util.Config;
 import moise.common.MoiseException;
 import moise.oe.GroupInstance;
 import moise.oe.RolePlayer;
@@ -105,7 +105,7 @@ public class GroupBoard extends OrgArt {
      * @throws MoiseException   if grType was not specified
      * @throws OperationException if parentGroupId doesn't exit
      */
-    public void init(final String osFile, final String grType, final boolean createMonitoring, final boolean hasGUI) throws ParseException, MoiseException, OperationException {
+    public void init(final String osFile, final String grType) throws ParseException, MoiseException, OperationException {
         final String grId = getId().getName();
         orgState   = new Group(grId);
        
@@ -130,63 +130,38 @@ public class GroupBoard extends OrgArt {
         // install monitor of agents quiting the system
         initWspRuleEngine();
         
-        //final ArtifactId myArtId = getId();
-
-        // use a thread to create GUI/Monitor (to not block the init)
-        new Thread() {
-            @Override public void run() {
-                try {
-                    
-                    String addrs = startHttpServer();
-
-                    String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
-                    String osSpec = specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("os")));
-                    
-                    //String nplURL = registerNPLBrowserView("/group/",grType,srcNPL);                    
-                    //String osURL  = 
-                    String oeId = getCreatorId().getWorkspaceId().getName();
-                    
-                    registerOSBrowserView(oeId, os.getId(), osSpec);
-                    
-                    //System.out.println("***"+getOpUserBody());
-                    //String oeURL  = 
-                    registerOEBrowserView(oeId, "/group/",grId,srcNPL,GroupBoard.this,getStyleSheet());
-                    
-                    // start GUI
-                    /*if (guiType.equals("browser") && Desktop.isDesktopSupported() && oeURL != null)
-                        Desktop.getDesktop().browse(new URI(oeURL));
-                    
-                    else */
-                    if (hasGUI) {
-                        gui = OrgArtNormativeGUI.add(grId, ":: Group Board "+grId+" ("+grType+") ::", nengine);
-                        
-                        updateGUIThread = new UpdateGuiThread();
-                        updateGUIThread.start();
-
-                        updateGuiOE();
-                        
-                        gui.addNormativeProgram(srcNPL);
-                        gui.addSpecification(specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
-                    } else {
-                        if (! httpMsg) {
-                            logger.info("You can open the Moise GUI using the URL "+addrs);
-                            httpMsg = true;
-                        }
-                    }
-                    
-                    // create monitoring scheme
-                    if (createMonitoring && spec.getMonitoringSch() != null) {
-                        String schMonId = grId+"_monitor";
-                        monitorSchArt =  makeArtifact(schMonId, SchemeBoard.class.getName(), new ArtifactConfig(schMonId, osFile, spec.getMonitoringSch(), false, hasGUI));
-                        orgState.setMonitorSch(schMonId);
-                        // TODO: exec produces an error
-                        //execLinkedOp(GroupBoard.this.getId(), "addScheme", schMonId);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        if (! "false".equals(Config.get().getProperty(Config.START_WEB_OI))) {
+            String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
+            String addrs = startHttpServer();
+            try {
+                String osSpec = specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("os")));
+                String oeId = getCreatorId().getWorkspaceId().getName();
+                
+                registerOSBrowserView(oeId, os.getId(), osSpec);
+                registerOEBrowserView(oeId, "/group/",grId,srcNPL,GroupBoard.this,getStyleSheet());
+                if (! httpMsg) {
+                    logger.info("You can open the Moise GUI using the URL "+addrs);
+                    httpMsg = true;
+                }            
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }.start();
+        }
+    }
+    
+    @OPERATION public void startGUI() throws Exception {
+        final String grId = getId().getName();
+        String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
+
+        gui = OrgArtNormativeGUI.add(grId, ":: Group Board "+grId+" ("+spec.getId()+") ::", nengine);
+        
+        updateGUIThread = new UpdateGuiThread();
+        updateGUIThread.start();
+
+        updateGuiOE();
+        
+        gui.addNormativeProgram(srcNPL);
+        gui.addSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
     }
     
     /**

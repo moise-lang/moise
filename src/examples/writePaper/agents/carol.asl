@@ -27,7 +27,7 @@
    <- .print("I am obliged to commit to ",mColaborator);
       commitMission(mColaborator)[artifact_name(Scheme)].
       
-+obligation(Ag,Norm,achieved(Scheme,Goal,Ag),DeadLine)
++obligation(Ag,Norm,done(Scheme,Goal,Ag),DeadLine)
     : .my_name(Ag)
    <- .print("I am obliged to achieve goal ",Goal);
       !Goal[scheme(Scheme)];
