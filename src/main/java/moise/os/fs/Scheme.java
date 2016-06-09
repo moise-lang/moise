@@ -9,18 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import moise.common.MoiseConsistencyException;
 import moise.common.MoiseElement;
 import moise.common.MoiseException;
 import moise.os.Cardinality;
 import moise.os.CardinalitySet;
-import moise.os.ss.Group;
 import moise.prolog.ToProlog;
 import moise.xml.DOMUtils;
 import moise.xml.ToXML;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  Represents a Scheme specification.
@@ -38,7 +37,7 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
     protected Set<Plan>                plans    = new HashSet<Plan>();
     protected Map<String,Goal>         goals    = new HashMap<String,Goal>();
     protected Goal                     root     = null;
-    protected String                   monitoring  = null;
+    //protected String                   monitoring  = null;
     protected FS                       fs       = null;
     
     public Scheme(String id, FS fs) {
@@ -59,6 +58,7 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
         return fs;
     }
 
+    /*
     public void setMonitoringSch(String schId) {
         monitoring = schId;
     }
@@ -76,7 +76,7 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
             if (s.getMonitoringSch() != null && s.getMonitoringSch().equals( this.getId()) )
                 return true;
         return false;
-    }
+    }*/
     
     //
     // Plan methods
@@ -188,8 +188,8 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
     public Element getAsDOM(Document document) {
         Element ele = (Element) document.createElement(getXMLTag());
         ele.setAttribute("id", getId());
-        if (getMonitoringSch() != null)
-            ele.setAttribute("monitoring-scheme", getMonitoringSch());
+        //if (getMonitoringSch() != null)
+        //    ele.setAttribute("monitoring-scheme", getMonitoringSch());
 
         // properties
         if (getProperties().size() > 0) {
@@ -211,8 +211,8 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
         setPropertiesFromDOM(ele);
 
         // monitoring-scheme
-        if (ele.getAttribute("monitoring-scheme").length() > 0)
-            setMonitoringSch(ele.getAttribute("monitoring-scheme"));
+        //if (ele.getAttribute("monitoring-scheme").length() > 0)
+        //    setMonitoringSch(ele.getAttribute("monitoring-scheme"));
 
         // root goal
         Element grEle = DOMUtils.getDOMDirectChild(ele, Goal.getXMLTag());

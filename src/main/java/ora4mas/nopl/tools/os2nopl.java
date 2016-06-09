@@ -62,7 +62,7 @@ public class os2nopl {
         condCode.put(PROP_SubgroupInGroup,       "group_id(Gr) & subgroup(G,GT,Gr) & not subgroup_cardinality(GT,_,_)");
         condCode.put(PROP_SubgroupCardinality,   "group_id(Gr) & subgroup_cardinality(SG,_,SGMax) & .count(subgroup(_,SG,Gr),SGP) & SGP > SGMax");
         
-        condCode.put(PROP_WellFormedResponsible, "responsible(Gr,S) & not monitor_scheme(S) & not well_formed(Gr)");
+        condCode.put(PROP_WellFormedResponsible, "responsible(Gr,S) & not well_formed(Gr)"); // not monitor_scheme(S) & 
         condCode.put(PROP_MissionPermission,     "committed(Agt,M,S) & not (mission_role(M,R) & responsible(Gr,S) & fplay(Agt,R,Gr))");
         condCode.put(PROP_LeaveMission,          "leaved_mission(Agt,M,S) & not mission_accomplished(S,M)");
         condCode.put(PROP_MissionCardinality,    "scheme_id(S) & mission_cardinality(M,_,MMax) & mplayers(M,S,MP) & MP > MMax");
@@ -292,7 +292,7 @@ public class os2nopl {
 
         np.append("   super_satisfied(S,G) :- super_goal(SG,G) & satisfied(S,SG).\n");
         
-        if (!sch.isMonitorSch()) {
+        //if (!sch.isMonitorSch()) {
             np.append("\n   // ** Norms\n\n");
             //np.append("   // --- missions ---\n");
             for (Norm nrm: sch.getFS().getOS().getNS().getNorms()) {            
@@ -303,7 +303,7 @@ public class os2nopl {
                     );
                 }
             }
-        }
+        //}
 
         np.append("\n   // --- Goals ---\n");
         

@@ -99,8 +99,6 @@ public class GroupBoard extends OrgArt {
      * 
      * @param osFile            the organisation specification file (path and file name)
      * @param grType            the type of the group (as defined in the OS)
-     * @param createMonitoring  whether a monitoring scheme will be created and attached
-     * @param hasGUI            whether a GUI have to be created for the artifact
      * @throws ParseException   if the OS file is not correct
      * @throws MoiseException   if grType was not specified
      * @throws OperationException if parentGroupId doesn't exit
@@ -127,7 +125,7 @@ public class GroupBoard extends OrgArt {
         initNormativeEngine(os, "group("+grType+")");
         installNormativeSignaler();
 
-        // install monitor of agents quiting the system
+        // install monitor of agents quitting the system
         initWspRuleEngine();
         
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_OI))) {

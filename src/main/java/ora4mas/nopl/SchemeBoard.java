@@ -107,8 +107,6 @@ public class SchemeBoard extends OrgArt {
      * 
      * @param osFile           the organisation specification file (path and file name)
      * @param schType          the type of the scheme (as defined in the OS)
-     * @param createMonitoring whether a monitoring scheme will be created and attached
-     * @param hasGUI           whether a GUI have to be created for the artifact
      * @throws ParseException  if the OS file is not correct
      * @throws MoiseException  if schType was not specified
      */
@@ -190,9 +188,9 @@ public class SchemeBoard extends OrgArt {
                             new JasonTermWrapper(agName), 
                             new JasonTermWrapper(p.getTarget()), 
                             this.getId().getName());
-                    updateMonitorScheme();
+                    //updateMonitorScheme();
                     updateGuiOE();
-                } catch (CartagoException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -227,7 +225,7 @@ public class SchemeBoard extends OrgArt {
                         new JasonTermWrapper(SchemeBoard.this.getId().getName()));
                 updateGoalStateObsProp();
                 
-                updateMonitorScheme();
+                //updateMonitorScheme();
             }
         }, "Error committing to mission "+mission);
     }
@@ -256,7 +254,7 @@ public class SchemeBoard extends OrgArt {
                             new JasonTermWrapper(mission), 
                             new JasonTermWrapper(SchemeBoard.this.getId().getName()));
                     
-                    updateMonitorScheme();
+                    //updateMonitorScheme();
                 }                
             }
         },"Error leaving mission "+mission);
@@ -282,7 +280,7 @@ public class SchemeBoard extends OrgArt {
                     //nengine.setDynamicFacts(orgState.transform());        
                     nengine.verifyNorms();
                 }
-                updateMonitorScheme();
+                //updateMonitorScheme();
     
                 updateGoalStateObsProp();
             }
@@ -300,7 +298,7 @@ public class SchemeBoard extends OrgArt {
             public void exec() throws NormativeFailureException, Exception {
                 getSchState().setGoalArgValue(goal, var, value.toString());
                 nengine.verifyNorms();
-                updateMonitorScheme();
+                //updateMonitorScheme();
     
                 updateGoalStateObsProp();
             }
@@ -318,7 +316,7 @@ public class SchemeBoard extends OrgArt {
                     getSchState().computeSatisfiedGoals();
                 }
                 nengine.verifyNorms();
-                updateMonitorScheme();
+                //updateMonitorScheme();
     
                 updateGoalStateObsProp();
             }
@@ -348,7 +346,7 @@ public class SchemeBoard extends OrgArt {
                 getSchState().setAsSatisfied(goal);
                 getSchState().computeSatisfiedGoals();
                 nengine.verifyNorms();
-                updateMonitorScheme();
+                //updateMonitorScheme();
     
                 updateGoalStateObsProp();
             }
@@ -370,13 +368,13 @@ public class SchemeBoard extends OrgArt {
                 for (Player p: rp)
                     g.addPlayer(p.getAg(), p.getTarget());
                 g.addResponsibleForScheme(orgState.getId());
-                if (spec.isMonitorSch())
-                    g.setMonitorSch(orgState.getId());
+                //if (spec.isMonitorSch())
+                //    g.setMonitorSch(orgState.getId());
                 getSchState().addGroupResponsibleFor(g);
         
                 nengine.verifyNorms();
         
-                updateMonitorScheme();
+                //updateMonitorScheme();
                 getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
             }
         }, null);
@@ -388,7 +386,7 @@ public class SchemeBoard extends OrgArt {
                 getSchState().removeGroupResponsibleFor( new Group(grId) );
         
                 nengine.verifyNorms();
-                updateMonitorScheme();
+                //updateMonitorScheme();
     
                 getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
             }
@@ -443,12 +441,13 @@ public class SchemeBoard extends OrgArt {
     }
 
 
-    
+    /*
     private void updateMonitorScheme() throws CartagoException {
         if (monitorSchArt != null) {
             execLinkedOp(monitorSchArt, "updateMonitoredScheme", orgState);
         }
     }
+    */
     
     /*
     public static List<String> computeAccomplisedMissions(String schId, Collection<Mission> missions, NPLInterpreter nengine) {
@@ -655,6 +654,7 @@ public class SchemeBoard extends OrgArt {
         return so.toString();
     }
 
+    /*
     @LINK void updateMonitoredScheme(Scheme monitoredSch) throws NormativeFailureException, CartagoException {
         // TODO
         //model.setMonitoredSch(monitoredSch);
@@ -662,5 +662,5 @@ public class SchemeBoard extends OrgArt {
         //nengine.verifyNorms();
         //updateGuiOE();
     }
-    
+    */
 }

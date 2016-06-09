@@ -37,12 +37,10 @@ import com.sun.net.httpserver.HttpServer;
 import cartago.AbstractWSPRuleEngine;
 import cartago.AgentQuitRequestInfo;
 import cartago.Artifact;
-import cartago.ArtifactId;
 import cartago.CartagoException;
 import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
 import cartago.Op;
-import cartago.OperationException;
 import cartago.util.agent.CartagoBasicContext;
 import jason.architecture.MindInspectorWeb;
 import jason.asSemantics.Unifier;
@@ -82,7 +80,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     protected NormativeListener  myNPLListener;
     
     protected CollectiveOE       orgState;
-    protected ArtifactId         monitorSchArt = null;
+    //protected ArtifactId         monitorSchArt = null;
     protected OrgArtNormativeGUI gui = null;
     
     protected boolean running = true;
@@ -134,13 +132,13 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         if (gui != null) {
             gui.remove();
         }
-        if (monitorSchArt != null) {
+        /*if (monitorSchArt != null) {
             try {
                 execLinkedOp(monitorSchArt, "destroy");
             } catch (OperationException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         signal(sglDestroyed, getId().getName());
         running = false;
         if (updateGUIThread != null)
