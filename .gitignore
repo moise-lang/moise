@@ -9,6 +9,8 @@ src/examples/writePaper/wp-gen.npl
 .stop___MAS
 .gradle
 .settings
+.classpath
+.project
 
 *~
 *.class

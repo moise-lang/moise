@@ -539,7 +539,8 @@ public class SchemeBoard extends OrgArt {
         schEle.setAttribute("id", getSchState().getId());
         schEle.setAttribute("specification", spec.getId());
         schEle.setAttribute("root-goal", spec.getRoot().getId());
-        
+        schEle.setAttribute("owner", ownerAgent);
+
         Term aSch = ASSyntax.createAtom(this.getId().getName());
 
         // status
