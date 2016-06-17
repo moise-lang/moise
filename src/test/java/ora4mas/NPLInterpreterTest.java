@@ -37,16 +37,16 @@ public class NPLInterpreterTest {
 
     @Before
     public void setUp() throws Exception {
-        OS os = OS.loadOSFromURI("src/examples/writePaper/wp-os.xml");
+        OS os = OS.loadOSFromURI("examples/writePaper/wp-os.xml");
         String np = os2nopl.transform(os);
-        BufferedWriter out = new BufferedWriter(new FileWriter("src/examples/writePaper/wp-gen.npl"));
+        BufferedWriter out = new BufferedWriter(new FileWriter("examples/writePaper/wp-gen.npl"));
         out.write(np);
         out.close();
     }
     
     @Test
     public void testWPGroupHJouse() throws ParseException, Exception {
-        String fName = "src/examples/test/house-os.xml";
+        String fName = "examples/test/house-os.xml";
         if (! new File(fName).exists()) {
             System.out.println("!!! not found: "+fName);
             return;
@@ -94,7 +94,7 @@ public class NPLInterpreterTest {
     @Test
     public void testWPGroup1() throws ParseException, Exception {
         NormativeProgram p = new NormativeProgram();
-        String src = "src/examples/writePaper/wp-gen.npl";
+        String src = "examples/writePaper/wp-gen.npl";
         Group g = new Group("g1");
         p.setSrc(src);
         new nplp(new FileReader(src)).program(p,g);
@@ -136,7 +136,7 @@ public class NPLInterpreterTest {
 
     @Test
     public void testWPGroup2() throws ParseException, Exception {
-        OS os = OS.loadOSFromURI("src/examples/auction/auction-os.xml");
+        OS os = OS.loadOSFromURI("examples/auction/auction-os.xml");
         String np = os2nopl.transform(os);
 
         Group g = new Group("g1");
@@ -168,7 +168,7 @@ public class NPLInterpreterTest {
     @Test
     public void testWPGroupVerify() throws ParseException, Exception {
         NormativeProgram p = new NormativeProgram();
-        String src = "src/examples/writePaper/wp-gen.npl";
+        String src = "examples/writePaper/wp-gen.npl";
         p.setSrc(src);
         Group g = new Group("wp1");
         new nplp(new FileReader(src)).program(p, g);
@@ -243,7 +243,7 @@ public class NPLInterpreterTest {
         g.addPlayer("jomi", "writer");
         g.addResponsibleForScheme("sch2");
         assertEquals(3, g.getPlayers().size());
-        OI oi = new OI("src/examples/writePaper/wp-os.xml", "writePaperSch", "sch2");
+        OI oi = new OI("examples/writePaper/wp-os.xml", "writePaperSch", "sch2");
         oi.getScheme().addGroupResponsibleFor(g);
         oi.setGroup(g);
 

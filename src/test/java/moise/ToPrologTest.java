@@ -17,7 +17,7 @@ public class ToPrologTest {
     
     @Before
     public void setUp() throws Exception {
-        oe = OE.createOE("test", "src/examples/tutorial/jojOS.xml");
+        oe = OE.createOE("test", "examples/tutorial/jojOS.xml");
         sch = oe.startScheme("sideAttack");
     }
 

@@ -18,7 +18,7 @@ public class NPLInterpreterTestSubGroups extends TestCase {
 
     public void testWPSubGroup1() throws ParseException, Exception {
         
-        OS os = OS.loadOSFromURI("src/examples/test/subgroups.xml");
+        OS os = OS.loadOSFromURI("examples/test/subgroups.xml");
         
         String np = os2nopl.transform(os);
         //System.out.println(np);

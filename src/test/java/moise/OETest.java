@@ -25,7 +25,7 @@ public class OETest {
     @Before
     public void setUp() throws Exception {
         try {
-            currentOE = OE.createOE("winGame", "src/examples/tutorial/jojOS.xml");
+            currentOE = OE.createOE("winGame", "examples/tutorial/jojOS.xml");
 
             // Group creation
             GroupInstance   team    = currentOE.addGroup("team");

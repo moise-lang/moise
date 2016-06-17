@@ -20,11 +20,11 @@ public class TranslationTest {
 
     @Test
     public void testWP() throws ParseException, Exception {
-        OS os = OS.loadOSFromURI("src/examples/writePaper/wp-os.xml");
+        OS os = OS.loadOSFromURI("examples/writePaper/wp-os.xml");
         
         String np = os2nopl.transform(os);
         System.out.println(np);
-        BufferedWriter out = new BufferedWriter(new FileWriter("src/examples/writePaper/wp-gen.npl"));
+        BufferedWriter out = new BufferedWriter(new FileWriter("examples/writePaper/wp-gen.npl"));
         out.write(np);
         out.close();
         NormativeProgram p = new NormativeProgram();
@@ -34,11 +34,11 @@ public class TranslationTest {
 
     @Test
     public void testGgroupWithoutRole() throws ParseException, Exception {
-        OS os = OS.loadOSFromURI("src/examples/test/groupwithoutrole.xml");
+        OS os = OS.loadOSFromURI("examples/test/groupwithoutrole.xml");
         
         String np = os2nopl.transform(os);
         //System.out.println(np);
-        BufferedWriter out = new BufferedWriter(new FileWriter("src/examples/test/groupwithoutrole.npl"));
+        BufferedWriter out = new BufferedWriter(new FileWriter("examples/test/groupwithoutrole.npl"));
         out.write(np);
         out.close();
         NormativeProgram p = new NormativeProgram();
