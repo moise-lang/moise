@@ -3,8 +3,9 @@ build
 
 mas.log
 
-src/examples/performance/case1/profiling*
-src/examples/writePaper/wp-gen.npl
+examples/performance/case1/profiling*
+examples/writePaper/wp-gen.npl
+examples/test/groupwithoutrole.npl
 
 .stop___MAS
 .gradle
@@ -25,6 +26,3 @@ src/examples/writePaper/wp-gen.npl
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-
-src/examples/test/groupwithoutrole.npl
-src/examples/test/groupwithoutrole.npl
