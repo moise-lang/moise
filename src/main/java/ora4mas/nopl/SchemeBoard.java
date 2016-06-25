@@ -74,9 +74,10 @@ import ora4mas.nopl.tools.os2nopl;
  * <ul>
  * <li>oblCreated(o): the obligation <i>o</i> is created.
  * <li>oblFulfilled(o): the obligation <i>o</i> is fulfilled
- * <li>oblUnfulfilled(o): the obligation <i>o</i> is unfulfilled (e.g. by timeout).</br>
- *    e.g. <code>o = obligation(Ag,_,done(Sch,bid,Ag), TTF)</code>.
- * <li>oblInactive(o): the obligation <i>o</i> is inactive (e.g. its maintenance condition does not hold anymore)
+ * <li>oblUnfulfilled(o): the obligation <i>o</i> is unfulfilled (e.g. by timeout).
+ * <li>oblInactive(o): the obligation <i>o</i> is inactive (e.g. its maintenance condition does not hold anymore).</br>
+ *    e.g. <code>o = obligation(Ag,_,done(Sch,bid,Ag), TTF)</code> if the <code>bid</code> is a performance goal and
+ *         <code>o = obligation(Ag,_,satisfied(Sch,bid), TTF)</code> if the <code>bid</code> is an achivement goal.
  * <li>normFailure(f): the failure <i>f</i> has happened (e.g. due some regimentation).</br>
  *    e.g. <code>f = fail(mission_permission(Ag,M,Sch))</code>. The f comes from the normative program.
  * </ul>
