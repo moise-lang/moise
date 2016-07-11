@@ -138,23 +138,27 @@ public class os2dot {
         StringWriter so = new StringWriter();
         
         so.append("\n        // group "+g.getId()+"\n");
+        String id    = g.getId();
         String label = g.getId();
-        if (gInstance != null)
+        if (gInstance != null) {
+            id    = gInstance.getId();
             label = gInstance.getId() + ": " + label;
-        so.append("        "+g.getId()+" [label=\""+label+"\",shape=tab, fontname=\"Courier-Bold\",style=filled];\n");
+        }
+        so.append("        "+id+" [label=\""+label+"\",shape=tab, fontname=\"Courier-Bold\",style=filled];\n");
         //so.append("     "+g.getId()+" [shape=box, fontname=\"Courier-Bold\",style=filled,fillcolor=lightyellow];\n");
         for (Role r: g.getRoles().getAll()) {
             String card = g.getRoleCardinality(r).toStringFormat2();
-            so.append("        "+g.getId()+" -> "+r.getId()+"  [arrowtail=odiamond, arrowhead=none, dir=both, label=\""+card+"\",fontname=\"Times\",arrowsize=1.5];\n");
+            so.append("        "+id+" -> "+r.getId()+"  [arrowtail=odiamond, arrowhead=none, dir=both, label=\""+card+"\",fontname=\"Times\",arrowsize=1.5];\n");
         }
         for (Group sg: g.getSubGroups()) {
             String card = g.getSubGroupCardinality(sg).toStringFormat2();
-            so.append("        "+g.getId()+" -> "+sg.getId()+"  [arrowtail=odiamond, arrowhead=none, dir=both, label=\""+card+"\",fontname=\"Times\",arrowsize=1.5];\n");
             if (gInstance == null) {
+                so.append("        "+id+" -> "+sg.getId()+"  [arrowtail=odiamond, arrowhead=none, dir=both, label=\""+card+"\",fontname=\"Times\",arrowsize=1.5];\n");
                 so.append(transform(sg, null));
             } else {
                 for (ora4mas.nopl.oe.Group sgi: gInstance.getSubgroups()) {
                     if (sgi.getGrType().equals(sg.getId())) {
+                        so.append("        "+id+" -> "+sgi.getId()+"  [arrowtail=odiamond, arrowhead=none, dir=both, label=\""+card+"\",fontname=\"Times\",arrowsize=1.5];\n");
                         so.append(transform(sg, sgi));
                     }
                 }
@@ -192,11 +196,12 @@ public class os2dot {
             for (Player p: gInstance.getPlayers()) {
                 so.append("        "+p.getAg()+ ";\n"); // [shape=plaintext]
                 so.append("        "+p.getAg()+" -> "+p.getTarget()+" [arrowsize=0.5];\n");                
+                //so.append("        "+p.getAg()+" -> "+p.getTarget()+" [label=\""+id+"\",arrowsize=0.5];\n");                
             }
             
             for (String s: gInstance.getSchemesResponsibleFor()) {
                 so.append("        "+s+ "[shape=hexagon, style=filled, fontname=\"Courier\", URL=\"/scheme/"+s+"\"];\n"); 
-                so.append("        "+g.getId()+" -> "+s+" [label=\"responsible\nfor\",labelfontsize=8,fontname=\"Italic\",arrowhead=open];\n");                
+                so.append("        "+id+" -> "+s+" [label=\"responsible\nfor\",labelfontsize=8,fontname=\"Italic\",arrowhead=open];\n");                
                 
             }
         }

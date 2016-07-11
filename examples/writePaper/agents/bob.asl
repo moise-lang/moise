@@ -14,7 +14,7 @@
      createWorkspace("ora4mas");
      joinWorkspace("ora4mas",O4MWsp);
      
-     makeArtifact("myorg", "ora4mas.nopl.OrgBoard", ["../wp-os.xml"], OrgArtId);
+     makeArtifact(myorg, "ora4mas.nopl.OrgBoard", ["../wp-os.xml"], OrgArtId);
      focus(OrgArtId);
      
      createGroup("mypaper", wpgroup, GrArtId);
