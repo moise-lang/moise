@@ -14,11 +14,13 @@
      createWorkspace("ora4mas");
      joinWorkspace("ora4mas",O4MWsp);
      
-     makeArtifact("mypaper","ora4mas.nopl.GroupBoard",["../wp-os.xml", wpgroup],GrArtId);
+     makeArtifact("myorg", "ora4mas.nopl.OrgBoard", ["../wp-os.xml"], OrgArtId);
+     focus(OrgArtId);
+     
+     createGroup("mypaper", wpgroup, GrArtId);
      startGUI[artifact_id(GrArtId)];
      setOwner(Me);
 	 
-     focus(GrArtId);
      .print("group created");
 	 
      adoptRole(editor)[artifact_id(GrArtId)];
@@ -30,14 +32,16 @@
      ?play(carol,writer,mypaper);
 	 
      !run_scheme(sch1).
+     
++group(_,_,AID)  <- focus(AID).     
++scheme(_,_,AID) <- focus(AID).
 
 // general error handler for goal start 
 -!start[error(I),error_msg(M)] <- .print("failure in starting! ",I,": ",M).
      
 +!run_scheme(S)
-   <- makeArtifact(S,"ora4mas.nopl.SchemeBoard",["../wp-os.xml", writePaperSch],SchArtId);
+   <- createScheme(S, writePaperSch, SchArtId);
       startGUI[artifact_id(SchArtId)];
-      focus(SchArtId);
       .print("scheme ",S," created");
       addScheme(S)[artifact_name("mypaper")]; 
       .print("scheme is linked to responsible group");	 
@@ -53,11 +57,9 @@
 
 +goalState(sch1, wp, _, _, satisfied)         
    <- .wait(1000);
-      lookupArtifact(sch1,SchId);      
-      destroy[artifact_id(SchId)];
-      disposeArtifact(SchId);
+      removeScheme(sch1);
       .print("starting a new scheme...");
-      !run_scheme(sch2).
+      !!run_scheme(sch2).
 
 +?play(A,R,G) <- .wait({+play(_,_,_)},100,_); ?play(A,R,G).
     

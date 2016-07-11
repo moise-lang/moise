@@ -34,7 +34,7 @@ import npl.NPLInterpreter;
 import npl.NormativeListener;
 
 /** General GUI for OrgArts */
-public class OrgArtNormativeGUI {
+public class GUIInterface {
     
     NPLInterpreter nengine; 
     
@@ -50,7 +50,7 @@ public class OrgArtNormativeGUI {
     private JTextArea txtLog = new JTextArea(9, 10);
     private JPanel    artPanel;
     
-    private OrgArtNormativeGUI() {    
+    private GUIInterface() {    
     }
 
     private static void initFrame() {
@@ -72,11 +72,11 @@ public class OrgArtNormativeGUI {
         });        
     }
     
-    public static OrgArtNormativeGUI add(String id, String title, NPLInterpreter nengine) throws Exception {
+    public static GUIInterface add(String id, String title, NPLInterpreter nengine) throws Exception {
         if (frame == null)
             initFrame();
         
-        final OrgArtNormativeGUI gui = new OrgArtNormativeGUI();
+        final GUIInterface gui = new GUIInterface();
         gui.nengine = nengine;
         
         // normative state

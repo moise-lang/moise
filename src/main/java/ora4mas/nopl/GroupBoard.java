@@ -85,8 +85,6 @@ public class GroupBoard extends OrgArt {
     public static final String obsPropParentGroup = "parentGroup";
     public static final String obsWellFormed      = "formationStatus";
 
-    private static boolean httpMsg = false;
-    
     protected Logger logger = Logger.getLogger(GroupBoard.class.getName());
 
     private Group getGrpState() {
@@ -110,9 +108,11 @@ public class GroupBoard extends OrgArt {
         final OS os = OS.loadOSFromURI(osFile);
         
         spec = os.getSS().getRootGrSpec().findSubGroup(grType);
-        
+
         if (spec == null)
             throw new MoiseException("group "+grType+" does not exist!");
+
+        oeId = getCreatorId().getWorkspaceId().getName();
 
         // observable properties
         defineObsProperty(obsPropSchemes, getGrpState().getResponsibleForAsProlog());
@@ -130,17 +130,9 @@ public class GroupBoard extends OrgArt {
         
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_OI))) {
             String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
-            String addrs = startHttpServer();
+            WebInterface w = WebInterface.get();
             try {
-                String osSpec = specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("os")));
-                String oeId = getCreatorId().getWorkspaceId().getName();
-                
-                registerOSBrowserView(oeId, os.getId(), osSpec);
-                registerOEBrowserView(oeId, "/group/",grId,srcNPL,GroupBoard.this,getStyleSheet());
-                if (! httpMsg) {
-                    logger.info("You can open the Moise GUI using the URL "+addrs);
-                    httpMsg = true;
-                }            
+                w.registerOEBrowserView(oeId, "/group/",grId,srcNPL,GroupBoard.this,getStyleSheet(), this);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -151,7 +143,7 @@ public class GroupBoard extends OrgArt {
         final String grId = getId().getName();
         String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
 
-        gui = OrgArtNormativeGUI.add(grId, ":: Group Board "+grId+" ("+spec.getId()+") ::", nengine);
+        gui = GUIInterface.add(grId, ":: Group Board "+grId+" ("+spec.getId()+") ::", nengine);
         
         updateGUIThread = new UpdateGuiThread();
         updateGUIThread.start();

@@ -18,7 +18,10 @@ auction_id(0).
      createWorkspace("ora4mas");
      joinWorkspace("ora4mas",O4MWsp);
      
-     makeArtifact("auction","ora4mas.nopl.GroupBoard",["../auction-os.xml", auctionGroup],GrArtId);
+     makeArtifact(myorg, "ora4mas.nopl.OrgBoard", ["../auction-os.xml"], OrgArtId);
+     focus(OrgArtId);
+     
+     createGroup(auction, auctionGroup, GrArtId);
      startGUI[artifact_id(GrArtId)];
 	 adoptRole(auctioneer);
 	 focus(GrArtId).
@@ -35,7 +38,7 @@ auction_id(0).
 
 +!create_scheme 
    <- ?auction_id(Id); .concat("sch",Id,Sch); // create a new scheme id
-      makeArtifact(Sch,"ora4mas.nopl.SchemeBoard",["../auction-os.xml", doAuction],SchArtId);
+      createScheme(Sch, doAuction, SchArtId);
       startGUI[artifact_id(SchArtId)];
       focus(SchArtId);
       addScheme(Sch);
@@ -84,9 +87,7 @@ auction_id(0).
 +goalState(Sch, auction(X), _, _, satisfied)
     :  auction_id(N) & N < 5         
    <- .wait(1000);	  
-      lookupArtifact(Sch,SchId);      
-      destroy[artifact_id(SchId)];
-      disposeArtifact(SchId).
+      removeScheme(Sch).
       
 /*
    Communication protocol for bids

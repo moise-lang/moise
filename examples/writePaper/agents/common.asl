@@ -22,7 +22,7 @@
        joinWorkspace("ora4mas",_).
 -!join
    <- .wait(200);
-      !!join.
+      !join.
             
 +!quit_mission(M,S)
    <- .print("leaving my mission ",M," on ",S,"....");

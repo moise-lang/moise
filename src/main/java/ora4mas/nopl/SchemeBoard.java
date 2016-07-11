@@ -120,6 +120,8 @@ public class SchemeBoard extends OrgArt {
         
         if (spec == null)
             throw new MoiseException("scheme "+schType+" does not exist!");
+        
+        oeId = getCreatorId().getWorkspaceId().getName();
 
         // load normative program
         initNormativeEngine(os, "scheme("+schType+")");
@@ -133,12 +135,9 @@ public class SchemeBoard extends OrgArt {
         
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_OI))) {
             String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
-            startHttpServer();
+            WebInterface w = WebInterface.get();
             try {
-                String osSpec = specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("os"))); 
-                String oeId = getCreatorId().getWorkspaceId().getName();
-                registerOSBrowserView(oeId, os.getId(),osSpec);
-                registerOEBrowserView(oeId, "/scheme/",schId,srcNPL,SchemeBoard.this,getStyleSheet());
+                w.registerOEBrowserView(oeId, "/scheme/",schId,srcNPL,SchemeBoard.this,getStyleSheet(), this);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -149,7 +148,7 @@ public class SchemeBoard extends OrgArt {
         String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
         final String schId = getId().getName();
 
-        gui = OrgArtNormativeGUI.add(schId, "... Scheme Board "+schId+" ("+spec.getId()+") ...", nengine);
+        gui = GUIInterface.add(schId, "... Scheme Board "+schId+" ("+spec.getId()+") ...", nengine);
         
         updateGUIThread = new UpdateGuiThread();
         updateGUIThread.start();
@@ -164,17 +163,21 @@ public class SchemeBoard extends OrgArt {
      * The agent executing this operation tries to delete the scheme board artifact 
      */
     @OPERATION public void destroy() {
-        super.destroy();
-        
-        for (Group g: getSchState().getGroupsResponsibleFor()) {
-            ArtifactId aid;
-            try {
-                aid = lookupArtifact(g.getId());
-                if (aid != null)
-                    execLinkedOp(aid, "removeScheme", getId().getName());
-            } catch (OperationException e) {
-                e.printStackTrace();
+        try {
+            super.destroy();
+            
+            for (Group g: getSchState().getGroupsResponsibleFor()) {
+                ArtifactId aid;
+                try {
+                    aid = lookupArtifact(g.getId());
+                    if (aid != null)
+                        execLinkedOp(aid, "removeScheme", getId().getName());
+                } catch (OperationException e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
