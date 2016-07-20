@@ -1,15 +1,18 @@
 // This agent creates the group/scheme to write a paper
 // and adopts the role "editor" in the group
 
+my_role(editor).
+
+{ include("common.asl") }
 { include("common-moise.asl") } // some common plans for obedient agents
 
 /* Initial goals */
 
-!start.
+!create.
 
 /* Plans */
 
-+!start 
++!create 
   <- .my_name(Me);
      createWorkspace("ora4mas");
      joinWorkspace("ora4mas",O4MWsp);
@@ -18,12 +21,12 @@
      focus(OrgArtId);
      
      createGroup("mypaper", wpgroup, GrArtId);
-     startGUI[artifact_id(GrArtId)];
+     debug(inspector_gui(on))[artifact_id(GrArtId)];
      setOwner(Me);
 	 
      .print("group created");
 	 
-     adoptRole(editor)[artifact_id(GrArtId)];
+     //adoptRole(editor)[artifact_id(GrArtId)];
 	 
      // wait for alice
      ?play(alice,writer,mypaper);
@@ -41,9 +44,9 @@
      
 +!run_scheme(S)
    <- createScheme(S, writePaperSch, SchArtId);
-      startGUI[artifact_id(SchArtId)];
+      debug(inspector_gui(on))[artifact_id(SchArtId)];
       .print("scheme ",S," created");
-      addScheme(S)[artifact_name("mypaper")]; 
+      addScheme(S); //[artifact_name("mypaper")]; 
       .print("scheme is linked to responsible group");	 
       commitMission(mManager)[artifact_id(SchArtId)].
 -!run_scheme(S)[error(I),error_msg(M)] <- .print("failure creating scheme ",S," -- ",I,": ",M).

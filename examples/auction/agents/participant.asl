@@ -9,7 +9,7 @@
 
 +!start 
    <- lookupArtifact("auction",GrArtId); 
-      adoptRole(participant);
+      adoptRole(participant)[artifact_id(GrArtId)];
 	  focus(GrArtId).
 -!start
    <- .wait(100);

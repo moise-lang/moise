@@ -116,7 +116,6 @@ public class OrgBoard extends Artifact {
     }
     
     @OPERATION public void createScheme(String id, String type, OpFeedbackParam<ArtifactId> said) throws OperationException {
-        logger.info("start create scheme");
         ArtifactId aid = makeArtifact(id, SchemeBoard.class.getName(), new ArtifactConfig(osFile, type) );
         aids.put(id, aid);
         defineObsProperty("scheme", new Atom(id), new Atom(type), aid);

@@ -1,17 +1,6 @@
-/* auxiliary organisational plans for agents */
-
-// keep focused on schemes that my groups are responsible for
-+schemes(L)
-   <- !focus_on_schemes(L).
-   
-+!focus_on_schemes([]).
-+!focus_on_schemes([S|R])
-   <- lookupArtifact(S,ArtId);
-      focus(ArtId);
-      !focus_on_schemes(R).
--!focus_on_schemes(L)[error_msg("Artifact Not Available.")]
-  <- .wait(100); // try latter
-     !focus_on_schemes(L).
+/* auxiliary organisational plans for obedient agents 
+   (they always do whatever they are asked to)
+*/
 
 /* plans to handle obligations */
 

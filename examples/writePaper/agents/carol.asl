@@ -1,6 +1,8 @@
 // this agent waits for the group creation and then
-// adopts the role write and
+// adopts the role writer and
 // commits to the mission mColaborator
+
+my_role(writer).
 
 { include("common.asl") }
 
@@ -32,4 +34,3 @@
    <- .print("I am obliged to achieve goal ",Goal);
       !Goal[scheme(Scheme)];
       goalAchieved(Goal)[artifact_name(Scheme)].
-             

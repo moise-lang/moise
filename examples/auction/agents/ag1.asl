@@ -5,6 +5,6 @@
 
 // plan for the bid organisational goal
 +!bid[scheme(Sch)] 
-   :  goalState(Sch, auction(N), _, _, _) &   // get the auction number
+   :  goalArgument(Sch, auction, "N", N) &   // get the auction number
       commitment(Ag, mAuctioneer, Sch)   // get the agent committed to mAuctineer
    <- .send(Ag, tell, place_bid(N,6)).

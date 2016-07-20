@@ -22,9 +22,7 @@ import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Literal;
 import jason.asSyntax.PredicateIndicator;
-import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Term;
-import jason.asSyntax.VarTerm;
 import jason.util.Config;
 import moise.common.MoiseException;
 import moise.oe.GoalInstance;
@@ -63,21 +61,23 @@ import ora4mas.nopl.tools.os2nopl;
  *     e.g. <code>commitment(bob,mission1,s1)</code>
  * <li>groups: a list of groups responsible for the scheme.</br>
  *     e.g. <code>groups([g1])</code>
- * <li>goalState(schId, goal, list of committed agents, list of agents that achieved the goal, state); where states are: waiting, enabled, satisfied).</br>
+ * <li>goalState(schId, goal, list of committed agents, list of agents that performed the goal, state); where states are: waiting, enabled, satisfied).</br>
  *     e.g. <code>goalState(s1,g5,[alice,bob],[alice],satisfied)</code>
  * <li>specification: the specification of the scheme in the OS (a prolog like representation).
  * <li>obligation(ag,reason,goal,deadline): current active obligations.</br>
  *     e.g. <code>obligation(bob,ngoal(s1,mission1,g5),done(s1,bid,bob),1475417322254)</code>
+ * <li>goalArgument(schemeId, goalId, argId, value): value of goals' arguments, defined by the operation setArgumentValue</br>
+ *     e.g. <code>goalArgument(sch1, winner, "W", "Bob")</code>
  * </ul>
  * 
- * <b>Signals</b> (obligations has the form: obligation(to whom, maintenance condition, what, deadline)):
+ * <b>Signals</b> (obligation o has the form: obligation(to whom, maintenance condition, what, deadline)):
  * <ul>
  * <li>oblCreated(o): the obligation <i>o</i> is created.
  * <li>oblFulfilled(o): the obligation <i>o</i> is fulfilled
  * <li>oblUnfulfilled(o): the obligation <i>o</i> is unfulfilled (e.g. by timeout).
  * <li>oblInactive(o): the obligation <i>o</i> is inactive (e.g. its maintenance condition does not hold anymore).</br>
  *    e.g. <code>o = obligation(Ag,_,done(Sch,bid,Ag), TTF)</code> if the <code>bid</code> is a performance goal and
- *         <code>o = obligation(Ag,_,satisfied(Sch,bid), TTF)</code> if the <code>bid</code> is an achivement goal.
+ *         <code>o = obligation(Ag,_,satisfied(Sch,bid), TTF)</code> if the <code>bid</code> is an achievement goal.
  * <li>normFailure(f): the failure <i>f</i> has happened (e.g. due some regimentation).</br>
  *    e.g. <code>f = fail(mission_permission(Ag,M,Sch))</code>. The f comes from the normative program.
  * </ul>
@@ -144,19 +144,23 @@ public class SchemeBoard extends OrgArt {
         }                    
     }
     
-    @OPERATION public void startGUI() throws Exception {
+    @OPERATION public void debug(String kind) throws Exception {
         String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
         final String schId = getId().getName();
-
-        gui = GUIInterface.add(schId, "... Scheme Board "+schId+" ("+spec.getId()+") ...", nengine);
-        
-        updateGUIThread = new UpdateGuiThread();
-        updateGUIThread.start();
-     
-        updateGuiOE();
-        
-        gui.addNormativeProgram(srcNPL);
-        gui.addSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));                                                
+        if (kind.equals("inspector_gui(on)")) {
+            gui = GUIInterface.add(schId, "... Scheme Board "+schId+" ("+spec.getId()+") ...", nengine);
+            
+            updateGUIThread = new UpdateGuiThread();
+            updateGUIThread.start();
+         
+            updateGuiOE();
+            
+            gui.addNormativeProgram(srcNPL);
+            gui.addSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));
+        }
+        if (kind.equals("inspector_gui(off)")) {
+            System.out.println("not implemented yet, ask the developers to do so.");
+        }    
     }
     
     /**
@@ -264,7 +268,7 @@ public class SchemeBoard extends OrgArt {
         },"Error leaving mission "+mission);
     }
     
-    /** The agent executing this operation set the goal as achieved by it.
+    /** The agent executing this operation set the goal as performed by it.
      *  
      * <p>Verifications:<ul> 
      *     <li>the agent must be committed to the goal</li>
@@ -272,10 +276,10 @@ public class SchemeBoard extends OrgArt {
      * </ul>
      */
     @OPERATION public void goalAchieved(String goal) throws CartagoException {
-        goalAchieved(getOpUserName(), goal);
+        goalDone(getOpUserName(), goal);
     }
     
-    private void goalAchieved(final String agent, final String goal) throws CartagoException {
+    private void goalDone(final String agent, final String goal) throws CartagoException {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 getSchState().addDoneGoal(agent, goal);
@@ -293,9 +297,9 @@ public class SchemeBoard extends OrgArt {
     
     /** The agent executing this operation sets a value for a goal argument.
      *  
-     *  @param goal              		The goal to which the value should be added
-     *  @param var 						name of the variable to which the value is modified
-     *  @param value					value set to the variable of the goal
+     *  @param goal                     The goal to which the value should be added
+     *  @param var                      name of the variable to which the value is modified
+     *  @param value                    value set to the variable of the goal
      */
     @OPERATION public void setArgumentValue(final String goal, final String var, final Object value) throws CartagoException {
         ora4masOperationTemplate(new Operation() {
@@ -305,13 +309,17 @@ public class SchemeBoard extends OrgArt {
                 //updateMonitorScheme();
     
                 updateGoalStateObsProp();
+                defineObsProperty("goalArgument", ASSyntax.createAtom(SchemeBoard.this.getId().getName()), 
+                        new Atom(goal), 
+                        ASSyntax.createString(var), 
+                        value);
             }
         },"Error setting value of argument "+var+" of "+goal+" as "+value);
     }
     
     /** The agent executing this operation reset some goal.
      * It becomes not achieved, also goals that depends on it or sub-goals are set as unachieved    
-     * @param goal						The goal to be reset
+     * @param goal                      The goal to be reset
      */
     @OPERATION public void resetGoal(final String goal) throws CartagoException {
         ora4masOperationTemplate(new Operation() {
@@ -327,6 +335,17 @@ public class SchemeBoard extends OrgArt {
         }, "Error reseting goal "+goal);
     }
 
+    /**
+     * Commands that the owner of the scheme can perform.
+     * 
+     * @param cmd, possible values (as strings):
+     *     commitMission(<agent>,<mission>),
+     *     goalDone(<agent>,<goal>) -- for performance goals --,
+     *     goalSatisfied(<goal>) -- for achievement goals --
+     *     
+     * @throws CartagoException
+     * @throws jason.asSyntax.parser.ParseException
+     */
     @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException {
         if (!running) return;
         // this operation is available only for the owner of the artifact
@@ -334,8 +353,8 @@ public class SchemeBoard extends OrgArt {
             failed("Error: agent '"+getOpUserName()+"' is not allowed to run "+cmd,"reason",new JasonTermWrapper("not_allowed_to_start(admCommand)"));
         } else {
             Literal lCmd = ASSyntax.parseLiteral(cmd);
-            if (lCmd.getFunctor().equals("goalAchieved")) {
-                goalAchieved(fixAgName(lCmd.getTerm(0).toString()), lCmd.getTerm(1).toString());
+            if (lCmd.getFunctor().equals("goalDone")) {
+                goalDone(fixAgName(lCmd.getTerm(0).toString()), lCmd.getTerm(1).toString());
             } else if (lCmd.getFunctor().equals("commitMission")) {
                 commitMission(fixAgName(lCmd.getTerm(0).toString()), lCmd.getTerm(1).toString());
             } else if (lCmd.getFunctor().equals("goalSatisfied")) {
@@ -361,7 +380,7 @@ public class SchemeBoard extends OrgArt {
     @LINK public void interactionCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException {
         Literal lCmd = ASSyntax.parseLiteral(cmd);
         if (lCmd.getFunctor().equals("goalAchieved")) {
-            goalAchieved(fixAgName(lCmd.getTerm(0).toString()), lCmd.getTerm(1).toString());
+            goalDone(fixAgName(lCmd.getTerm(0).toString()), lCmd.getTerm(1).toString());
         }
     }
     
@@ -397,7 +416,8 @@ public class SchemeBoard extends OrgArt {
         }, null);
     }
     
-    List<ObsProperty> goalStObsProps = new ArrayList<ObsProperty>();
+    // list of obs props for goal states
+    private List<ObsProperty> goalStObsProps = new ArrayList<ObsProperty>();
     
     protected void updateGoalStateObsProp() {
         List<Literal> goals = getGoalStates();
@@ -487,7 +507,9 @@ public class SchemeBoard extends OrgArt {
             Literal lGoal = ASSyntax.createLiteral(g.getId());
             
             // add arguments
-            if (g.hasArguments()) {
+            // removed to keep it compatible with obligation event
+            // goalArgValue obs property was added for that
+            /*if (g.hasArguments()) {
                 for (String arg: g.getArguments().keySet()) {
                     String value = getSchState().getGoalArgValue(g.getId(), arg);
                     if (value == null) {
@@ -500,7 +522,7 @@ public class SchemeBoard extends OrgArt {
                         }
                     }
                 }
-            }
+            }*/
                 
             // state
             Atom aState = aWaiting;
@@ -511,7 +533,7 @@ public class SchemeBoard extends OrgArt {
                 aState = aEnabled;
             }              
 
-            // achieved by
+            // performed by
             ListTerm lAchievedBy = new ListTermImpl();
             ListTerm tail = lAchievedBy;
             for (Literal p: getSchState().getDoneGoals()) {

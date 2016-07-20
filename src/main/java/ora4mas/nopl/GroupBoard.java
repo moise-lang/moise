@@ -139,19 +139,24 @@ public class GroupBoard extends OrgArt {
         }
     }
     
-    @OPERATION public void startGUI() throws Exception {
+    @OPERATION public void debug(String kind) throws Exception {
         final String grId = getId().getName();
-        String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
-
-        gui = GUIInterface.add(grId, ":: Group Board "+grId+" ("+spec.getId()+") ::", nengine);
-        
-        updateGUIThread = new UpdateGuiThread();
-        updateGUIThread.start();
-
-        updateGuiOE();
-        
-        gui.addNormativeProgram(srcNPL);
-        gui.addSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
+        if (kind.equals("inspector_gui(on)")) {
+            String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
+    
+            gui = GUIInterface.add(grId, ":: Group Board "+grId+" ("+spec.getId()+") ::", nengine);
+            
+            updateGUIThread = new UpdateGuiThread();
+            updateGUIThread.start();
+    
+            updateGuiOE();
+            
+            gui.addNormativeProgram(srcNPL);
+            gui.addSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
+        }
+        if (kind.equals("inspector_gui(off)")) {
+            System.out.println("not implemented yet, ask the developers to do so.");
+        }    
     }
     
     /**
@@ -474,7 +479,16 @@ public class GroupBoard extends OrgArt {
         }, null);
     }
 
-    
+
+    /**
+     * Commands that the owner of the group can perform.
+     * 
+     * @param cmd, possible values (as strings):
+     *     adoptRole(<agent>,<role>)
+     *     
+     * @throws CartagoException
+     * @throws jason.asSyntax.parser.ParseException
+     */
     @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException {
         // this operation is available only for the owner of the artifact
     if (getOpUserId() != null && (!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager")) {

@@ -2,6 +2,8 @@
 // adopts the role write and
 // commits to the missions mColaborator and mBib
 
+my_role(writer).
+
 { include("common.asl") }
 { include("common-moise.asl") }
 

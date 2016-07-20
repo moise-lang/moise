@@ -9,14 +9,14 @@ ally(ag3).
  
 // plan for the bid organisational goal
 +!bid[scheme(Sch)] 
-   :  goalState(Sch, auction(N), _, _, _) & // get the auction number
+   :  goalArgument(Sch, auction, "N", N) & // get the auction number
       commitment(Ag, mAuctioneer, Sch) & // get the agent committed to mAuctineer
       not alliance
    <- ?default_bid_value(B);
       .send(Ag, tell, place_bid(N,B)).
 
 +!bid[scheme(Sch)] 
-   :  goalState(Sch, auction(N), _, _, _) & 
+   :  goalArgument(Sch, auction, "N", N) & 
       commitment(Ag, mAuctioneer, Sch) & // get the agent committed to mAuctineer
       alliance
    <- .send(Ag, tell, place_bid(N,0)).

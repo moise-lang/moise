@@ -22,6 +22,7 @@ import cartago.AbstractWSPRuleEngine;
 import cartago.AgentQuitRequestInfo;
 import cartago.Artifact;
 import cartago.CartagoException;
+import cartago.CartagoNode;
 import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
 import cartago.Op;
@@ -134,6 +135,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     }
     
     protected void installNormativeSignaler() {
+        // version that works (using internal op)
         myNPLListener = new NormativeListener() {
             public void created(DeonticModality o) {  
                 defineObsProperty(o.getFunctor(), getTermsAsProlog(o));
@@ -142,11 +144,6 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             public void fulfilled(DeonticModality o) {
                 try {
                     removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o)); // cause concurrent modification on cartago
-                    // signal does not work if not initiated by an OPERATION
-                    // signalQueue is toooo slow!
-                    
-                    //signal(sglOblFulfilled, new JasonTermWrapper(o));
-                    //signalsQueue.offer(new Pair<String, Structure>(sglOblFulfilled, o));
                     execInternalOp("NPISignals", sglOblFulfilled, o);
                 } catch (java.lang.IllegalArgumentException e) {
                     // ignore, the obligations was not there anymore
@@ -154,21 +151,53 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             }
             public void unfulfilled(DeonticModality o) { 
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
-                //signal(sglOblUnfulfilled, new JasonTermWrapper(o));
-                //signalsQueue.offer(new Pair<String, Structure>(sglOblUnfulfilled, o));
                 execInternalOp("NPISignals", sglOblUnfulfilled, o);
             }
             public void inactive(DeonticModality o) {    
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
-                //signal(sglOblInactive, new JasonTermWrapper(o));
-                //signalsQueue.offer(new Pair<String, Structure>(sglOblInactive, o));
             }
             
             public void failure(Structure f) {     
-                //signal(sglNormFailure, new JasonTermWrapper(f));                
                 execInternalOp("NPISignals", sglNormFailure, f);
             }
         };
+
+        // version that does not work
+        /*
+        myNPLListener = new NormativeListener() {
+            public void created(DeonticModality o) {  
+                defineObsProperty(o.getFunctor(), getTermsAsProlog(o));
+            }
+            public void fulfilled(DeonticModality o) {
+                try {
+                    beginExternalSession();
+                    removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o)); // cause concurrent modification on cartago
+                    signal(sglOblFulfilled, new JasonTermWrapper(o));
+                    endExternalSession(true);
+                } catch (java.lang.IllegalArgumentException e) {
+                    // ignore, the obligations was not there anymore
+                }
+            }
+            public void unfulfilled(DeonticModality o) { 
+                beginExternalSession();
+                removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
+                signal(sglOblUnfulfilled, new JasonTermWrapper(o));
+                endExternalSession(true);
+            }
+            public void inactive(DeonticModality o) {    
+                beginExternalSession();
+                removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
+                //signal(sglOblInactive, new JasonTermWrapper(o));
+                endExternalSession(true);
+            }
+            
+            public void failure(Structure f) {     
+                beginExternalSession();
+                signal(sglNormFailure, new JasonTermWrapper(f));                
+                endExternalSession(true);
+            }
+        };
+        */
         nengine.addListener(myNPLListener);
     }
     
@@ -297,7 +326,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             new Thread() {
                 public void run() {
                     try {
-                        CartagoBasicContext cartagoCtx = new CartagoBasicContext("OrgArt setup","default");
+                        CartagoBasicContext cartagoCtx = new CartagoBasicContext("OrgArt setup", CartagoNode.MAIN_WSP_NAME);
                         cartagoCtx.doAction(new Op("setWSPRuleEngine", wspEng), -1);
                         wspEng.addListener(OrgArt.this);    
                     } catch (CartagoException e) {

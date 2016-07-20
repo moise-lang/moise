@@ -1,8 +1,5 @@
 package ora4mas.nopl.simulator;
 
-import ora4mas.nopl.GroupBoard;
-import ora4mas.nopl.ORA4MASConstants;
-import ora4mas.nopl.SchemeBoard;
 import cartago.ArtifactConfig;
 import cartago.ArtifactId;
 import cartago.CartagoException;
@@ -15,6 +12,9 @@ import cartago.WorkspaceKernel;
 import cartago.security.AgentIdCredential;
 import cartago.util.agent.Agent;
 import cartago.util.agent.Percept;
+import ora4mas.nopl.GroupBoard;
+import ora4mas.nopl.ORA4MASConstants;
+import ora4mas.nopl.SchemeBoard;
 
 /** simulates some MAS using moise */
 public class ConsoleSimulator {
@@ -127,7 +127,7 @@ class MyAgent extends Agent {
     public void run() {
         try {
             while (true) {
-                Percept p = waitPercept();
+                Percept p = waitForPercept();
                 System.out.println(p+"\n");
                 /*
                 Exception fail = containsNormativeFailure(p);

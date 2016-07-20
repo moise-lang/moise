@@ -1,7 +1,7 @@
 // this agent bids 3,
 // if it looses 3 auctions, it proposes an alliance to
 // another agent and therefore it bids 7 (3 from itself + 4 from ag2)
-// (see plan ?ally for more information about how the ally is choosen)
+// (see plan ?ally for more information about how the ally is chosen)
 
 { include("common-moise.asl") }
 { include("participant.asl") }
@@ -15,7 +15,7 @@ threshold(3).
 
 // plan for the bid organisational goal
 +!bid[scheme(Sch)] 
-   :  goalState(Sch, auction(N), _, _, _) & // get the auction number
+   :  goalArgument(Sch, auction, "N", N) & // get the auction number
       (threshold(T) & N < T) 
       |
       (.my_name(I) & winner(_,I) & not alliance(I,_))
@@ -27,7 +27,7 @@ threshold(3).
       !bid_normally.
 
 +!bid[scheme(Sch)] 
-   :  goalState(Sch, auction(N), _, _, _) &    // get the auction number
+   :  goalArgument(Sch, auction, "N", N) &    // get the auction number
       commitment(Ag, mAuctioneer, Sch) &  // get the agent committed to mAuctineer
       alliance(_,A)
    <- ?default_bid_value(B);
@@ -35,7 +35,7 @@ threshold(3).
       .send(Ag, tell, place_bid(N,B+C)).
 
 +!bid_normally 
-   :  goalState(Sch, auction(N), _, _, _) &  // get the auction number
+   :  goalArgument(Sch, auction, "N", N) &  // get the auction number
       commitment(Ag, mAuctioneer, Sch)  // get the agent committed to mAuctineer
    <- ?default_bid_value(B);
       .send(Ag, tell, place_bid(N,B)).
@@ -46,8 +46,9 @@ threshold(3).
       .send(A,tell,alliance).
    
 // remember the winners
-+goalState(Sch, winner(W), _, _, satisfied) 
-   :  goalState(Sch, auction(N), _, _, _)
++goalState(Sch, winner, _, _, satisfied) 
+   :  goalArgument(Sch, auction, "N", N) &
+      goalArgument(Sch, auction, "W", W)
    <- +winner(N,W).
 
 // find and ally from the specification:

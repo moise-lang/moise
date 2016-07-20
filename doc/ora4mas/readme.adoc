@@ -82,7 +82,7 @@ The beliefs are the following (see API documentation of artifacts for more detai
 - `specification(....)` for http://moise.sourceforge.net/doc/api/moise/os/fs/Scheme.html#getAsProlog--[schemes]
 - `play(agent, role, group)`
 - `commitment(agent, mission, scheme)`
-- `goalState(scheme, goal, list of committed agents, list of agent that achieved the goal, state of the goal)`
+- `goalState(scheme, goal, list of committed agents, list of agent that performed the goal, state of the goal)`
 - `obligation(agent,norm,goal,deadline)`: the current active obligations.
 - others (see observable properties of the artifacts)
 
@@ -90,7 +90,7 @@ The beliefs are the following (see API documentation of artifacts for more detai
 The following signals are also translated to Jason events (see the
 organisational artifacts specification for more details):
 
-- `oblCreated(obligation)`: the state of the obligation is changed to /created/
+- `oblCreated(obligation)`: the state of the obligation is changed to _created_
 - `oblFulfilled(obligation)`
 - `oblUnfulfilled(obligation)`
 - `oblInactive(obligation)`
@@ -118,7 +118,7 @@ The Jason project is:
 [source,jcm]
 .writing-paper.jcm
 ----
-include::../../src/examples/writePaper/agents/writing-paper.jcm[]
+include::../../examples/writePaper/agents/writing-paper.jcm[]
 ----
 
 The code of the agents follows.
@@ -126,7 +126,7 @@ The code of the agents follows.
 [source,asl]
 .bob.asl
 ----
-include::../../src/examples/writePaper/agents/bob.asl[]
+include::../../examples/writePaper/agents/bob.asl[]
 ----
 
 
@@ -135,26 +135,26 @@ The included file is:
 [source,asl]
 .common-moise.asl
 ----
-include::../../src/examples/writePaper/agents/common-moise.asl[]
+include::../../examples/writePaper/agents/common-moise.asl[]
 ----
 
 [source,asl]
 .alice.asl
 ----
-include::../../src/examples/writePaper/agents/alice.asl[]
+include::../../examples/writePaper/agents/alice.asl[]
 ----
 
 
 [source,asl]
 .common.asl
 ----
-include::../../src/examples/writePaper/agents/common.asl[]
+include::../../examples/writePaper/agents/common.asl[]
 ----
 
 [source,asl]
 .carol.asl
 ----
-include::../../src/examples/writePaper/agents/carol.asl[]
+include::../../examples/writePaper/agents/carol.asl[]
 ----
 
 

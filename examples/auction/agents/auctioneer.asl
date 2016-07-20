@@ -22,7 +22,7 @@ auction_id(0).
      focus(OrgArtId);
      
      createGroup(auction, auctionGroup, GrArtId);
-     startGUI[artifact_id(GrArtId)];
+     debug(inspector_gui(on))[artifact_id(GrArtId)];
 	 adoptRole(auctioneer);
 	 focus(GrArtId).
 -!create_group[error(E), error_msg(M), reason(R)]
@@ -39,7 +39,7 @@ auction_id(0).
 +!create_scheme 
    <- ?auction_id(Id); .concat("sch",Id,Sch); // create a new scheme id
       createScheme(Sch, doAuction, SchArtId);
-      startGUI[artifact_id(SchArtId)];
+      debug(inspector_gui(on))[artifact_id(SchArtId)];
       focus(SchArtId);
       addScheme(Sch);
 	  commitMission(mAuctioneer)[artifact_id(SchArtId)].
@@ -84,7 +84,7 @@ auction_id(0).
    <- .print("***** Auction ", N," is finished. The winner is ",W,", value is ",Vl," *****");
       .println.
 	  
-+goalState(Sch, auction(X), _, _, satisfied)
++goalState(Sch, auction, _, _, satisfied)
     :  auction_id(N) & N < 5         
    <- .wait(1000);	  
       removeScheme(Sch).

@@ -2,12 +2,23 @@
 
 == Version 0.10
 
+- new artifact: *orgBoard*. It manages all the other artifacts of an organisation. Main operations are (see javadoc for more details):
+* createGroup
+* createScheme
+
+- new observable property for SchemeBoard:
+* `goalArgument(schemeId, goalId, argId, value)`: added only if the argument has a value.
+
 - default type of goals is *performance*
 * norms for *performance* goals have `done(Sch,Goal,Ag)` as the _what_,
 * while *achievement* goals have `satisfied(Sch,Goal)` as the _what_
 - *permissions* are perceived by the agents (with the same arguments as obligations)
-- use NPL prohibitions when we don't want to regiment some property (like role cardinality). See normative specification of src/examples/writePaper/wp-os.xml.
-- the group and scheme boards initialization have only the first two parameters (the xml file and the type). The last two boolean parameters were removed and a new operation `startGUI` added.
+
+- use NPL prohibitions when we don't want to regiment some property (like role cardinality). See normative specification of examples/writePaper/wp-os.xml.
+- the group and scheme boards initialization have only the first two parameters (the xml file and the type). The last two boolean parameters were removed and a new operation `debug` added. Parameters for the debug operation are:
+* `inspector_gui(on)`: opens the GUI window with the current state of the artifact
+* `inspector_gui(off)`: closes
+
 - move to gradle
 - move to GitHub
 
