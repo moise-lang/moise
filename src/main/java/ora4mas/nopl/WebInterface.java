@@ -152,7 +152,7 @@ public class WebInterface  {
                             StringWriter os  = new StringWriter();
                             StringWriter gr  = new StringWriter();  gr.append("<br/><scan style='color: red; font-family: arial;'>groups</scan> <br/>");
                             StringWriter sch = new StringWriter(); sch.append("<br/><scan style='color: red; font-family: arial;'>schemes</scan> <br/>");
-                            StringWriter nor = new StringWriter(); sch.append("<br/><scan style='color: red; font-family: arial;'>norms</scan> <br/>");
+                            StringWriter nor = new StringWriter(); nor.append("<br/><scan style='color: red; font-family: arial;'>norms</scan> <br/>");
                             // show os
                             // show groups
                             // show schemes

@@ -39,7 +39,7 @@ public class OI implements DynamicFactsProvider {
         new nplp(new StringReader(os2nopl.transform(os))).program(p, this);
         Scope root = p.getRoot();
         Scope scope = root.findScope("scheme("+type+")");
-        schInterpreter.setScope(scope);
+        schInterpreter.loadNP(scope);
     }
     
     public void setGroup(Group g) {

@@ -32,7 +32,7 @@ public class NPLInterpreterTestSubGroups extends TestCase {
         //System.out.println(np);
         
         NPLInterpreter i = new NPLInterpreter();
-        i.setScope(p.getRoot().getScope(ASSyntax.parseLiteral("group(g1)")));
+        i.loadNP(p.getRoot().getScope(ASSyntax.parseLiteral("group(g1)")));
 
         assertFalse(i.holds(ASSyntax.parseLiteral("well_formed(ig1)")));
 

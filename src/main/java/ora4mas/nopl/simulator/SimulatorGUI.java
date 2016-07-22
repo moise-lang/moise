@@ -63,7 +63,7 @@ public class SimulatorGUI {
                 public void actionPerformed(ActionEvent e) {
                     try {
                         ArtifactId aid = ctxt.makeArtifact(gIdTF.getText().trim(),  GroupBoard.class.getName(),  new Object[] { fileTF.getText().trim(), gTypeTF.getText().trim() });
-                        ctxt.doAction(aid, new Op("startGUI", new Object[] {} ));
+                        ctxt.doAction(aid, new Op("debug", new Object[] { "inspector_gui(on)" } ));
                         for (AgentGUI a: ags) {
                             a.initArtsCBmodel();
                             a.initOpsCBmodel();

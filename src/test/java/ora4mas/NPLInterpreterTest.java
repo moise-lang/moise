@@ -59,7 +59,7 @@ public class NPLInterpreterTest {
         new nplp(new StringReader(np)).program(p,g);
 
         NPLInterpreter i = new NPLInterpreter();
-        i.setScope(p.getRoot().getScope(ASSyntax.parseLiteral("group(house_group)")));
+        i.loadNP(p.getRoot().getScope(ASSyntax.parseLiteral("group(house_group)")));
         
         assertTrue(i.holds(ASSyntax.parseLiteral("subrole(roofer,building_company)")));
         assertTrue(i.holds(ASSyntax.parseLiteral("tsubrole(roofer,building_company)")));
@@ -100,7 +100,7 @@ public class NPLInterpreterTest {
         new nplp(new FileReader(src)).program(p,g);
 
         NPLInterpreter i = new NPLInterpreter();
-        i.setScope(p.getRoot().getScope(ASSyntax.parseLiteral("group(wpgroup)")));
+        i.loadNP(p.getRoot().getScope(ASSyntax.parseLiteral("group(wpgroup)")));
         
         assertTrue(i.holds(ASSyntax.parseLiteral("role_cardinality(writer,1,5)")));
         assertFalse(i.holds(ASSyntax.parseLiteral("role_cardinality(writer,1)")));
@@ -145,7 +145,7 @@ public class NPLInterpreterTest {
         new nplp(new StringReader(np)).program(p, g);
 
         NPLInterpreter i = new NPLInterpreter();
-        i.setScope(p.getRoot().getScope(ASSyntax.parseLiteral("group(auctionGroup)")));
+        i.loadNP(p.getRoot().getScope(ASSyntax.parseLiteral("group(auctionGroup)")));
         
         // add players
         g.addPlayer("jaime", "auctioneer");
@@ -175,7 +175,7 @@ public class NPLInterpreterTest {
 
         NPLInterpreter i = new NPLInterpreter();
         Scope wp = p.getRoot().getScope(ASSyntax.parseLiteral("group(wpgroup)"));
-        i.setScope(wp);
+        i.loadNP(wp);
         
         g.addPlayer("jaime", "editor");
         g.addPlayer("olivier", "writer");
@@ -213,7 +213,8 @@ public class NPLInterpreterTest {
         
         assertTrue(wp.removeNorm("role_in_group") != null); // remove this norm to allows jaime to adopt the new role
         assertTrue(wp.removeNorm("role_compatibility") != null);
-        i.setScope(wp);
+        i.init();
+        i.loadNP(wp);
         @SuppressWarnings("unused")
         Collection<DeonticModality> rver = i.verifyNorms();
         //System.out.println(rver);

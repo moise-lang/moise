@@ -107,6 +107,7 @@ public class NormativeBoard extends OrgArt {
             new nplp(new StringReader(nplProgram)).program(p, null);
         }
         nengine.loadNP(p.getRoot());
+        
         if (gui != null) {
             gui.setNormativeProgram(getNPLSrc());
         }

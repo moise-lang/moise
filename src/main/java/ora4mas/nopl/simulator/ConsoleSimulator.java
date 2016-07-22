@@ -36,8 +36,8 @@ public class ConsoleSimulator {
         MyAgent olivier = new MyAgent("olivier", ora4masKernel);  olivier.start();
         MyAgent jomi = new MyAgent("jomi", ora4masKernel);        jomi.start();
 
-        jaime.execOp("g1", "startGUI", "");
-        jaime.execOp("sch1", "startGUI", "");
+        jaime.execOp("g1", "debug", "inspector_gui(on)");
+        jaime.execOp("sch1", "debug", "inspector_gui(on)");
 
         Thread.sleep(200);
         

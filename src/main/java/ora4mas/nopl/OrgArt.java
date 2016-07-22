@@ -89,7 +89,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         Scope scope = root.findScope(type);
         if (scope == null)
             throw new MoiseException("scope for "+type+" does not exist!");            
-        nengine.setScope(scope);
+        nengine.loadNP(scope);
     }
     
     public NPLInterpreter getNormativeEngine() {

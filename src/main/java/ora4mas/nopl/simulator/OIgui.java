@@ -89,7 +89,7 @@ public class OIgui implements DynamicFactsProvider {
         p.setSrc(npSrcFile);
         new nplp(new FileReader(npSrcFile)).program(p, this);
 
-        schInterpreter.setScope(p.getRoot());
+        schInterpreter.loadNP(p.getRoot());
         for (Scope s: p.getRoot().getScopes()) {
             if (s.getId().getFunctor().equals("scheme")) {
                 schInterpreter.loadNP(s);                
