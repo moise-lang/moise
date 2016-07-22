@@ -129,10 +129,9 @@ public class GroupBoard extends OrgArt {
         initWspRuleEngine();
         
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_OI))) {
-            String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
             WebInterface w = WebInterface.get();
             try {
-                w.registerOEBrowserView(oeId, "/group/",grId,srcNPL,GroupBoard.this,getStyleSheet(), this);
+                w.registerOEBrowserView(oeId, "/group/",grId, this);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -142,16 +141,14 @@ public class GroupBoard extends OrgArt {
     @OPERATION public void debug(String kind) throws Exception {
         final String grId = getId().getName();
         if (kind.equals("inspector_gui(on)")) {
-            String srcNPL = os2nopl.header(spec)+os2nopl.transform(spec);
-    
-            gui = GUIInterface.add(grId, ":: Group Board "+grId+" ("+spec.getId()+") ::", nengine);
+            gui = GUIInterface.add(grId, ":: Group Board "+grId+" ("+spec.getId()+") ::", nengine, true);
             
             updateGUIThread = new UpdateGuiThread();
             updateGUIThread.start();
     
             updateGuiOE();
             
-            gui.addNormativeProgram(srcNPL);
+            gui.setNormativeProgram(getNPLSrc());
             gui.addSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
         }
         if (kind.equals("inspector_gui(off)")) {
@@ -503,6 +500,14 @@ public class GroupBoard extends OrgArt {
         }
     }
     
+    @Override
+    public String getNPLSrc() {
+        if (spec != null)
+            return os2nopl.header(spec)+os2nopl.transform(spec);
+        else
+            return super.getNPLSrc();
+    }
+
     protected String getStyleSheetName() {
         return "noplGroupInstance";                
     }

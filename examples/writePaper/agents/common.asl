@@ -1,7 +1,3 @@
-/* Common code for Alice and Carol */
-
-/* useful rules */
-
 /* Initial goals */
 
 !play.

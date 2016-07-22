@@ -86,13 +86,10 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         NormativeProgram p = new NormativeProgram();
         new nplp(new StringReader(os2nopl.transform(os))).program(p, this);
         Scope root = p.getRoot();
-        //if (inScope != null)
-        //    root = p.getRoot().findScope(inScope);
         Scope scope = root.findScope(type);
         if (scope == null)
             throw new MoiseException("scope for "+type+" does not exist!");            
         nengine.setScope(scope);
-        //execInternalOp("NPISignals");                
     }
     
     public NPLInterpreter getNormativeEngine() {
@@ -153,7 +150,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
                 execInternalOp("NPISignals", sglOblUnfulfilled, o);
             }
-            public void inactive(DeonticModality o) {    
+            public void inactive(DeonticModality o) {
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
             }
             
@@ -278,13 +275,18 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     
     private Transformer guiStyleSheet = null;
     protected Transformer getStyleSheet() throws TransformerConfigurationException, IOException {
+        if (getStyleSheetName() == null)
+            return null;
         if (guiStyleSheet == null)
             guiStyleSheet = DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL( getStyleSheetName() ));
         return guiStyleSheet;                    
     }
     
+    private Transformer nsTransformer = null;
     public Transformer getNSTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError, IOException {
-        return DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("nstate"));
+        if (nsTransformer == null)
+            nsTransformer = DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("nstate"));
+        return nsTransformer;
     }
 
     protected void updateGuiOE() {
@@ -337,7 +339,9 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         }
     }
     
-    abstract public void agKilled(String agName);
+    public void agKilled(String agName) {
+        
+    }
 
     class UpdateGuiThread extends Thread {
         boolean ok = false;
@@ -359,7 +363,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                         ok = true;
                         try {
                             if (gui != null) {
-                                gui.updateOE(getDebugText(), OrgArt.this, getStyleSheet());
+                                gui.updateOE(OrgArt.this, getStyleSheet());
+                                gui.updateNFacts(getDebugText());
                             }
                         } catch (ConcurrentModificationException e) {
                             ok = false;
@@ -376,18 +381,26 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         }
     }
     
-    String getDebugText() {
+    public String getDebugText() {
         StringBuilder out = new StringBuilder();
-        out.append(orgState.toString());
-        out.append("\n\n\n** as a list of dynamic facts:\n");
-        for (Literal l: orgState.transform()) 
-            out.append("     "+l+"\n");
-        out.append("\n\n\n** as a dump memory:\n");
+        String space = "";
+        if (orgState != null) {
+            out.append(orgState.toString());
+            out.append("\n\n\n** dynamic facts:\n");
+            for (Literal l: orgState.transform()) 
+                out.append("     "+l+"\n");
+            out.append("\n\n\n** facts:\n");
+            space = "     ";
+        }
         for (Literal l: nengine.getAg().getBB())
-            out.append("     "+l+"\n");
+            out.append(space+l+"\n");
         return out.toString();
     }
 
+    public String getNPLSrc() {
+        return "";
+    }
+    
     protected static String fixAgName(String ag) {
         if (ag.startsWith("\""))
             return ag.substring(1, ag.length()-1);

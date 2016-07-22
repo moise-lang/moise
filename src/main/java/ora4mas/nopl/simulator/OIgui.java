@@ -79,9 +79,11 @@ public class OIgui implements DynamicFactsProvider {
     Scheme sch;
     OS     os;
     OE     oe = new OE();
+    String nplSrc;
 
     public OIgui(String osFile, String npSrcFile) throws FileNotFoundException, ParseException {
         os = OS.loadOSFromURI(osFile); // parse OS
+        this.nplSrc = npSrcFile;
         
         NormativeProgram p = new NormativeProgram();
         p.setSrc(npSrcFile);
@@ -176,7 +178,7 @@ public class OIgui implements DynamicFactsProvider {
     
     void updateNP() {
         try {
-            File fin = new File(schInterpreter.getScope().getNP().getSrc());
+            File fin = new File(nplSrc);
             StringBuilder out = new StringBuilder();
             BufferedReader bin = new BufferedReader(new FileReader(fin));
             String l = bin.readLine();
@@ -186,7 +188,6 @@ public class OIgui implements DynamicFactsProvider {
             }
             txtNP.setText(out.toString());    
         } catch (IOException e) {
-            txtNP.setText(schInterpreter.getScope().toString()); 
             e.printStackTrace();
         }
     }

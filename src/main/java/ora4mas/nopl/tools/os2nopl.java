@@ -43,12 +43,13 @@ public class os2nopl {
     public static final String PROP_AchNotEnabledGoal     = "ach_not_enabled_goal";
     public static final String PROP_AchNotCommGoal        = "ach_not_committed_goal";
 
-    public static final String PROP_NotCompGoal           = "goal_non_compliance";
+    //public static final String PROP_NotCompGoal           = "goal_non_compliance";
 
     // properties for groups
     public static final String[] NOP_GR_PROPS  = new String[] { PROP_RoleInGroup, PROP_RoleCardinality, PROP_RoleCompatibility, PROP_WellFormedResponsible, PROP_SubgroupInGroup, PROP_SubgroupCardinality};
     // properties for schemes
-    public static final String[] NOP_SCH_PROPS = new String[] { PROP_NotCompGoal, PROP_MissionPermission, PROP_LeaveMission, PROP_MissionCardinality, PROP_AchNotEnabledGoal, PROP_AchNotCommGoal };
+    public static final String[] NOP_SCH_PROPS = new String[] { //PROP_NotCompGoal, 
+            PROP_MissionPermission, PROP_LeaveMission, PROP_MissionCardinality, PROP_AchNotEnabledGoal, PROP_AchNotCommGoal };
     
     private static final String NGOA = "ngoal"; // id of the goal obligations
     
@@ -68,7 +69,7 @@ public class os2nopl {
         condCode.put(PROP_MissionCardinality,    "scheme_id(S) & mission_cardinality(M,_,MMax) & mplayers(M,S,MP) & MP > MMax");
         condCode.put(PROP_AchNotEnabledGoal,     "done(S,G,Agt) & mission_goal(M,G) & not mission_accomplished(S,M) & not enabled(S,G)");
         condCode.put(PROP_AchNotCommGoal,        "done(S,G,Agt) & .findall(M, mission_goal(M,G) & (committed(Agt,M,S) | mission_accomplished(S,M)), [])");
-        condCode.put(PROP_NotCompGoal,           "obligation(Agt,"+NGOA+"(S,M,G),Obj,TTF) & not Obj & `now` > TTF");
+        //condCode.put(PROP_NotCompGoal,           "obligation(Agt,"+NGOA+"(S,M,G),Obj,TTF) & not Obj & `now` > TTF");
     }
     // arguments that 'explains' the property
     private static final Map<String, String> argsCode = new HashMap<String, String>();
@@ -86,7 +87,7 @@ public class os2nopl {
         argsCode.put(PROP_MissionCardinality,    "M,S,MP,MMax");
         argsCode.put(PROP_AchNotEnabledGoal,     "S,G,Agt");
         argsCode.put(PROP_AchNotCommGoal,        "S,G,Agt");
-        argsCode.put(PROP_NotCompGoal   ,        "obligation(Agt,"+NGOA+"(S,M,G),Obj,TTF)");
+        //argsCode.put(PROP_NotCompGoal   ,        "obligation(Agt,"+NGOA+"(S,M,G),Obj,TTF)");
     }
     
     /** transforms an OS into NPL code */

@@ -6,8 +6,6 @@ my_role(writer).
 
 { include("common.asl") }
 
-/* Initial goals */
-
 /* Plans */
 
 // application domain goals

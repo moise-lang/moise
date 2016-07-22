@@ -26,8 +26,6 @@ my_role(editor).
 	 
      .print("group created");
 	 
-     //adoptRole(editor)[artifact_id(GrArtId)];
-	 
      // wait for alice
      ?play(alice,writer,mypaper);
      
@@ -36,8 +34,8 @@ my_role(editor).
 	 
      !run_scheme(sch1).
      
-+group(_,_,AID)  <- focus(AID).     
-+scheme(_,_,AID) <- focus(AID).
+//+group(_,_,AID)  <- focus(AID).     
+//+scheme(_,_,AID) <- focus(AID).
 
 // general error handler for goal start 
 -!start[error(I),error_msg(M)] <- .print("failure in starting! ",I,": ",M).
@@ -46,7 +44,7 @@ my_role(editor).
    <- createScheme(S, writePaperSch, SchArtId);
       debug(inspector_gui(on))[artifact_id(SchArtId)];
       .print("scheme ",S," created");
-      addScheme(S); //[artifact_name("mypaper")]; 
+      addScheme(S)[artifact_name("mypaper")]; 
       .print("scheme is linked to responsible group");	 
       commitMission(mManager)[artifact_id(SchArtId)].
 -!run_scheme(S)[error(I),error_msg(M)] <- .print("failure creating scheme ",S," -- ",I,": ",M).

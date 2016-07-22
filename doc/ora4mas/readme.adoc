@@ -130,7 +130,7 @@ include::../../examples/writePaper/agents/bob.asl[]
 ----
 
 
-The included file is:
+The included files are:
 
 [source,asl]
 .common-moise.asl
@@ -139,17 +139,17 @@ include::../../examples/writePaper/agents/common-moise.asl[]
 ----
 
 [source,asl]
+.common.asl
+----
+include::../../examples/writePaper/agents/common.asl[]
+----
+
+[source,asl]
 .alice.asl
 ----
 include::../../examples/writePaper/agents/alice.asl[]
 ----
 
-
-[source,asl]
-.common.asl
-----
-include::../../examples/writePaper/agents/common.asl[]
-----
 
 [source,asl]
 .carol.asl

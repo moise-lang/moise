@@ -7,7 +7,7 @@
 * createScheme
 
 - new observable property for SchemeBoard:
-* `goalArgument(schemeId, goalId, argId, value)`: added only if the argument has a value.
+* `goalArgument(schemeId, goalId, argId, value)`: added only if the argument has a value, usually defined by the operation `setArgumentValue`.
 
 - default type of goals is *performance*
 * norms for *performance* goals have `done(Sch,Goal,Ag)` as the _what_,

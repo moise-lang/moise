@@ -47,6 +47,7 @@ public class GUIInterface {
     private JTextPane txtOE  = new JTextPane();
     private JTextPane txtNF  = new JTextPane();
     private JTextPane txtNS  = new JTextPane();
+    private JTextArea txtNP  = null;
     private JTextArea txtLog = new JTextArea(9, 10);
     private JPanel    artPanel;
     
@@ -72,7 +73,7 @@ public class GUIInterface {
         });        
     }
     
-    public static GUIInterface add(String id, String title, NPLInterpreter nengine) throws Exception {
+    public static GUIInterface add(String id, String title, NPLInterpreter nengine, boolean hasOE) throws Exception {
         if (frame == null)
             initFrame();
         
@@ -103,7 +104,8 @@ public class GUIInterface {
 
         // center tabled 
         gui.tpane = new JTabbedPane();
-        gui.tpane.add("organisation entity", oep);
+        if (hasOE)
+            gui.tpane.add("organisation entity", oep);
         gui.tpane.add("normative state", nsp);
         gui.tpane.add("normative facts", nFacts);
                     
@@ -144,15 +146,17 @@ public class GUIInterface {
         allArtsPane.remove(artPanel);
     }
 
-    public void addNormativeProgram(String source) {
+    public void setNormativeProgram(String source) {
         // normative program
         JPanel npp = new JPanel(new BorderLayout());
-        JTextArea txtNP = new JTextArea();
-        txtNP.setFont(new Font("courier", Font.PLAIN, 14));
-        txtNP.setEditable(false);
+        if (txtNP == null) {
+            txtNP = new JTextArea();
+            txtNP.setFont(new Font("courier", Font.PLAIN, 14));
+            txtNP.setEditable(false);
+            npp.add(BorderLayout.CENTER, new JScrollPane(txtNP));
+            tpane.add("normative program", npp);
+        }
         txtNP.setText(source);
-        npp.add(BorderLayout.CENTER, new JScrollPane(txtNP));
-        tpane.add("normative program", npp);
     }
 
     public void addSpecification(String sSpec) throws Exception {
@@ -167,20 +171,25 @@ public class GUIInterface {
     }
 
     private String lastOEStr = "";
-    public void updateOE(String nFacts, ToXML oe, Transformer transformer) throws Exception {
+    public void updateOE(ToXML oe, Transformer transformer) throws Exception {
+        if (transformer == null) return;
+        
         StringWriter so = new StringWriter();
-        //InputSource si = new InputSource(new StringReader(DOMUtils.dom2txt( oe )));
-        //transformer.transform(new DOMSource(getParser().parse(si)), new StreamResult(so));
         transformer.transform(new DOMSource(DOMUtils.getAsXmlDocument(oe)), new StreamResult(so));
         String sOE = so.toString();
-
         if (! sOE.equals(lastOEStr)) {
             txtOE.setText( sOE );
-            txtNF.setText( nFacts);
         }
         lastOEStr = sOE;
     }
 
+    private String lastNFacts = "";
+    public void updateNFacts(String nFacts)  {
+        if (! nFacts.equals(lastNFacts)) {
+            txtNF.setText( nFacts);
+        }
+        lastOEStr = nFacts;
+    }
  
     
     private String lastNSStr = "";
@@ -206,8 +215,11 @@ public class GUIInterface {
         return parser;
     }
 
+    private Transformer nsTransformer = null;
     public Transformer getNSTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError, IOException {
-        return DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("nstate"));
+        if (nsTransformer == null)
+            nsTransformer = DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("nstate"));
+        return nsTransformer;
     }
 }
 

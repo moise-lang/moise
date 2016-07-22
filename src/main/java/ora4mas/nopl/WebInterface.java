@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 
-import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -25,7 +24,6 @@ import com.sun.net.httpserver.HttpServer;
 
 import jason.architecture.MindInspectorWeb;
 import moise.xml.DOMUtils;
-import moise.xml.ToXML;
 
 /** Web Interface for ORA4MAS */
 public class WebInterface  {
@@ -154,6 +152,7 @@ public class WebInterface  {
                             StringWriter os  = new StringWriter();
                             StringWriter gr  = new StringWriter();  gr.append("<br/><scan style='color: red; font-family: arial;'>groups</scan> <br/>");
                             StringWriter sch = new StringWriter(); sch.append("<br/><scan style='color: red; font-family: arial;'>schemes</scan> <br/>");
+                            StringWriter nor = new StringWriter(); sch.append("<br/><scan style='color: red; font-family: arial;'>norms</scan> <br/>");
                             // show os
                             // show groups
                             // show schemes
@@ -164,12 +163,15 @@ public class WebInterface  {
                                     os.append(html);
                                 else if (addr.indexOf("group") > 0)
                                     gr.append("- "+html);
-                                else
+                                else if (addr.indexOf("scheme") > 0)
                                     sch.append("- "+html);
+                                else
+                                    nor.append("- "+html);
                             }
                             responseBody.write( os.toString().getBytes());
                             responseBody.write( gr.toString().getBytes());
                             responseBody.write( sch.toString().getBytes());
+                            responseBody.write( nor.toString().getBytes());
                         }
                     }                                
                     responseBody.write("<hr/>by <a href=\"http://moise.sf.net\" target=\"_blank\">Moise</a>".getBytes());
@@ -187,7 +189,7 @@ public class WebInterface  {
     private File lastImgFile = null;
     private byte[] lastData = null;
     
-    public String registerOEBrowserView(final String oeId, final String pathSpec, final String id, final String srcNPL, final ToXML oe, final Transformer transformer, final OrgArt orgArt) {
+    public String registerOEBrowserView(final String oeId, final String pathSpec, final String id, final OrgArt orgArt) {
         if (httpServer == null)
             return null;
         try {
@@ -244,18 +246,20 @@ public class WebInterface  {
                                     responseBody.write("</pre>".getBytes());
                                 } else if (exchange.getRequestURI().getPath().endsWith(".npl")) {
                                     responseBody.write(("<html><head><title>"+id+".npl</title></head><body><pre>").getBytes());
-                                    responseBody.write(srcNPL.getBytes());                                            
+                                    responseBody.write(orgArt.getNPLSrc().getBytes());                                            
                                     responseBody.write("</pre>".getBytes());
                                 } else {                            
                                     //String path = exchange.getRequestURI().getPath();
                                     responseBody.write(("<html><head><title>"+id+"</title><meta http-equiv=\"refresh\" content=\""+refreshInterval+"\"></head><body>").getBytes());
                                     StringWriter so = new StringWriter();
-                                    try {
-                                        if (getDotPath() != null)
-                                            transformer.setParameter("show-oe-img", "true");
-                                    } catch (java.lang.NoClassDefFoundError e) {}
-                                    transformer.transform(new DOMSource(DOMUtils.getAsXmlDocument(oe)),new StreamResult(so)); //OrgArtNormativeGUI.getParser().parse(si)), new StreamResult(so));
-                                    responseBody.write(so.toString().getBytes());                                            
+                                    if (orgArt.getStyleSheet() != null) {
+                                        try {
+                                            if (getDotPath() != null)
+                                                orgArt.getStyleSheet().setParameter("show-oe-img", "true");
+                                        } catch (java.lang.NoClassDefFoundError e) {}
+                                        orgArt.getStyleSheet().transform(new DOMSource(DOMUtils.getAsXmlDocument(orgArt)),new StreamResult(so));
+                                        responseBody.write(so.toString().getBytes());
+                                    }
                                     so = new StringWriter();
                                     orgArt.getNSTransformer().transform(new DOMSource(DOMUtils.getAsXmlDocument(orgArt.getNormativeEngine())), new StreamResult(so));
                                     responseBody.write(so.toString().getBytes());

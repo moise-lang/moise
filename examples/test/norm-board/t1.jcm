@@ -1,0 +1,21 @@
+/* 
+
+expected result:
+
+created:     obligation(alice,(vl(X) & (X >= 5)),(b(Y) & (Y < 0)),"now + 3 seconds")[created("2016-6-5 12:42:0"),norm(n1)]
+unfulfilled: obligation(alice,(vl(X) & (X >= 5)),(b(Y) & (Y < 0)),"2016-6-5 12:42:4")[created("2016-6-5 12:42:0"),norm(n1),unfulfilled("2016-6-5 12:42:4")]
+created:     obligation(alice,(vl(X) & (X >= 5)),(b(Y) & (Y < 0)),"now + 4 seconds")[created("2016-6-5 12:42:4"),norm(n1)]
+inactive:    obligation(alice,(vl(X) & (X >= 5)),(b(Y) & (Y < 0)),"2016-6-5 12:42:8")[created("2016-6-5 12:42:4"),inactive("2016-6-5 12:42:5"),norm(n1)]
+
+*/
+
+mas t1 {
+
+    agent ag1
+    
+    // agent source path
+    asl-path: src/agt
+              src/agt/inc    
+    
+}
+
