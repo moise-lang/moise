@@ -1,5 +1,7 @@
 /* 
 
+test only a simple normative board (no moise spec involved)
+
 expected result:
 
 created:     obligation(alice,(vl(X) & (X >= 5)),(b(Y) & (Y < 0)),"now + 3 seconds")[created("2016-6-5 12:42:0"),norm(n1)]
@@ -12,10 +14,6 @@ inactive:    obligation(alice,(vl(X) & (X >= 5)),(b(Y) & (Y < 0)),"2016-6-5 12:4
 mas t1 {
 
     agent ag1
-    
-    // agent source path
-    asl-path: src/agt
-              src/agt/inc    
     
 }
 

@@ -263,7 +263,7 @@ public class NPLInterpreterTest {
                 System.out.println("inactive "+o);
             }
         });*/
-        Collection<DeonticModality> rver = oi.getNPLI().verifyNorms();
+        Collection<DeonticModality> rver = oi.getNbNPLI().verifyNorms();
         //System.out.println(oi.getNPLI().getSource(NPLInterpreter.OEAtom));
         int cobl = 0; int cperm = 0;
         for (Literal l: rver) {
@@ -276,11 +276,11 @@ public class NPLInterpreterTest {
         assertEquals(1, cperm);
         Thread.sleep(1100);
         
-        assertEquals(4,oi.getNPLI().getActiveObligations().size());
-        assertEquals(1,oi.getNPLI().getActivePermissions().size());
-        assertEquals(0,oi.getNPLI().getUnFulfilledObligations().size());
-        assertEquals(0,oi.getNPLI().getFulfilledObligations().size());
-        assertEquals(0,oi.getNPLI().getInactiveObligations().size());
+        assertEquals(4,oi.getNbNPLI().getActiveObligations().size());
+        assertEquals(1,oi.getNbNPLI().getActivePermissions().size());
+        assertEquals(0,oi.getNbNPLI().getUnFulfilledObligations().size());
+        assertEquals(0,oi.getNbNPLI().getFulfilledObligations().size());
+        assertEquals(0,oi.getNbNPLI().getInactiveObligations().size());
         
         // mission permission
         //assertTrue(oi.getNPLI().holds(ASSyntax.parseLiteral("permitted(jaime,nc3,committed(jaime,mman,S),_)")));

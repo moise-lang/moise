@@ -4,20 +4,31 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import cartago.ArtifactId;
+import cartago.LINK;
 import cartago.OPERATION;
+import cartago.OperationException;
+import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Literal;
+import jason.asSyntax.PredicateIndicator;
 import jason.util.Config;
 import moise.common.MoiseException;
+import npl.DynamicFactsProvider;
 import npl.NPLInterpreter;
 import npl.NormativeFailureException;
 import npl.NormativeProgram;
 import npl.parser.ParseException;
 import npl.parser.nplp;
+import ora4mas.nopl.oe.CollectiveOE;
 
 /**
  * Artifact to manage a normative program (NPL)
@@ -64,7 +75,7 @@ import npl.parser.nplp;
  */
 public class NormativeBoard extends OrgArt {
 
-    public static final String obsPropBoards     = "fact_provider";
+    protected Map<String, DynamicFactsProvider> dynProviders = new HashMap<String, DynamicFactsProvider>();
     
     protected Logger logger = Logger.getLogger(NormativeBoard.class.getName());
 
@@ -97,14 +108,14 @@ public class NormativeBoard extends OrgArt {
      * @throws ParseException  if the OS file is not correct
      * @throws MoiseException  if schType was not specified
      */
-    @OPERATION public void load(final String nplProgram) throws ParseException, MoiseException, FileNotFoundException {
+    @OPERATION @LINK public void load(String nplProgram) throws ParseException, MoiseException, FileNotFoundException {
         NormativeProgram p = new NormativeProgram();
 
         File f = new File(nplProgram);
         if (f.exists()) {
-            new nplp(new FileReader(nplProgram)).program(p, null);
+            new nplp(new FileReader(nplProgram)).program(p, this);
         } else {
-            new nplp(new StringReader(nplProgram)).program(p, null);
+            new nplp(new StringReader(nplProgram)).program(p, this);
         }
         nengine.loadNP(p.getRoot());
         
@@ -142,6 +153,38 @@ public class NormativeBoard extends OrgArt {
         updateGuiOE();
     }
 
+    @LINK void updateDFP(String id, DynamicFactsProvider p) throws NormativeFailureException {
+        dynProviders.put(id, p);
+        nengine.verifyNorms();
+        updateGuiOE();
+    }
+    
+
+    @OPERATION @LINK void doSubscribeDFP(String artName) throws OperationException {
+        ArtifactId aid = lookupArtifact(artName);
+        execLinkedOp(aid, "subscribeDFP", getId());
+    }
+    
+    
+    @Override
+    public String getDebugText() {
+        boolean first = true;
+        StringBuilder out = new StringBuilder(super.getDebugText());
+        for (DynamicFactsProvider p: dynProviders.values()) {
+            System.out.println(p);
+            if (p instanceof CollectiveOE) {
+                for (Literal l: ((CollectiveOE)p).transform()) {
+                    if (first) {
+                        out.append("\n\n** dynamic facts:\n");
+                        first = false;
+                    }
+                    out.append("     "+l+"\n");
+                }
+            }
+        }
+        return out.toString();
+    }
+    
     @Override
     public String getNPLSrc() {
         return nengine.getNormsString();
@@ -155,4 +198,20 @@ public class NormativeBoard extends OrgArt {
         return nengine.getAsDOM(document);
     }
     
+    // DFP methods
+    
+    public boolean isRelevant(PredicateIndicator pi) {
+        for (DynamicFactsProvider p: dynProviders.values())
+            if (p.isRelevant(pi))
+                return true;
+        return false;
+    }
+    
+    public Iterator<Unifier> consult(Literal l, Unifier u) {
+        for (DynamicFactsProvider p: dynProviders.values())
+            if (p.isRelevant(l.getPredicateIndicator())) 
+                return p.consult(l, u);
+        return null;
+    }
+
 }

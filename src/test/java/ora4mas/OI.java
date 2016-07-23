@@ -25,6 +25,8 @@ import ora4mas.nopl.tools.os2nopl;
 public class OI implements DynamicFactsProvider {
 
     NPLInterpreter schInterpreter = new NPLInterpreter();
+    NPLInterpreter nbInterpreter = new NPLInterpreter();
+
     Scheme sch;
     moise.os.fs.Scheme spec;
     OE     oe = new OE();
@@ -37,9 +39,11 @@ public class OI implements DynamicFactsProvider {
 
         NormativeProgram p = new NormativeProgram();
         new nplp(new StringReader(os2nopl.transform(os))).program(p, this);
-        Scope root = p.getRoot();
-        Scope scope = root.findScope("scheme("+type+")");
-        schInterpreter.loadNP(scope);
+        schInterpreter.loadNP(p.getRoot().findScope("scheme("+type+")"));
+
+        p = new NormativeProgram();
+        new nplp(new StringReader(os2nopl.transform(spec, false))).program(p, this);
+        nbInterpreter.loadNP(p.getRoot().findScope("scheme("+type+")"));
     }
     
     public void setGroup(Group g) {
@@ -51,6 +55,10 @@ public class OI implements DynamicFactsProvider {
     
     public NPLInterpreter getNPLI() {
         return schInterpreter;
+    }
+    
+    public NPLInterpreter getNbNPLI() {
+        return nbInterpreter;
     }
     
     public Literal execute(Literal action)  {

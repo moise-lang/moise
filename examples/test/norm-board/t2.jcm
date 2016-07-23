@@ -1,0 +1,13 @@
+/* 
+
+test only normative board creation when linking a group to a scheme
+
+
+*/
+
+mas t1 {
+
+    agent ag2
+    
+}
+

@@ -21,11 +21,14 @@ import org.xml.sax.InputSource;
 import cartago.AbstractWSPRuleEngine;
 import cartago.AgentQuitRequestInfo;
 import cartago.Artifact;
+import cartago.ArtifactId;
 import cartago.CartagoException;
 import cartago.CartagoNode;
 import cartago.INTERNAL_OPERATION;
+import cartago.LINK;
 import cartago.OPERATION;
 import cartago.Op;
+import cartago.OperationException;
 import cartago.util.agent.CartagoBasicContext;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Atom;
@@ -74,6 +77,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     protected String oeId = null; // the id of the org
     
     protected String ownerAgent = null; // the name of the agent that created this artifact
+    
+    protected List<ArtifactId> listeners = new ArrayList<ArtifactId>();
     
     public NPLInterpreter getNPLInterpreter() {
         return nengine;
@@ -223,12 +228,31 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         signal(signal, new JasonTermWrapper(arg));
     }
     
+    // subscribe protocol
+    
+    @LINK void subscribeDFP(ArtifactId subscriber) throws OperationException {
+        listeners.add(subscriber);
+        notifyListeners();
+    }
+
+    void notifyListeners() {
+        for (ArtifactId aid: listeners) {
+            try {
+                execLinkedOp(aid, "updateDFP", getId().getName(), (DynamicFactsProvider)orgState);
+            } catch (Exception e) {
+                System.out.println("removing listener "+aid.getName()+", since we failed to contact it."+e);
+            }
+        }
+    }
+
+    
     protected void ora4masOperationTemplate(Operation op, String errorMsg) {
         if (!running) return;
         CollectiveOE bak = orgState.clone();
         try {
             op.exec();
             updateGuiOE();
+            notifyListeners();
         } catch (NormativeFailureException e) {
             orgState = bak; // takes the backup as the current model since the action failed
             if (errorMsg == null)

@@ -313,6 +313,7 @@ public class GroupBoard extends OrgArt {
                 getObsProperty(obsPropSchemes).updateValue(getGrpState().getResponsibleForAsProlog());
                 
                 schemes.add(schAr);
+
                 notifyObservers();
     
                 // update in subgroups

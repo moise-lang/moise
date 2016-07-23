@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import cartago.ArtifactConfig;
 import cartago.ArtifactId;
 import cartago.CartagoException;
 import cartago.LINK;
@@ -389,18 +390,25 @@ public class SchemeBoard extends OrgArt {
                 for (Player p: rp)
                     g.addPlayer(p.getAg(), p.getTarget());
                 g.addResponsibleForScheme(orgState.getId());
-                //if (spec.isMonitorSch())
-                //    g.setMonitorSch(orgState.getId());
+                
+                boolean newLink = !getSchState().getGroupsResponsibleFor().contains(g);
                 getSchState().addGroupResponsibleFor(g);
         
                 nengine.verifyNorms();
         
-                //updateMonitorScheme();
                 getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
+                if (newLink) {
+                    // first time the group is linked to this scheme, create normative board
+                    // create normative board
+                    String nbId = grId+"."+orgState.getId();
+                    ArtifactId aid = makeArtifact(nbId, NormativeBoard.class.getName(), new ArtifactConfig() );                    
+                    execLinkedOp(aid, "load", os2nopl.transform(spec, false));
+                    execLinkedOp(aid, "doSubscribeDFP", orgState.getId());
+                }
             }
         }, null);
     }
-
+    
     @LINK void removeResponsibleGroup(final String grId) throws CartagoException {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
@@ -555,7 +563,7 @@ public class SchemeBoard extends OrgArt {
     @Override
     public String getNPLSrc() {
         if (spec != null)
-            return os2nopl.header(spec)+os2nopl.transform(spec);
+            return os2nopl.header(spec)+os2nopl.transform(spec, true);
         else
             return super.getNPLSrc();
     }

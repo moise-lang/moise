@@ -106,7 +106,7 @@ public class os2nopl {
 
         // schemes
         for (Scheme sch: os.getFS().getSchemes())
-            np.append( transform( sch) + "\n");
+            np.append( transform( sch, true) + "\n");
         
         np.append("} // end of organisation "+os.getId()+"\n");
         
@@ -208,10 +208,15 @@ public class os2nopl {
     }
     
     /** transforms a Scheme Spec into NPL code */
-    public static String transform(Scheme sch) {
+    public static String transform(Scheme sch, boolean isSB) {
         StringBuilder np = new StringBuilder();
         np.append("scope scheme("+sch.getId()+") {\n\n");
         np.append("   // ** Facts from OS\n\n");
+        
+        if (!isSB) {
+            np.append( roleHierarchy(sch.getFS().getOS().getSS()));
+        }
+        
         np.append("   // mission_cardinality(mission id, min, max)\n");
         for (Mission m: sch.getMissions()) {
             Cardinality c = sch.getMissionCardinality(m);
@@ -292,10 +297,17 @@ public class os2nopl {
         np.append("   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & NP \\== 0 & all_satisfied(S,PCG).\n");
 
         np.append("   super_satisfied(S,G) :- super_goal(SG,G) & satisfied(S,SG).\n");
-        
-        //if (!sch.isMonitorSch()) {
-            np.append("\n   // ** Norms\n\n");
-            //np.append("   // --- missions ---\n");
+
+        np.append("\n   // ** Norms\n");
+
+
+        if (isSB) {
+            np.append("\n   // --- Properties check ---\n");
+            generateProperties(NOP_SCH_PROPS, sch.getFS().getOS().getNS(), np);
+        }
+
+        if (!isSB) {
+            np.append("\n   // --- commitments ---\n");
             for (Norm nrm: sch.getFS().getOS().getNS().getNorms()) {            
                 if (sch.getMissions().contains(nrm.getMission())) {
                     generateNormEntry(
@@ -304,25 +316,21 @@ public class os2nopl {
                     );
                 }
             }
-        //}
-
-        np.append("\n   // --- Goals ---\n");
+        }
         
-        np.append("   // agents are obliged to fulfill their enabled goals\n");
-        np.append("   norm "+NGOA+": \n");
-        np.append("           committed(A,M,S) & mission_goal(M,G) & \n");
-        np.append("           ((goal(_,G,_,achievement,_,D) & What = satisfied(S,G)) | \n");
-        np.append("            (goal(_,G,_,performance,_,D) & What = done(S,G,A))) &\n");
-        np.append("           well_formed(S) & not satisfied(S,G) & enabled(S,G) & \n");
-        np.append("           not super_satisfied(S,G)\n");
-        np.append("        -> obligation(A,"+NGOA+"(S,M,G),What,`now` + D).\n"); 
-        // TODO: maintenance goals
-        //np.append("   // maintenance goals\n");
+        if (isSB) {
+            np.append("\n   // agents are obliged to fulfill their enabled goals\n");
+            np.append("   norm "+NGOA+": \n");
+            np.append("           committed(A,M,S) & mission_goal(M,G) & \n");
+            np.append("           ((goal(_,G,_,achievement,_,D) & What = satisfied(S,G)) | \n");
+            np.append("            (goal(_,G,_,performance,_,D) & What = done(S,G,A))) &\n");
+            np.append("           well_formed(S) & not satisfied(S,G) & enabled(S,G) & \n");
+            np.append("           not super_satisfied(S,G)\n");
+            np.append("        -> obligation(A,"+NGOA+"(S,M,G),What,`now` + D).\n"); 
+            // TODO: maintenance goals
+            //np.append("   // maintenance goals\n");
+        }
         
-        np.append("\n   // --- Properties check ---\n");
-
-        generateProperties(NOP_SCH_PROPS, sch.getFS().getOS().getNS(), np);
-
         np.append("} // end of scheme "+sch.getId()+"\n");
         return np.toString();
     }

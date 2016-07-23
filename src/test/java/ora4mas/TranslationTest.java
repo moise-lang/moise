@@ -29,7 +29,7 @@ public class TranslationTest {
         out.close();
         NormativeProgram p = new NormativeProgram();
         new nplp(new StringReader(np)).program(p, null);
-        assertEquals(10, p.getRoot().getScope(ASSyntax.parseLiteral("scheme(writePaperSch)")).getNorms().size());
+        assertEquals(6, p.getRoot().getScope(ASSyntax.parseLiteral("scheme(writePaperSch)")).getNorms().size());
     }
 
     @Test
