@@ -36,41 +36,21 @@ import ora4mas.nopl.oe.CollectiveOE;
  * 
  * <b>Operations</b> (see details in the methods list below):
  * <ul>
- * <li>commitMission
- * <li>leaveMission
- * <li>goalAchieved
- * <li>setArgumentValue
- * <li>resetGoal
- * <li>destroy
+ * <li>load a NPL program
+ * <li>addFact
+ * <li>removeFact
  * </ul>
  * 
  * <b>Observable properties</b>:
  * <ul>
- * <li>commitment(ag,mission,sch): agent ag is committed to the mission in the scheme (we have as many obs prop as commitments).</br>
- *     e.g. <code>commitment(bob,mission1,s1)</code>
- * <li>groups: a list of groups responsible for the scheme.</br>
- *     e.g. <code>groups([g1])</code>
- * <li>goalState(schId, goal, list of committed agents, list of agents that performed the goal, state); where states are: waiting, enabled, satisfied).</br>
- *     e.g. <code>goalState(s1,g5,[alice,bob],[alice],satisfied)</code>
- * <li>specification: the specification of the scheme in the OS (a prolog like representation).
  * <li>obligation(ag,reason,goal,deadline): current active obligations.</br>
- *     e.g. <code>obligation(bob,ngoal(s1,mission1,g5),done(s1,bid,bob),1475417322254)</code>
- * <li>goalArgument(schemeId, goalId, argId, value): value of goals' arguments, defined by the operation setArgumentValue</br>
- *     e.g. <code>goalArgument(sch1, winner, "W", "Bob")</code>
+ *     e.g. <code>obligation(bob,n4,committed(ag2,mBib,s1),1475417322254)</code>
  * </ul>
  * 
- * <b>Signals</b> (obligation o has the form: obligation(to whom, maintenance condition, what, deadline)):
- * <ul>
- * <li>oblCreated(o): the obligation <i>o</i> is created.
- * <li>oblFulfilled(o): the obligation <i>o</i> is fulfilled
- * <li>oblUnfulfilled(o): the obligation <i>o</i> is unfulfilled (e.g. by timeout).
- * <li>oblInactive(o): the obligation <i>o</i> is inactive (e.g. its maintenance condition does not hold anymore).</br>
- *    e.g. <code>o = obligation(Ag,_,done(Sch,bid,Ag), TTF)</code> if the <code>bid</code> is a performance goal and
- *         <code>o = obligation(Ag,_,satisfied(Sch,bid), TTF)</code> if the <code>bid</code> is an achievement goal.
- * <li>normFailure(f): the failure <i>f</i> has happened (e.g. due some regimentation).</br>
- *    e.g. <code>f = fail(mission_permission(Ag,M,Sch))</code>. The f comes from the normative program.
+ * <b>Signals</b> the same signals of SchemeBoard.
  * </ul>
  * 
+ * @see SchemeBoard
  * @author Jomi
  */
 public class NormativeBoard extends OrgArt {

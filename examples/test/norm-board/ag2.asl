@@ -15,22 +15,6 @@
       commitMission(mManager)[artifact_name(s1)];
    .
 
-+schemes(L)[artifact_name(_,GroupName)] //[workspace(_,_,W)] 
-   <- //cartago.set_current_wsp(W);
-      for ( .member(S,L) ) {
-         lookupArtifact(S,ArtId);
-         focus(ArtId);
-         .concat(GroupName,".",S,NBName);
-         lookupArtifact(NBName,NBId);
-         focus(NBId);
-         
-      }.
-
-+obligation(Ag,Norm,committed(Ag,Mission,Scheme),Deadline)
-    : .my_name(Ag)
-   <- .print("I am obliged to commit to ",Mission," on ",Scheme,"... doing so");
-      commitMission(Mission)[artifact_name(Scheme)]. 
-
 /* application domain goals */
 +!wtitle     <- .wait(500); .print("writing title...").
 +!wabs       <- .print("writing abstract...").

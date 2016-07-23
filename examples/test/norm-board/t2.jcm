@@ -1,7 +1,10 @@
 /* 
 
-test only normative board creation when linking a group to a scheme
+test normative board creation and use when linking a group to a scheme
 
+expected result:
+
+paper finished
 
 */
 

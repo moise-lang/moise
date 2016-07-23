@@ -2,9 +2,11 @@
 
 == Version 0.10
 
-- new artifact: *orgBoard*. It manages all the other artifacts of an organisation. Main operations are (see javadoc for more details):
+- new artifact: *OrgBoard*. It manages all the other artifacts of an organisation. Main operations are (see javadoc for more details):
 * createGroup
 * createScheme
+
+- new artifact: *NormativeBoard*. It can be loaded with any NPL program and is used to manage obligations/permissions defined in the normative specification (which is not managed by SchemeBoard anymore). When a group becomes responsible for a scheme, an instance of this artifact is created automatically. 
 
 - new observable property for SchemeBoard:
 * `goalArgument(schemeId, goalId, argId, value)`: added only if the argument has a value, usually defined by the operation `setArgumentValue`.
