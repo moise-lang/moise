@@ -18,6 +18,7 @@ import javax.swing.border.TitledBorder;
 
 import cartago.ArtifactId;
 import cartago.ArtifactInfo;
+import cartago.CartagoNode;
 import cartago.CartagoService;
 import cartago.ICartagoController;
 import cartago.OpDescriptor;
@@ -40,7 +41,7 @@ public class AgentGUI {
         //this.cartagoArch = cartagoArch;  
 
         try {
-            ctrl = CartagoService.getController("default");
+            ctrl = CartagoService.getController(CartagoNode.MAIN_WSP_NAME);
             
             initGUI();
             SimulatorGUI.getInstance().addAg(this);

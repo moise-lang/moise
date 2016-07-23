@@ -93,6 +93,7 @@
                     <xsd:attribute name="time-constraint" type="xsd:string" use="optional"/>
                 </xsd:complexType>
             </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="npl-norms" type="xsd:string" />
         </xsd:sequence>
     </xsd:complexType>
 

@@ -5,7 +5,7 @@
 <organisational-specification 
 
     id="wp"
-    os-version="0.8"
+    os-version="0.10"
   
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
@@ -108,7 +108,38 @@
                           type="obligation" 
                           role="writer" mission="mColaborator"
                           time-constraint="1 day"  />
-
+        <npl-norms>
+            a :- t &amp; k.
+            norm npl1: a &amp; v(X) -> obligation(bob,true,g(X),`now`+`1 day`).
+            norm npl2: a &amp; b -> fail(test).
+        </npl-norms>
+        
+        <!-- norm id = "n4" 
+                          type="obligation" 
+                          condition="unfulfilled(obligation(_,n2,_,_))" 
+                          role="editor" mission="ms" 
+                          time-constraint="3 hours"/>
+        <norm id = "n5" 
+                          type="obligation" 
+                          condition="fulfilled(obligation(_,n3,_,_))" 
+                          role="editor" mission="mr" 
+                          time-constraint="3 hours"/>
+        <norm id = "n6" 
+                          type="obligation" condition="#goal_non_compliance" 
+                          role="editor" mission="ms" 
+                          time-constraint="3 hours"/>
+        <norm id = "n7" 
+                          type="obligation" condition="#role_compatibility" 
+                          role="editor" mission="ms" 
+                          time-constraint="30 minutes"/>
+        <norm id = "n8" 
+                          type="obligation" condition="#mission_cardinality" 
+                          role="editor" mission="ms" 
+                          time-constraint="1 hour"/>
+        <norm id = "n9" 
+                          type="obligation" condition="#role_cardinality" 
+                          role="editor" mission="ms" 
+                          time-constraint="30 minutes"/-->
     </normative-specification>
 </organisational-specification>
 

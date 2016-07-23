@@ -161,9 +161,9 @@ public class WebInterface  {
                                 String html = "<a href=\""+addr+"\" target=\"oe-frame\" style=\"font-family: arial; text-decoration: none\">"+id+"</a><br/>";
                                 if (addr.endsWith("os"))
                                     os.append(html);
-                                else if (addr.indexOf("group") > 0)
+                                else if (addr.indexOf("/group") > 0)
                                     gr.append("- "+html);
-                                else if (addr.indexOf("scheme") > 0)
+                                else if (addr.indexOf("/scheme") > 0)
                                     sch.append("- "+html);
                                 else
                                     nor.append("- "+html);

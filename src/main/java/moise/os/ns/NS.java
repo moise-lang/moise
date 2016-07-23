@@ -29,6 +29,9 @@ public class NS extends MoiseElement implements ToXML {
     
     protected Set<Norm> norms = new HashSet<Norm>();
     private   OS        os    = null;
+    
+    protected String    nplProgram = null;
+    
     //protected Map<String,String>   opTypes   = new HashMap<String,String> ();
     
     /** Creates new NS */
@@ -58,6 +61,10 @@ public class NS extends MoiseElement implements ToXML {
     
     public Collection<Norm> getNorms() {
         return norms;
+    }
+    
+    public String getNPLNorms() {
+        return nplProgram;
     }
     
     /** returns true whether there is a <i>type</i> norm from roleId to missionId.
@@ -128,6 +135,12 @@ public class NS extends MoiseElement implements ToXML {
                 System.out.println("** OS warning: there already is a norm with ID "+n.getId()+" the former norm will be replaced by the latter!");
             }
             addNorm(n);
+        }
+        
+        for (Element e: DOMUtils.getDOMDirectChilds(ele, "npl-norms")) {
+            if (nplProgram == null)
+                nplProgram = "";
+            nplProgram += e.getTextContent();
         }
     }
 }

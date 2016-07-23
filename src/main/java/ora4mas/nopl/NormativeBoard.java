@@ -88,14 +88,21 @@ public class NormativeBoard extends OrgArt {
      * @throws ParseException  if the OS file is not correct
      * @throws MoiseException  if schType was not specified
      */
-    @OPERATION @LINK public void load(String nplProgram) throws ParseException, MoiseException, FileNotFoundException {
+    @OPERATION @LINK public void load(String nplProgram) throws MoiseException, ParseException {
         NormativeProgram p = new NormativeProgram();
 
         File f = new File(nplProgram);
-        if (f.exists()) {
-            new nplp(new FileReader(nplProgram)).program(p, this);
-        } else {
-            new nplp(new StringReader(nplProgram)).program(p, this);
+        try {
+            if (f.exists()) {
+                new nplp(new FileReader(nplProgram)).program(p, this);
+            } else {
+                new nplp(new StringReader(nplProgram)).program(p, this);
+            }
+        } catch (FileNotFoundException e) {
+        } catch (ParseException e) {
+            logger.warning("error parsing \n"+nplProgram);
+            e.printStackTrace();
+            throw e;
         }
         nengine.loadNP(p.getRoot());
         

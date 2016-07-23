@@ -1,0 +1,17 @@
+/* 
+
+test an OS with "pure" NPL in the NS
+
+expected result:
+
+bob has the obligation for g(33)
+(see it at http://localhost:3271)
+
+*/
+
+mas t1 {
+
+    agent ag3
+    
+}
+

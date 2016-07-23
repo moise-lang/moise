@@ -404,6 +404,15 @@ public class SchemeBoard extends OrgArt {
                     ArtifactId aid = makeArtifact(nbId, NormativeBoard.class.getName(), new ArtifactConfig() );                    
                     execLinkedOp(aid, "load", os2nopl.transform(spec, false));
                     execLinkedOp(aid, "doSubscribeDFP", orgState.getId());
+                    
+                    String nplProgram = spec.getFS().getOS().getNS().getNPLNorms();
+                    if (nplProgram != null) {
+                        StringBuilder out = new StringBuilder();
+                        out.append("scope npl_norms_for_"+spec.getId()+" {\n");
+                        out.append(nplProgram);
+                        out.append("\n}");
+                        execLinkedOp(aid, "load", out.toString());
+                    }
                 }
             }
         }, null);

@@ -46,7 +46,7 @@ task intsim (type: JavaExec, dependsOn: 'jar') {
     main = 'jason.infra.centralised.RunCentralisedMAS'
     args 'org-simulator.mas2j'
     classpath sourceSets.main.runtimeClasspath
-    workingDir project.projectDir.absolutePath + '/src/examples/sim'
+    workingDir project.projectDir.absolutePath + '/examples/sim'
 }
 
 task sim (type: JavaExec, dependsOn: 'jar') {

@@ -2,11 +2,28 @@
 
 == Version 0.10
 
+- The normative specification accepts "pure" NPL programs. E.g.
++
+----
+...
+<normative-specification>
+    <norm id = "n1" type="permission" role="editor" mission="mManager" />
+    ...
+
+    <npl-norms>
+        a :- t &amp; k.
+        norm npl1: a &amp; v(X) -> obligation(bob,true,g(X),`now`+`1 day`).
+        norm npl2: a &amp; b    -> fail(test).
+    </npl-norms>
+...
+----
+See link:examples/test/norm-board/t3.jcm[] for an example.
+
 - new artifact: *OrgBoard*. It manages all the other artifacts of an organisation. Main operations are (see javadoc for more details):
 * createGroup
 * createScheme
 
-- new artifact: *NormativeBoard*. It can be loaded with any NPL program and is used to manage obligations/permissions defined in the normative specification (which is not managed by SchemeBoard anymore). When a group becomes responsible for a scheme, an instance of this artifact is created automatically. 
+- new artifact: *NormativeBoard*. It can be loaded with any NPL program and is used to manage obligations/permissions defined in the normative specification (which is not managed by SchemeBoard anymore). When a group becomes responsible for a scheme, an instance of this artifact is created automatically.
 
 - new observable property for SchemeBoard:
 * `goalArgument(schemeId, goalId, argId, value)`: added only if the argument has a value, usually defined by the operation `setArgumentValue`.
