@@ -28,6 +28,20 @@ See link:examples/test/norm-board/t3.jcm[] for an example.
 - new observable property for SchemeBoard:
 * `goalArgument(schemeId, goalId, argId, value)`: added only if the argument has a value, usually defined by the operation `setArgumentValue`.
 
+- new operation to change the *cardinality* of roles, mission .... for a running group/scheme. E.g.
++
+----
+// in some plan of some agent
+admCommand(setCardinality(role,editor,0,10));
+admCommand(setCardinality(role,writer,0,20));
+
+lookupArtifact("s1", SId); // get artifact id of scheme "s1"
+admCommand(setCardinality(mission,mColaborator,0,3))[aid(SId)];
+admCommand(setCardinality(mission,mManager,0,2))[aid(SId)];
+----
+Only the owner of the group/scheme can perform admCommands.
+
+
 - default type of goals is *performance*
 * norms for *performance* goals have `done(Sch,Goal,Ag)` as the _what_,
 * while *achievement* goals have `satisfied(Sch,Goal)` as the _what_

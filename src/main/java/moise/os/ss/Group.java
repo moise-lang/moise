@@ -40,7 +40,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
     protected Group                superGr    = null;
     protected Set<Link>            links      = new HashSet<Link>();
     protected Set<Compatibility>   compatibilities = new HashSet<Compatibility>();
-    protected String               monitoring  = null;
+    //protected String               monitoring  = null;
     protected SS                   ss          = null;
     
     private static final long serialVersionUID = 1L;
@@ -74,12 +74,14 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
         return ss;
     }
 
+    /*
     public void setMonitoringSch(String schId) {
         monitoring = schId;
     }
     public String getMonitoringSch() {
         return monitoring;
     }
+    */
     
     //
     // Role methods
@@ -311,8 +313,8 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
     public Element getAsDOM(Document document) {
         Element ele = (Element) document.createElement(getXMLTag());
         ele.setAttribute("id",getId());
-        if (getMonitoringSch() != null)
-            ele.setAttribute("monitoring-scheme", getMonitoringSch());
+        //if (getMonitoringSch() != null)
+        //    ele.setAttribute("monitoring-scheme", getMonitoringSch());
         
         // properties
         if (getProperties().size() > 0) {
@@ -398,8 +400,8 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
         setPropertiesFromDOM(ele);
         
         // monitoring-scheme
-        if (ele.getAttribute("monitoring-scheme").length() > 0)
-            setMonitoringSch(ele.getAttribute("monitoring-scheme"));
+        //if (ele.getAttribute("monitoring-scheme").length() > 0)
+        //    setMonitoringSch(ele.getAttribute("monitoring-scheme"));
 
         // roles
         Element e = DOMUtils.getDOMDirectChild(ele, "roles");

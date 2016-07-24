@@ -266,6 +266,32 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         }
     }
     
+    protected void postReorgUpdates(OS os, String nplId, String ss) throws MoiseException, ParseException {
+        // change normative program
+        initNormativeEngine(os, nplId);
+        installNormativeSignaler();
+
+        updateGuiOE();
+
+        try {
+            if (gui != null) {
+                gui.setNormativeProgram(getNPLSrc());
+                gui.setSpecification(specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL(ss))));
+            }
+            
+            /*if (WebInterface.isRunning()) {
+                String osSpec = specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("os")));
+                String oeId = getCreatorId().getWorkspaceId().getName();
+
+                WebInterface.get().registerOSBrowserView(oeId, os.getId(), osSpec);
+            }
+            */
+        } catch (Exception e) {
+            e.printStackTrace();
+        }                
+        
+    }
+    
     static Object[] getTermsAsProlog(Literal o) {
         Object[] terms = new Object[o.getArity()];
         int i = 0;

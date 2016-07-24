@@ -17,11 +17,13 @@ import cartago.LINK;
 import cartago.OPERATION;
 import cartago.ObsProperty;
 import cartago.OperationException;
+import jason.NoValueException;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Literal;
+import jason.asSyntax.NumberTerm;
 import jason.asSyntax.PredicateIndicator;
 import jason.asSyntax.Term;
 import jason.util.Config;
@@ -29,6 +31,7 @@ import moise.common.MoiseException;
 import moise.oe.GoalInstance;
 import moise.oe.MissionPlayer;
 import moise.oe.SchemeInstance;
+import moise.os.Cardinality;
 import moise.os.OS;
 import moise.os.fs.Goal;
 import moise.os.fs.Mission;
@@ -155,7 +158,7 @@ public class SchemeBoard extends OrgArt {
             updateGuiOE();
             
             gui.setNormativeProgram(getNPLSrc());
-            gui.addSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));
+            gui.setSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));
         }
         if (kind.equals("inspector_gui(off)")) {
             System.out.println("not implemented yet, ask the developers to do so.");
@@ -341,11 +344,15 @@ public class SchemeBoard extends OrgArt {
      *     commitMission(<agent>,<mission>),
      *     goalDone(<agent>,<goal>) -- for performance goals --,
      *     goalSatisfied(<goal>) -- for achievement goals --
+     *     setCardinality(<element type>,<element id>,<new min>,<new max>)
+     *              [element type= role/subgroup]
      *     
      * @throws CartagoException
      * @throws jason.asSyntax.parser.ParseException
+     * @throws MoiseException 
+     * @throws NoValueException 
      */
-    @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException {
+    @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException, NoValueException, MoiseException, ParseException {
         if (!running) return;
         // this operation is available only for the owner of the artifact
         if ((!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager")) {   
@@ -358,7 +365,18 @@ public class SchemeBoard extends OrgArt {
                 commitMission(fixAgName(lCmd.getTerm(0).toString()), lCmd.getTerm(1).toString());
             } else if (lCmd.getFunctor().equals("goalSatisfied")) {
                 enableSatisfied(lCmd.getTerm(0).toString());
+            } else if (lCmd.getFunctor().equals("setCardinality")) {
+                setCardinality(lCmd.getTerm(0).toString(), lCmd.getTerm(1).toString(), (int)((NumberTerm)lCmd.getTerm(2)).solve(), (int)((NumberTerm)lCmd.getTerm(3)).solve());
             }
+        }
+    }
+    
+    public void setCardinality(String element, String id, int min, int max) throws MoiseException, ParseException {
+        if (element.equals("mission")) {
+            spec.setMissionCardinality(id, new Cardinality(min,max));
+            postReorgUpdates(spec.getFS().getOS(), "scheme("+spec.getId()+")", "fs");
+        } else {
+            System.out.println("setCardinality not implemented for "+element+". Ask the developers to provide you this feature!");            
         }
     }
     

@@ -16,13 +16,16 @@ import cartago.CartagoException;
 import cartago.LINK;
 import cartago.OPERATION;
 import cartago.OperationException;
+import jason.NoValueException;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
+import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 import jason.util.Config;
 import moise.common.MoiseException;
 import moise.oe.GroupInstance;
 import moise.oe.RolePlayer;
+import moise.os.Cardinality;
 import moise.os.OS;
 import moise.tools.os2dot;
 import moise.xml.DOMUtils;
@@ -149,7 +152,7 @@ public class GroupBoard extends OrgArt {
             updateGuiOE();
             
             gui.setNormativeProgram(getNPLSrc());
-            gui.addSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
+            gui.setSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
         }
         if (kind.equals("inspector_gui(off)")) {
             System.out.println("not implemented yet, ask the developers to do so.");
@@ -483,11 +486,15 @@ public class GroupBoard extends OrgArt {
      * 
      * @param cmd, possible values (as strings):
      *     adoptRole(<agent>,<role>)
+     *     setCardinality(<element type>,<element id>,<new min>,<new max>)
+     *              [element type= role/subgroup]
      *     
      * @throws CartagoException
      * @throws jason.asSyntax.parser.ParseException
+     * @throws NoValueException 
+     * @throws MoiseException 
      */
-    @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException {
+    @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException, NoValueException, MoiseException, ParseException {
         // this operation is available only for the owner of the artifact        
         if (getCurrentOpAgentId() != null && (!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager")) {
             failed("Error: agent '"+getOpUserName()+"' is not allowed to run "+cmd,"reason",new JasonTermWrapper("not_allowed_to_start(admCommand)"));
@@ -495,9 +502,23 @@ public class GroupBoard extends OrgArt {
             Literal lCmd = ASSyntax.parseLiteral(cmd);
             if (lCmd.getFunctor().equals("adoptRole")) {
                 adoptRole(fixAgName(lCmd.getTerm(0).toString()), lCmd.getTerm(1).toString());
-            } if (lCmd.getFunctor().equals("leaveRole")) {
+            } else if (lCmd.getFunctor().equals("leaveRole")) {
                 System.out.println("adm leave role not implemented yet! come back soon");
+            } else if (lCmd.getFunctor().equals("setCardinality")) {
+                setCardinality(lCmd.getTerm(0).toString(), lCmd.getTerm(1).toString(), (int)((NumberTerm)lCmd.getTerm(2)).solve(), (int)((NumberTerm)lCmd.getTerm(3)).solve());
             }
+        }
+    }
+    
+    public void setCardinality(String element, String id, int min, int max) throws MoiseException, ParseException {
+        if (element.equals("role")) {
+            spec.setRoleCardinality(id, new Cardinality(min,max));
+
+            getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(isWellFormed() ? "ok" : "nok"));
+
+            postReorgUpdates(spec.getSS().getOS(), "group("+spec.getId()+")", "ss");
+        } else {
+            System.out.println("setCardinality not implemented for "+element+". Ask the developers to provide you this feature!");            
         }
     }
     

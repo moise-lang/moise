@@ -48,6 +48,7 @@ public class GUIInterface {
     private JTextPane txtNF  = new JTextPane();
     private JTextPane txtNS  = new JTextPane();
     private JTextArea txtNP  = null;
+    private JTextPane ostext = null;
     private JTextArea txtLog = new JTextArea(9, 10);
     private JPanel    artPanel;
     
@@ -159,15 +160,17 @@ public class GUIInterface {
         txtNP.setText(source);
     }
 
-    public void addSpecification(String sSpec) throws Exception {
-        JPanel osp = new JPanel(new BorderLayout());
-        JTextPane ostext = new JTextPane();
-        ostext.setContentType("text/html");
-        ostext.setEditable(false);
-        ostext.setAutoscrolls(false);
+    public void setSpecification(String sSpec) throws Exception {
+        if (ostext == null) {
+            JPanel osp = new JPanel(new BorderLayout());
+            ostext = new JTextPane();
+            ostext.setContentType("text/html");
+            ostext.setEditable(false);
+            ostext.setAutoscrolls(false);
+            osp.add(BorderLayout.CENTER, new JScrollPane(ostext));
+            tpane.add("specification", osp);
+        }
         ostext.setText(sSpec);
-        osp.add(BorderLayout.CENTER, new JScrollPane(ostext));
-        tpane.add("specification", osp);
     }
 
     private String lastOEStr = "";

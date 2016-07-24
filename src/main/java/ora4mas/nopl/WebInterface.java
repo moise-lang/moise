@@ -18,6 +18,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -314,12 +315,16 @@ public class WebInterface  {
         return dpath;
     }
 
+    HttpContext osContext = null;
+    
     String registerOSBrowserView(String oeId, String osId, final String osSpec) {        
         if (httpServer == null)
             return null;
         try {
             String addr = "/" + oeId + "/os";
-            httpServer.createContext(addr, new HttpHandler() {                                
+            if (osContext != null)
+                httpServer.removeContext(osContext);
+            osContext = httpServer.createContext(addr, new HttpHandler() {                                
                 public void handle(HttpExchange exchange) throws IOException {
                     String requestMethod = exchange.getRequestMethod();
                     Headers responseHeaders = exchange.getResponseHeaders();
