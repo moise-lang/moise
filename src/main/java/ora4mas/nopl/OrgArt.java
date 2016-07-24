@@ -111,7 +111,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     }
     
     protected void destroy() {
-        if (ownerAgent != null && getOpUserId() != null && (!getOpUserName().equals(ownerAgent)) ) {
+        if (ownerAgent != null && getCurrentOpAgentId() != null && (!getOpUserName().equals(ownerAgent)) ) {
             failed("you can not destroy the artifact, only the owner can!");
             return;
         }
@@ -432,6 +432,10 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             return ag;
     }
 
+    public String getOpUserName() {
+        return getCurrentOpAgentId().getAgentName();
+    }
+    
     // DFP methods
     
     public boolean isRelevant(PredicateIndicator pi) {

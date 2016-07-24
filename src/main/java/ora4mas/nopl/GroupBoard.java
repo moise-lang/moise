@@ -488,8 +488,8 @@ public class GroupBoard extends OrgArt {
      * @throws jason.asSyntax.parser.ParseException
      */
     @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException {
-        // this operation is available only for the owner of the artifact
-    if (getOpUserId() != null && (!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager")) {
+        // this operation is available only for the owner of the artifact        
+        if (getCurrentOpAgentId() != null && (!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager")) {
             failed("Error: agent '"+getOpUserName()+"' is not allowed to run "+cmd,"reason",new JasonTermWrapper("not_allowed_to_start(admCommand)"));
         } else {
             Literal lCmd = ASSyntax.parseLiteral(cmd);
