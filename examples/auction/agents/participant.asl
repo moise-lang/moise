@@ -15,6 +15,7 @@
    <- .wait(100);
       !start.
      
++!join : joined("ora4mas",_).	 
 +!join 
    <- .wait(500);
       joinWorkspace("ora4mas",_).

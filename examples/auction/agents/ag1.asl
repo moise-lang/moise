@@ -1,6 +1,7 @@
 // this agent always bids 6
 
-{ include("common-moise.asl") }
+{ include("$jacamoJar/templates/common-moise.asl") }
+{ include("$jacamoJar/templates/org-obedient.asl") }
 { include("participant.asl") }
 
 // plan for the bid organisational goal

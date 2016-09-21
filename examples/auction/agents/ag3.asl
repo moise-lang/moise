@@ -3,7 +3,8 @@
 // another agent and therefore it bids 7 (3 from itself + 4 from ag2)
 // (see plan ?ally for more information about how the ally is chosen)
 
-{ include("common-moise.asl") }
+{ include("$jacamoJar/templates/common-moise.asl") }
+{ include("$jacamoJar/templates/org-obedient.asl") }
 { include("participant.asl") }
 
 
@@ -48,8 +49,9 @@ threshold(3).
 // remember the winners
 +goalState(Sch, winner, _, _, satisfied) 
    :  goalArgument(Sch, auction, "N", N) &
-      goalArgument(Sch, auction, "W", W)
-   <- +winner(N,W).
+      goalArgument(Sch, winner, "W", W)
+   <- .term2string(A,W);
+      +winner(N,A).
 
 // find and ally from the specification:
 //    see all missions with the goal "bid"

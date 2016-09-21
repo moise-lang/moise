@@ -1,4 +1,5 @@
-{ include("common-moise.asl") }
+{ include("$jacamoJar/templates/common-moise.asl") }
+{ include("$jacamoJar/templates/org-obedient.asl") }
 
 /* 
    Beliefs

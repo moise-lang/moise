@@ -1,7 +1,8 @@
 // This agent usually bids 4, 
 // when it has an alliance with ag3, it bids 0
 
-{ include("common-moise.asl") }
+{ include("$jacamoJar/templates/common-moise.asl") }
+{ include("$jacamoJar/templates/org-obedient.asl") }
 { include("participant.asl") }
 
 default_bid_value(4).

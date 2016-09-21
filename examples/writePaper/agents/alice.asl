@@ -5,7 +5,6 @@
 my_role(writer).
 
 { include("common.asl") }
-//{ include("common-moise.asl") }
 
 /* Plans */
 

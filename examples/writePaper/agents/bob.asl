@@ -4,7 +4,6 @@
 my_role(editor).
 
 { include("common.asl") }
-//{ include("common-moise.asl") } // some common plans for obedient agents
 
 /* Initial goals */
 
