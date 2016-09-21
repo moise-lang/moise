@@ -5,7 +5,7 @@
 my_role(writer).
 
 { include("common.asl") }
-{ include("common-moise.asl") }
+//{ include("common-moise.asl") }
 
 /* Plans */
 
@@ -23,3 +23,7 @@ my_role(writer).
 +goalState(Scheme,wrefs,_,_,satisfied)
     : .my_name(Me) & commitment(Me,mBib,Scheme)
    <- !quit_mission(mBib,Scheme).
+
+{ include("$jacamoJar/templates/common-moise.asl") }
+{ include("$jacamoJar/templates/org-obedient.asl") }
+   

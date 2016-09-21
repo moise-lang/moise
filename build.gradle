@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
     compile group: 'net.sf.jason', name: 'jason',  version: '2.0'
-    compile group: 'org.jacamo',     name: 'npl' ,     version: '0.2-SNAPSHOT', changing: true
+    compile group: 'org.jacamo',     name: 'npl' ,     version: '0.2', changing: true
     compile group: 'org.jacamo',     name: 'cartago',  version: '2.2-SNAPSHOT', changing: true
     compile group: 'org.jacamo',     name: 'jaca',     version: '2.2-SNAPSHOT', changing: true
 

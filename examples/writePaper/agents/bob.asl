@@ -4,7 +4,7 @@
 my_role(editor).
 
 { include("common.asl") }
-{ include("common-moise.asl") } // some common plans for obedient agents
+//{ include("common-moise.asl") } // some common plans for obedient agents
 
 /* Initial goals */
 
@@ -71,4 +71,7 @@ my_role(editor).
 // for debug (prints out the new states of goals)
 //+goalState(Sch,Goal,CommittedAgs,AchievedBy,State)
 //   <- .print("                         goal changed: ", goalState(Sch,Goal,CommittedAgs,AchievedBy,State)).
+
+{ include("$jacamoJar/templates/common-moise.asl") }
+{ include("$jacamoJar/templates/org-obedient.asl") }
    

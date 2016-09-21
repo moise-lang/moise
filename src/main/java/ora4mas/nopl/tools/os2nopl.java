@@ -49,7 +49,9 @@ public class os2nopl {
     public static final String[] NOP_GR_PROPS  = new String[] { PROP_RoleInGroup, PROP_RoleCardinality, PROP_RoleCompatibility, PROP_WellFormedResponsible, PROP_SubgroupInGroup, PROP_SubgroupCardinality};
     // properties for schemes
     public static final String[] NOP_SCH_PROPS = new String[] { //PROP_NotCompGoal, 
-            PROP_MissionPermission, PROP_LeaveMission, PROP_MissionCardinality, PROP_AchNotEnabledGoal, PROP_AchNotCommGoal };
+            PROP_LeaveMission, PROP_AchNotEnabledGoal, PROP_AchNotCommGoal };
+    // properties for norms
+    public static final String[] NOP_NS_PROPS = new String[] { PROP_MissionPermission, PROP_MissionCardinality };
     
     private static final String NGOA = "ngoal"; // id of the goal obligations
     
@@ -301,9 +303,11 @@ public class os2nopl {
         np.append("\n   // ** Norms\n");
 
 
+        np.append("\n   // --- Properties check ---\n");
         if (isSB) {
-            np.append("\n   // --- Properties check ---\n");
             generateProperties(NOP_SCH_PROPS, sch.getFS().getOS().getNS(), np);
+        } else {
+            generateProperties(NOP_NS_PROPS, sch.getFS().getOS().getNS(), np);          
         }
 
         if (!isSB) {

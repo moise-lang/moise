@@ -22,13 +22,14 @@ my_role(writer).
 // plans to handle obligations
 
 // only commits to mColaborator!
-+obligation(Ag,Norm,committed(Ag,mColaborator,Scheme),DeadLine)
++obligation(Ag,Norm,committed(Ag,mColaborator,Scheme),Deadline)[artifact_id(ArtId),workspace(_,_,W)]
     : .my_name(Ag)
-   <- .print("I am obliged to commit to ",mColaborator);
-      commitMission(mColaborator)[artifact_name(Scheme)].
+   <- .print("I am obliged to commit to mColaborator on ",Scheme,"... doing so");
+      commitMission(mColaborator)[artifact_name(Scheme), wid(W)]. 
++obligation(Ag,Norm,committed(Ag,Mission,Scheme),Deadline)
+    : .my_name(Ag)
+   <- .print("Ignoring obligation to commit to ",Mission," on ",Scheme). 
+
+{ include("$jacamoJar/templates/common-moise.asl") }
+{ include("$jacamoJar/templates/org-obedient.asl") }
       
-+obligation(Ag,Norm,done(Scheme,Goal,Ag),DeadLine)
-    : .my_name(Ag)
-   <- .print("I am obliged to achieve goal ",Goal);
-      !Goal[scheme(Scheme)];
-      goalAchieved(Goal)[artifact_name(Scheme)].
