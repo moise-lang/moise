@@ -5,7 +5,7 @@
 */
 
 MAS org_simulation {
-   environment: c4jason.CartagoEnvironment
+   environment: jaca.CartagoEnvironment
 
    agents:
    

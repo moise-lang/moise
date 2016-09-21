@@ -23,7 +23,7 @@ import cartago.AgentQuitRequestInfo;
 import cartago.Artifact;
 import cartago.ArtifactId;
 import cartago.CartagoException;
-import cartago.CartagoNode;
+import cartago.CartagoService;
 import cartago.INTERNAL_OPERATION;
 import cartago.LINK;
 import cartago.OPERATION;
@@ -378,7 +378,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             new Thread() {
                 public void run() {
                     try {
-                        CartagoBasicContext cartagoCtx = new CartagoBasicContext("OrgArt setup", CartagoNode.MAIN_WSP_NAME);
+                        // TODO: use new cartago API
+                        CartagoBasicContext cartagoCtx = new CartagoBasicContext("OrgArt setup", CartagoService.MAIN_WSP_NAME);
                         cartagoCtx.doAction(new Op("setWSPRuleEngine", wspEng), -1);
                         wspEng.addListener(OrgArt.this);    
                     } catch (CartagoException e) {

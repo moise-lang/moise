@@ -5,7 +5,7 @@ import jason.asSyntax.Term;
 
 import java.io.Serializable;
 
-import c4jason.ToProlog;
+import jaca.ToProlog;
 
 public class JasonTermWrapper implements ToProlog, Serializable {
     //Term t;

@@ -18,13 +18,13 @@ import javax.swing.border.TitledBorder;
 
 import cartago.ArtifactId;
 import cartago.ArtifactInfo;
-import cartago.CartagoNode;
 import cartago.CartagoService;
 import cartago.ICartagoController;
 import cartago.OpDescriptor;
 import jason.architecture.AgArch;
 import jason.asSyntax.ASSyntax;
 import jason.util.asl2html;
+import ora4mas.nopl.ORA4MASConstants;
 import ora4mas.nopl.OrgArt;
 
 public class AgentGUI {
@@ -41,7 +41,7 @@ public class AgentGUI {
         //this.cartagoArch = cartagoArch;  
 
         try {
-            ctrl = CartagoService.getController(CartagoNode.MAIN_WSP_NAME);
+            ctrl = CartagoService.getController(ORA4MASConstants.ORA4MAS_WSNAME);
             
             initGUI();
             SimulatorGUI.getInstance().addAg(this);
@@ -71,10 +71,10 @@ public class AgentGUI {
     void execCartagoOp(final String art, final String op, final String args) throws Exception {
         System.out.println("start doing "+op+", arguments="+args);
         
-        jasonAg.addBel(ASSyntax.createLiteral("using", ASSyntax.createString(art)));
+        jasonAg.addBel(ASSyntax.createLiteral("using", ASSyntax.createAtom(art)));
         
         jasonAg.getTS().getC().addAchvGoal(ASSyntax.createLiteral("doOrgAct",
-                ASSyntax.createString(art),
+                ASSyntax.createAtom(art),
                 ASSyntax.createAtom(op),
                 ASSyntax.parseList("["+args+"]")),
             null);
@@ -167,6 +167,7 @@ public class AgentGUI {
     
     public void initArtsCBmodel() throws Exception {
         artsCBmodel.removeAllElements();
+        
         for (ArtifactId artId: ctrl.getCurrentArtifacts() ) {
             ArtifactInfo info = ctrl.getArtifactInfo(artId.getName());
             @SuppressWarnings("rawtypes")

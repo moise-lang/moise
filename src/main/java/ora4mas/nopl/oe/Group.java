@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import npl.DynamicFactsProvider;
-import c4jason.ToProlog;
+import jaca.ToProlog;
 
 
 

@@ -2,7 +2,7 @@ package ora4mas.nopl.oe;
 
 import java.io.Serializable;
 
-import c4jason.ToProlog;
+import jaca.ToProlog;
 
 public class Pair<T1,T2> implements ToProlog, Serializable {
     T1 l;

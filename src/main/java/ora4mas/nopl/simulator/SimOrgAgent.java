@@ -1,6 +1,6 @@
 package ora4mas.nopl.simulator;
 
-import c4jason.CAgentArch;
+import jaca.CAgentArch;
 
 /**
   * Simulator for Organisational Agents

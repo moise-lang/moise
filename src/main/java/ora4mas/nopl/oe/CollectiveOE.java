@@ -2,12 +2,6 @@ package ora4mas.nopl.oe;
 
 import static jason.asSyntax.ASSyntax.createAtom;
 import static jason.asSyntax.ASSyntax.createLiteral;
-import jason.asSemantics.Unifier;
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.Literal;
-import jason.asSyntax.LogExpr;
-import jason.asSyntax.PredicateIndicator;
-import jason.asSyntax.Term;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,9 +12,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import jaca.ToProlog;
+import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Literal;
+import jason.asSyntax.LogExpr;
+import jason.asSyntax.PredicateIndicator;
+import jason.asSyntax.Term;
 import npl.DynamicFactsProvider;
 import ora4mas.nopl.JasonTermWrapper;
-import c4jason.ToProlog;
 
 
 

@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import moise.os.fs.Goal;
 import moise.os.fs.Plan.PlanOpType;
-import c4jason.ToProlog;
+import jaca.ToProlog;
 
 /**
  Represents an instance of scheme

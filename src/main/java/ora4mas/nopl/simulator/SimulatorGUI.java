@@ -16,14 +16,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+import cartago.AgentIdCredential;
 import cartago.ArtifactId;
+import cartago.CartagoContext;
 import cartago.CartagoException;
 import cartago.CartagoService;
 import cartago.Op;
-import cartago.util.agent.CartagoBasicContext;
+import cartago.WorkspaceId;
 import jason.infra.centralised.RunCentralisedMAS;
 import jason.runtime.RuntimeServicesInfraTier;
 import ora4mas.nopl.GroupBoard;
+import ora4mas.nopl.ORA4MASConstants;
 import ora4mas.nopl.SchemeBoard;
 
 public class SimulatorGUI {
@@ -41,7 +44,10 @@ public class SimulatorGUI {
 
     private SimulatorGUI() {
         try {
-            final CartagoBasicContext ctxt = new CartagoBasicContext("simulator");
+            CartagoService.createWorkspace(ORA4MASConstants.ORA4MAS_WSNAME);
+            CartagoService.enableDebug(ORA4MASConstants.ORA4MAS_WSNAME);
+            final CartagoContext ctx = CartagoService.startSession(ORA4MASConstants.ORA4MAS_WSNAME, new AgentIdCredential("simulator"));
+            final WorkspaceId wid = ctx.getJoinedWspId(ORA4MASConstants.ORA4MAS_WSNAME);
             
             JPanel posfile = new JPanel(new FlowLayout(FlowLayout.LEFT));
             posfile.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Specification file", TitledBorder.LEFT, TitledBorder.TOP));
@@ -62,8 +68,12 @@ public class SimulatorGUI {
             crGrBT.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        ArtifactId aid = ctxt.makeArtifact(gIdTF.getText().trim(),  GroupBoard.class.getName(),  new Object[] { fileTF.getText().trim(), gTypeTF.getText().trim() });
-                        ctxt.doAction(aid, new Op("debug", new Object[] { "inspector_gui(on)" } ));
+                        ArtifactId aid = ctx.makeArtifact(wid, gIdTF.getText().trim(),  GroupBoard.class.getName(), new Object[] { fileTF.getText().trim(), gTypeTF.getText().trim() });
+                        if (aid == null) {
+                            System.out.println("Error creating group board! ");
+                            return;
+                        }
+                        ctx.doAction(aid, new Op("debug", new Object[] { "inspector_gui(on)" } ));
                         for (AgentGUI a: ags) {
                             a.initArtsCBmodel();
                             a.initOpsCBmodel();
@@ -89,8 +99,12 @@ public class SimulatorGUI {
             crSchBT.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        ArtifactId aid = ctxt.makeArtifact(sIdTF.getText().trim(),  SchemeBoard.class.getName(),  new Object[] { fileTF.getText().trim(), sTypeTF.getText().trim()});
-                        ctxt.doAction(aid, new Op("startGUI", new Object[] {} ));
+                        ArtifactId aid = ctx.makeArtifact(wid, sIdTF.getText().trim(),  SchemeBoard.class.getName(),  new Object[] { fileTF.getText().trim(), sTypeTF.getText().trim()});
+                        if (aid == null) {
+                            System.out.println("Error creating group board! ");
+                            return;
+                        }
+                        ctx.doAction(aid, new Op("debug", new Object[] { "inspector_gui(on)" } ));
                         
                         for (AgentGUI a: ags) {
                             a.initArtsCBmodel();
@@ -145,9 +159,6 @@ public class SimulatorGUI {
     
     public static void main(String[] args) throws CartagoException {
         CartagoService.startNode();
-        CartagoService.installInfrastructureLayer("default"); 
-        CartagoService.startInfrastructureService("default");
-        
         SimulatorGUI.getInstance();
     }
 }

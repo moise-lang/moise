@@ -19,7 +19,7 @@
 ----
 See link:examples/test/norm-board/t3.jcm[] for an example.
 
-- new artifact: *OrgBoard*. It manages all the other artifacts of an organisation. Main operations are (see javadoc for more details):
+- new artifact: *OrgBoard*. It manages all artifacts of an organisation. Main operations are (see javadoc for more details):
 * createGroup
 * createScheme
 

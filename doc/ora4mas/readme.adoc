@@ -35,7 +35,7 @@ presented in [cite:hubner09e], which is strongly based on ORA4MAS
 
 == Organisational Artifacts Specification
 
-Two kinds of artifacts are implemented: `GroupBoard` and
+Two main kinds of artifacts are implemented: `GroupBoard` and
 `SchemeBoard`. The usage interface (operations, observable
 properties, and signals) of them are available in the following links
 
@@ -54,10 +54,7 @@ enabling the user to test the specification. To run it:
 We can then set the organisational specification for the system and
 create groups, schemes, and generic GUI based agents.
 
-You can also read the code of a simulator to learn how to program Java
-agents to use these artifacts. The source is available
-https://github.com/jomifred/moise/blob/master/src/main/java/ora4mas/nopl/simulator/ConsoleSimulator.java[here]
-and can be run with
+You can also read the code of a simulator to learn how to program Java agents to use these artifacts. The source is available https://github.com/jomifred/moise/blob/master/src/main/java/ora4mas/nopl/simulator/ConsoleSimulator.java[here] and can be run with
 
     gradle sim
 
@@ -87,8 +84,7 @@ The beliefs are the following (see API documentation of artifacts for more detai
 - others (see observable properties of the artifacts)
 
 
-The following signals are also translated to Jason events (see the
-organisational artifacts specification for more details):
+The following signals are also translated to Jason events (see the organisational artifacts specification for more details):
 
 - `oblCreated(obligation)`: the state of the obligation is changed to _created_
 - `oblFulfilled(obligation)`
