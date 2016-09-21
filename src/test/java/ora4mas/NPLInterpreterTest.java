@@ -293,6 +293,7 @@ public class NPLInterpreterTest {
         // change to well formed
         oi.execute(ASSyntax.parseLiteral("commitMission(jaime,mManager)"));
         Literal r = oi.execute(ASSyntax.parseLiteral("commitMission(jomi,ma)"));
+        assertNotNull(r);
         assertEquals("fail(mission_permission(jomi,ma,sch2))",r.toString());
         assertNull(oi.execute(ASSyntax.parseLiteral("commitMission(jomi,mColaborator)")));        
         assertNull(oi.execute(ASSyntax.parseLiteral("commitMission(jomi,mBib)")));

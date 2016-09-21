@@ -11,11 +11,6 @@
       admCommand(setCardinality(mission,mManager,0,2))[aid(SId)];
       admCommand(setCardinality(mission,mBib,0,1))[aid(SId)];
       
-/*       
-      createScheme(s1,writePaperSch,SId);
-      addScheme(s1);
-      debug(inspector_gui(on))[artifact_name(s1)];
-      commitMission(mManager)[artifact_name(s1)];*/
     .
     
 { include("$jacamoJar/templates/common-cartago.asl") }

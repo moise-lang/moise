@@ -49,9 +49,9 @@ public class os2nopl {
     public static final String[] NOP_GR_PROPS  = new String[] { PROP_RoleInGroup, PROP_RoleCardinality, PROP_RoleCompatibility, PROP_WellFormedResponsible, PROP_SubgroupInGroup, PROP_SubgroupCardinality};
     // properties for schemes
     public static final String[] NOP_SCH_PROPS = new String[] { //PROP_NotCompGoal, 
-            PROP_LeaveMission, PROP_AchNotEnabledGoal, PROP_AchNotCommGoal };
+            PROP_LeaveMission, PROP_AchNotEnabledGoal, PROP_AchNotCommGoal, PROP_MissionPermission, PROP_MissionCardinality };
     // properties for norms
-    public static final String[] NOP_NS_PROPS = new String[] { PROP_MissionPermission, PROP_MissionCardinality };
+    public static final String[] NOP_NS_PROPS = new String[] {  };
     
     private static final String NGOA = "ngoal"; // id of the goal obligations
     
