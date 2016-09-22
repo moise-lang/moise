@@ -126,13 +126,7 @@ include::../../examples/writePaper/agents/bob.asl[]
 ----
 
 
-The included files are:
-
-[source,asl]
-.common-moise.asl
-----
-include::../../examples/writePaper/agents/common-moise.asl[]
-----
+The first included file is listed below. The last two are part of the JaCaMo distribution and are available link:https://github.com/jacamo-lang/jacamo/blob/master/src/main/resources/templates/common-moise.asl[here] and link:https://github.com/jacamo-lang/jacamo/blob/master/src/main/resources/templates/org-obedient.asl[here].
 
 [source,asl]
 .common.asl

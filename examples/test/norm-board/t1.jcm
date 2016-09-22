@@ -2,7 +2,7 @@
 
 test only a simple normative board (no moise spec involved)
 
-expected result:
+expected result (in history of org inspector):
 
 created:     obligation(alice,(vl(X) & (X >= 5)),(b(Y) & (Y < 0)),"now + 3 seconds")[created("2016-6-5 12:42:0"),norm(n1)]
 unfulfilled: obligation(alice,(vl(X) & (X >= 5)),(b(Y) & (Y < 0)),"2016-6-5 12:42:4")[created("2016-6-5 12:42:0"),norm(n1),unfulfilled("2016-6-5 12:42:4")]

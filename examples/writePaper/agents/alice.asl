@@ -1,5 +1,5 @@
 // this agent waits for the group creation and then
-// adopts the role write and
+// adopts the role writer and
 // commits to the missions mColaborator and mBib
 
 my_role(writer).
