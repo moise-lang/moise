@@ -7,6 +7,7 @@ defaultTasks 'jar'
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 version '0.10-SNAPSHOT'
@@ -24,6 +25,10 @@ repositories {
 
 }
 
+configurations {
+    umljavadoc  // see http://www.umlgraph.org/doc/indexw.html
+}
+
 dependencies {
     compile group: 'net.sf.jason', name: 'jason',  version: '2.0'
     compile group: 'org.jacamo',     name: 'npl' ,     version: '0.2', changing: true
@@ -31,6 +36,8 @@ dependencies {
     compile group: 'org.jacamo',     name: 'jaca',     version: '2.2-SNAPSHOT', changing: true
 
     testCompile group: 'junit',      name: 'junit', version: '4.+'
+    
+    umljavadoc 'org.umlgraph:umlgraph:5.6'
 }
 
 jar {
@@ -60,7 +67,8 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-
+			artifact sourceJar
+			artifact javadocJar
             artifactId 'moise'
         }
     }
@@ -76,7 +84,48 @@ task renderAsciiDocs(type: Exec) {
 }
 
 
-task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) << {
+task javadoc(overwrite: true, dependsOn: compileJava) {
+    setDescription('Generates Javadoc API documentation with UMLGraph diagrams')
+    setGroup(JavaBasePlugin.DOCUMENTATION_GROUP)
+
+    doLast {
+        ant.javadoc(classpath: (configurations.runtime + configurations.compile).asPath,
+                    sourcepath: file('src/main/java'),
+                    packagenames: '*',
+                    destdir: "${docsDir}/../../doc/api",
+                    private: 'true',
+                    docletpath: configurations.umljavadoc.asPath) {
+            doclet(name: 'org.umlgraph.doclet.UmlGraphDoc') {
+                //param(name: '-inferrel')
+                //param(name: '-inferdep')
+                param(name: '-qualify')
+                //param(name: '-T', value: 'svg')
+                param(name: '-postfixpackage')
+                param(name: '-hide', value: 'java.*')
+                //param(name: '-collpackages', value: 'java.util.*')
+                //param(name: '-nodefontsize', value: '9')
+                //param(name: '-nodefontpackagesize', value: '7')
+                //param(name: '-link', value: 'http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec')
+                //param(name: '-link', value: 'http://java.sun.com/j2se/1.5/docs/api')
+            }
+        }
+    }
+}
+
+task javadocJar (type: Jar, dependsOn: javadoc) {
+    baseName 'moise'
+    classifier = 'javadoc'
+    from '${docsDir}/../../doc/api'
+}
+
+task sourceJar (type : Jar) {
+    baseName 'moise'
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+
+task publishMavenSF(dependsOn: [ 'jar', 'build', 'publishToMavenLocal', 'sourceJar', 'javadocJar']) << {
     description 'transfer local maven artifact to our maven2 repository at sourceforge'
 
     def wdir = System.getProperty("user.home")+'/.m2/repository/org/jacamo/moise'
