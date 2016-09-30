@@ -31,7 +31,7 @@ configurations {
 
 dependencies {
     compile group: 'net.sf.jason', name: 'jason',  version: '2.0'
-    compile group: 'org.jacamo',     name: 'npl' ,     version: '0.2', changing: true
+    compile group: 'org.jacamo',     name: 'npl' ,     version: '0.2', changing: false
     compile group: 'org.jacamo',     name: 'cartago',  version: '2.2-SNAPSHOT', changing: true
     compile group: 'org.jacamo',     name: 'jaca',     version: '2.2-SNAPSHOT', changing: true
 
@@ -60,6 +60,12 @@ task sim (type: JavaExec, dependsOn: 'jar') {
     description 'runs a program that simulates some dynamics of an organisation'
     main = 'ora4mas.nopl.simulator.ConsoleSimulator'
     classpath sourceSets.main.runtimeClasspath
+}
+
+eclipse {
+    classpath {
+        downloadJavadoc = true
+    }
 }
 
 
