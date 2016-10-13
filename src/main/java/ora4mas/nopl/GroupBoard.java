@@ -313,8 +313,6 @@ public class GroupBoard extends OrgArt {
                 getGrpState().addResponsibleForScheme(schId);
                 nengine.verifyNorms();
                 
-                getObsProperty(obsPropSchemes).updateValue(getGrpState().getResponsibleForAsProlog());
-                
                 schemes.add(schAr);
 
                 notifyObservers();
@@ -324,6 +322,7 @@ public class GroupBoard extends OrgArt {
                     ArtifactId sgid = lookupArtifact(sg.getId());
                     execLinkedOp(sgid, "addScheme", schId);                
                 }
+                getObsProperty(obsPropSchemes).updateValue(getGrpState().getResponsibleForAsProlog());
             }                
         }, "Error adding scheme "+schId);
     }

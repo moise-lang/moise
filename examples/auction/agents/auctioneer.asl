@@ -19,7 +19,7 @@ auction_id(0).
      createWorkspace("ora4mas");
      joinWorkspace("ora4mas",O4MWsp);
      
-     makeArtifact(myorg, "ora4mas.nopl.OrgBoard", ["../auction-os.xml"], OrgArtId);
+     makeArtifact(myorg, "ora4mas.nopl.OrgBoard", ["../auction-os.xml"], OrgArtId)[wid(O4MWsp)];
      focus(OrgArtId);
      
      createGroup(auction, auctionGroup, GrArtId);
