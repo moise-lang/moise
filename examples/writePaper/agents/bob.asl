@@ -33,7 +33,7 @@ my_role(editor).
 	 
      !run_scheme(sch1).
      
-//+group(_,_,AID)  <- focus(AID).     
+//+group(_,_,AID)  <- focus(AID).
 //+scheme(_,_,AID) <- focus(AID).
 
 // general error handler for goal start 
