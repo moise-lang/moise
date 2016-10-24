@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
-<organisational-specification 
+<organisational-specification
     id="auction"
     os-version="0.7"
-  
+
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-    xsi:schemaLocation='http://moise.sourceforge.net/os
-                        http://moise.sourceforge.net/xml/os.xsd' >
-    
+    xsi:schemaLocation='http://moise.sourceforge.net/os http://moise.sourceforge.net/xml/os.xsd' >
+
 <structural-specification>
 
 <role-definitions>
@@ -23,9 +22,9 @@
  </roles>
 
  <links>
-  <link from="auctioneer" to="participant" type="communication" scope="intra-group" 
+  <link from="auctioneer" to="participant" type="communication" scope="intra-group"
         extends-subgroups="false" bi-dir="true"/>
-  <link from="participant" to="participant" type="communication" scope="intra-group" 
+  <link from="participant" to="participant" type="communication" scope="intra-group"
         extends-subgroups="false" bi-dir="false"/>
  </links>
 
@@ -56,13 +55,12 @@
 </functional-specification>
 
 <normative-specification>
-<norm id="n1"     type="permission" 
-                  role="auctioneer" 
+<norm id="n1"     type="permission"
+                  role="auctioneer"
                   mission="mAuctioneer" />
-<norm id="n2"     type="obligation" 
-                  role="participant" 
+<norm id="n2"     type="obligation"
+                  role="participant"
                   mission="mParticipant" />
 </normative-specification>
 
 </organisational-specification>
-
