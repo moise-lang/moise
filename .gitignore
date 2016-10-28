@@ -12,6 +12,7 @@ examples/test/groupwithoutrole.npl
 .settings
 .classpath
 .project
+.DS_Store
 
 *~
 *.class
