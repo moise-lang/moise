@@ -130,7 +130,7 @@ public class SimulatorGUI {
                     if (name.length() > 0) {
                         try {
                             RuntimeServicesInfraTier rs = RunCentralisedMAS.getRunner().getRuntimeServices();
-                            rs.createAgent(name, "orgagent.asl", null, Arrays.asList(SimOrgAgent.class.getName()), null, null);
+                            rs.createAgent(name, "orgagent.asl", null, Arrays.asList(SimOrgAgent.class.getName()), null, null, null);
                             rs.startAgent(name);
                         } catch (Exception e1) {
                             e1.printStackTrace();

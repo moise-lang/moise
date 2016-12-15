@@ -30,13 +30,14 @@ configurations {
 }
 
 dependencies {
-    compile group: 'net.sf.jason', name: 'jason',  version: '2.+'
+    //compile group: 'net.sf.jason', name: 'jason',  version: '2.+'
+    compile group: 'org.jason-lang', name: 'jason',    version: '2.1', changing: false
     compile group: 'org.jacamo',     name: 'npl' ,     version: '0.+', changing: false, transitive: false
     compile group: 'org.jacamo',     name: 'cartago',  version: '2.2', changing: true
     compile group: 'org.jacamo',     name: 'jaca',     version: '2.2', changing: true
 
     testCompile group: 'junit',      name: 'junit', version: '4.+'
-    
+
     umljavadoc 'org.umlgraph:umlgraph:5.6'
 }
 
