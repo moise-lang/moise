@@ -401,7 +401,7 @@ public class SchemeBoard extends OrgArt {
         }
     }
     
-    @LINK void updateRolePlayers(final String grId, final Collection<Player> rp) throws NormativeFailureException, CartagoException {
+    @LINK protected void updateRolePlayers(final String grId, final Collection<Player> rp) throws NormativeFailureException, CartagoException {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 Group g = new Group(grId);
