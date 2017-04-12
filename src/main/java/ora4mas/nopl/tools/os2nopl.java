@@ -53,7 +53,7 @@ public class os2nopl {
     // properties for norms
     public static final String[] NOP_NS_PROPS = new String[] {  };
     
-    private static final String NGOA = "ngoal"; // id of the goal obligations
+    private static final String NGOAL = "ngoal"; // id of the goal obligations
     
     // condition for each property
     private static final Map<String, String> condCode = new HashMap<String, String>();
@@ -324,13 +324,13 @@ public class os2nopl {
         
         if (isSB) {
             np.append("\n   // agents are obliged to fulfill their enabled goals\n");
-            np.append("   norm "+NGOA+": \n");
+            np.append("   norm "+NGOAL+": \n");
             np.append("           committed(A,M,S) & mission_goal(M,G) & \n");
             np.append("           ((goal(_,G,_,achievement,_,D) & What = satisfied(S,G)) | \n");
             np.append("            (goal(_,G,_,performance,_,D) & What = done(S,G,A))) &\n");
             np.append("           well_formed(S) & not satisfied(S,G) & enabled(S,G) & \n");
             np.append("           not super_satisfied(S,G)\n");
-            np.append("        -> obligation(A,"+NGOA+"(S,M,G),What,`now` + D).\n"); 
+            np.append("        -> obligation(A,enabled(S,G),What,`now` + D).\n"); 
             // TODO: maintenance goals
             //np.append("   // maintenance goals\n");
         }
@@ -399,7 +399,7 @@ public class os2nopl {
             np.append(" &\n           "+mplayers+"V < MMinCard");
             np.append(" &\n           "+fplay);
             np.append(" &\n           "+extraCond);
-            np.append("\n        -> obligation("+"A,"+id+cons);
+            np.append("\n        -> obligation("+"A,not well_formed(S)"+cons);
             id = "p"+id;
         }
         if (card.getMin() < card.getMax() || nrm.getType() == OpTypes.permission) { // the permission

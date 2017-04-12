@@ -171,7 +171,7 @@ public class SchemeBoard extends OrgArt {
     @OPERATION public void destroy() {
         try {
             super.destroy();
-            
+            orgState.clearPlayers();
             for (Group g: getSchState().getGroupsResponsibleFor()) {
                 ArtifactId aid;
                 try {
