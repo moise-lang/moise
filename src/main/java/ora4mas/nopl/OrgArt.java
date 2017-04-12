@@ -80,10 +80,6 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     
     protected List<ArtifactId> listeners = new ArrayList<ArtifactId>();
     
-    public NPLInterpreter getNPLInterpreter() {
-        return nengine;
-    }
-    
     protected void initNormativeEngine(OS os, String type) throws MoiseException, ParseException {
         nengine = new NPLInterpreter();
 
@@ -290,6 +286,15 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             e.printStackTrace();
         }                
         
+    }
+    
+    static Object[] getTermsAsProlog(DeonticModality o) {
+        Object[] terms = new Object[o.getArity()+1];
+        int i = 0;
+        for (Term t: o.getTerms())
+            terms[i++] = new JasonTermWrapper(t);
+        terms[i] = new JasonTermWrapper(o.getNorm().getId());
+        return terms;
     }
     
     static Object[] getTermsAsProlog(Literal o) {

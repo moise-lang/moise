@@ -11,9 +11,9 @@
     ...
 
     <npl-norms>
-        a :- t &amp; k.
-        norm npl1: a &amp; v(X) -> obligation(bob,true,g(X),`now`+`1 day`).
-        norm npl2: a &amp; b    -> fail(test).
+        a :- t & k.
+        norm npl1: a & v(X) -> obligation(bob,true,g(X),`now`+`1 day`).
+        norm npl2: a & b    -> fail(test).
     </npl-norms>
 ...
 ----
