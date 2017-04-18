@@ -31,6 +31,7 @@ import cartago.Op;
 import cartago.OperationException;
 import cartago.util.agent.CartagoBasicContext;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.PredicateIndicator;
@@ -293,7 +294,11 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         int i = 0;
         for (Term t: o.getTerms())
             terms[i++] = new JasonTermWrapper(t);
-        terms[i] = new JasonTermWrapper(o.getNorm().getId());
+        terms[i] = new JasonTermWrapper(
+                ASSyntax.createStructure(
+                        "norm", 
+                        new Atom(o.getNorm().getId()), 
+                        o.getUnifierAsTerm()));
         return terms;
     }
     

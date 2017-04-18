@@ -410,7 +410,7 @@ public class os2nopl {
                 np.append(" & V >= MMinCard");
             np.append(" &\n           fplay(A,"+nrm.getRole().getId()+",Gr)");
             np.append(" &\n           "+extraCond);
-            np.append("\n        -> permission("+"A,"+id+cons);
+            np.append("\n        -> permission("+"A,responsible(Gr,S)"+cons);
         }
     }
     

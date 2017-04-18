@@ -1,5 +1,19 @@
 = Release Notes for Moise
 
+== Version 0.11
+
+- the norm id used to create obligations is added as an annotation in the obligation, as well as the unifier. For instance, a belief related to current obligations in Jason is:
++
+----
+obligation(
+    carol,                                  // who
+    not well_formed(sch1),                  // maintenance condition
+    committed(carol,mColaborator,sch1),     // what
+    1492601349568)                          // deadline
+    [...,norm(n3,[...,["S",sch1],["V",0],["Gr",mypaper]])]. // norm
+----
+the norm was `n3` and variable `S` (from the activation condition) value was `sch1`.
+
 == Version 0.10
 
 - The normative specification accepts "pure" NPL programs. E.g.
