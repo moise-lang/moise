@@ -290,6 +290,7 @@ public class WebInterface  {
     }
     
     public void removeOE(String oeId, String id) {
+        if (oeId == null) return;
         String addr = oePages.get(oeId).remove(id);
         if (addr != null)
             httpServer.removeContext(addr);

@@ -417,7 +417,6 @@ public class SchemeBoard extends OrgArt {
                 getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
                 if (newLink) {
                     // first time the group is linked to this scheme, create normative board
-                    // create normative board
                     String nbId = grId+"."+orgState.getId();
                     ArtifactId aid = makeArtifact(nbId, NormativeBoard.class.getName(), new ArtifactConfig() );                    
                     execLinkedOp(aid, "load", os2nopl.transform(spec, false));
