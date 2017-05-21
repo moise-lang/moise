@@ -49,6 +49,7 @@ import npl.NormativeProgram;
 import npl.Scope;
 import npl.parser.ParseException;
 import npl.parser.nplp;
+import ora4mas.nopl.OrgArt.UpdateGuiThread;
 import ora4mas.nopl.oe.CollectiveOE;
 import ora4mas.nopl.tools.os2nopl;
 
@@ -394,6 +395,31 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         
     }
 
+
+    protected void debug(String kind, String title) throws Exception {
+        final String id = getId().getName();
+        if (kind.equals("inspector_gui(on)")) {
+        	if (gui != null)
+        		gui.remove();
+            gui = GUIInterface.add(id, "... "+title+" "+id+" ...", nengine, false);
+            
+            updateGUIThread = new UpdateGuiThread();
+            updateGUIThread.start();
+         
+            updateGuiOE();
+            
+            gui.setNormativeProgram(getNPLSrc());
+        }
+        if (kind.equals("inspector_gui(off)")) {
+        	if (gui != null) 
+        		gui.remove();
+        	try {
+            	updateGUIThread.interrupt();        		
+        	} catch (Exception e) {}
+        	gui = null;
+        }    
+    }
+    
     class UpdateGuiThread extends Thread {
         boolean ok = false;
         

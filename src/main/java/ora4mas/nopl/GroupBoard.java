@@ -142,21 +142,10 @@ public class GroupBoard extends OrgArt {
     }
     
     @OPERATION public void debug(String kind) throws Exception {
-        final String grId = getId().getName();
-        if (kind.equals("inspector_gui(on)")) {
-            gui = GUIInterface.add(grId, ":: Group Board "+grId+" ("+spec.getId()+") ::", nengine, true);
-            
-            updateGUIThread = new UpdateGuiThread();
-            updateGUIThread.start();
-    
-            updateGuiOE();
-            
-            gui.setNormativeProgram(getNPLSrc());
+    	super.debug(kind, "Group Board");
+    	if (gui != null) {
             gui.setSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
-        }
-        if (kind.equals("inspector_gui(off)")) {
-            System.out.println("not implemented yet, ask the developers to do so.");
-        }    
+    	}
     }
     
     /**
