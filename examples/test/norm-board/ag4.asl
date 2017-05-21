@@ -15,5 +15,5 @@
       nb::doSubscribeDFP(g1); // starts getting facts from g1
 
       .wait(50000);
-      g::adoptRole(writer);  // filfills the obligation a bit latter
+      g::adoptRole(writer);  // fulfills the obligation a bit latter
    .
