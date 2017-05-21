@@ -56,6 +56,8 @@ import ora4mas.nopl.tools.os2nopl;
  * <li>goalAchieved
  * <li>setArgumentValue
  * <li>resetGoal
+ * <li>startGUI
+ * <li>debug
  * <li>destroy
  * </ul>
  * 
@@ -147,6 +149,17 @@ public class SchemeBoard extends OrgArt {
         }                    
     }
     
+    /**
+     * Creates a GUI for debugging purposes.
+     * 
+     * @throws Exception
+     * @deprecated use {@link #debug(String) debug} instead.
+     */
+    @Deprecated
+    @OPERATION public void startGUI() throws Exception {
+        debug("inspector_gui(on)");
+    }
+
     @OPERATION public void debug(String kind) throws Exception {
         final String schId = getId().getName();
         if (kind.equals("inspector_gui(on)")) {
