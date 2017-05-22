@@ -148,7 +148,7 @@ public class SchemeBoard extends OrgArt {
     }
     
     @OPERATION public void debug(String kind) throws Exception {
-    	super.debug(kind, "Scheme Board");
+    	super.debug(kind, "Scheme Board", true);
     	if (gui != null) {
             gui.setSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));
         }

@@ -112,7 +112,7 @@ public class NormativeBoard extends OrgArt {
     }
 
     @OPERATION public void debug(String kind) throws Exception {
-        super.debug(kind, "Norm Board");
+        super.debug(kind, "Norm Board", false);
     }
     
     @OPERATION void addFact(String f) throws jason.asSyntax.parser.ParseException, NormativeFailureException {

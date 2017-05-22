@@ -6,6 +6,7 @@
       createGroup(g1,wpgroup,GId);
       g::focus(GId);
       g::adoptRole(editor);
+      g::debug(inspector_gui(on));
 
       makeArtifact(nb1,"ora4mas.nopl.NormativeBoard",[],NBId);
       nb::focus(NBId);

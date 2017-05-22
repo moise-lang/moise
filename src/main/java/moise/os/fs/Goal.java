@@ -242,9 +242,9 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
         s.append(")");
         
         // use annotation for location
-        /*if (location != null && location.length() > 0) {
+        if (location != null && location.length() > 0) {
         	s.append("[location(\""+location+"\")]");
-        }*/
+        }
         
         return s.toString();
     }

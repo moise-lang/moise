@@ -269,11 +269,11 @@ public class os2nopl {
                 prec = "dep(and,"+prec+")";
             String nag  = g.getMinAgToSatisfy() == -1 ? "all" : ""+g.getMinAgToSatisfy();
             np.append("   goal("+smis+","+g.getId()+","+prec+","+g.getType()+","+nag+",`"+ttf+"`)");
-            /*if (g.getLocation() != null && g.getLocation().length() > 0) {
+            if (g.getLocation() != null && g.getLocation().length() > 0) {
                 np.append("[location(\""+g.getLocation()+"\")]");
-            } else {
-                np.append("[location(\"anywhere\")]");              
-            }*/
+            //} else {
+            //    np.append("[location(\"anywhere\")]");              
+            }
 
             np.append(".\n");            
         }
@@ -334,7 +334,8 @@ public class os2nopl {
             np.append("           committed(A,M,S) & mission_goal(M,G) & \n");
             np.append("           ((goal(_,G,_,achievement,_,D) & What = satisfied(S,G)) | \n");
             np.append("            (goal(_,G,_,performance,_,D) & What = done(S,G,A))) &\n");
-            np.append("           well_formed(S) & not satisfied(S,G) & enabled(S,G) & \n");
+            //np.append("           ((goal(_,G,_,_,_,_)[location(L)] & WhatL = What[location(L)]) | (not goal(_,G,_,_,_,_)[location(L)] & WhatL = What)) &\n");
+            np.append("           well_formed(S) & not satisfied(S,G) & \n"); // enabled(S,G) & \n");
             np.append("           not super_satisfied(S,G)\n");
             np.append("        -> obligation(A,enabled(S,G),What,`now` + D).\n"); 
             // TODO: maintenance goals

@@ -406,12 +406,12 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     }
 
 
-    protected void debug(String kind, String title) throws Exception {
+    protected void debug(String kind, String title, boolean hasOE) throws Exception {
         final String id = getId().getName();
         if (kind.equals("inspector_gui(on)")) {
             if (gui != null)
                 gui.remove();
-            gui = GUIInterface.add(id, "... "+title+" "+id+" ...", nengine, false);
+            gui = GUIInterface.add(id, "... "+title+" "+id+" ...", nengine, hasOE);
             
             updateGUIThread = new UpdateGuiThread();
             updateGUIThread.start();

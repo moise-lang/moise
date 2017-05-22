@@ -142,7 +142,7 @@ public class GroupBoard extends OrgArt {
     }
     
     @OPERATION public void debug(String kind) throws Exception {
-        super.debug(kind, "Group Board");
+        super.debug(kind, "Group Board", true);
         if (gui != null) {
             gui.setSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
         }

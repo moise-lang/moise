@@ -46,6 +46,9 @@
 
     <functional-specification>
         <scheme id="writePaperSch" >
+            <properties>
+                <property id="fairness" value="on" />
+            </properties>
 
             <goal id="wp" ttf="5 seconds">
                 <plan operator="sequence" >
@@ -65,7 +68,7 @@
                                     <goal id="wrefs"  ttf="1 hour" ds="Complete references and link them to text"/>
                                 </plan>
                             </goal>
-                            <goal id="submit" />
+                            <goal id="submit" min="1" />
                             <goal id="present" location="aamas2017_sao_paulo" />
                         </plan>
                     </goal>
@@ -74,7 +77,7 @@
 
             <mission id="mColaborator" min="1" max="5">
                 <goal id="wsecs"/>
-                <goal id="submit" min=1/>
+                <goal id="submit"/>
             </mission>
 
             <mission id="mManager" min="1" max="1">
