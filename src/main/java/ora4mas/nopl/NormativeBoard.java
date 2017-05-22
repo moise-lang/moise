@@ -112,20 +112,7 @@ public class NormativeBoard extends OrgArt {
     }
 
     @OPERATION public void debug(String kind) throws Exception {
-        final String schId = getId().getName();
-        if (kind.equals("inspector_gui(on)")) {
-            gui = GUIInterface.add(schId, "... Norm Board "+schId+" ...", nengine, false);
-            
-            updateGUIThread = new UpdateGuiThread();
-            updateGUIThread.start();
-         
-            updateGuiOE();
-            
-            gui.setNormativeProgram(getNPLSrc());
-        }
-        if (kind.equals("inspector_gui(off)")) {
-            System.out.println("not implemented yet, ask the developers to do so.");
-        }    
+        super.debug(kind, "Norm Board");
     }
     
     @OPERATION void addFact(String f) throws jason.asSyntax.parser.ParseException, NormativeFailureException {

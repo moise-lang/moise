@@ -2,15 +2,15 @@
 
 <?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
 
-<organisational-specification 
+<organisational-specification
     id="house_contruction"
     os-version="0.8"
-  
+
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='http://moise.sourceforge.net/os
                         http://moise.sourceforge.net/xml/os.xsd' >
-    
+
 <structural-specification>
 
 <role-definitions>
@@ -38,7 +38,7 @@
   <role id="electrician"          min="1" max="1"/>
   <role id="painter"              min="1" max="1"/>
  </roles>
- 
+
  <links>
   <link from="house_owner"      type="authority"     to="building_company" scope="intra-group" />
   <link from="building_company" type="communication" to="house_owner"      scope="intra-group" />
@@ -47,13 +47,13 @@
  <formation-constraints>
     <compatibility from="building_company" to="building_company"  scope="intra-group" />
  </formation-constraints>
- 
+
 </group-specification>
 </structural-specification>
 
 <functional-specification>
  <scheme id="build_house_sch">
-   <goal id="house_built">
+   <goal id="house_built" location="Rua Folhas Verdes, 225, Florianópolis, SC">
      <plan operator="sequence">
        <goal id="site_prepared"    ttf="20 minutes" ds="prepare the site for the next tasks"/>
        <goal id="floors_laid"      ttf="25 minutes" />
@@ -124,4 +124,3 @@
 </normative-specification>
 
 </organisational-specification>
-

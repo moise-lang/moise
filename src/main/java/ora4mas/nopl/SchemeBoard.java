@@ -148,21 +148,10 @@ public class SchemeBoard extends OrgArt {
     }
     
     @OPERATION public void debug(String kind) throws Exception {
-        final String schId = getId().getName();
-        if (kind.equals("inspector_gui(on)")) {
-            gui = GUIInterface.add(schId, "... Scheme Board "+schId+" ("+spec.getId()+") ...", nengine, true);
-            
-            updateGUIThread = new UpdateGuiThread();
-            updateGUIThread.start();
-         
-            updateGuiOE();
-            
-            gui.setNormativeProgram(getNPLSrc());
+    	super.debug(kind, "Scheme Board");
+    	if (gui != null) {
             gui.setSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));
         }
-        if (kind.equals("inspector_gui(off)")) {
-            System.out.println("not implemented yet, ask the developers to do so.");
-        }    
     }
     
     /**
@@ -417,7 +406,6 @@ public class SchemeBoard extends OrgArt {
                 getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
                 if (newLink) {
                     // first time the group is linked to this scheme, create normative board
-                    // create normative board
                     String nbId = grId+"."+orgState.getId();
                     ArtifactId aid = makeArtifact(nbId, NormativeBoard.class.getName(), new ArtifactConfig() );                    
                     execLinkedOp(aid, "load", os2nopl.transform(spec, false));

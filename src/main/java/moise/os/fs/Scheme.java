@@ -161,7 +161,7 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
     }
 
     /** returns a string representing the goal in Prolog syntax, format:
-     *     scheme_specification(id,goals tree starting by root goal,missions)
+     *     scheme_specification(id, goals tree starting by root goal, missions, properties)
      */ 
     public String getAsProlog() {
         StringBuilder s = new StringBuilder("scheme_specification("+getId()+",");
@@ -176,7 +176,11 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
             s.append(v+m.getAsProlog());
             v=",";
         }
-        s.append("])");
+        s.append("],");
+
+        // properties
+        s.append(getPropertiesAsProlog());
+        s.append(")");
 
         return s.toString();
     }

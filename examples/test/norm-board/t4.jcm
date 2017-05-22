@@ -1,0 +1,16 @@
+/*
+
+test a NormativeBoard linked to a GroupBoard
+
+expected result:
+
+bob has the obligation to play(bob,writer,g1)
+that it fulfills later
+
+*/
+
+mas t4 {
+
+    agent ag4
+
+}

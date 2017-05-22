@@ -9,7 +9,7 @@
     <xsd:complexType name="osType">
         <xsd:sequence>
             <xsd:element maxOccurs="1" minOccurs="0" name="properties"               type="moise:propertiesType"/>
-            <xsd:element maxOccurs="1" minOccurs="1" name="structural-specification" type="moise:ssType"/>
+            <xsd:element maxOccurs="1" minOccurs="0" name="structural-specification" type="moise:ssType"/>
             <xsd:element maxOccurs="1" minOccurs="0" name="functional-specification" type="moise:fsType"/>
             <xsd:element maxOccurs="1" minOccurs="0" name="normative-specification"  type="moise:nsType"/>
         </xsd:sequence>
@@ -50,7 +50,6 @@
                     <xsd:sequence>
                         <xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
                         <xsd:element maxOccurs="1" minOccurs="1" name="goal" type="moise:goalDefType"/>
-
                         <xsd:element maxOccurs="unbounded" minOccurs="0" name="mission" type="moise:missionType"/>
                     </xsd:sequence>
 
@@ -227,11 +226,12 @@
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="depends-on" type="moise:dependOnType"/>
             <xsd:element maxOccurs="1"         minOccurs="0" name="plan"       type="moise:planType"/>
         </xsd:sequence>
-        <xsd:attribute name="id"   type="xsd:string"             use="required"/>
-        <xsd:attribute name="min"  type="xsd:nonNegativeInteger" use="optional"/>
-        <xsd:attribute name="ds"   type="xsd:string"             use="optional"/>
-        <xsd:attribute name="type" type="moise:goalType"/>
-        <xsd:attribute name="ttf"  type="xsd:string"             use="optional"/>
+        <xsd:attribute name="id"       type="xsd:string"             use="required"/>
+        <xsd:attribute name="min"      type="xsd:nonNegativeInteger" use="optional"/>
+        <xsd:attribute name="ds"       type="xsd:string"             use="optional"/>
+        <xsd:attribute name="type"     type="moise:goalType"/>
+        <xsd:attribute name="ttf"      type="xsd:string"             use="optional"/>
+        <xsd:attribute name="location" type="xsd:string"             use="optional"/>
     </xsd:complexType>
 
     <xsd:complexType name="argumentType">

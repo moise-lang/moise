@@ -394,7 +394,10 @@
         </td>
 
         <td style="{$td-style}">
-        <xsl:value-of select="@ds"/> 
+            <xsl:value-of select="@ds"/> 
+            <xsl:if test="string-length(@location)>0">
+            <br/>@<xsl:value-of select="@location"/>
+            </xsl:if>
         </td>
         
         <td style="{$td-style}">

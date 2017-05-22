@@ -13,7 +13,6 @@ inactive:    obligation(alice,(vl(X) & (X >= 5)),(b(Y) & (Y < 0)),"2016-6-5 12:4
 
 mas t1 {
 
-    agent ag1
-    
+   agent ag1
 }
 
