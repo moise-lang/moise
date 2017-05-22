@@ -268,8 +268,14 @@ public class os2nopl {
             else
                 prec = "dep(and,"+prec+")";
             String nag  = g.getMinAgToSatisfy() == -1 ? "all" : ""+g.getMinAgToSatisfy();
-            np.append("   goal("+smis+","+g.getId()+","+prec+","+g.getType()+","+nag+",`"+ttf+"`).\n");
-            
+            np.append("   goal("+smis+","+g.getId()+","+prec+","+g.getType()+","+nag+",`"+ttf+"`)");
+            /*if (g.getLocation() != null && g.getLocation().length() > 0) {
+                np.append("[location(\""+g.getLocation()+"\")]");
+            } else {
+                np.append("[location(\"anywhere\")]");              
+            }*/
+
+            np.append(".\n");            
         }
         np.append(superGoal.toString());
         
@@ -332,7 +338,7 @@ public class os2nopl {
             np.append("           not super_satisfied(S,G)\n");
             np.append("        -> obligation(A,"+NGOA+"(S,M,G),What,`now` + D).\n"); 
             // TODO: maintenance goals
-            //np.append("   // maintenance goals\n");
+            //np.append("   // maintenance goals\n"); 
         }
         
         np.append("} // end of scheme "+sch.getId()+"\n");

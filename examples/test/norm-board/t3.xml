@@ -2,16 +2,16 @@
 
 <?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
 
-<organisational-specification 
+<organisational-specification
 
     id="wp"
     os-version="0.10"
-  
+
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='http://moise.sourceforge.net/os
                         http://moise.sourceforge.net/xml/os.xsd' >
-    
+
     <structural-specification>
 
         <role-definitions>
@@ -36,7 +36,7 @@
 
             <formation-constraints>
                 <compatibility from="editor" to="writer" type="compatibility"
-                               scope="intra-group" extends-subgroups="false" 
+                               scope="intra-group" extends-subgroups="false"
                                bi-dir="true"/>
             </formation-constraints>
         </group-specification>
@@ -51,7 +51,7 @@
                 <plan operator="sequence" >
                     <goal id="fdv" ds="First Draft Version">
                         <plan operator="sequence">
-                            <goal id="wtitle"     ttf="1 day" ds="Write a title"/>
+                            <goal id="wtitle"     ttf="1 day" ds="Write a title" location="jurere"/>
                             <goal id="wabs"       ttf="1 day" ds="Write an abstract"/>
                             <goal id="wsectitles" ttf="1 day" ds="Write the sections' title" />
                         </plan>
@@ -65,6 +65,8 @@
                                     <goal id="wrefs"  ttf="1 hour" ds="Complete references and link them to text"/>
                                 </plan>
                             </goal>
+                            <goal id="submit" />
+                            <goal id="present" location="aamas2017_sao_paulo" />
                         </plan>
                     </goal>
                 </plan>
@@ -72,6 +74,7 @@
 
             <mission id="mColaborator" min="1" max="5">
                 <goal id="wsecs"/>
+                <goal id="submit" min=1/>
             </mission>
 
             <mission id="mManager" min="1" max="1">
@@ -80,6 +83,7 @@
                 <goal id="wtitle"/>
                 <goal id="wconc"/>
                 <goal id="wsectitles"/>
+                <goal id="present"/>
             </mission>
 
             <mission id="mBib" min="1" max="1">
@@ -87,7 +91,7 @@
                 <preferred mission="mColaborator"/>
                 <preferred mission="mManager"/>
             </mission>
-        </scheme>        
+        </scheme>
     </functional-specification>
 
     <normative-specification>
@@ -96,16 +100,16 @@
             <property id="role_compatibility"  value="prohibition" />
             <property id="mission_cardinality" value="prohibition" />
         </properties>
-    
-        <norm id = "n1" 
-                          type="permission" 
+
+        <norm id = "n1"
+                          type="permission"
                           role="editor" mission="mManager" />
-        <norm id = "n2" 
-                          type="obligation" 
-                          role="writer" mission="mBib"             
+        <norm id = "n2"
+                          type="obligation"
+                          role="writer" mission="mBib"
                           time-constraint="1 day"  />
-        <norm id = "n3" 
-                          type="obligation" 
+        <norm id = "n3"
+                          type="obligation"
                           role="writer" mission="mColaborator"
                           time-constraint="1 day"  />
         <npl-norms>
@@ -113,33 +117,32 @@
             norm npl1: a &amp; v(X) -> obligation(bob,true,g(X),`now`+`1 day`).
             norm npl2: a &amp; b -> fail(test).
         </npl-norms>
-        
-        <!-- norm id = "n4" 
-                          type="obligation" 
-                          condition="unfulfilled(obligation(_,n2,_,_))" 
-                          role="editor" mission="ms" 
+
+        <!-- norm id = "n4"
+                          type="obligation"
+                          condition="unfulfilled(obligation(_,n2,_,_))"
+                          role="editor" mission="ms"
                           time-constraint="3 hours"/>
-        <norm id = "n5" 
-                          type="obligation" 
-                          condition="fulfilled(obligation(_,n3,_,_))" 
-                          role="editor" mission="mr" 
+        <norm id = "n5"
+                          type="obligation"
+                          condition="fulfilled(obligation(_,n3,_,_))"
+                          role="editor" mission="mr"
                           time-constraint="3 hours"/>
-        <norm id = "n6" 
-                          type="obligation" condition="#goal_non_compliance" 
-                          role="editor" mission="ms" 
+        <norm id = "n6"
+                          type="obligation" condition="#goal_non_compliance"
+                          role="editor" mission="ms"
                           time-constraint="3 hours"/>
-        <norm id = "n7" 
-                          type="obligation" condition="#role_compatibility" 
-                          role="editor" mission="ms" 
+        <norm id = "n7"
+                          type="obligation" condition="#role_compatibility"
+                          role="editor" mission="ms"
                           time-constraint="30 minutes"/>
-        <norm id = "n8" 
-                          type="obligation" condition="#mission_cardinality" 
-                          role="editor" mission="ms" 
+        <norm id = "n8"
+                          type="obligation" condition="#mission_cardinality"
+                          role="editor" mission="ms"
                           time-constraint="1 hour"/>
-        <norm id = "n9" 
-                          type="obligation" condition="#role_cardinality" 
-                          role="editor" mission="ms" 
+        <norm id = "n9"
+                          type="obligation" condition="#role_cardinality"
+                          role="editor" mission="ms"
                           time-constraint="30 minutes"/-->
     </normative-specification>
 </organisational-specification>
-

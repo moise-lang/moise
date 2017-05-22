@@ -38,6 +38,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
     protected Map<String,Object> args = null; // arguments and their default values
     protected String   ttf = ""; // time to fulfill
     protected List<Goal> dependencies = null; // explicit goals this goal depend on to be enabled
+    protected String   location = "";
         
     public Goal(String goal) {
         setId(goal);
@@ -175,6 +176,14 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
     public void setTTF(String ttf) {
         this.ttf = ttf;
     }
+
+    public String getLocation() {
+        return location;
+    }
+    public void setLocation(String l) {
+        location = l;
+    }
+    
     
     public static String getXMLTag() {
         return "goal";
@@ -192,7 +201,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
     
     
     /** returns a string representing the goal in Prolog syntax, format:
-     *     goal(id,type,description,#ags to satisfy,time to fulfill,list of arguments, plan)
+     *     goal(id, type, description, #ags to satisfy,time to fulfill, list of arguments, plan)[location(L)]
      */ 
     public String getAsProlog() {
         StringBuilder s = new StringBuilder("goal("+getId()+","+type);
@@ -209,7 +218,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             s.append("all");
         
         // ttf
-        if (ttf == null| ttf.length() == 0)
+        if (ttf == null || ttf.length() == 0)
             s.append(",\"infinity");
         else
             s.append(",\""+ttf);
@@ -231,6 +240,12 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             s.append(getPlan().getAsProlog());
 
         s.append(")");
+        
+        // use annotation for location
+        /*if (location != null && location.length() > 0) {
+        	s.append("[location(\""+location+"\")]");
+        }*/
+        
         return s.toString();
     }
     
@@ -268,6 +283,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             }
         }
         ele.setAttribute("ttf", ttf);
+        ele.setAttribute("location", location);
         if (getPlan() != null) {
             ele.appendChild(getPlan().getAsDOM(document));
         }
@@ -289,6 +305,9 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
         }
         if (ele.getAttribute("ttf").length() > 0) {
             setTTF(ele.getAttribute("ttf"));
+        }
+        if (ele.getAttribute("location").length() > 0) {
+            setLocation(ele.getAttribute("location"));
         }
         setDescription(ele.getAttribute("ds"));
 

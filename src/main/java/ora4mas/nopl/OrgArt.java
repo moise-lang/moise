@@ -399,8 +399,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     protected void debug(String kind, String title) throws Exception {
         final String id = getId().getName();
         if (kind.equals("inspector_gui(on)")) {
-        	if (gui != null)
-        		gui.remove();
+            if (gui != null)
+                gui.remove();
             gui = GUIInterface.add(id, "... "+title+" "+id+" ...", nengine, false);
             
             updateGUIThread = new UpdateGuiThread();
@@ -411,12 +411,12 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             gui.setNormativeProgram(getNPLSrc());
         }
         if (kind.equals("inspector_gui(off)")) {
-        	if (gui != null) 
-        		gui.remove();
-        	try {
-            	updateGUIThread.interrupt();        		
-        	} catch (Exception e) {}
-        	gui = null;
+            if (gui != null) 
+                gui.remove();
+            try {
+                updateGUIThread.interrupt();                
+            } catch (Exception e) {}
+            gui = null;
         }    
     }
     
