@@ -334,7 +334,8 @@ public class os2nopl {
             np.append("           committed(A,M,S) & mission_goal(M,G) & \n");
             np.append("           ((goal(_,G,_,achievement,_,D) & What = satisfied(S,G)) | \n");
             np.append("            (goal(_,G,_,performance,_,D) & What = done(S,G,A))) &\n");
-            //np.append("           ((goal(_,G,_,_,_,_)[location(L)] & WhatL = What[location(L)]) | (not goal(_,G,_,_,_,_)[location(L)] & WhatL = What)) &\n");
+            // TODO: implement location as annot for What. create an internal action to add this annot?
+            //np.append("           ((goal(_,G,_,_,_,_)[location(L)] & WhatL = What[location(L)]) | (not goal(_,G,_,_,_,_)[location(L)] & WhatL = What)) &\n");            
             np.append("           well_formed(S) & not satisfied(S,G) & \n"); // enabled(S,G) & \n");
             np.append("           not super_satisfied(S,G)\n");
             np.append("        -> obligation(A,enabled(S,G),What,`now` + D).\n"); 
