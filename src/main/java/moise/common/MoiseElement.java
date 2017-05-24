@@ -213,6 +213,7 @@ public class MoiseElement implements Serializable, Identifiable, Comparable {
         String v = "";
         for (String id: getProperties().keySet()) {
             s.append(v+"property("+id+",\""+getProperty(id)+"\")");
+            v = ",";
         }
         s.append("])");
         return s.toString();
