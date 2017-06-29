@@ -78,9 +78,12 @@ public class GroupBoard extends OrgArt {
     protected Set<ArtifactId>    schemes     = new HashSet<ArtifactId>();
     protected Set<ArtifactId>    listeners   = new HashSet<ArtifactId>();
     protected ArtifactId         parentGroup = null;
-    
-    protected List<String>       futureSchemes = new LinkedList<String>(); // schemes to be responsible to when well formed
-        
+
+    /**
+     * Schemes to be responsible for when well formed.
+     */
+    protected List<String>       futureSchemes = new LinkedList<String>();
+
     public static final String obsPropSpec        = "specification";
     public static final String obsPropPlay        = Group.playPI.getFunctor();
     public static final String obsPropSchemes     = "schemes";
