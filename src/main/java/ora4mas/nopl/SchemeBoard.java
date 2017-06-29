@@ -92,7 +92,7 @@ import ora4mas.nopl.tools.os2nopl;
  */
 public class SchemeBoard extends OrgArt {
 
-    private moise.os.fs.Scheme spec;
+    protected moise.os.fs.Scheme spec;
     
     public static final String obsPropSpec       = "specification";
     public static final String obsPropGroups     = "groups";
