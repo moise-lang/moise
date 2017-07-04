@@ -50,7 +50,6 @@ import npl.NormativeProgram;
 import npl.Scope;
 import npl.parser.ParseException;
 import npl.parser.nplp;
-import ora4mas.nopl.OrgArt.UpdateGuiThread;
 import ora4mas.nopl.oe.CollectiveOE;
 import ora4mas.nopl.tools.os2nopl;
 
@@ -138,7 +137,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         // version that works (using internal op)
         myNPLListener = new NormativeListener() {
             public void created(DeonticModality o) {  
-                defineObsProperty(o.getFunctor(), getTermsAsProlog(o));
+                defineObsProperty(o.getFunctor(), getTermsAsProlog(o)).addAnnot( getNormIdTerm(o) );                
                 //signalsQueue.offer(new Pair<String, Structure>(sglOblCreated, o));
             }
             public void fulfilled(DeonticModality o) {
@@ -291,16 +290,19 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     }
     
     static Object[] getTermsAsProlog(DeonticModality o) {
-        Object[] terms = new Object[o.getArity()+1];
+        Object[] terms = new Object[o.getArity()];
         int i = 0;
         for (Term t: o.getTerms())
             terms[i++] = new JasonTermWrapper(t);
-        terms[i] = new JasonTermWrapper(
+        return terms;
+    }
+    
+    static Object getNormIdTerm(DeonticModality o) {
+        return new JasonTermWrapper(
                 ASSyntax.createStructure(
                         "norm", 
                         new Atom(o.getNorm().getId()), 
                         o.getUnifierAsTerm()));
-        return terms;
     }
     
     static Object[] getTermsAsProlog(Literal o) {

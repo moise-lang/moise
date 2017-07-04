@@ -54,7 +54,7 @@
                 <plan operator="sequence" >
                     <goal id="fdv" ds="First Draft Version">
                         <plan operator="sequence">
-                            <goal id="wtitle"     ttf="1 day" ds="Write a title" location="jurere"/>
+                            <goal id="wtitle"     ttf="1 day" ds="Write a title" />
                             <goal id="wabs"       ttf="1 day" ds="Write an abstract"/>
                             <goal id="wsectitles" ttf="1 day" ds="Write the sections' title" />
                         </plan>
@@ -69,7 +69,7 @@
                                 </plan>
                             </goal>
                             <goal id="submit" min="1" />
-                            <goal id="present" location="aamas2017_sao_paulo" />
+                            <goal id="present"  />
                         </plan>
                     </goal>
                 </plan>
