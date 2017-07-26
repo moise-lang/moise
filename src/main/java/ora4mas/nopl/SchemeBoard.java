@@ -158,22 +158,18 @@ public class SchemeBoard extends OrgArt {
      * The agent executing this operation tries to delete the scheme board artifact 
      */
     @OPERATION public void destroy() {
-        try {
-            super.destroy();
-            orgState.clearPlayers();
-            for (Group g: getSchState().getGroupsResponsibleFor()) {
-                ArtifactId aid;
-                try {
-                    aid = lookupArtifact(g.getId());
-                    if (aid != null)
-                        execLinkedOp(aid, "removeScheme", getId().getName());
-                } catch (OperationException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        orgState.clearPlayers();
+        for (Group g: getSchState().getGroupsResponsibleFor()) {
+		    ArtifactId aid;
+		    try {
+		        aid = lookupArtifact(g.getId());
+		        if (aid != null)
+		            execLinkedOp(aid, "removeScheme", getId().getName());
+		    } catch (OperationException e) {
+		        e.printStackTrace();
+		    }
+		}
+		super.destroy();
     }
     
     @Override

@@ -130,7 +130,13 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         if (updateGUIThread != null)
             updateGUIThread.interrupt();
         if (WebInterface.isRunning())
-            WebInterface.get().removeOE(oeId, getId().getName());                
+            WebInterface.get().removeOE(oeId, getId().getName());
+
+        try {
+            dispose(getId());
+        } catch (OperationException e) {
+            e.printStackTrace();
+        }
     }
     
     protected void installNormativeSignaler() {

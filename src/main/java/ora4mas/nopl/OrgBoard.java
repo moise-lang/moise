@@ -104,12 +104,10 @@ public class OrgBoard extends Artifact {
             ArtifactId aid = aids.remove(id);
             if (aid == null) {
                 failed("there is no group board for "+id);
-                return;
             }
             removeObsPropertyByTemplate("group", new Atom(id), null, null);
             
             execLinkedOp(aid, "destroy");
-            dispose(aid);
         } catch (Exception e) {
             e.printStackTrace();
         }                    
@@ -122,18 +120,16 @@ public class OrgBoard extends Artifact {
         said.set(aid);
     }
 
-    @OPERATION public void removeScheme(String id) {        
+    @OPERATION public void removeScheme(String id) {
         try {
             ArtifactId aid = aids.remove(id);
             if (aid == null) {
                 failed("there is no scheme board for "+id);
-                return;
             }
             removeObsPropertyByTemplate("scheme", new Atom(id), null, null);
             
             execLinkedOp(aid, "destroy");
-            //dispose(aid); // TODO: does not work! (test with auction example)
-        } catch (Exception e) {
+        } catch (OperationException e) {
             e.printStackTrace();
         }                    
     }
