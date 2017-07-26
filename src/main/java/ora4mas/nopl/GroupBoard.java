@@ -161,10 +161,8 @@ public class GroupBoard extends OrgArt {
                 execLinkedOp(parentGroup, "removeSubgroup", getGrpState().getId());
             } catch (OperationException e) {
                 e.printStackTrace();
-                return; // do not call super destroy
-            }                    
+            }
         }
-        
         super.destroy();
     }
     
