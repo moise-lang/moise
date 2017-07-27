@@ -117,6 +117,9 @@ public class os2nopl {
     
     /** transforms a Group Spec into NPL code */
     public static String transform(Group gr) {
+        if (gr == null)
+            return "";
+        
         StringBuilder np = new StringBuilder();
         np.append("scope group("+gr.getId()+") {\n\n");
         
@@ -352,6 +355,9 @@ public class os2nopl {
         for (String prop: props) {            
             // check if some norm exist for the propriety
             String conf = ns.getStrProperty(prop, defaultM);
+            if (conf.equals("ignore"))
+                return;
+            
             np.append("   norm "+prop+": "); 
 
             String space = "           ";

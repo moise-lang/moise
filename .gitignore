@@ -13,6 +13,7 @@ examples/test/groupwithoutrole.npl
 .classpath
 .project
 .DS_Store
+test.xml
 
 *~
 *.class

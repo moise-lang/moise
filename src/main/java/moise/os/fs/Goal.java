@@ -257,7 +257,8 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             min = String.valueOf(getMinAgToSatisfy());
         }
         ele.setAttribute("type", type.toString());
-        ele.setAttribute("min", min);
+        if (!min.equals("all"))
+        	ele.setAttribute("min", min);
         if (getDescription() != null) {
             ele.setAttribute("ds", getDescription());
         }
@@ -282,8 +283,10 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
                 ele.appendChild(ea);                
             }
         }
-        ele.setAttribute("ttf", ttf);
-        ele.setAttribute("location", location);
+        if (ttf != null && ttf.length() > 0)
+        	ele.setAttribute("ttf", ttf);
+        if (location != null && location.length() > 0)
+        	ele.setAttribute("location", location);
         if (getPlan() != null) {
             ele.appendChild(getPlan().getAsDOM(document));
         }

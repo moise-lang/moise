@@ -1,0 +1,19 @@
+/*
+    dyn-scheme
+    ---------------------------
+
+    illustrates how agents can createan OS
+*/
+
+mas dyn_scheme {
+
+    agent bob
+    agent alice
+
+    // agent source path
+    asl-path: src/agt
+              src/agt/inc
+
+
+
+}

@@ -13,8 +13,8 @@ my_role(editor).
 
 +!create
   <- .my_name(Me);
-     createWorkspace("ora4mas");
-     joinWorkspace("ora4mas",O4MWsp);
+     createWorkspace(ora4mas);
+     joinWorkspace(ora4mas,O4MWsp);
 
      makeArtifact(myorg, "ora4mas.nopl.OrgBoard", ["../wp-os.xml"], OrgArtId)[wid(O4MWsp)];
      focus(OrgArtId);

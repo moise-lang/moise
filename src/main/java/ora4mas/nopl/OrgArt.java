@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -81,6 +83,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     
     protected List<ArtifactId> listeners = new ArrayList<ArtifactId>();
     
+    protected Logger logger = Logger.getLogger(OrgArt.class.getName());
+
     protected void initNormativeEngine(OS os, String type) throws MoiseException, ParseException {
         nengine = new NPLInterpreter();
 
@@ -154,9 +158,13 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                     // ignore, the obligations was not there anymore
                 }
             }
-            public void unfulfilled(DeonticModality o) { 
-                removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
-                execInternalOp("NPISignals", sglOblUnfulfilled, o);
+            public void unfulfilled(DeonticModality o) {
+                try {
+                    removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
+                    execInternalOp("NPISignals", sglOblUnfulfilled, o);
+                } catch (Exception e) {
+                    logger.log(Level.FINE, "error removing obs prop for "+o, e);
+                }
             }
             public void inactive(DeonticModality o) {
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));

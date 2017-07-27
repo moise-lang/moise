@@ -1,0 +1,58 @@
+/*    
+   Project dyn-scheme
+
+   Gradle build file for JaCaMo Application    
+   July 27, 2017 - 10:15:31
+*/
+
+defaultTasks 'run'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+version '1.0'
+group   'org.jacamo'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+    
+    maven {
+        url "http://jacamo.sourceforge.net/maven2"
+    }
+    
+    flatDir {
+       dirs 'lib'
+    }
+}
+
+dependencies {
+    compile group: 'org.jacamo',     name: 'jacamo' ,   version: '0.7-SNAPSHOT'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/env'
+            srcDir 'src/agt/jia'
+        }
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+}
+
+task run (type: JavaExec, dependsOn: 'classes') {
+    description 'runs the application'
+    main = 'jacamo.infra.JaCaMoLauncher'
+    args 'dyn-scheme.jcm'
+    classpath sourceSets.main.runtimeClasspath
+}
+
+clean {
+    delete 'bin'
+    delete 'build'
+}
+

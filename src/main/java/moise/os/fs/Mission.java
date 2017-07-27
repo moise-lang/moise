@@ -45,12 +45,13 @@ public class Mission extends moise.common.MoiseElement implements ToXML, ToProlo
     }
     
     
-    public void addGoal(String goalSpecId) throws MoiseConsistencyException {
+    public Goal addGoal(String goalSpecId) throws MoiseConsistencyException {
         Goal g = sch.getGoal( goalSpecId );
         if (g == null) {
             throw new MoiseConsistencyException("Mission definition error: goal "+goalSpecId+" does not belongs to the SCH "+sch.getId());
         }
         goals.add(g);
+        return g;
     }
     
     /**
