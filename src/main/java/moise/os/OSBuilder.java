@@ -29,9 +29,7 @@ public class OSBuilder {
     public Scheme addScheme(String id, String rootGoal) {
         Scheme s = new Scheme(id, os.getFS());
         os.getFS().addScheme(s);
-        Goal g = new Goal(rootGoal);
-        s.addGoal(g);
-        s.setRoot(g);
+        s.setRoot(new Goal(rootGoal));
         return s;
     }
     
@@ -83,6 +81,13 @@ public class OSBuilder {
             }
             g.setPlan(p);
         }
+        return g;
+    }
+    
+    public Goal addGoalArg(String schemeId, String goalId, String argId, Object value) {
+        Scheme sch = os.getFS().findScheme(schemeId); 
+        Goal g = sch.getGoal(goalId);
+        g.addArgument(argId, value);
         return g;
     }
     

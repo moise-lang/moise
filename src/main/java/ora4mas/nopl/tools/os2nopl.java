@@ -356,7 +356,7 @@ public class os2nopl {
             // check if some norm exist for the propriety
             String conf = ns.getStrProperty(prop, defaultM);
             if (conf.equals("ignore"))
-                return;
+                continue;
             
             np.append("   norm "+prop+": "); 
 

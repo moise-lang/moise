@@ -48,6 +48,13 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
         return args != null && !args.isEmpty();
     }
     
+    public void addArgument(String argId, Object value) {
+        if (args == null) {
+            args = new LinkedHashMap<String,Object>(); // use linked to preserve order
+        }
+        args.put(argId, value);     
+    }
+    
     public void setScheme(Scheme sch) {
         this.sch = sch;
     }
@@ -320,10 +327,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             if (ea.hasAttribute("value")) {
                 value = ea.getAttribute("value");
             }
-            if (args == null) {
-                args = new LinkedHashMap<String,Object>(); // use linked to preserve order
-            }
-            args.put(ea.getAttribute("id"), value);
+            addArgument(ea.getAttribute("id"), value);
         }
         
         // dependencies

@@ -7,7 +7,7 @@
 
 { begin namespace(tmporg) }
 
-+!buy_items <- .print("buy_items").
++!buy_items       <- .print("buy_items").
 +!assist_assemble <- .print("assist_assemble").
 
 { end }

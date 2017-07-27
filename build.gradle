@@ -47,6 +47,7 @@ jar {
 
 clean {
     delete 'bin'
+    delete 'test.xml'
 }
 
 task intsim (type: JavaExec, dependsOn: 'jar') {

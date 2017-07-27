@@ -48,6 +48,8 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
    
     public void setRoot(Goal g) {
         root = g;
+        if (getGoal(g.getId()) == null)
+            addGoal(g);         
     }
     
     public Goal getRoot() {
