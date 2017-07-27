@@ -6,6 +6,7 @@ mas.log
 examples/performance/case1/profiling*
 examples/writePaper/wp-gen.npl
 examples/test/groupwithoutrole.npl
+examples/test/dyn-scheme/x.xml
 
 .stop___MAS
 .gradle

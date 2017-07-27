@@ -7,9 +7,9 @@ import moise.os.*;
 
 public class CreateOS extends Artifact {
 
-	@OPERATION
-	void create(String file) throws Exception {
-		OSBuilder b = new OSBuilder();
+    @OPERATION
+    void create(String file) throws Exception {
+        OSBuilder b = new OSBuilder();
         b.addScheme("st", "job_delivered");
 
         /*
@@ -43,8 +43,8 @@ public class CreateOS extends Artifact {
         b.addMission("st", "mag1", "go_to_buy,go_to_workshop,go_to_workshop,stop,do_assemble,deliver");
         b.addMission("st", "mag2", "buy_items,assist_assemble");
 
-		b.getOS().getNS().setProperty("mission_permission", "ignore");
+        b.getOS().getNS().setProperty("mission_permission", "ignore");
 
         b.save(file);
-	}
+    }
 }
