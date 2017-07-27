@@ -1,12 +1,4 @@
-// Agent sample_agent in project dyn-scheme
-
-/* Initial beliefs and rules */
-
-/* Initial goals */
-
 !start.
-
-/* Plans */
 
 +!start
    <- makeArtifact(b,"tools.CreateOS", [], _);
@@ -19,11 +11,13 @@
       makeArtifact(myorg, "ora4mas.nopl.OrgBoard", ["x.xml"], OrgArtId)[wid(O4MWsp)];
       tmporg::focus(OrgArtId);
       tmporg::createScheme(s1, st, SchArtId)[wid(O4MWsp)];
-      focus(SchArtId)[wid(O4MWsp)];
+      tmporg::focus(SchArtId)[wid(O4MWsp)];
       //debug(inspector_gui(on))[artifact_id(SchArtId)];
-      commitMission(mag1)[artifact_id(SchArtId)];
+      tmporg::commitMission(mag1);
       .send(alice,achieve,commit(temp_org,s1,mag2));
    .
+
+{ begin namespace(tmporg) }
 
 +goalState(_,job_delivered,_,_,satisfied)[artifact_id(SchArtId)]
    <- .print("*** all done! ***");
@@ -32,13 +26,13 @@
       destroy[artifact_id(SchArtId)];
    .
 
-
 +!go_to_buy <- .print("go_to_buy").
 +!go_to_workshop <- .print("go_to_workshop").
 +!do_assemble <- .print("do_assemble").
 +!stop <- .print("stop").
 +!deliver <- .print("deliver").
+{ end }
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
-{ include("$jacamoJar/templates/org-obedient.asl") }
+{ include("$jacamoJar/templates/org-obedient.asl", tmporg) }
