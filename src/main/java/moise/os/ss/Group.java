@@ -90,13 +90,14 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
     /**
      * adds the roleId role into the playable roles in this group
      */
-    public void addRole(String roleId) throws MoiseConsistencyException {
+    public Role addRole(String roleId) throws MoiseConsistencyException {
         Role r = ss.getRoleDef(roleId);
         if (r == null) {
             throw new MoiseConsistencyException("Failed to add the role "+roleId+" to the GrSpec "+getId()+", the role "+roleId+" was not defined!");
         }
         r.setAbstract(false);
         roles.add(r);
+        return r;
     }
 
     /**
@@ -410,6 +411,9 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
             for (int i=0; i<nl.getLength(); i++) {
                 Element rEle = (Element)nl.item(i);
                 String roleId = rEle.getAttribute("id");
+                if (getSS().getRoleDef(roleId) == null) { // add the role def is not done yet
+                	getSS().addRoleDef(new Role(roleId, getSS())).addSuperRole("soc");
+                }
                 addRole(roleId);
                 
                 // reads role cardinality

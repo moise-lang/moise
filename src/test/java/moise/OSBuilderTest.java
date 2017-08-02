@@ -1,5 +1,7 @@
 package moise;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 
 import moise.os.OS;
@@ -9,8 +11,13 @@ public class OSBuilderTest {
 
     
     @Test
-    public void testScheme() throws Exception {
+    public void testOS1() throws Exception {
         OSBuilder b = new OSBuilder();
+        
+        b.addRootGroup("r");
+        b.addSubGroup("r", "g1");
+        b.addRole("g1", "r1");
+        
         b.addScheme("st", "job_delivered");
         
         /*
@@ -47,6 +54,6 @@ public class OSBuilderTest {
         b.getOS().getNS().setProperty("mission_permission", "ignore");
         
         b.save("test.xml");
-        OS.loadOSFromURI("test.xml");
+        assertNotNull( OS.loadOSFromURI("test.xml") );
     }    
 }

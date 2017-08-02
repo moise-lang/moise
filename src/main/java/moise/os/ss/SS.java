@@ -54,10 +54,10 @@ public class SS extends MoiseElement implements ToXML {
     /**
      * calls addRoleDef(r, true)
      */
-    public void addRoleDef(Role r) throws MoiseConsistencyException { 
-        addRoleDef(r, true);
+    public Role addRoleDef(Role r) throws MoiseConsistencyException { 
+        return addRoleDef(r, true);
     }
-    public void addRoleDef(Role r, boolean check) throws MoiseConsistencyException { 
+    public Role addRoleDef(Role r, boolean check) throws MoiseConsistencyException { 
         if (check && roles.get(r.getId()) != null) {
             throw new MoiseConsistencyException("the role "+r.getId()+" already exists.");
         }
@@ -65,8 +65,9 @@ public class SS extends MoiseElement implements ToXML {
             throw new MoiseConsistencyException("the role 'soc' can not be added!");
         }
         if (! r.getId().equals("soc")) {
-            roles.put(r.getId(),r);
+            roles.put(r.getId(), r);
         }
+        return r;
     }
     
     /**
