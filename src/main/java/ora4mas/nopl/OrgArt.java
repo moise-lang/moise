@@ -130,6 +130,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             }
         }*/
         signal(sglDestroyed, new Atom(getId().getName()));
+        
         running = false;
         if (updateGUIThread != null)
             updateGUIThread.interrupt();

@@ -412,7 +412,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
                 Element rEle = (Element)nl.item(i);
                 String roleId = rEle.getAttribute("id");
                 if (getSS().getRoleDef(roleId) == null) { // add the role def is not done yet
-                	getSS().addRoleDef(new Role(roleId, getSS())).addSuperRole("soc");
+                    getSS().addRoleDef(new Role(roleId, getSS())).addSuperRole("soc");
                 }
                 addRole(roleId);
                 

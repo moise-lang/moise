@@ -127,10 +127,10 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
     
     /**
      * sets that this goal is achieved by the agent a.
-     * only committed agents can satisfy the goal.
+     * only committed agents can achieve the goal.
      * 
-     * If all agents committed to the goal set it as satisfied, 
-     * the goal is considered as achieved.
+     * If all agents committed to the goal set it as achieved, 
+     * the goal is considered as satisfied.
      * 
      * if this goal is achieved and belongs to a plan without committed agents, 
      * check if this super goal was also achieved

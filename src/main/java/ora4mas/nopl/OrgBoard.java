@@ -129,7 +129,7 @@ public class OrgBoard extends Artifact {
             removeObsPropertyByTemplate("scheme", new Atom(id), null, null);
             
             execLinkedOp(aid, "destroy");
-        } catch (OperationException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }                    
     }

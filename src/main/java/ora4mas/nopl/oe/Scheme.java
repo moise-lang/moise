@@ -285,8 +285,7 @@ public class Scheme extends CollectiveOE {
             return a >= v;
         } else {
             return a == g.getMinAgToSatisfy();
-        }
-        
+        }        
     }
     
         

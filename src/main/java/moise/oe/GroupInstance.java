@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import moise.common.MoiseCardinalityException;
@@ -36,7 +37,7 @@ public class GroupInstance extends MoiseElement implements ToXML {
     protected Group           spec      = null;
     protected GroupInstance   superGroup= null;
     protected OE              oe        = null;
-    protected int             number    = -1;    // group unique number
+    //protected int             numberId  = -1;    // group unique number
     protected Map<String,GroupInstance>  subGroups = new HashMap<String,GroupInstance>();
     protected Set<RolePlayer>            players   = new HashSet<RolePlayer>();
     
@@ -51,13 +52,12 @@ public class GroupInstance extends MoiseElement implements ToXML {
             gi.rebuildHash();
     }
     
-    private static int grCount   = 0;
+    private static AtomicInteger grCount   = new AtomicInteger(0);;
     
     /** create a new group instance identified by id */
     protected GroupInstance(String id, Group spec) throws MoiseConsistencyException {
         try {
-            grCount++;
-            number = grCount;
+            //numberId = grCount.get();
             setId(id);
             this.spec = spec;
         } catch (Exception e) {
@@ -81,8 +81,8 @@ public class GroupInstance extends MoiseElement implements ToXML {
     */
     
     public static String getUniqueId() {
-        grCount++;
-        return "gr"+ (grCount < 10 ? "_0" + grCount : "_" + grCount);
+        int i = grCount.incrementAndGet();
+        return "gr"+ (i < 10 ? "_0" + i : "_" + i);
     }
     
     public Group getGrSpec() {
@@ -92,9 +92,9 @@ public class GroupInstance extends MoiseElement implements ToXML {
     /** returns the unique number of the group (the getId uses this number to form the
      *  unique id.
      */
-    public int getNumber() {
-        return number;
-    }
+    /*public int getNumber() {
+        return numberId;
+    }*/
     
     protected void setOE(OE oe) {
         this.oe = oe;

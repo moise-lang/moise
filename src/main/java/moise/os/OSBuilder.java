@@ -29,26 +29,26 @@ public class OSBuilder {
     }
     
     public Group addRootGroup(String id) {
-    	Group g = new Group(id, os.getSS());
-    	os.getSS().setRootGrSpec(g);
-    	return g;
+        Group g = new Group(id, os.getSS());
+        os.getSS().setRootGrSpec(g);
+        return g;
     }
     
     public Group addSubGroup(String father, String id) {
-    	Group gs = os.getSS().getRootGrSpec().findSubGroup(father);
-    	Group g  = new Group(id, os.getSS());
-    	gs.addSubGroup(g);
-    	return g;
+        Group gs = os.getSS().getRootGrSpec().findSubGroup(father);
+        Group g  = new Group(id, os.getSS());
+        gs.addSubGroup(g);
+        return g;
     }
     
     public Role addRole(String grId, String roleId) throws MoiseConsistencyException {
-    	Group g = os.getSS().getRootGrSpec().findSubGroup(grId);
-    	if (os.getSS().getRoleDef(roleId) == null) {
-    		Role r = new Role(roleId, os.getSS());
-    		r.addSuperRole("soc");
-    		os.getSS().addRoleDef(r);
-    	}
-    	return g.addRole(roleId);
+        Group g = os.getSS().getRootGrSpec().findSubGroup(grId);
+        if (os.getSS().getRoleDef(roleId) == null) {
+            Role r = new Role(roleId, os.getSS());
+            r.addSuperRole("soc");
+            os.getSS().addRoleDef(r);
+        }
+        return g.addRole(roleId);
     }
     
     public Scheme addScheme(String id, String rootGoal) {

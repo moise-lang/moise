@@ -139,6 +139,9 @@ public class NormativeBoard extends OrgArt {
         execLinkedOp(aid, "subscribeDFP", getId());
     }
     
+    @OPERATION @LINK public void destroy() {
+        super.destroy();
+    }
     
     @Override
     public String getDebugText() {

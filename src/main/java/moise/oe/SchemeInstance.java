@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import moise.common.MoiseConsistencyException;
 import moise.common.MoiseElement;
@@ -16,9 +20,6 @@ import moise.os.fs.Mission;
 import moise.os.fs.Plan;
 import moise.os.fs.Scheme;
 import moise.xml.ToXML;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  Represents the instance of one scheme Specification.
@@ -40,7 +41,7 @@ public class SchemeInstance extends MoiseElement implements ToXML {
     
     protected Scheme       spec      = null;
     protected GoalInstance root      = null;
-    protected int          number    = -1;
+    //protected int          numberId  = -1;
     protected OE           oe        = null;
     protected Set<MissionPlayer>        players = new HashSet<MissionPlayer>();
     protected Set<GroupInstance>        groups  = new HashSet<GroupInstance>();
@@ -56,7 +57,7 @@ public class SchemeInstance extends MoiseElement implements ToXML {
     }
     
 
-    private static int schCount = 0;
+    private static AtomicInteger schCount = new AtomicInteger(0);
     
     protected SchemeInstance(String id, Scheme sch) throws MoiseConsistencyException {
         if (sch == null) {
@@ -64,7 +65,7 @@ public class SchemeInstance extends MoiseElement implements ToXML {
         }
         
         setId(id);
-        number = schCount;
+        //numberId = schCount.get();
         spec   = sch;
         
         // create goal instances
@@ -89,8 +90,8 @@ public class SchemeInstance extends MoiseElement implements ToXML {
     }
     
     public static String getUniqueId() {
-        schCount++;
-        return "sch"+(schCount < 10 ? "_0" + schCount : "_" + schCount);
+        int i = schCount.incrementAndGet();
+        return "sch"+(i < 10 ? "_0" + i : "_" + i);
     }
     
     protected void setOE(OE oe) {
@@ -115,9 +116,9 @@ public class SchemeInstance extends MoiseElement implements ToXML {
     /** returns the unique number of the group (the getId uses this number to form the
      *  unique id.
      */
-    public int getNumber() {
-        return number;
-    }
+    /*public int getNumberId() {
+        return numberId;
+    }*/
     
     /**
      * adds an instance group in the set of groups responsible for this SCH.

@@ -155,7 +155,7 @@ public class GroupBoard extends OrgArt {
      * The agent executing this operation tries to destroy the instance of the group     
      *                                  
      */
-    @OPERATION public void destroy() {        
+    @OPERATION @LINK public void destroy() {        
         if (parentGroup != null) {
             try {
                 execLinkedOp(parentGroup, "removeSubgroup", getGrpState().getId());
