@@ -5,6 +5,13 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMSource;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import jason.runtime.SourcePath;
 import moise.common.MoiseConsistencyException;
 import moise.common.MoiseElement;
 import moise.common.MoiseException;
@@ -14,12 +21,6 @@ import moise.os.ns.NS;
 import moise.os.ss.SS;
 import moise.xml.DOMUtils;
 import moise.xml.ToXML;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Represents an Organization Specification (SS, FS, NS).
@@ -111,7 +112,13 @@ public class OS extends MoiseElement implements ToXML {
     
     public static OS loadOSFromURI(String uri) {
         try {
-            Document doc = DOMUtils.getParser().parse(uri);
+            Document doc = null;
+            if (uri.startsWith(SourcePath.CRPrefix)) {
+                // load for jar
+                doc = DOMUtils.getParser().parse(OS.class.getResource(uri.substring(SourcePath.CRPrefix.length())).openStream());
+            } else {
+                doc = DOMUtils.getParser().parse(uri);
+            }
             DOMUtils.getOSSchemaValidator().validate(new DOMSource(doc));
             
             OS os = new OS();
