@@ -107,7 +107,9 @@ public class GroupBoard extends OrgArt {
      * @throws MoiseException   if grType was not specified
      * @throws OperationException if parentGroupId doesn't exit
      */
-    public void init(final String osFile, final String grType) throws ParseException, MoiseException, OperationException {
+    public void init(String osFile, final String grType) throws ParseException, MoiseException, OperationException {
+        osFile = OrgArt.fixOSFile(osFile);
+
         final String grId = getId().getName();
         orgState   = new Group(grId);
        

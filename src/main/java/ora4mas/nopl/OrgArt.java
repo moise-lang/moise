@@ -1,5 +1,6 @@
 package ora4mas.nopl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -39,6 +40,7 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.PredicateIndicator;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
+import jason.runtime.SourcePath;
 import moise.common.MoiseException;
 import moise.os.OS;
 import moise.xml.DOMUtils;
@@ -84,6 +86,17 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     protected List<ArtifactId> listeners = new ArrayList<ArtifactId>();
     
     protected Logger logger = Logger.getLogger(OrgArt.class.getName());
+
+    public static String fixOSFile(String osFile) {
+        try {
+            if (!new File(osFile).exists()) {
+                // try from jar
+                OS.class.getResource("/"+osFile).openStream();
+                return SourcePath.CRPrefix + "/" + osFile;
+            }
+        } catch (Exception e) { }
+        return osFile;
+    }
 
     protected void initNormativeEngine(OS os, String type) throws MoiseException, ParseException {
         nengine = new NPLInterpreter();

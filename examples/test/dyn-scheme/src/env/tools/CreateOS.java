@@ -38,7 +38,7 @@ public class CreateOS extends Artifact {
 
         b.addGoal("st", "job_delivered", "assist || assemble");
         b.addGoal("st", "assist", "go_to_buy, buy_items, go_to_workshop, assist_assemble");
-        b.addGoal("st", "assemble", "go_to_workshop, do_assemble, stop, deliver");
+        b.addGoal("st", "assemble", "do_assemble, stop, deliver");
         b.addGoalArg("st", "buy_items", "Item", "");
 
         b.addMission("st", "mag1", "go_to_buy,go_to_workshop,go_to_workshop,stop,do_assemble,deliver");

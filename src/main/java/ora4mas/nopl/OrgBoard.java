@@ -1,5 +1,6 @@
 package ora4mas.nopl;
 
+import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import cartago.OPERATION;
 import cartago.OpFeedbackParam;
 import cartago.OperationException;
 import jason.asSyntax.Atom;
+import jason.runtime.SourcePath;
 import jason.util.Config;
 import moise.common.MoiseException;
 import moise.os.OS;
@@ -61,7 +63,8 @@ public class OrgBoard extends Artifact {
      * @throws MoiseException   if grType was not specified
      * @throws OperationException if parentGroupId doesn't exit
      */
-    public void init(final String osFile) throws ParseException, MoiseException, OperationException {
+    public void init(String osFile) throws ParseException, MoiseException, OperationException {
+        osFile = OrgArt.fixOSFile(osFile);
         this.osFile = osFile;
         OS os = OS.loadOSFromURI(osFile);
         
@@ -77,6 +80,7 @@ public class OrgBoard extends Artifact {
             }
         }
     }
+    
     
     public String specToStr(ToXML spec, Transformer transformer) throws Exception {
         StringWriter so = new StringWriter();

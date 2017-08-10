@@ -9,6 +9,7 @@
 
 +!buy_items       <- .print("buy_items").
 +!assist_assemble <- .print("assist_assemble").
++!go_to_workshop  <- .print("go_to_workshop ").
 
 { end }
 

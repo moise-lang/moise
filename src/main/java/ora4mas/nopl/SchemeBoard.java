@@ -115,7 +115,8 @@ public class SchemeBoard extends OrgArt {
      * @throws ParseException  if the OS file is not correct
      * @throws MoiseException  if schType was not specified
      */
-    public void init(final String osFile, final String schType) throws ParseException, MoiseException {
+    public void init(String osFile, final String schType) throws ParseException, MoiseException {
+        osFile = OrgArt.fixOSFile(osFile);
         final OS os = OS.loadOSFromURI(osFile);
         spec = os.getFS().findScheme(schType);
         
@@ -335,7 +336,7 @@ public class SchemeBoard extends OrgArt {
      *     goalDone(<agent>,<goal>) -- for performance goals --,
      *     goalSatisfied(<goal>) -- for achievement goals --
      *     setCardinality(<element type>,<element id>,<new min>,<new max>)
-     *              [element type= role/subgroup]
+     *              [element type=mission]
      *     
      * @throws CartagoException
      * @throws jason.asSyntax.parser.ParseException
