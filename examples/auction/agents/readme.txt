@@ -4,10 +4,10 @@ examples). However, these agents are organised using the Moise+ model
 (http://moise.sf.net).
 
 The organisation has only one group (called auctionGroup) where two
-roles can be played: 
+roles can be played:
 
 . auctioneer: the agent that will enact this role will manage the
-auction (create the auction, decide the winner, ...); 
+auction (create the auction, decide the winner, ...);
 
 . participant: all agents that wants to participate in auctionGroup
 need to adopt this role (agents ag1, ag2, and ag3 will adopt this

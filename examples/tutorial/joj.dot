@@ -3,7 +3,7 @@ digraph joj {
     compound=true;
 
 
-    subgraph cluster_SS { label="Structure" labelloc=t labeljust=r fontname="Italic" 
+    subgraph cluster_SS { label="Structure" labelloc=t labeljust=r fontname="Italic"
         // role hierarchy
         player [shape=box,style=rounded,fontname="Italic"];
         player -> soc [arrowhead=onormal,arrowsize=1.5];
@@ -40,27 +40,27 @@ digraph joj {
         attack -> middle  [arrowtail=odiamond, arrowhead=none, label="5..5",fontname="Times",arrowsize=1.5];
     }
 
-    subgraph cluster_sideAttack { label="sideAttack" labelloc=t labeljust=r fontname="Italic" 
+    subgraph cluster_sideAttack { label="sideAttack" labelloc=t labeljust=r fontname="Italic"
         // goals
-        scoreGoal [shape=plaintext,fontname="Helvetic"]; 
+        scoreGoal [shape=plaintext,fontname="Helvetic"];
         g1 -> scoreGoal [samehead=true,arrowhead=none];
-        g1 [shape=plaintext,fontname="Helvetic"]; 
+        g1 [shape=plaintext,fontname="Helvetic"];
         g2 -> scoreGoal [samehead=true,arrowhead=none];
-        g2 [shape=plaintext,fontname="Helvetic"]; 
+        g2 [shape=plaintext,fontname="Helvetic"];
         g7 -> g2 [samehead=true,arrowhead=tee];
-        g7 [shape=plaintext,fontname="Helvetic"]; 
+        g7 [shape=plaintext,fontname="Helvetic"];
         g8 -> g2 [samehead=true,arrowhead=tee];
-        g8 [shape=plaintext,fontname="Helvetic"]; 
+        g8 [shape=plaintext,fontname="Helvetic"];
         g9 -> g2 [samehead=true,arrowhead=tee];
-        g9 [shape=plaintext,fontname="Helvetic"]; 
+        g9 [shape=plaintext,fontname="Helvetic"];
         g3 -> scoreGoal [samehead=true,arrowhead=none];
-        g3 [shape=plaintext,fontname="Helvetic"]; 
+        g3 [shape=plaintext,fontname="Helvetic"];
         g4 -> scoreGoal [samehead=true,arrowhead=none];
-        g4 [shape=plaintext,fontname="Helvetic"]; 
+        g4 [shape=plaintext,fontname="Helvetic"];
         g5 -> scoreGoal [samehead=true,arrowhead=none];
-        g5 [shape=plaintext,fontname="Helvetic"]; 
+        g5 [shape=plaintext,fontname="Helvetic"];
         g6 -> scoreGoal [samehead=true,arrowhead=none];
-        g6 [shape=plaintext,fontname="Helvetic"]; 
+        g6 [shape=plaintext,fontname="Helvetic"];
 
         // missions
         m2 [fontname="Helvetic", shape=diamond, style=rounded];

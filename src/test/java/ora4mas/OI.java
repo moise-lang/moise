@@ -31,7 +31,7 @@ public class OI implements DynamicFactsProvider {
     moise.os.fs.Scheme spec;
     OE     oe = new OE();
     OS     os;
-    
+
     public OI(String osFile, String type, String schId) throws FileNotFoundException, ParseException {
         os = OS.loadOSFromURI(osFile);
         spec = os.getFS().findScheme(type);
@@ -45,22 +45,22 @@ public class OI implements DynamicFactsProvider {
         new nplp(new StringReader(os2nopl.transform(spec, false))).program(p, this);
         nbInterpreter.loadNP(p.getRoot().findScope("scheme("+type+")"));
     }
-    
+
     public void setGroup(Group g) {
         oe.addGroup(g);
     }
     public Scheme getScheme() {
         return sch;
     }
-    
+
     public NPLInterpreter getNPLI() {
         return schInterpreter;
     }
-    
+
     public NPLInterpreter getNbNPLI() {
         return nbInterpreter;
     }
-    
+
     public Literal execute(Literal action)  {
         Scheme schbak = sch.clone();
         if (action.getFunctor().equals("commitMission")) {
@@ -75,7 +75,7 @@ public class OI implements DynamicFactsProvider {
             schInterpreter.verifyNorms();
             if (action.getFunctor().equals("setGoalAchieved")) {
                 if (sch.computeSatisfiedGoals()) {
-                    //schInterpreter.setDynamicFacts(oe2nopl.transform(sch)); 
+                    //schInterpreter.setDynamicFacts(oe2nopl.transform(sch));
                     schInterpreter.verifyNorms();
                 }
             }

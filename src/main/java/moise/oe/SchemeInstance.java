@@ -34,11 +34,11 @@ import moise.xml.ToXML;
  @author Jomi Fred Hubner
 */
 public class SchemeInstance extends MoiseElement implements ToXML {
-    
+
     private static final long serialVersionUID = 1L;
 
     public static final String WellFormed = "ok";
-    
+
     protected Scheme       spec      = null;
     protected GoalInstance root      = null;
     //protected int          numberId  = -1;
@@ -47,7 +47,7 @@ public class SchemeInstance extends MoiseElement implements ToXML {
     protected Set<GroupInstance>        groups  = new HashSet<GroupInstance>();
     protected Map<String,GoalInstance>  goals   = new HashMap<String,GoalInstance>();
     protected Set<PlanInstance>         plans   = new HashSet<PlanInstance>();
-    
+
     /** since serialisation of maps has a bug, we need to rebuild them after serialisation! */
     public void rebuildHash() {
         players = new HashSet<MissionPlayer>(players);
@@ -55,71 +55,71 @@ public class SchemeInstance extends MoiseElement implements ToXML {
         //goals   = new HashMap<String, GoalInstance>(goals);
         plans   = new HashSet<PlanInstance>(plans);
     }
-    
+
 
     private static AtomicInteger schCount = new AtomicInteger(0);
-    
+
     protected SchemeInstance(String id, Scheme sch) throws MoiseConsistencyException {
         if (sch == null) {
             throw new MoiseConsistencyException("Scheme specification can not be null!");
         }
-        
+
         setId(id);
         //numberId = schCount.get();
         spec   = sch;
-        
+
         // create goal instances
         for (Goal gs: spec.getGoals()) {
             GoalInstance gi = new GoalInstance(gs, this);
             goals.put(gs.getId(), gi);
-            
+
             if (spec.getRoot().equals( gs )) {
                 root = gi;
             }
         }
-        
+
         // create plans instances
         for (Plan sp: spec.getPlans()) {
-            
+
             // create the instance
             PlanInstance p = new PlanInstance(sp);
             p.setGoalInstances( this );
-            
+
             plans.add(p);
         }
     }
-    
+
     public static String getUniqueId() {
         int i = schCount.incrementAndGet();
         return "sch"+(i < 10 ? "_0" + i : "_" + i);
     }
-    
+
     protected void setOE(OE oe) {
         this.oe = oe;
     }
-    
+
     public OE getOE() {
         return oe;
     }
-    
+
     public GoalInstance getRoot() {
         return root;
     }
-    
+
     /**
      * returns the SCH specification for this SCH instance
      */
     public Scheme getSpec() {
         return spec;
     }
-    
+
     /** returns the unique number of the group (the getId uses this number to form the
      *  unique id.
      */
     /*public int getNumberId() {
         return numberId;
     }*/
-    
+
     /**
      * adds an instance group in the set of groups responsible for this SCH.
      *
@@ -134,14 +134,14 @@ public class SchemeInstance extends MoiseElement implements ToXML {
             throw new MoiseConsistencyException("group "+grId+" does not exist in the OE and thus can not be responsible for scheme "+getId());
         addResponsibleGroup( g );
     }
-    
+
     /**
      * adds an instance group in the set of groups responsible for this SCH.
      *
      * <p>Example: <code>sch.addResponsibleGroup(def);</code>
      *
      * @param g the group object
-     * @throws MoiseConsistencyException the group is not well formed 
+     * @throws MoiseConsistencyException the group is not well formed
      */
     public void addResponsibleGroup(GroupInstance g) throws MoiseConsistencyException {
         if (g != null) {
@@ -151,7 +151,7 @@ public class SchemeInstance extends MoiseElement implements ToXML {
                 throw new MoiseConsistencyException("group "+g.getId()+" is not well formed and thus can not be responsible for scheme "+getId());
         }
     }
-    
+
     /**
      * removes an instance group in the set of groups responsible for this SCH.
      *
@@ -163,8 +163,8 @@ public class SchemeInstance extends MoiseElement implements ToXML {
     public void remResponsibleGroup(String grId) throws MoiseConsistencyException {
         remResponsibleGroup(oe.findGroup(grId));
     }
-    
-    
+
+
     /**
      * removes an instance group in the set of groups responsible for this SCH.
      *
@@ -175,7 +175,7 @@ public class SchemeInstance extends MoiseElement implements ToXML {
      */
     public void remResponsibleGroup(GroupInstance g) throws MoiseConsistencyException {
         if (g != null) {
-            
+
             if (spec.getFS().getBoolProperty("check-players-in-remove-responsible-group", true)) {
                 // if no agent of group g is committed to missions in this scheme
                 for (MissionPlayer mp: players) {
@@ -187,16 +187,16 @@ public class SchemeInstance extends MoiseElement implements ToXML {
             groups.remove(g);
         }
     }
-    
-    
+
+
     /**
      * returns a collection of groups that are responsible for this scheme
      */
     public Collection<GroupInstance> getResponsibleGroups() {
         return groups;
     }
-    
-    
+
+
     /**
      * remove all commitments without checking goal state
      */
@@ -205,17 +205,17 @@ public class SchemeInstance extends MoiseElement implements ToXML {
             mp.getPlayer().abortMission( mp.getMission().getFullId(), this); // the agent abort mission will remove the mission player from this scheme
         }
     }
-    
-    
+
+
     /**
      * returns "ok" (SchemeInstance.WellFormed) if the sch is well formed, otherwise returns the problems' description
      */
     public String wellFormedStatus() {
         StringBuilder status = new StringBuilder();
-        
+
         // all missions have players
         for (Mission mis: spec.getMissions()) {
-            
+
             Cardinality card = spec.getMissionCardinality(mis.getId());
             if (card != null) {
                 int qtd = getPlayersQty(mis.getId());
@@ -227,10 +227,10 @@ public class SchemeInstance extends MoiseElement implements ToXML {
                 }
             }
         }
-        
+
         // all DS time constrains!!!!!
-        
-        
+
+
         if (status.length() == 0) {
             return WellFormed;
         } else {
@@ -244,7 +244,7 @@ public class SchemeInstance extends MoiseElement implements ToXML {
     public boolean isWellFormed() {
         // all missions have players
         for (Mission mis: spec.getMissions()) {
-            
+
             Cardinality card = spec.getMissionCardinality(mis.getId());
             if (card != null) {
                 int qtd = getPlayersQty(mis.getId());
@@ -258,50 +258,50 @@ public class SchemeInstance extends MoiseElement implements ToXML {
         }
         return true;
     }
-    
+
     /** returns true if this scheme's root goal is neither achieved nor impossible */
     public boolean isCommitable() {
         return !getRoot().isImpossible() && !getRoot().isSatisfied();
     }
-    
+
     // ---------------
     // Players
     //
-    
+
     /**
      * adds a mission player for this SCH
      */
     protected void addPlayer(MissionPlayer mp) {
         players.add(mp);
-        
+
         // add ag in the agents committed to the goal of the mission
         for (Goal gs: mp.getMission().getGoals()) {
             GoalInstance ig = getGoal(gs);
             ig.committed(mp.getPlayer());
         }
     }
-    
+
     /**
      * removes a mission player from this scheme (no checks are done)
      */
     protected void removePlayer(MissionPlayer mp) throws MoiseException {
         if (mp == null) return;
-        
+
         if (!players.remove(mp)) {
             throw new MoiseConsistencyException("There is not a player like '"+mp+"' in this scheme ("+this+"). Players are "+players+".");
         }
-        
+
         // remove ag from the agents committed to the goal of the mission
         for (Goal gs: mp.getMission().getGoals()) {
             GoalInstance ig = getGoal(gs);
             ig.uncommitted(mp.getPlayer());
         }
     }
-    
+
     public Collection<MissionPlayer> getPlayers() {
         return players;
     }
-    
+
     public boolean isPlayer(OEAgent ag) {
         for (MissionPlayer mp: players) {
             if (mp.getPlayer().equals(ag)) {
@@ -329,14 +329,14 @@ public class SchemeInstance extends MoiseElement implements ToXML {
     public Collection<OEAgent> getAgents() {
         return getPlayers(null);
     }
-    
+
     /**
      * returns the total number of players in this sch
      */
     public int getPlayersQty() {
         return players.size();
     }
-    
+
     /**
      * returns the number of missionId players in this scheme
      */
@@ -349,30 +349,30 @@ public class SchemeInstance extends MoiseElement implements ToXML {
         }
         return n;
     }
-    
-    
-    
+
+
+
     //
     // Goals' methods
     //
-    
+
     public GoalInstance getGoal(String goalId) {
         return goals.get(goalId);
     }
-    
+
     public GoalInstance getGoal(Goal gs) {
         return goals.get(gs.getId());
     }
-    
+
     public Collection<GoalInstance> getGoals() {
         return goals.values();
     }
-    
+
     public static String getXMLTag() {
         return "scheme";
     }
 
-    
+
     public Element getAsDOM(Document document) {
         Element schEle = (Element) document.createElement(getXMLTag());
         schEle.setAttribute("id", getId());
@@ -381,12 +381,12 @@ public class SchemeInstance extends MoiseElement implements ToXML {
         if (getOwner() != null) {
             schEle.setAttribute("owner", getOwner().toString());
         }
-        
+
         // status
         Element wfEle = (Element) document.createElement("well-formed");
         wfEle.appendChild(document.createTextNode(wellFormedStatus()));
         schEle.appendChild(wfEle);
-        
+
         // players
         if (getPlayersQty() > 0) {
             Element plEle = (Element) document.createElement("players");
@@ -416,5 +416,5 @@ public class SchemeInstance extends MoiseElement implements ToXML {
 
         return schEle;
     }
-    
+
 }

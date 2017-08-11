@@ -1,7 +1,7 @@
-/*    
+/*
    Project dyn-scheme
 
-   Gradle build file for JaCaMo Application    
+   Gradle build file for JaCaMo Application
    July 27, 2017 - 10:15:31
 */
 
@@ -18,11 +18,11 @@ targetCompatibility = 1.7
 
 repositories {
     mavenCentral()
-    
+
     maven {
         url "http://jacamo.sourceforge.net/maven2"
     }
-    
+
     flatDir {
        dirs 'lib'
     }

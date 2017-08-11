@@ -2,16 +2,16 @@
 
 <?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
 
-<organisational-specification 
+<organisational-specification
 
     id="testsg"
     os-version="0.8"
-  
+
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='http://moise.sourceforge.net/os
                         http://moise.sourceforge.net/xml/os.xsd' >
-    
+
     <structural-specification>
 
         <role-definitions>
@@ -25,7 +25,7 @@
             <roles>
                 <role id="r1" />
             </roles>
-            
+
             <subgroups>
                 <group-specification id="g2" min="1" max="1">
                     <roles>
@@ -94,22 +94,22 @@
                 <preferred mission="mManager"/>
             </mission>
         </scheme>
-        
+
     </functional-specification>
 
     <normative-specification>
-        <norm id = "n1" 
-                          type="obligation" 
+        <norm id = "n1"
+                          type="obligation"
                           role="r4" mission="mManager" />
-        <norm id = "n2" 
-                          type="obligation" 
-                          role="r3" mission="mBib"             
+        <norm id = "n2"
+                          type="obligation"
+                          role="r3" mission="mBib"
                           time-constraint="1 day"  />
-        <norm id = "n3" 
-                          type="obligation" 
+        <norm id = "n3"
+                          type="obligation"
                           role="r2" mission="mColaborator"
                           time-constraint="1 day"  />
-       
+
     </normative-specification>
 </organisational-specification>
 

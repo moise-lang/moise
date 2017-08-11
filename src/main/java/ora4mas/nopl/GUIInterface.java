@@ -35,15 +35,15 @@ import npl.NormativeListener;
 
 /** General GUI for OrgArts */
 public class GUIInterface {
-    
-    NPLInterpreter nengine; 
-    
+
+    NPLInterpreter nengine;
+
     private static JFrame  frame;
     private static JTabbedPane allArtsPane;
     private static ScheduledThreadPoolExecutor updater = new ScheduledThreadPoolExecutor(1);
     private static int guiCount = 0;
-    
-    private JTabbedPane tpane; 
+
+    private JTabbedPane tpane;
     private JTextPane txtOE  = new JTextPane();
     private JTextPane txtNF  = new JTextPane();
     private JTextPane txtNS  = new JTextPane();
@@ -51,8 +51,8 @@ public class GUIInterface {
     private JTextPane ostext = null;
     private JTextArea txtLog = new JTextArea(9, 10);
     private JPanel    artPanel;
-    
-    private GUIInterface() {    
+
+    private GUIInterface() {
     }
 
     private static void initFrame() {
@@ -66,21 +66,21 @@ public class GUIInterface {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         guiCount = guiCount+30;
         frame.setBounds(0, 0, 800, (int)(screenSize.height * 0.8));
-        frame.setLocation((screenSize.width / 2)-guiCount - frame.getWidth() / 2, (screenSize.height / 2)+guiCount - frame.getHeight() / 2);        
+        frame.setLocation((screenSize.width / 2)-guiCount - frame.getWidth() / 2, (screenSize.height / 2)+guiCount - frame.getHeight() / 2);
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                frame.setVisible(true);            
+                frame.setVisible(true);
             }
-        });        
+        });
     }
-    
+
     public static GUIInterface add(String id, String title, NPLInterpreter nengine, boolean hasOE) throws Exception {
         if (frame == null)
             initFrame();
-        
+
         final GUIInterface gui = new GUIInterface();
         gui.nengine = nengine;
-        
+
         // normative state
         JPanel nsp = new JPanel(new BorderLayout());
         gui.txtNS.setContentType("text/html");
@@ -103,28 +103,28 @@ public class GUIInterface {
         gui.txtNF.setAutoscrolls(false);
         nFacts.add(BorderLayout.CENTER, new JScrollPane(gui.txtNF));
 
-        // center tabled 
+        // center tabled
         gui.tpane = new JTabbedPane();
         if (hasOE)
             gui.tpane.add("organisation entity", oep);
         gui.tpane.add("normative state", nsp);
         gui.tpane.add("normative facts", nFacts);
-                    
-        gui.txtLog.setEditable(false); 
+
+        gui.txtLog.setEditable(false);
         gui.txtLog.setAutoscrolls(false);
         gui.txtLog.setFont(new Font("courier", Font.PLAIN, 14));
 
         JPanel sul = new JPanel(new BorderLayout());
         sul.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "History", TitledBorder.LEFT, TitledBorder.TOP));
         sul.add(BorderLayout.SOUTH, new JScrollPane(gui.txtLog));
-        
+
         gui.artPanel = new JPanel(new BorderLayout());
         gui.artPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), title, TitledBorder.CENTER, TitledBorder.TOP));
-        
+
         gui.artPanel.add(BorderLayout.CENTER, gui.tpane);
         gui.artPanel.add(BorderLayout.SOUTH, sul);
         allArtsPane.add(id, gui.artPanel);
-        
+
         updater.scheduleAtFixedRate(new Runnable() {
             public void run() {
                 gui.updateNS();
@@ -139,10 +139,10 @@ public class GUIInterface {
            public void inactive(DeonticModality o) {    gui.txtLog.append("inactive:    "+o+"\n");  }
            public void failure(Structure f) {      gui.txtLog.append("failure:     "+f+"\n");  }
         });
-        
+
         return gui;
     }
-    
+
     public void remove() {
         allArtsPane.remove(artPanel);
     }
@@ -176,7 +176,7 @@ public class GUIInterface {
     private String lastOEStr = "";
     public void updateOE(ToXML oe, Transformer transformer) throws Exception {
         if (transformer == null) return;
-        
+
         StringWriter so = new StringWriter();
         transformer.transform(new DOMSource(DOMUtils.getAsXmlDocument(oe)), new StreamResult(so));
         String sOE = so.toString();
@@ -193,14 +193,14 @@ public class GUIInterface {
         }
         lastOEStr = nFacts;
     }
- 
-    
+
+
     private String lastNSStr = "";
     public void updateNS() {
         //txtNS.setText(schInterpreter.getStateString());
         //txtNS.setText(DOMUtils.dom2txt(schInterpreter));
         try {
-            StringWriter so = new StringWriter();            
+            StringWriter so = new StringWriter();
             getNSTransformer().transform(new DOMSource(DOMUtils.getAsXmlDocument(nengine)), new StreamResult(so));
             String curStr = so.toString();
             if (! curStr.equals(lastNSStr))

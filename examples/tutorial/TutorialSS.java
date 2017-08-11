@@ -1,6 +1,6 @@
 
 /**
- *    This program creates an OE with the JojOS (RoboCup) and 
+ *    This program creates an OE with the JojOS (RoboCup) and
  *    "runs" some social events on it by calling the OE's methods.
  */
 
@@ -30,7 +30,7 @@ public class TutorialSS {
             OEAgent ronaldo   = currentOE.addAgent("Ronaldo");
             OEAgent rivaldo   = currentOE.addAgent("Rivaldo");
             OEAgent scolari   = currentOE.addAgent("Scolari");
-            
+
             // Role Adoption
             marcos.adoptRole("goalkeeper", def);
             lucio.adoptRole("back", def);
@@ -53,7 +53,7 @@ public class TutorialSS {
             System.exit(1);
         }
     }
-    
+
     public static void main(String[] args) {
         try {
 
@@ -61,9 +61,9 @@ public class TutorialSS {
             OE currentOE = OE.createOE("winGame", "jojSS.xml");
 
             createSS(currentOE);
-            
+
             System.out.println("final OE in XML format:\n"+DOMUtils.dom2txt(currentOE));
-            
+
             new moise.tools.SimOE(currentOE);
 
         } catch (Exception e) {
@@ -71,5 +71,5 @@ public class TutorialSS {
             System.exit(1);
         }
     }
-    
+
 }

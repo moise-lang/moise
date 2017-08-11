@@ -1,6 +1,6 @@
 /*
 
-The Jason auction example implemented with 
+The Jason auction example implemented with
 Moise organisation and ORA4MAS platform.
 
 See readme.txt for more information.
@@ -8,7 +8,7 @@ See readme.txt for more information.
 */
 
 mas auction {
-   
+
    agent bob: auctioneer.asl
    agent ag1
    agent ag2

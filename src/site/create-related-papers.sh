@@ -10,7 +10,7 @@ for f in `ls y*tex`; do
   latex --interaction nonstopmode $n > /dev/null
   bibtex $n > /dev/null
   #latex --interaction nonstopmode $n > /dev/null
-done  
+done
 
 
 latex --interaction nonstopmode related-papers.tex > /dev/null

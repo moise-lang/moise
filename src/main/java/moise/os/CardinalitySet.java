@@ -14,43 +14,43 @@ import moise.common.Identifiable;
 public class CardinalitySet<T extends Identifiable> implements java.io.Serializable, Iterable<T> {
 
     private static final long serialVersionUID = 1L;
-    
+
     // Map for content (for fast retrival)
     protected HashMap<String,T>      contents      = new HashMap<String,T>();
-    
+
     // Map for cardinalities
     protected HashMap<T,Cardinality> cardinalities = new HashMap<T,Cardinality>();
 
     /**
-     * adds an object with default cardinality 
+     * adds an object with default cardinality
      */
     public void add(T o) {
         contents.put(o.getFullId(), o);
     }
 
     /**
-     * adds an object with a specific cardinality 
+     * adds an object with a specific cardinality
      */
     public void add(T o, Cardinality c)  {
         setCardinality(o, c);
         contents.put(o.getFullId(), o);
     }
-    
+
     public boolean contains(T o) {
         return contents.get(o.getFullId()) != null;
     }
     public boolean contains(String id) {
         return contents.get(id) != null;
     }
-    
+
     public T get(String id) {
         return contents.get(id);
     }
-    
+
     public Collection<T> getAll() {
         return contents.values();
     }
-    
+
     public void remove(T o) {
         cardinalities.remove(o);
         contents.remove(o);
@@ -79,11 +79,11 @@ public class CardinalitySet<T extends Identifiable> implements java.io.Serializa
     public boolean isEmpty() {
         return contents.isEmpty();
     }
-    
+
     public int size() {
         return contents.size();
     }
-    
+
     public Iterator<T> iterator() {
         return contents.values().iterator();
     }

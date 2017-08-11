@@ -11,7 +11,7 @@
 
 \usepackage{amsmath, amsthm, amssymb}
 \usepackage{latexsym}
-\usepackage{amsopn}          
+\usepackage{amsopn}
 
 \newcommand{\moise}{{$\mathcal{M}$\textsc{oise}}\xspace}
 \newcommand{\moisem}{{$\mathcal{M}$\textsc{oise}$^{+}$}\xspace}
@@ -41,7 +41,7 @@
 
 \theoremstyle{definition} \newtheorem{definition}{Definition}
 
-\sloppy 
+\sloppy
 \setlength\parindent{0pt}
 \setlength\parskip{6pt}
 \setlength\itemsep{0pt}
@@ -86,15 +86,15 @@ these elements are presented in the papers cited above. The formal
 meaning is defined in Sec.~\ref{sec:sem}.
 
 \todo{use Z notation}
- 
+
 \subsection{Organisational Specification}
- 
+
 
 \begin{definition}[Organisational Specification]
   An Organisational Specification (OS) is defined by its three
-  dimensions: structural, functional, and normative. 
+  dimensions: structural, functional, and normative.
   \begin{displaymath}
-    \langle id, SS, FS, \set{NS} \rangle    
+    \langle id, SS, FS, \set{NS} \rangle
   \end{displaymath}
   where
   \begin{itemize}
@@ -114,9 +114,9 @@ meaning is defined in Sec.~\ref{sec:sem}.
   A Structural Specification (SS) is defined by the
   elements of the following tuple:
   \begin{displaymath}
-    \langle \set{R}, \sqsubset, rg, \set{L} \rangle    
+    \langle \set{R}, \sqsubset, rg, \set{L} \rangle
   \end{displaymath}
-  where 
+  where
   \begin{itemize}
   \item $\set{R}$ is a set of identifiers of roles of the organisation;
   \item $\sqsubset \; : \set{R} \times \set{R}$ is an inheritance
@@ -135,11 +135,11 @@ Inheritance properties:
   \rho \subrole \rho' \land \rho' \subrole \rho   \Rightarrow \rho = \rho'
  \end{equation}
 
-\item Transitivity 
+\item Transitivity
   \begin{equation}
     \rho \subrole \rho' \land \rho' \subrole \rho'' \Rightarrow \rho \subrole \rho''
   \end{equation}
-  
+
 \item Role hierarchy root ($\rho_{soc}$)
   \begin{eqnarray}
     &&\rho_{soc} \in \mathcal{R}\\
@@ -153,7 +153,7 @@ Inheritance properties:
 \begin{definition}[Link]
   A link is defined by a tuple:
   \begin{displaymath}
-    \langle s, t, k, p \rangle    
+    \langle s, t, k, p \rangle
   \end{displaymath}
   where
   \begin{itemize}
@@ -199,11 +199,11 @@ where $g \neq g'$. In the case where both scopes are defined, the link
 exists despite the instances of the groups.
 
 \begin{definition}[Group Specification]
-  A Group Specification (GS) is defined by the elements of the following tuple: 
+  A Group Specification (GS) is defined by the elements of the following tuple:
   \begin{displaymath}
-    \langle id, compat, maxrp, minrp, maxsg, minsg \rangle    
+    \langle id, compat, maxrp, minrp, maxsg, minsg \rangle
   \end{displaymath}
-  where 
+  where
   \begin{itemize}
   \item $id$ is a unique identification of the GS;
   %\item $\set{R}_{gs} \subseteq \set{R}$) is a set of
@@ -226,7 +226,7 @@ exists despite the instances of the groups.
   \item $minsg : \mathcal{GS} \to \mathbb{Z}$: is a function that
     defines the minimum number of subgroups of the group (lower bound of
     subgroup cardinality).
- \end{itemize} 
+ \end{itemize}
 
 Compatibility properties:
 \begin{itemize}
@@ -268,9 +268,9 @@ allowed to adopt in $g$ \emph{only} roles in $compat_{GS}(\rho_i)$.
   A Functional Specification (FS) is defined by the
   elements of the following tuple:
   \begin{displaymath}
-    \langle \set{M}, \set{G}, \set{S} \rangle    
+    \langle \set{M}, \set{G}, \set{S} \rangle
   \end{displaymath}
-  where 
+  where
   \begin{itemize}
  \item $\set{M}$ is a set of identifiers of missions of the organisation;
  \item $\set{G}$ is a set of identifiers of goals of the organisation;
@@ -279,11 +279,11 @@ allowed to adopt in $g$ \emph{only} roles in $compat_{GS}(\rho_i)$.
 \end{definition}
 
 \begin{definition}[Scheme Specification]
-  A Scheme Specification (S) is defined by the elements of the following tuple: 
+  A Scheme Specification (S) is defined by the elements of the following tuple:
   \begin{displaymath}
-    \langle id, maxmp, minmp, g_r \rangle    
+    \langle id, maxmp, minmp, g_r \rangle
   \end{displaymath}
-  where 
+  where
   \begin{itemize}
   \item $id$ is a unique identification of the scheme;
   \item $maxmp : \set{M} \to \mathbb{Z}$: is a function that maps each
@@ -295,17 +295,17 @@ allowed to adopt in $g$ \emph{only} roles in $compat_{GS}(\rho_i)$.
     necessary for the scheme to be considered well-formed (lower bound
     of mission cardinality);
  \item $g_r : \set{G}$ is the root-goal of the scheme.
- \end{itemize}  
+ \end{itemize}
 \end{definition}
 
 \todo{add preference among missions}
 
 \begin{definition}[Goal]
-   A goal is defined by the elements of the following tuple: 
+   A goal is defined by the elements of the following tuple:
   \begin{displaymath}
-    \langle id, gm, type, card, ttf, p \rangle    
+    \langle id, gm, type, card, ttf, p \rangle
   \end{displaymath}
-  where 
+  where
   \begin{itemize}
   \item $id$ is a unique identification of the goal;
   \item $gm : 2^{\set{M}}$ is the set of missions that include the goal;
@@ -316,21 +316,21 @@ allowed to adopt in $g$ \emph{only} roles in $compat_{GS}(\rho_i)$.
   \item $ttf : \mathbb{Z}$ is the Time To Fulfil the goal; and
   \item $p : \set{P}$ is a plan to achieve the goal, it defines the
     sub-goals of this goal ($\set{P}$ is the set all plans).
-\end{itemize}  
+\end{itemize}
 \end{definition}
 
 \begin{definition}[Plan]
   A plan is defined by the tuple
  \begin{displaymath}
-    \langle g_1, g_2, ..., g_n, o \rangle    
+    \langle g_1, g_2, ..., g_n, o \rangle
   \end{displaymath}
-  where 
+  where
   \begin{itemize}
   \item $g_i : \set{G} \; (1 \leq i \leq n)$ are the sub-goals;
   \item $o : \{ sequence, choice, parallel\}$ is the operator among
     the sub-goals (whether one or all sub-goal have to be achieved and
     whether in sequence or parallel).
-\end{itemize}  
+\end{itemize}
 \end{definition}
 
 \todo{add $gpc$ (goal pre-conditions)}
@@ -342,7 +342,7 @@ allowed to adopt in $g$ \emph{only} roles in $compat_{GS}(\rho_i)$.
  \begin{displaymath}
     \langle id, c, \rho, d, m, ttf \rangle
   \end{displaymath}
-  where 
+  where
   \begin{itemize}
   \item $id$ is the id of the norm;
   \item $c$ is the activation condition of the norm;
@@ -380,25 +380,25 @@ Properties:
 \subsection{Organisation Entity}
 
 \begin{definition}[OE]
-  An Organisation Entity (OE) is defined by the elements of the following tuple: 
+  An Organisation Entity (OE) is defined by the elements of the following tuple:
   \begin{displaymath}
-    \langle OS,  \mathcal{A}, \mathcal{GI}, \mathcal{SI} \rangle    
+    \langle OS,  \mathcal{A}, \mathcal{GI}, \mathcal{SI} \rangle
   \end{displaymath}
-  where 
+  where
   \begin{itemize}
   \item $OS$ is a organisation specification of the OE;
   \item $\mathcal{A}$ is a set of agent's identifiers;
   \item $\mathcal{GI}$ is a set of group instances $GI$ created in the OE; and
   \item $\mathcal{SI}$ is a set of scheme instances $SI$ created in the OE.
-  \end{itemize}  
+  \end{itemize}
 \end{definition}
 
 \begin{definition}[GI]
-  A Group Instance (GI) is defined by the elements of the following tuple: 
+  A Group Instance (GI) is defined by the elements of the following tuple:
   \begin{displaymath}
     \langle id, GS, players, subgroups, \set{RS} \rangle
   \end{displaymath}
-  where 
+  where
   \begin{itemize}
   \item $id$ is a unique identifier of the group;
   \item $GS : \set{GS}$ is the specification of the group;
@@ -410,7 +410,7 @@ Properties:
     instances;
   \item $\set{RS} : 2^{SI}$ is a set of schemes' identification the group is
     responsible for.
-  \end{itemize}  
+  \end{itemize}
 \end{definition}
 
 A group instance $g$ is well formed if the role and subgroup cardinality are
@@ -427,11 +427,11 @@ respected and all subgroups are also well formed:
 \end{displaymath}
 
 \begin{definition}[SI]
-  A Scheme Instance (SI) is defined by the elements of the following tuple: 
+  A Scheme Instance (SI) is defined by the elements of the following tuple:
   \begin{displaymath}
     \langle id, S, commitments, achievements \rangle
   \end{displaymath}
-  where 
+  where
   \begin{itemize}
   \item $id$ is a unique identifier of the scheme instance;
   \item $S : \set{S}$ is the specification of the scheme;
@@ -499,7 +499,7 @@ application of these rules are provided in the examples given later.
 The t-rule, identified by \rwlabel{OT}, that generates the NOPL code
 for an organisation specification $OS$ is:
 \begin{rwrule}{OT($OS$)}
-{ } 
+{ }
 scope organisation($id_{OS}$) \{ \\
    \> \rwlabel{RIH}($OS$)\\
    \> \rwlabel{FPL}\\
@@ -510,14 +510,14 @@ scope organisation($id_{OS}$) \{ \\
 There is no condition for this t-rule. The produced code is defined by
 other t-rules. The former defines the role hierarchy and the second
 includes in the generated code a rule that verifies whether an agent
-is playing a role or not based on the role hierarchy. 
+is playing a role or not based on the role hierarchy.
 \begin{rwrule}{RIH($OS$)}
-{ \rho_1 \subrole \rho_2 } 
+{ \rho_1 \subrole \rho_2 }
 subrole($\rho_1$,$\rho_2$).
 \end{rwrule}
 
 \begin{rwrule}{FPL}
-{ } 
+{ }
 fplay(A,R,G) :- play(A,R,G).\\
 fplay(A,R,G) :- subrole(R1,R) \& fplay(A,R1,G).
 \end{rwrule}
@@ -533,7 +533,7 @@ and schemes and are defined in the sequel.
 The t-rule, identified by \rwlabel{GT}, that generates the NOPL code
 for a group instance $GI$ of type $GS$ is:
 \begin{rwrule}{GT($GI$,$GS$)}
-{ } 
+{ }
 scope group($id_{GS}$) \{ \\
    \>  group\_id($id_{GI}$).\\
    \> \rwlabel{P}($GI$) ~ \rwlabel{RG}($GI$)\\
@@ -644,7 +644,7 @@ properties are those without an entry the NS.
   {\not \exists \; \langle id, c, \rho, d, m, ttf \rangle \in \set{NS} \st  c = \#p}
   norm $p$: \\
   \> \>         $pdc(p)$\\
-  \>   -> \> fail($p$). 
+  \>   -> \> fail($p$).
 \end{rwrule}
 
 where $pdc$ is a function that maps the ids of properties to its
@@ -718,7 +718,7 @@ scope scheme($id_S$) \{ \\
 \}
 \end{rwrule}
 
-\subsubsection{Facts} 
+\subsubsection{Facts}
 
 For scheme normative programs, the following facts are
 produced by the translation:
@@ -745,7 +745,7 @@ produced by the translation:
 \item \code{mission\_cardinality($m$,$min$,$max$)}: is a fact that defines
   the cardinality of a mission (e.g.\
   \code{mission\_cardinality(mCol,1,5)}).
-  
+
   The t-rule that produces these facts are:
 
   \begin{rwrule}{SM($S$)}
@@ -840,7 +840,7 @@ norm ngoal:\\
 This norm can be read as ``when an agent \code{A}: (1) is committed
 to a mission \code{M} that (2) includes a goal \code{G}, and (3) the mission's
 scheme is well-formed, and (4) the goal is enabled, then agent \code{A} is
-obliged to achieve the goal \code{G} before its deadline \code{D}''. 
+obliged to achieve the goal \code{G} before its deadline \code{D}''.
 
 The second class of norms is related to properties (see
 Table~\ref{tab:predefcond}).  For instance, in the case of mission
@@ -858,7 +858,7 @@ obligation cases of mission cardinality.
   {\not \exists \; \langle id, c, \rho, d, m, ttf \rangle \in \set{NS} \st  c = \#p}
   norm $p$: \\
   \> \>         $pdc(p)$\\
-  \>   -> \> fail($p$). 
+  \>   -> \> fail($p$).
 \end{rwrule}
 
 \begin{rwrule}{SSP($p$)}
@@ -909,8 +909,8 @@ When agent $a$ adopts the role $\rho$ in the group instance $gi$, the
 state of $gi$ is changed as follows:
 
 \[
-\langle id, GS, players, subgroups, \set{RS} \rangle  \longrightarrow 
-\langle id, GS, players \oplus \rho \mapsto \{ players(\rho) \cup \{a\} \}, subgroups, \set{RS} \rangle  
+\langle id, GS, players, subgroups, \set{RS} \rangle  \longrightarrow
+\langle id, GS, players \oplus \rho \mapsto \{ players(\rho) \cup \{a\} \}, subgroups, \set{RS} \rangle
 \]
 
 This change in the state produces a new fact \code{play} (see t-rule
@@ -932,8 +932,8 @@ When agent $a$ leaves the role $\rho$ in the group instance $gi$, the
 state of $gi$ is changed as follows:
 
 \[
-\langle id, GS, players, subgroups, \set{RS} \rangle  \longrightarrow 
-\langle id, GS, players \ominus \rho \mapsto \{ players(\rho) \cup \{a\} \}, subgroups, \set{RS} \rangle  
+\langle id, GS, players, subgroups, \set{RS} \rangle  \longrightarrow
+\langle id, GS, players \ominus \rho \mapsto \{ players(\rho) \cup \{a\} \}, subgroups, \set{RS} \rangle
 \]
 
 Related norms:
@@ -953,8 +953,8 @@ When the group $gi$ starts being responsible for the scheme instance
 $si$, its state changes as follows:
 
 \[
-\langle id, GS, players, subgroups, \set{RS} \rangle  \longrightarrow 
-\langle id, GS, player, subgroups, \set{RS} \cup \{ si \} \rangle  
+\langle id, GS, players, subgroups, \set{RS} \rangle  \longrightarrow
+\langle id, GS, player, subgroups, \set{RS} \cup \{ si \} \rangle
 \]
 
 Related norms:
@@ -1026,7 +1026,7 @@ Related norms:
 \item property ach\_not\_enabled\_goal: the goal has to be enabled.
 \item property ach\_not\_committed\_goal: the agent have to be
   committed to a mission that includes the goal.
-\item norm \code{ngoal}: the obligation of this norm is fulfilled. 
+\item norm \code{ngoal}: the obligation of this norm is fulfilled.
 \end{itemize}
 
 
@@ -1047,7 +1047,7 @@ Related norms:
 
   \includegraphics[width=.5\textwidth]{\pathwp/figures/monitoringFS}
 
-  \newpage 
+  \newpage
   \textbf{Mission Cardinalities}
 
   \begin{tabular}{c c c c}

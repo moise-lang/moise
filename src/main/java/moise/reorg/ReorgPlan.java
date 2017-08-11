@@ -33,15 +33,15 @@ public class ReorgPlan extends ArrayList implements Serializable {
     }
 
     String proposer;
-    
+
     public ReorgPlan(String proposer) {
         this.proposer = proposer;
     }
-    
+
     public String getProposer() {
         return proposer;
     }
-    
+
     public Class getFocus() {
         Class c = null;
         Iterator i = iterator();
@@ -56,12 +56,12 @@ public class ReorgPlan extends ArrayList implements Serializable {
         }
         return c;
     }
-    
+
     /** returns true if the plan contains some action of the class <i>c</i> */
     public boolean contains(Class c) {
         return contains( getFocus(), c);
     }
-    
+
     public void execute(OE oe) throws MoiseException {
         OS os = oe.getOS();
         os.setProperty("creator", proposer);
@@ -71,18 +71,18 @@ public class ReorgPlan extends ArrayList implements Serializable {
             c.execute( os, oe );
         }
     }
-    
+
     public String toString() {
         return "reorganization plan from "+proposer+" (focus="+getFocus()+") ";//+super.toString();
     }
-    
+
     static private Class mostGeneral(Class c1, Class c2) {
         while ( ! contains(c1, c2)) {
             c1 = c1.getSuperclass();
         }
         return c1;
     }
-    
+
     /** returns true if c1 is a super class of c2 */
     static public boolean contains(Class c1, Class c2) {
         if (c1 == null || c2 == null) {
@@ -96,9 +96,9 @@ public class ReorgPlan extends ArrayList implements Serializable {
             return contains(c1, c2.getSuperclass());
         }
     }
-    
+
     // for testing
-    
+
     public static void main(String[] a) {
         try {
             //Class o1 = Class.forName("moise.reorg.commands.ChangeRoleDefProperties"); //new ChangeRoleDefProperties().getClass();
@@ -111,5 +111,5 @@ public class ReorgPlan extends ArrayList implements Serializable {
             e.printStackTrace();
         }
     }
-    
+
 }

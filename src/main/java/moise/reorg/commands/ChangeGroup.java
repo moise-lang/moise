@@ -8,5 +8,5 @@ package moise.reorg.commands;
 public class ChangeGroup extends ChangeSS {
 
     private static final long serialVersionUID = 1L;
-     
+
 }

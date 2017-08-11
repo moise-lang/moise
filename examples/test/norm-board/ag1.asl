@@ -1,7 +1,7 @@
 
 !start.
 
-+!start : true 
++!start : true
    <- .print("hello world.");
       makeArtifact(nb1,"ora4mas.nopl.NormativeBoard",[],AId);
       focus(AId);

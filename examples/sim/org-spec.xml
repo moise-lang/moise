@@ -2,16 +2,16 @@
 
 <?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
 
-<organisational-specification 
+<organisational-specification
 
     id="wp"
     os-version="0.8"
-  
+
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='http://moise.sourceforge.net/os
                         http://moise.sourceforge.net/xml/os.xsd' >
-    
+
     <structural-specification>
 
         <role-definitions>
@@ -36,7 +36,7 @@
 
             <formation-constraints>
                 <compatibility from="editor" to="writer" type="compatibility"
-                               scope="intra-group" 
+                               scope="intra-group"
                                bi-dir="true"/>
             </formation-constraints>
         </group-specification>
@@ -88,23 +88,23 @@
                 <preferred mission="mManager"/>
             </mission>
         </scheme>
-        
+
     </functional-specification>
 
     <normative-specification>
         <properties>
             <property id="role_cardinality" value="prohibition" />
         </properties>
-    
-        <norm id = "n1" 
-                          type="permission" 
+
+        <norm id = "n1"
+                          type="permission"
                           role="editor" mission="mManager" />
-        <norm id = "n2" 
-                          type="obligation" 
-                          role="writer" mission="mBib"             
+        <norm id = "n2"
+                          type="obligation"
+                          role="writer" mission="mBib"
                           time-constraint="1 day"  />
-        <norm id = "n3" 
-                          type="obligation" 
+        <norm id = "n3"
+                          type="obligation"
                           role="writer" mission="mColaborator"
                           time-constraint="1 day"  />
 

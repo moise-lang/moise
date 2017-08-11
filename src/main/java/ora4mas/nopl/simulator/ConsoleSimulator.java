@@ -19,7 +19,7 @@ public class ConsoleSimulator {
         CartagoService.startNode();
         CartagoService.createWorkspace(ORA4MASConstants.ORA4MAS_WSNAME);
         //CartagoService.enableDebug(ORA4MASConstants.ORA4MAS_WSNAME);
-        
+
         runWritePaper();
         //runAuction();
     }
@@ -33,7 +33,7 @@ public class ConsoleSimulator {
         MyAgent jaime = new MyAgent("jaime");      jaime.start();
         MyAgent olivier = new MyAgent("olivier");  olivier.start();
         MyAgent jomi = new MyAgent("jomi");        jomi.start();
-        
+
         jaime.execOp(g1, "debug", "inspector_gui(on)");
         jaime.execOp(s1, "debug", "inspector_gui(on)");
 
@@ -42,29 +42,29 @@ public class ConsoleSimulator {
         jaime.execOp(g1, "adoptRole", "editor");
         jomi.execOp(g1, "adoptRole", "writer");
         olivier.execOp(g1, "adoptRole", "writer");
-        
+
         jaime.execOp(g1, "addScheme", "sch1");
-        
+
         //ActionFeedback af = jaime.execOp("g1", "addScheme", "sch1");
-        //af.waitForCompletion(); 
+        //af.waitForCompletion();
 
         Thread.sleep(500); // TODO: use some kind of sync, or waitForCompletion as before
-        
+
         jaime.execOp(s1, "commitMission", "mManager");
         olivier.execOp(s1, "commitMission", "mColaborator");
         olivier.execOp(s1, "commitMission", "mBib");
         jomi.execOp(s1, "commitMission", "mColaborator");
-        
+
         jaime.execOp(s1, "goalAchieved", "wtitle");
         jaime.execOp(s1, "goalAchieved", "wabs");
         jaime.execOp(s1, "goalAchieved", "wsectitles");
-        
+
         olivier.execOp(s1, "goalAchieved", "wsecs");
         jomi.execOp(s1, "goalAchieved", "wsecs");
 
         olivier.execOp(s1, "goalAchieved", "wrefs");
         jaime.execOp(s1, "goalAchieved", "wconc");
-        
+
         // test resetGoal
         jaime.execOp(s1, "resetGoal", "sv");
         //jaime.execOp(s1, "goalAchieved", "wsectitles");
@@ -95,7 +95,7 @@ public class ConsoleSimulator {
         }
         jomi.execOp(g1, "adoptRole", "participant");
         olivier.execOp(g1, "adoptRole", "participant");
-        
+
         jaime.execOp(g1, "addScheme", "sch1");
         Thread.sleep(500);
         //ActionFeedback af = jaime.execOp("g1", "addScheme", "sch1");
@@ -117,7 +117,7 @@ public class ConsoleSimulator {
 }
 
 class MyAgent extends Agent {
-    
+
     public MyAgent(String name) {
         super(name);
         try {
@@ -125,9 +125,9 @@ class MyAgent extends Agent {
             System.out.println("in "+ORA4MASConstants.ORA4MAS_WSNAME+" wks");
         } catch (CartagoException e) {
             e.printStackTrace();
-        }        
+        }
     }
-    
+
     @Override
     public void run() {
         try {
@@ -147,7 +147,7 @@ class MyAgent extends Agent {
             e.printStackTrace();
         }
     }
-        
+
     void execOp(ArtifactId aid, final String op, final String args) throws Exception {
         if (args.length() == 0) {
             doAction(aid, new Op(op), -1);

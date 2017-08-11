@@ -2,16 +2,16 @@
 
 <?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
 
-<organisational-specification 
+<organisational-specification
 
     id="performance_test"
     os-version="0.8"
-  
+
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='http://moise.sourceforge.net/os
                         http://moise.sourceforge.net/xml/os.xsd' >
-    
+
     <structural-specification>
 
         <role-definitions>
@@ -115,7 +115,7 @@
                             </goal>
                         </plan>
                     </goal>
-                    
+
                     <goal id="g3" >
                         <plan operator="parallel">
                             <goal id="g31">
@@ -143,8 +143,8 @@
                                 </plan>
                             </goal>
                         </plan>
-                    </goal>           
-                    
+                    </goal>
+
                     <goal id="g4" >
                         <plan operator="parallel">
                             <goal id="g41">
@@ -222,7 +222,7 @@
             </mission>
 
         </scheme>
-        
+
     </functional-specification>
 
     <normative-specification>

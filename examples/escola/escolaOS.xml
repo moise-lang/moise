@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<organisational-specification 
+<organisational-specification
     id="escola"
     os-version="0.3"
-  
+
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='http://moise.sourceforge.net/os http://moise.sourceforge.net/xml/os.xsd'>
-    
+
     <structural-specification>
         <role-definitions>
             <role id="docente" />
             <role id="aluno" />
             <role id="funcionario" />
             <role id="candidato" />
-            
+
             <role id="membro">
                 <extends role="docente"/>
             </role>
@@ -95,7 +95,7 @@
             </formation-constraints>
         </group-specification>
     </structural-specification>
-    
+
     <functional-specification>
         <scheme id="prova1" >
             <goal id="realizarProva" >
@@ -173,7 +173,7 @@
             </mission>
         </scheme>
     </functional-specification>
-    
+
     <normative-specification>
         <norm id="n1" type="permission" role="secretario" mission="m3" />
         <norm id="n2" type="obligation" role="aluno" mission="m43" />

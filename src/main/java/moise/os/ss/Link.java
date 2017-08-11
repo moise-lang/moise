@@ -4,7 +4,7 @@ import moise.common.MoiseConsistencyException;
 
 /**
  * Represents a Link between two roles (its source and destination).
- * 
+ *
  * @author Jomi Fred Hubner
  */
 public class Link extends RoleRel  {
@@ -28,10 +28,10 @@ public class Link extends RoleRel  {
         this(null, null, gr, linkType);
     }
 
-    public String getTypeStr() { 
-        return linkType; 
+    public String getTypeStr() {
+        return linkType;
     }
-    
+
     public String getXMLTag() {
         return "link";
     }

@@ -1,6 +1,6 @@
 /*
-    Jason Project to start interfaces for agents that use MOISE 
-	
+    Jason Project to start interfaces for agents that use MOISE
+
 	(example used in the EASSS at St Etienne)
 */
 
@@ -8,7 +8,7 @@ MAS org_simulation {
    environment: jaca.CartagoEnvironment
 
    agents:
-   
+
        bob  orgagent.asl agentArchClass ora4mas.nopl.simulator.SimOrgAgent;
-       
+
 }

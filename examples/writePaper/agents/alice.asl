@@ -17,7 +17,7 @@ my_role(writer).
 +goalState(Scheme,wsecs,_,_,satisfied)
     : .my_name(Me) & commitment(Me,mColaborator,Scheme)
    <- !quit_mission(mColaborator,Scheme).
-      
+
 @lgss2[atomic]
 +goalState(Scheme,wrefs,_,_,satisfied)
     : .my_name(Me) & commitment(Me,mBib,Scheme)
@@ -25,4 +25,3 @@ my_role(writer).
 
 { include("$jacamoJar/templates/common-moise.asl") }
 { include("$jacamoJar/templates/org-obedient.asl") }
-   

@@ -26,7 +26,7 @@ import ora4mas.nopl.JasonTermWrapper;
 
 /**
  Represents a collective entity (groups and schemes)
- 
+
  @composed - players * Player
 
  @author Jomi Fred Hubner
@@ -35,16 +35,16 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
 
     protected final String id;
     protected final Term   termId;
-    
+
     protected String monSch;
     protected Set<Player> players   = new ConcurrentSkipListSet<Player>();
     protected Set<Player> exPlayers = new HashSet<Player>();
-    
+
     protected Set<Literal> playersAsLiteralList   = new ConcurrentSkipListSet<Literal>();
     protected Set<Literal> exPlayersAsLiteralList = new ConcurrentSkipListSet<Literal>();
-    
+
     public final static PredicateIndicator monitorSchPI = new PredicateIndicator("monitor_scheme", 1);
-    
+
     public CollectiveOE(String id) {
         if (id.startsWith("\""))
             id = id.substring(1,id.length()-1);
@@ -54,10 +54,10 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
     public String getId() {
         return id;
     }
-   
+
     abstract PredicateIndicator getPlayerPI();
     abstract PredicateIndicator getExPlayerPI();
-    
+
     public Player addPlayer(String ag, String obj) {
         Player p = new Player(ag,obj);
         players.add(p);
@@ -66,8 +66,8 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
             exPlayersAsLiteralList.remove(getExPlayerLiteral(p));
         return p;
     }
-   
-    
+
+
     public boolean removePlayer(String ag, String obj) {
         Player p = new Player(ag,obj);
         if (players.remove(p)) {
@@ -84,17 +84,17 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
         players.clear();
         playersAsLiteralList.clear();
     }
-    
+
     /*private void rebuildPlayerListAsLiteral() {
         List<Literal> tmp = new ArrayList<Literal>(players.size());
-        for (Player p: players) 
+        for (Player p: players)
             tmp.add(getPlayerLiteral(p));
-        playersAsLiteralList.clear(); 
+        playersAsLiteralList.clear();
         playersAsLiteralList.addAll(tmp);
     }
     private void rebuildExPlayersAsLiteralList() {
         List<Literal> tmp = new ArrayList<Literal>(players.size());
-        for (Player p: exPlayers) 
+        for (Player p: exPlayers)
             tmp.add();
         exPlayersAsLiteralList.clear();
         exPlayersAsLiteralList.addAll(tmp);
@@ -105,7 +105,7 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
     private Literal getExPlayerLiteral(Player p) {
         return createLiteral(getExPlayerPI().getFunctor(), createAtom(p.getAg()), createAtom(p.getTarget()), termId);
     }
-    
+
     public Collection<Player> getPlayers() {
         return players;
     }
@@ -119,14 +119,14 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
     public void setMonitorSch(String monSch) {
         this.monSch = monSch;
     }
-    
+
     public abstract CollectiveOE clone();
 
     @Override
     public int hashCode() {
         return id.hashCode();
     }
-    
+
     static protected ToProlog getCollectionAsProlog(Collection<? extends Object> c) {
         StringBuilder r = new StringBuilder("[");
         String v = "";
@@ -141,10 +141,10 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
             public String getAsPrologStr() {
                 return s;
             }
-        };        
+        };
     }
-    
-    
+
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
@@ -152,7 +152,7 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
         CollectiveOE g = (CollectiveOE)obj;
         return id.equals(g.id);
     }
-    
+
 
     public int compareTo(CollectiveOE g) {
         return this.id.compareTo(g.id);
@@ -171,32 +171,32 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
     }
 
     abstract public Literal[] getDynamicFacts();
-    
+
     public boolean isRelevant(PredicateIndicator pi) {
         for (Literal l: getDynamicFacts())
             if (pi.equals(l.getPredicateIndicator()))
                 return true;
-        if (pi.equals(monitorSchPI))         
+        if (pi.equals(monitorSchPI))
             return true;
-        
+
         return false;
     }
-    
+
     public Iterator<Unifier> consult(Literal l, Unifier u) {
         if (l.getPredicateIndicator().equals(getPlayerPI())) {
             return consult(l, u, playersAsLiteralList);
 
         } else if (l.getPredicateIndicator().equals(getExPlayerPI())) {
             return consult(l, u, exPlayersAsLiteralList);
-    
+
         } else if (l.getPredicateIndicator().equals(monitorSchPI)) {
             Term lCopy = l.getTerm(0);
             if (getMonitorSch() != null && u.unifies(lCopy, createAtom(getMonitorSch())))
                 return LogExpr.createUnifIterator(u);
             else
-                return LogExpr.EMPTY_UNIF_LIST.iterator(); 
+                return LogExpr.EMPTY_UNIF_LIST.iterator();
         }
-        return LogExpr.EMPTY_UNIF_LIST.iterator(); 
+        return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
 
     public Iterator<Unifier> consult(final Literal l, final Unifier u, final Collection<Literal> facts) {
@@ -204,14 +204,14 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
             Iterator<Literal> i  = facts.iterator();
             Unifier current      = null;
             boolean needsUpdate  = true;
-            
+
             public boolean hasNext() {
-                if (needsUpdate) 
+                if (needsUpdate)
                     get();
                 return current != null;
             }
             public Unifier next() {
-                if (needsUpdate) 
+                if (needsUpdate)
                     get();
                 Unifier a = current;
                 if (current != null)
@@ -238,14 +238,14 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
             Iterator<Unifier> i  = null;
             Unifier current      = null;
             boolean needsUpdate  = true;
-            
+
             public boolean hasNext() {
-                if (needsUpdate) 
+                if (needsUpdate)
                     get();
                 return current != null;
             }
             public Unifier next() {
-                if (needsUpdate) 
+                if (needsUpdate)
                     get();
                 Unifier a = current;
                 if (current != null)

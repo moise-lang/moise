@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  */
 @SuppressWarnings("rawtypes")
 public class MoiseElement implements Serializable, Identifiable, Comparable {
-    
+
     private static final long serialVersionUID = 1L;
 
     public static boolean debug = false;
@@ -30,23 +30,23 @@ public class MoiseElement implements Serializable, Identifiable, Comparable {
     private String  prefix = null;
     private OEAgent owner = null;
     private Date    creationDate = new Date();
-    
+
     private Map<String, Object>   properties = null;
     private static int lastId = 0;
-    
+
     public MoiseElement() {
         id = "autoId_"+(lastId++);
     }
-    
+
     public MoiseElement(String id) {
         this.id = id;
     }
-    
+
     public String getId() {
         return id;
     }
-    
-    
+
+
     public void setId(String s) {
         if (s != null && s.length() == 0) {
             MoiseException e = new MoiseException("Id should not be empty!");
@@ -55,27 +55,27 @@ public class MoiseElement implements Serializable, Identifiable, Comparable {
             id = s;
         }
     }
-    
+
     public void setOwner(OEAgent ag) {
         owner = ag;
     }
-    
+
     public OEAgent getOwner() {
         return owner;
     }
-    
+
     public Date getCreationDate() {
         return creationDate;
     }
-    
+
     public void setPrefix(String p) {
         prefix = p;
     }
-    
+
     public String getPrefix() {
         return prefix;
     }
-    
+
     /**
      * returns a full id : prefix + "." + id if there is a prefix,
      * only <id> otherwise.
@@ -87,21 +87,21 @@ public class MoiseElement implements Serializable, Identifiable, Comparable {
             return prefix+"."+getId();
         }
     }
-    
+
     public void setProperty(String id, Object value) {
         if (properties == null) {
             properties = new HashMap<String, Object>();
         }
         properties.put(id, value);
     }
-    
+
     public Object getProperty(String id) {
         if (properties == null) {
             return null;
         }
         return properties.get(id);
     }
-    
+
     public String getStrProperty(String id, String defaultReturn) {
         if (properties == null) {
             return defaultReturn;
@@ -112,13 +112,13 @@ public class MoiseElement implements Serializable, Identifiable, Comparable {
         else
             return r;
     }
-    
+
     public boolean getBoolProperty(String id) {
         return getBoolProperty(id, false);
     }
-    
+
     public boolean getBoolProperty(String id, boolean defaultReturn) {
-        if (properties != null) { 
+        if (properties != null) {
             Object v = properties.get(id);
             if (v != null && v instanceof String) {
                 String s = (String)v;
@@ -127,21 +127,21 @@ public class MoiseElement implements Serializable, Identifiable, Comparable {
         }
         return defaultReturn;
     }
-    
+
     public Map<String, Object> getProperties() {
         if (properties == null) {
             properties = new HashMap<String, Object>();
         }
         return properties;
     }
-    
+
     @Override
     public int hashCode() {
         String fid = getFullId();
         return (fid == null ? 0 : fid.hashCode());
     }
-    
-    
+
+
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
@@ -166,9 +166,9 @@ public class MoiseElement implements Serializable, Identifiable, Comparable {
         } catch (Exception e) {}
         return 0;
     }
-    
+
     /**
-     * get the prefix part of a string with the format prefix.id, 
+     * get the prefix part of a string with the format prefix.id,
      * returns null if there is no prefix
      */
     public static String getPrefix(String s) {
@@ -179,7 +179,7 @@ public class MoiseElement implements Serializable, Identifiable, Comparable {
             return null;
         }
     }
-    
+
     /**
      * get the id part of a string with the format prefix.id, return "id" if there is no prefix
      */
@@ -191,12 +191,12 @@ public class MoiseElement implements Serializable, Identifiable, Comparable {
             return s;
         }
     }
-    
+
     public String toString() {
         return getFullId();
     }
 
-    
+
     public Element getPropertiesAsDOM(Document document) {
         Element ele = (Element) document.createElement("properties");
         for (String id: getProperties().keySet()) {

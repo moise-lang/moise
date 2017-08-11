@@ -68,13 +68,13 @@ import ora4mas.nopl.oe.Scheme;
 
 /** simple simulator used to demonstrate/test NOPL for MOISE */
 public class OIgui implements DynamicFactsProvider {
-    
+
     public static void main(String[] args) throws Exception {
         OIgui oi = new OIgui("examples/writePaper/wp-os.xml", "examples/writePaper/wp-gen.npl");
         oi.initComponents();
         oi.initOE();
     }
-    
+
     NPLInterpreter schInterpreter = new NPLInterpreter();
     Scheme sch;
     OS     os;
@@ -84,7 +84,7 @@ public class OIgui implements DynamicFactsProvider {
     public OIgui(String osFile, String npSrcFile) throws FileNotFoundException, ParseException {
         os = OS.loadOSFromURI(osFile); // parse OS
         this.nplSrc = npSrcFile;
-        
+
         NormativeProgram p = new NormativeProgram();
         p.setSrc(npSrcFile);
         new nplp(new FileReader(npSrcFile)).program(p, this);
@@ -92,11 +92,11 @@ public class OIgui implements DynamicFactsProvider {
         schInterpreter.loadNP(p.getRoot());
         for (Scope s: p.getRoot().getScopes()) {
             if (s.getId().getFunctor().equals("scheme")) {
-                schInterpreter.loadNP(s);                
+                schInterpreter.loadNP(s);
             }
         }
     }
-    
+
     void initOE() {
         Group g = new Group("wp1");
         g.addPlayer("jaime", "editor");
@@ -104,11 +104,11 @@ public class OIgui implements DynamicFactsProvider {
         g.addPlayer("jomi", "writer");
         g.addResponsibleForScheme("sch2");
         oe.addGroup(g);
-        
+
         sch = new Scheme(os.getFS().findScheme("writePaperSch"), "sch2");
         sch.addGroupResponsibleFor(g);
         oe.addScheme(sch);
-        
+
         updateOE();
 
         //schInterpreter.setDynamicFacts(sch.transform());
@@ -128,7 +128,7 @@ public class OIgui implements DynamicFactsProvider {
             }
         }, 0, 1, TimeUnit.SECONDS);
     }
-    
+
     public void executeAct(Literal action) {
         Scheme schbak = sch.clone();
         if (action.getFunctor().equals("commitMission")) {
@@ -150,7 +150,7 @@ public class OIgui implements DynamicFactsProvider {
         //updateOE();
         //updateNS();
     }
-    
+
     public void executeAct(LogicalFormula expr) {
         try {
             schInterpreter.verifyNorms(); // update norms state
@@ -167,7 +167,7 @@ public class OIgui implements DynamicFactsProvider {
             txtLog.append("Error: "+e);
         }
     }
-    
+
     private String lastOEStr = "";
     void updateOE() {
         String curOE = oe.toString();
@@ -175,7 +175,7 @@ public class OIgui implements DynamicFactsProvider {
             txtOE.setText( curOE );
         lastOEStr = curOE;
     }
-    
+
     void updateNP() {
         try {
             File fin = new File(nplSrc);
@@ -186,18 +186,18 @@ public class OIgui implements DynamicFactsProvider {
                 out.append(l+"\n");
                 l = bin.readLine();
             }
-            txtNP.setText(out.toString());    
+            txtNP.setText(out.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
+
     private String lastNSStr = "";
     void updateNS() {
         //txtNS.setText(schInterpreter.getStateString());
         //txtNS.setText(DOMUtils.dom2txt(schInterpreter));
         try {
-            StringWriter so = new StringWriter();            
+            StringWriter so = new StringWriter();
             getNSTransformer().transform(new DOMSource(DOMUtils.getAsXmlDocument(schInterpreter)), new StreamResult(so));
             String curStr = so.toString();
             if (! curStr.equals(lastNSStr))
@@ -207,14 +207,14 @@ public class OIgui implements DynamicFactsProvider {
             e.printStackTrace();
         }
     }
-    
+
     JFrame    frame  = new JFrame(":: Scheme Tester ::");
     JTextPane txtOE  = new JTextPane();
     JTextPane txtNP  = new JTextPane();
     JTextPane txtNS  = new JTextPane();
     JTextArea txtLog = new JTextArea(7, 10);
-    
-    void initComponents() throws Exception {        
+
+    void initComponents() throws Exception {
         // osp
         JPanel osp = new JPanel(new BorderLayout());
         JTextPane ostext = new JTextPane();
@@ -226,7 +226,7 @@ public class OIgui implements DynamicFactsProvider {
         getOSTransformer().transform(new DOMSource(getParser().parse(si)), new StreamResult(so)); //DOMUtils.getAsXmlDocument(OS_DOM))
         ostext.setText(so.toString());
         osp.add(BorderLayout.CENTER, new JScrollPane(ostext));
-        
+
         // nsp
         JPanel nsp = new JPanel(new BorderLayout());
         txtNS.setContentType("text/html");
@@ -254,15 +254,15 @@ public class OIgui implements DynamicFactsProvider {
         txtHist.setFont(new Font("courier", Font.PLAIN, 16));
         txtHist.setEditable(false);
         hp.add(BorderLayout.CENTER, new JScrollPane(txtHist));
-        
-        // center tabled 
+
+        // center tabled
         JTabbedPane tpane = new JTabbedPane();
         tpane.add("normative state", nsp);
         tpane.add("history",hp);
         tpane.add("normative program", npp);
         tpane.add("organisation entity", oep);
         tpane.add("specification", osp);
-        
+
         // actions
         JPanel actionsp = new JPanel(new GridLayout(3,1));
         //actionsp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Actions", TitledBorder.LEFT, TitledBorder.TOP));
@@ -275,7 +275,7 @@ public class OIgui implements DynamicFactsProvider {
         cbt.addActionListener(new ActionListener() {
            public void actionPerformed(ActionEvent e) {
                executeAct(ASSyntax.createLiteral("commitMission", ASSyntax.createAtom(cag.getText().trim()), ASSyntax.createAtom(cmi.getText().trim())));
-           } 
+           }
         });
 
         JPanel achp = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -287,7 +287,7 @@ public class OIgui implements DynamicFactsProvider {
         abt.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 executeAct(ASSyntax.createLiteral("setGoalAchieved", ASSyntax.createAtom(aag.getText().trim()), ASSyntax.createAtom(ago.getText().trim())));
-            } 
+            }
         });
 
         JPanel queryp = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -303,16 +303,16 @@ public class OIgui implements DynamicFactsProvider {
                 } catch (jason.asSyntax.parser.ParseException e1) {
                     e1.printStackTrace();
                 }
-            } 
+            }
         });
-     
-        txtLog.setEditable(false); 
+
+        txtLog.setEditable(false);
         txtLog.setAutoscrolls(false);
         JPanel sul = new JPanel(new BorderLayout());
         sul.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Actions", TitledBorder.LEFT, TitledBorder.TOP));
         sul.add(BorderLayout.CENTER, actionsp);
         sul.add(BorderLayout.SOUTH, new JScrollPane(txtLog));
-     
+
         frame.getContentPane().setLayout(new BorderLayout());
         frame.add(BorderLayout.CENTER, tpane);
         frame.add(BorderLayout.SOUTH, sul);
@@ -320,10 +320,10 @@ public class OIgui implements DynamicFactsProvider {
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setBounds(0, 0, 800, (int)(screenSize.height * 0.9));
-        frame.setLocation(screenSize.width / 2 - frame.getWidth() / 2, screenSize.height / 2 - frame.getHeight() / 2);        
+        frame.setLocation(screenSize.width / 2 - frame.getWidth() / 2, screenSize.height / 2 - frame.getHeight() / 2);
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                frame.setVisible(true);            
+                frame.setVisible(true);
             }
         });
         frame.addWindowListener(new WindowAdapter() {
@@ -331,7 +331,7 @@ public class OIgui implements DynamicFactsProvider {
                 System.exit(0);
             }
         });
-        
+
         // add listener for changes
         schInterpreter.addListener(new NormativeListener() {
            public void created(DeonticModality o) {     txtHist.append("created:     "+o+"\n");  }
@@ -341,7 +341,7 @@ public class OIgui implements DynamicFactsProvider {
            public void failure(Structure f) {      txtHist.append("failure:     "+f+"\n");  }
         });
     }
-    
+
     private DocumentBuilder parser;
     private DocumentBuilder getParser() throws ParserConfigurationException {
         if (parser == null)
@@ -355,7 +355,7 @@ public class OIgui implements DynamicFactsProvider {
         return DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("nstate"));
     }
 
-    
+
     public boolean isRelevant(PredicateIndicator pi) {
         return sch != null && sch.isRelevant(pi);
     }

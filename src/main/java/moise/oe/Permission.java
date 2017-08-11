@@ -14,13 +14,13 @@ public class Permission implements Serializable {
     RolePlayer     rp;
     Mission        mis;
     SchemeInstance sch;
-    
+
     public Permission(RolePlayer rp, Mission mis, SchemeInstance sch) {
         this.rp = rp;
         this.mis = mis;
         this.sch = sch;
     }
-    
+
     public RolePlayer getRolePlayer() {
         return rp;
     }
@@ -30,7 +30,7 @@ public class Permission implements Serializable {
     public SchemeInstance getScheme() {
         return sch;
     }
-    
+
     @Override
     public int hashCode() {
         final int PRIME = 31;
@@ -73,9 +73,9 @@ public class Permission implements Serializable {
             permEle.setAttribute("scheme", getScheme().getId());
             return permEle;
     }
-    
+
     public String toString() {
         return "("+rp+"->"+mis+" in "+sch+")";
     }
-    
+
 }

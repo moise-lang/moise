@@ -266,7 +266,7 @@ available in the \moise distribution in the directory
 %  Simulator
 %  ---------
 %
-\chapter{Organisational Entity Dynamics Simulator} 
+\chapter{Organisational Entity Dynamics Simulator}
 \label{chp:simulator}
 
 This chapter explains both how to write an \ac{OS} for the \moise
@@ -278,7 +278,7 @@ tools and how to use the simulator to test this OS.
 In order to start using the \moise tools  you need to perform to
 following steps:
 \begin{enumerate}
-  
+
 \item check whether the Java 1.5 is installed in your system (the
   \texttt{java} command must be in the PATH);
 
@@ -287,7 +287,7 @@ following steps:
   \url{http://jason.sourceforge.net}.
 
 \item uncompress the downloaded files; and
-  
+
 \item test the system by running the script \texttt{\ldots/bin/simOE}
   (or \texttt{ant run}).  The simulator asks for a specification file,
   select the \texttt{example/tutorial/jojOS.xml} and a screen like
@@ -333,20 +333,20 @@ The following lines define the role inheritance relation:
 
 \begin{remark}
 \begin{itemize}
-  
+
 \item The role \role{soc} is the root of the role inheritance tree.
   All roles are sub-roles of \role{soc}, even if it is not explicitly
   specified, as is the case of role coach.
-  
+
 \item A role definition does not imply that an agent is allowed to
   play it, only when the role is added in a group specification it can
   be played. The roles definition tag is used simply to state the
   roles hierarchy.
-  
+
 \item To state that a role inherits properties from many other roles,
   the \texttt{extends} tag can be used many times, for example:
   \begin{verbatim}
-    <role id="r1> 
+    <role id="r1>
       <extends role="r2" />
       <extends role="r3" />
     </role>
@@ -397,21 +397,21 @@ group specification, we can include:
 
   All roles included inside a group must be previously defined inside
   the \texttt{role-definitions} tag.
-  
+
 \item the \emph{links} between the group's roles, for example, to
   state an inter-group authority link from \role{coach} to
   \role{player}:
   \begin{verbatim}
-    <link from="coach"  
-          to="player" 
-          type="authority"     
-          scope="inter-group" 
+    <link from="coach"
+          to="player"
+          type="authority"
+          scope="inter-group"
           extends-subgroups="true" />
   \end{verbatim}
-  
+
   The values for the link \texttt{type} are `authority',
   `communication', and `acquaintance'.
-  
+
   The values for the \texttt{scope} are `inter-group' and
   `intra-group'.
 
@@ -425,23 +425,23 @@ group specification, we can include:
       <group-specification id="attack" min="1" max="1">
         ...
       </group-specification>
-                
+
       <group-specification id="defense" min="1" max="1">
         ...
       </group-specification>
     </subgroups>
   \end{verbatim}
   Each subgroups also contains a group specification.
-  
+
 \item the \emph{constraints} formation. For example, in the group
   \group{attack} there are the following role compatibility:
   {\small
   \begin{verbatim}
     <formation-constraints>
-      <compatibility from="middle" 
+      <compatibility from="middle"
                      to="leader"
-                     scope="intra-group" 
-                     extends-subgroups="false" 
+                     scope="intra-group"
+                     extends-subgroups="false"
                      bi-dir="true"/>
     </formation-constraints>
   \end{verbatim}
@@ -462,7 +462,7 @@ To create an \ac{OE}:
 \begin{enumerate}
 
 \item Run the \texttt{\ldots/bin/simOE} script.
-  
+
 \item Open the soccer team \ac{SS} file
   (\ldots/examples/tutorial/jojSS.xml).
 
@@ -487,12 +487,12 @@ To create an \ac{OE}:
 
 
 \begin{enumerate}
-  
+
 \item To create a group, select the `group'/`create' tab, then select
   the creation of a `root' group (some group that is not subgroup
-  of any other group), select the `team' specification, and finally 
+  of any other group), select the `team' specification, and finally
   click on `ok' button.
-  
+
   Notice that a new group (id=gr\_team0)\footnote{The id of the group is
     automatically given by the simulator. In the API however, the id of the
     group may be defined when it is created.} was created and its well
@@ -504,12 +504,12 @@ To create an \ac{OE}:
     \caption{Result of the first group creation}
     \label{fig:gr1}
   \end{figure}
-  
+
 \item Create a \group{gr\_team0} subgroup using the defense
   specification. Notice that a defense group can only be created as a
   \group{team} subgroup, since defense is specified as a \group{team}
   subgroup in the SS.
-  
+
 \item Create another \group{gr\_team0} subgroup using the attack
   specification.
 
@@ -609,7 +609,7 @@ scheme \texttt{sideAttack} is:
         <goal id="g8" min="1" ds="be placed in the middle field" />
         <goal id="g9" min="1" ds="be placed in the opponent's goal area" />
       </plan>
-    </goal>                
+    </goal>
     <goal id="g3" min="1" ds="kick the ball to the m2Ag" >
        <argument id="M2Ag" />
     </goal>
@@ -736,10 +736,10 @@ Each achievement goal of a scheme instance (as shown in the
 
 
 \item committed: a list of agents committed to this goal;
-  
+
 \item argument (a String): it is the values for the goal arguments
   (e.g. a value for the argument $M2Ag$ of the goal $g_3$).
-  
+
 \end{enumerate}
 
 
@@ -812,13 +812,13 @@ and its specification in the XML file is simple:
 
 From the point of view of simulation, this new OS allows us to create
 an agent, assign to it a role (e.g.  attacker), and after a mission
-(e.g. m3). From the point of view of the agent, if it 
+(e.g. m3). From the point of view of the agent, if it
 \begin{enumerate}[$i$)]
 \item adopts a role (e.g. attacker)
 \item in a group responsible for an instance scheme (e.g. sch\_sideAttack0),
 \item this role has obligations for some of this scheme's mission, and
 \item the cardinality of this mission is not satisfied (i.e. the
-  minimum number of agents committed to this mission is not achieved), 
+  minimum number of agents committed to this mission is not achieved),
 \end{enumerate}
 then it is obligated to commit to this mission (e.g. m3).
 
@@ -837,13 +837,13 @@ to add a responsible group for our scheme \texttt{sch\_sideAttack0}:
 \item run the program \ldots/examples/tutorial/tutorialDS. This
   program creates an entity that already has the 11 agents, 3 groups,
   and 1 scheme as we had built in the previous sections.
-  
+
 \item In the OE tree, select the agent Roberto
   Carlos and notice that its obligations are Ok.
-  
+
 \item Select the `scheme'/`responsible groups' tab, select the
   scheme \texttt{sch\_sideAttack0}, and add the groups \group{gr\_attack1} and
-  \group{gr\_defense2}. Notice how the Roberto Carlos's 
+  \group{gr\_defense2}. Notice how the Roberto Carlos's
   obligations changed (\prettyref{fig:ds1}).
 
   \begin{figure}
@@ -853,7 +853,7 @@ to add a responsible group for our scheme \texttt{sch\_sideAttack0}:
     \caption{Agent obligations status}
     \label{fig:ds1}
   \end{figure}
-  
+
 \end{enumerate}
 
 \subsection{Mission commitment}
@@ -952,7 +952,7 @@ based on BDI concepts and thus more suitable for agents programming.
 \textsc{Note:} The \Jason \moisem integration was changed when we moved to ORA4MAS
 platform. However, the concepts, from an agent perspective, are the same. So we
 leave the chapter in this tutorial. Refer to \texttt{doc/ora4mas} for
-the current programming proposal.  
+the current programming proposal.
 \end{quote}
 
 The next section describes how we have customised the \Jason agent
@@ -989,7 +989,7 @@ orgManager\footnote{\texttt{.send} is the \Jason internal action used
   to send messages to another agent.}:
 
 \begin{verbatim}
-  +some_event : true 
+  +some_event : true
      <- .send(orgManager, achieve, create_group(wpgroup)).
 \end{verbatim}
 % In this example the performative \texttt{askOne} is used since the
@@ -999,7 +999,7 @@ orgManager\footnote{\texttt{.send} is the \Jason internal action used
 % can use the \texttt{achieve} performative:
 
 % \begin{verbatim}
-%   +someEvent : true 
+%   +someEvent : true
 %      <- .send(orgManager, achieve, createGroup(wpgroup)).
 % \end{verbatim}
 
@@ -1008,7 +1008,7 @@ the \jmoisem internal actions that sends the corresponding message to
 OrgManager (these actions start with \texttt{jmoise.}), for example:
 
 \begin{verbatim}
-  +some_event : true 
+  +some_event : true
      <- jmoise.create_group(wpgroup).
 \end{verbatim}
 
@@ -1048,7 +1048,7 @@ The actions that OrgManager can handle are\footnote{These actions
 \item \texttt{set\_goal\_arg(<SchId>,<Goal>,<ArgId>,<value>)}: set an
   argument's value for some goal in a scheme.
 
-\item \texttt{set\_goal\_state(<SchId>,<Goal>,(satisfied|impossible))} 
+\item \texttt{set\_goal\_state(<SchId>,<Goal>,(satisfied|impossible))}
 
 %\item \texttt{addAgent()}
 %\item \texttt{removeAgent()} *
@@ -1111,7 +1111,7 @@ handle by plans like:
 
 
 
-The events perceived by the agent are the following: 
+The events perceived by the agent are the following:
 
 \begin{itemize}
 \item \texttt{+/- group(<GrSpecId>,<GrId>)[owner(<AgName>)]}:
@@ -1164,7 +1164,7 @@ these events to enable to agent to achieve its organisational
 goals. For example, when the goal to write the paper conclusion is
 permitted, the following plan will be executed:
 \begin{verbatim}
-  +!wconc[scheme(Sch)] : true 
+  +!wconc[scheme(Sch)] : true
      <- .print("Writing the conclusion!");
         jmoise.set_goal_state(Sch, wconc, satisfied).
 \end{verbatim}
@@ -1173,10 +1173,10 @@ annotations of the goal (only one annotation in this case). Differently than
 arguments (enclosed by `(' and `)'), annotations may not be included in the
 predicate. The above plan can thus simply be:
 \begin{verbatim}
-  +!wconc : true 
+  +!wconc : true
      <- .print("Writing the conclusion!");
         // obtain the scheme id from the belief base
-        ?scheme(writePaperSch, Sch); 
+        ?scheme(writePaperSch, Sch);
         jmoise.set_goal_state(Sch, wconc, satisfied).
 \end{verbatim}
 Of course, in place of printing a message the plan should have action
@@ -1185,11 +1185,11 @@ have to notify the OrgManager, so it can change the state of the
 scheme execution and coordinate its execution. If the goal is not
 achieved, the OrgManager also have to be notified, for instance:
 \begin{verbatim}
-  +!wconc[scheme(Sch)] : true 
+  +!wconc[scheme(Sch)] : true
      <- .print("Writing the conclusion!");
         jmoise.set_goal_state(Sch, wconc, satisfied).
-  // the plan to achieve the goal failed 
-  -!wconc[scheme(Sch)] : true 
+  // the plan to achieve the goal failed
+  -!wconc[scheme(Sch)] : true
      <- jmoise.set_goal_state(Sch, wconc, impossible).
 \end{verbatim}
 
@@ -1205,7 +1205,7 @@ Other annotations of goals events are:
 The plan may add these annotation if the corresponding information is
 necessary for the execution of the plan, for example:
 \begin{verbatim}
-  +!wconc[scheme(Sch), role(R), group(G)] : true 
+  +!wconc[scheme(Sch), role(R), group(G)] : true
      <- .print("Writing the conclusion for the scheme ",Sch);
         .print("because I play ",R," in group ",G);
         ...
@@ -1220,7 +1220,7 @@ necessary for the execution of the plan, for example:
 \label{sec:agWP-jason}
 
 In this section, the write paper application (as presented in
-\prettyref{sec:exeWP}) is implemented using AgentSpeak and \Jason. 
+\prettyref{sec:exeWP}) is implemented using AgentSpeak and \Jason.
 
 \subsection{MAS2J configuration}
 
@@ -1231,7 +1231,7 @@ following agents:
 \begin{itemize}
 \item OrgManager: this agent is the same as presented in the \smoisem,
   but customised to provide organisational services in \Jason
-  systems. 
+  systems.
 \item Jaime: this agent will play the editor role in the application.
 \item Olivier: this agent will play the writer role.
 \item Jomi: this agent will also play the writer role.
@@ -1299,7 +1299,7 @@ the execution.
 \begin{center}
   \includegraphics[width=\textwidth]{screens/jmoise-scheme-status.png}
 \end{center}
-  
+
 
 
 \chapter{Developing Distributed Organised Agents with \smoisem} \label{chp:smoise}
@@ -1320,7 +1320,7 @@ application agents could be developed.\footnote{As remarked in the
 
 \section{A simple organisational agent architecture} \label{sec:soArc}
 
-The proposed architecture is very simple and is just a starting point 
+The proposed architecture is very simple and is just a starting point
 towards organisation oriented programming. The base idea is an agent
 that always do what its organisation needs, it does not have personal
 goals, and thus there is no conflict between goals.
@@ -1379,7 +1379,7 @@ role in the organisation.
 
 
 The \smoisem API has three main classes to access the organisational
-layer (as defined in \cite{hubner:05a}): 
+layer (as defined in \cite{hubner:05a}):
 \begin{itemize}
 \item \textsf{OrgBox}: this class has methods to generate
 organisational events like role adoption, mission commitment, group
@@ -1506,22 +1506,22 @@ public class JaimeAg extends BaseOrgAgent {
             }
         }
     }
-	
+
     protected void plan() {
         currentPlan = null;
         if (currentGoal == null) { // there is no goal
             // create a Write a Paper scheme
-            if (findSch() == null) 
+            if (findSch() == null)
                createSch();
             choseGoal();
-        } 
+        }
         if (currentGoal != null) {
            // create a plan that only prints the current goal!
            currentPlan = new ArrayList();
            currentPlan.add("print("+currentGoal+")");
         }
     }
-	
+
     protected void executeAct(String action) {
         if (action.startsWith("print"))
            print(" * doing * "+action);
@@ -1530,7 +1530,7 @@ public class JaimeAg extends BaseOrgAgent {
     SCH findSch() {
         // find my group scheme
         Group myGroup = getRolePlayer().getGroup();
-            
+
         Iterator iSch = getOrgBox().getOE().
                findInstancesOfSchSpec( "writePaperSch" ).iterator();
         while (iSch.hasNext()) {
@@ -1540,7 +1540,7 @@ public class JaimeAg extends BaseOrgAgent {
         }
         return null;
     }
-    
+
     boolean firstSchAlreadyCreated = false;
     SCH createSch() {
        if (firstSchAlreadyCreated)
@@ -1553,11 +1553,11 @@ public class JaimeAg extends BaseOrgAgent {
        firstSchAlreadyCreated = true;
        return getOrgBox().getOE().findSCH(schId);
     }
-    
+
     public RolePlayer getRolePlayer() {
        return (RolePlayer)getOrgBox().getMyOEAgent().
               getRoles().iterator().next();
-    }    
+    }
 }
 \end{verbatim}
 }
@@ -1569,7 +1569,7 @@ it means that the root goal of the write paper scheme is achieved, and
 thus Jaime can finish the scheme (remove it from the organisational
 entity). Since a scheme could be finished only when
 it has no players, Jaime waits that other agents uncommit and then
-finishes the scheme. 
+finishes the scheme.
 
 The following steps describe how to run this MAS with Ant
 scripts\footnote{You need to install Ant to run this example as
@@ -1588,7 +1588,7 @@ below.
   \begin{center}
     \includegraphics[width=.8\textwidth]{screens/createWPSoc.png}
   \end{center}
-  
+
 Alternatively, start the OrgManager by Ant
 \begin{verbatim}
   ant orgManager
@@ -1600,7 +1600,7 @@ organisational specification and entity can be consulted.
   \begin{center}
     \includegraphics[width=.5\textwidth]{screens/orgManager.png}
   \end{center}
- 
+
 \item Run the Jaime agent
 \begin{verbatim}
   ant jaime
@@ -1715,7 +1715,7 @@ class HelloMoise {
 \item the first line import the \moisem OE API;
 \item the line 5 creates an OE with the goal `winGame' and OS as
   state in the file `jojOS.xml';
-\item the line 8 calls the simulator interface. 
+\item the line 8 calls the simulator interface.
 \end{itemize}
 
 
@@ -1730,7 +1730,7 @@ of Java programs that:
 \end{itemize}
 
 % The API documentation (\ldots/doc/api/index.html) contains the details
-% of each method. 
+% of each method.
 
 % However you likely will use only those described in
 % the \ldots/doc/oeEvents/index.html.
@@ -1785,7 +1785,7 @@ The list of reserved properties in the FS are:
 
 \chapter{XML files}
 
-\section{Organisational Specification for the JojTeam} 
+\section{Organisational Specification for the JojTeam}
 \label{ap:joj}
 {\scriptsize
 \verbatiminput{\srctutorial/jojOS.xml}

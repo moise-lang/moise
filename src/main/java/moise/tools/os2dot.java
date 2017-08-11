@@ -48,8 +48,8 @@ import ora4mas.nopl.oe.Player;
 
 
 
-/** 
- * Convert OS into DOT code (to plot a graph) 
+/**
+ * Convert OS into DOT code (to plot a graph)
  *
  * @author Jomi
  */
@@ -60,9 +60,9 @@ public class os2dot {
     public boolean showMissions   = true;
     public boolean showConditions = false;
     File    osFile;
-    
+
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {            
+        if (args.length != 1) {
             new os2dot(XmlFilter.askOSFile());
             //System.err.println("The OS file must be informed");
             //System.exit(1);
@@ -71,24 +71,24 @@ public class os2dot {
         }
     }
 
-    public os2dot() {        
+    public os2dot() {
     }
-    
+
     public os2dot(String file) throws Exception {
         osFile = new File(file);
         new GUI(this);
     }
-    
+
     public String transform(OS os)  throws Exception {
         StringWriter so = new StringWriter();
-        
+
         so.append("digraph "+os.getId()+" {\n");
         if (!showSS && !showFS && showNS)
             so.append("    rankdir=LR;\n");
         else
             so.append("    rankdir=BT;\n");
         so.append("    compound=true;\n\n");
-        
+
         if (showSS) so.append(transform(os.getSS(), null));
         if (showFS) so.append(transform(os.getFS()));
         if (showNS) so.append(transform(os.getNS()));
@@ -96,36 +96,36 @@ public class os2dot {
         so.append("}\n");
 
         //System.out.println(so);
-        
+
         return so.toString();
     }
-    
+
     public String transform(SS ss, ora4mas.nopl.oe.Group grInstance) {
         StringWriter so = new StringWriter();
-    
+
         so.append("\n    subgraph cluster_SS { \n"); // label=\"Structure\" labelloc=t labeljust=r fontname=\"Italic\" \n");
         // Roles
         so.append(transformRolesDef(ss));
-        
+
         // groups
         so.append( transform(ss.getRootGrSpec(), grInstance) );
         so.append("    }\n");
-        
-        return so.toString();   
+
+        return so.toString();
     }
 
     public String transformRolesDef(SS ss) {
         StringWriter so = new StringWriter();
-        so.append("        // role hierarchy\n");        
+        so.append("        // role hierarchy\n");
         for (Role r: ss.getRolesDef()) {
             so.append(transform(r));
             for (Role e: r.getSuperRoles()) {
-                so.append("        "+r.getId()+" -> "+e.getId()+" [arrowhead=onormal,arrowsize=1.5];\n");                
+                so.append("        "+r.getId()+" -> "+e.getId()+" [arrowhead=onormal,arrowsize=1.5];\n");
             }
         }
         return so.toString();
     }
-        
+
     String transform(Role r) {
         String font = ",fontname=\"Helvetic\"";
         if (r.isAbstract()) {
@@ -133,10 +133,10 @@ public class os2dot {
         }
         return "        "+r.getId()+" [shape=box,style=rounded"+font+"];\n";
     }
-    
+
     public String transform(Group g, ora4mas.nopl.oe.Group gInstance) {
         StringWriter so = new StringWriter();
-        
+
         so.append("\n        // group "+g.getId()+"\n");
         String id    = g.getId();
         String label = g.getId();
@@ -168,13 +168,13 @@ public class os2dot {
         if (showLinks) {
             for (Link l: g.getLinks()) {
                 String type = "normal";
-                if (l.getTypeStr().equals("communication")) 
+                if (l.getTypeStr().equals("communication"))
                     type = "dot";
                 else if (l.getTypeStr().equals("acquaintance"))
                     type = "vee";
-                
+
                 String dir = "";
-                if (l.isBiDir()) 
+                if (l.isBiDir())
                     dir += ",arrowtail="+type;
                 String shape = "";
                 if (l.getScope() == RoleRelScope.IntraGroup)
@@ -183,7 +183,7 @@ public class os2dot {
             }
             for (Compatibility c: g.getCompatibilities()) {
                 String dir = "arrowhead=diamond";
-                if (c.isBiDir()) 
+                if (c.isBiDir())
                     dir += ",arrowtail=diamond";
                 String shape = "";
                 if (c.getScope() == RoleRelScope.IntraGroup)
@@ -191,21 +191,21 @@ public class os2dot {
                 so.append("        "+c.getSource()+" -> "+c.getTarget()+"  ["+dir+shape+"];\n");
             }
         }
-        
+
         if (gInstance != null) {
             for (Player p: gInstance.getPlayers()) {
                 so.append("        "+p.getAg()+ ";\n"); // [shape=plaintext]
-                so.append("        "+p.getAg()+" -> "+p.getTarget()+" [arrowsize=0.5];\n");                
-                //so.append("        "+p.getAg()+" -> "+p.getTarget()+" [label=\""+id+"\",arrowsize=0.5];\n");                
+                so.append("        "+p.getAg()+" -> "+p.getTarget()+" [arrowsize=0.5];\n");
+                //so.append("        "+p.getAg()+" -> "+p.getTarget()+" [label=\""+id+"\",arrowsize=0.5];\n");
             }
-            
+
             for (String s: gInstance.getSchemesResponsibleFor()) {
-                so.append("        "+s+ "[shape=hexagon, style=filled, fontname=\"Courier\", URL=\"/scheme/"+s+"\"];\n"); 
-                so.append("        "+id+" -> "+s+" [label=\"responsible\nfor\",labelfontsize=8,fontname=\"Italic\",arrowhead=open];\n");                
-                
+                so.append("        "+s+ "[shape=hexagon, style=filled, fontname=\"Courier\", URL=\"/scheme/"+s+"\"];\n");
+                so.append("        "+id+" -> "+s+" [label=\"responsible\nfor\",labelfontsize=8,fontname=\"Italic\",arrowhead=open];\n");
+
             }
         }
-        
+
         return so.toString();
     }
 
@@ -216,26 +216,26 @@ public class os2dot {
             //so.append("\n    subgraph cluster_"+s.getId()+" {label=\""+s.getId()+"\" labelloc=t labeljust=r fontname=\"Italic\" \n");
             so.append("        // goals\n");
             so.append(transform(s.getRoot(), 0, null));
-            
+
             if (showMissions) {
                 so.append("\n        // missions\n");
                 for (Mission m: s.getMissions()) {
                     so.append(transform(m,s));
                     for (Goal g: m.getGoals()) {
                         so.append("        "+m.getId()+" -> "+g.getId()+" [arrowsize=0.5];\n");
-                    }                    
+                    }
                 }
             }
             //so.append("    }\n");
         }
-    
+
         return so.toString();
     }
 
     String transform(Mission m) {
         return "        "+m.getId()+" [fontname=\"Helvetic\", shape=diamond, style=rounded];\n";
     }
-    
+
     public static String transform(Mission m, Scheme spec) {
         String card = "";
         if (! card.equals(Cardinality.defaultValue)) {
@@ -244,7 +244,7 @@ public class os2dot {
         return "        "+m.getId()+" [label=\""+m.getId()+card+"\", fontname=\"Helvetic\", shape=plaintext,fontsize=10];\n";
     }
 
-    
+
     public static String transform(Goal g, int pos, SchemeBoard sch) {
         StringBuilder so = new StringBuilder();
         String color = "black";
@@ -287,12 +287,12 @@ public class os2dot {
                 if (ppos > 0) {
                     ppos++;
                     if (previous != null)
-                        so.append("        "+previous.getId()+" -> "+sg.getId()+" [style=dotted, constraint=false, arrowhead=empty,arrowsize=0.5,color=lightgrey];\n");                    
+                        so.append("        "+previous.getId()+" -> "+sg.getId()+" [style=dotted, constraint=false, arrowhead=empty,arrowsize=0.5,color=lightgrey];\n");
                     previous = sg;
                 }
             }
         }
-        
+
         return so.toString();
     }
 
@@ -306,13 +306,13 @@ public class os2dot {
                 type=",arrowhead=tee";
             else if (g.getPlan().getOp() == PlanOpType.choice)
                 type=",arrowhead=vee";
-                
+
             for (Goal sg: g.getPlan().getSubGoals()) {
                 so.append("        "+sg.getId()+" -> "+g.getId()+" [samehead=true"+type+"];\n");
                 so.append(transform(sg));
             }
         }
-        
+
         return so.toString();
     }
     */
@@ -325,7 +325,7 @@ public class os2dot {
             String e = n.getRole().toString()+n.getMission();
             if (!done.contains(e) || showConditions) {
                 done.add(e);
-                
+
                 String s = "bold";
                 if (n.getType() == OpTypes.permission)
                     s = "filled";
@@ -335,24 +335,24 @@ public class os2dot {
                     if (!n.getCondition().equals("true"))
                         cond = n.getCondition();
                     if (n.getTimeConstraint() != null)
-                        cond += "@"+n.getTimeConstraint(); 
+                        cond += "@"+n.getTimeConstraint();
                 }
-                
+
                 so.append( transform(n.getRole()));
                 so.append( transform(n.getMission()));
-    
+
                 so.append("        "+n.getRole()+" -> "+n.getMission().getId()+" [arrowhead=inv,style="+s+",label=\""+cond+"\"];\n"); // decorate=true,
             }
         }
-    
+
         return so.toString();
     }
 
 }
 
 class GUI extends JFrame {
-    
-    os2dot transformer; 
+
+    os2dot transformer;
     JTextField jtDot    = new JTextField("/opt/local/bin/dot");
     @SuppressWarnings({ "rawtypes", "unchecked" })
     JComboBox cbFormat = new JComboBox(new String [] {"pdf", "png", "fig", "svg"} );
@@ -362,11 +362,11 @@ class GUI extends JFrame {
     JCheckBox  ss  = new JCheckBox("SS");
     JCheckBox  fs  = new JCheckBox("FS");
     JCheckBox  ns  = new JCheckBox("NS");
-    
+
     JPanel mainPane;
     JTextArea  console = new JTextArea(3, 50);
     ImageIcon icon;
-    
+
     GUI(os2dot s) {
         super("Translation of MOISE to Graphic (via dot) for "+s.osFile);
         transformer = s;
@@ -386,7 +386,7 @@ class GUI extends JFrame {
             Image i = new ImageIcon(fimg.getAbsolutePath()).getImage();
             int w = this.getWidth()-20;
             if (i.getWidth(null) > w) {
-                double red = (double)w / i.getWidth(null); 
+                double red = (double)w / i.getWidth(null);
                 i = i.getScaledInstance(w, (int)(i.getHeight(null)*red), Image.SCALE_SMOOTH);
             }
             icon.setImage(i);
@@ -395,7 +395,7 @@ class GUI extends JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void generateImg(OS os, File fin, File fimg, String format) {
         try {
             transformer.showLinks = links.isSelected();
@@ -407,13 +407,13 @@ class GUI extends JFrame {
 
             String dotProgram = transformer.transform(os);
             //System.out.println(dotProgram);
-            
+
             FileWriter out = new FileWriter(fin);
             out.append(dotProgram);
             out.close();
             Process p = Runtime.getRuntime().exec(jtDot.getText().trim()+" -T"+format+" "+fin.getAbsolutePath()+" -o "+fimg.getAbsolutePath());
             p.waitFor();
-            
+
         } catch (Exception e1) {
             console.setText(e1.toString());
             e1.printStackTrace();
@@ -421,7 +421,7 @@ class GUI extends JFrame {
     }
 
     private void initComponents() {
-    
+
         JPanel top = new JPanel();
         top.add(new JLabel("Path to dot program: "));  top.add(jtDot);
         top.add(new JLabel("Output format: "));  top.add(cbFormat);
@@ -431,7 +431,7 @@ class GUI extends JFrame {
         top.add(missions); missions.setSelected(true);
         top.add(ns); ns.setSelected(true);
         top.add(cond); cond.setSelected(false);
-        
+
         links.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { updateGraphic();  }  });
         missions.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { updateGraphic();  }  });
         cond.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { updateGraphic();  }  });
@@ -440,7 +440,7 @@ class GUI extends JFrame {
         ns.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { updateGraphic();  }  });
 
         JButton btStore = new JButton("Store");
-        btStore.addActionListener(new ActionListener() {                
+        btStore.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 OS os = OS.loadOSFromURI(transformer.osFile.getAbsolutePath());
                 String path = transformer.osFile.getAbsoluteFile().getParent();
@@ -453,15 +453,15 @@ class GUI extends JFrame {
             }
         });
         top.add(btStore);
-        
-        icon = new ImageIcon(); 
+
+        icon = new ImageIcon();
         JPanel imgP = new JPanel(new FlowLayout(FlowLayout.CENTER));
         imgP.add(new JLabel(icon));
 
-        
+
         JPanel bottom = new JPanel(new BorderLayout());
         bottom.add(BorderLayout.CENTER, new JScrollPane(console));
-        
+
         mainPane = new JPanel(new BorderLayout());
         mainPane.add(BorderLayout.NORTH, top);
         mainPane.add(BorderLayout.CENTER, imgP);

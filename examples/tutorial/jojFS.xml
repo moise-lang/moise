@@ -2,16 +2,16 @@
 
 <?xml-stylesheet href="os.xsl" type="text/xsl" ?>
 
-<organisational-specification 
+<organisational-specification
 
     id="joj"
     os-version="0.7"
-  
+
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='http://moise.sourceforge.net/os
                        http://moise.sourceforge.net/xml/os.xsd'>
-    
+
     <structural-specification>
         <role-definitions>
             <role id="player" />
@@ -28,17 +28,17 @@
                 <role id="coach" min="1" max="2"/>
             </roles>
             <links>
-                <link from="leader" to="player" type="authority" 
+                <link from="leader" to="player" type="authority"
                       scope="inter-group" extends-subgroups="true" bi-dir="false"/>
-                <link from="coach"  to="player" type="authority" 
+                <link from="coach"  to="player" type="authority"
                       scope="inter-group" extends-subgroups="true" bi-dir="false"/>
-                <link from="player" to="player" type="communication" 
+                <link from="player" to="player" type="communication"
                       scope="inter-group" extends-subgroups="true" bi-dir="false"/>
-                <link from="player" to="coach" type="acquaintance" 
+                <link from="player" to="coach" type="acquaintance"
                       scope="inter-group" extends-subgroups="true" bi-dir="false"/>
             </links>
             <subgroups>
-                
+
                 <group-specification id="attack" min="1" max="1">
                     <roles>
                         <role id="middle"   min="5" max="5" />
@@ -46,12 +46,12 @@
                         <role id="attacker" min="2" max="2" />
                     </roles>
                     <formation-constraints>
-                        <compatibility from="middle" to="leader" type="compatibility" 
-                                       scope="intra-group" extends-subgroups="false" 
+                        <compatibility from="middle" to="leader" type="compatibility"
+                                       scope="intra-group" extends-subgroups="false"
                                        bi-dir="true"/>
                     </formation-constraints>
                 </group-specification>
-                
+
                 <group-specification id="defense" min="1" max="1">
                     <roles>
                         <role id="leader"     min="0" max="1" />
@@ -59,26 +59,26 @@
                         <role id="back"       min="3" max="3" />
                     </roles>
                     <links>
-                        <link from="goalkeeper" to="back" type="authority" 
-                              scope="intra-group" extends-subgroups="false" 
+                        <link from="goalkeeper" to="back" type="authority"
+                              scope="intra-group" extends-subgroups="false"
                               bi-dir="false"/>
                     </links>
                     <formation-constraints>
-                        <compatibility from="back" to="leader" type="compatibility"  
-                                       scope="intra-group" extends-subgroups="false" 
+                        <compatibility from="back" to="leader" type="compatibility"
+                                       scope="intra-group" extends-subgroups="false"
                                        bi-dir="true"/>
                     </formation-constraints>
                 </group-specification>
             </subgroups>
-            
+
             <formation-constraints>
                 <!-- subgroups scope cardinality -->
                 <cardinality min="1" max="1" object="role" id="leader"/>
             </formation-constraints>
         </group-specification>
     </structural-specification>
-    
-    
+
+
     <functional-specification>
         <scheme id="sideAttack" >
             <goal id="scoreGoal" min="1">
@@ -90,7 +90,7 @@
                     <goal id="g8" min="1" ds="be placed in the middle field" />
                     <goal id="g9" min="1" ds="be placed in the opponent's goal area" />
                   </plan>
-                </goal>                
+                </goal>
                 <goal id="g3" min="1" ds="kick the ball to the m2Ag" >
                   <argument id="M2Ag" />
                 </goal>
@@ -99,7 +99,7 @@
                 <goal id="g6" min="1" ds="shot at the opponent's goal" />
               </plan>
             </goal>
-            
+
             <mission id="m1" min="1" max="1">
                 <goal id="g1" />
                 <goal id="g3" />

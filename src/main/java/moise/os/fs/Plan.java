@@ -16,17 +16,17 @@ import org.w3c.dom.Element;
 
 /**
  Represents a Plan (one operator, and success rate, and a set of goals).
- 
+
  @navassoc - head-goal - Goal
  @composed - goals - Goal
  @navassoc - operation - PlanOpType
  @navassoc - scheme - Scheme
- 
-  
+
+
  @author Jomi Fred Hubner
 */
 public class Plan extends MoiseElement implements ToXML, ToProlog {
-    
+
     private static final long serialVersionUID = 1L;
 
     public enum PlanOpType {
@@ -38,13 +38,13 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
                    public String opName()   { return "parallel";}};
         abstract String opName();
     }
-    
+
     protected List<Goal> subGoals = new ArrayList<Goal>();
     protected PlanOpType op = null;
     protected double     successRate = 1;
     protected Goal       target = null;
     protected Scheme     sch = null;
-    
+
     public Plan(Scheme sch)  {
         this.sch = sch;
     }
@@ -56,23 +56,23 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
         setTarget(targetGoalId);
         setId(target.getFullId());
     }
-    
-    
+
+
     //
     // Op methods
     //
     public void setOp(PlanOpType op) throws MoiseConsistencyException {
         this.op = op;
     }
-    
+
     public PlanOpType getOp() {
         return op;
     }
-    
+
     //
     // Head methods
     //
-    
+
     // for constructor use only (the headGoalId can only be set in the plan
     // construction
     private void setTarget(String targetGoalId) throws MoiseConsistencyException {
@@ -96,11 +96,11 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
         this.target = goal;
         goal.setPlan(this);
     }
-    
+
     public Goal getTargetGoal() {
         return target;
     }
-    
+
     //
     // Subgoals methods
     //
@@ -111,11 +111,11 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
         }
         subGoals.add(g);
     }
-    
+
     public List<Goal> getSubGoals() {
         return subGoals;
     }
-    
+
     /**
      * Looks into the subgoals of the plan to find out a Goal like goalId
      */
@@ -127,9 +127,9 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
         }
         return null;
     }
-    
+
     /**
-     * Looks into the subgoals of the plan to find out the previous Goal of goalId. 
+     * Looks into the subgoals of the plan to find out the previous Goal of goalId.
      * E.g: for the plan "p = g1, g2, g3", the g2's  previous goal is g1.
      *
      * Returns null either if the goal does no exist or has no previous goal.
@@ -155,7 +155,7 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
         return successRate;
     }
 
-    
+
     public String toString() {
         StringBuffer s = new StringBuffer();
         Iterator<Goal> ip = subGoals.iterator();
@@ -165,13 +165,13 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
                 s.append(op.toString());
             }
         }
-        
+
         return target + "= (" + successRate +") " + s;
     }
-    
+
     /** returns a string representing the plan in Prolog syntax, format:
      *     plan(operator,list of goals)
-     */ 
+     */
     public String getAsProlog() {
         StringBuilder s = new StringBuilder("plan("+op.opName()+",[");
         String v="";
@@ -182,11 +182,11 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
         s.append("])");
         return s.toString();
     }
-    
+
     public static String getXMLTag() {
         return "plan";
     }
-    
+
     public Element getAsDOM(Document document) {
         Element ele = (Element) document.createElement(getXMLTag());
         ele.setAttribute("operator", op.opName());
@@ -196,7 +196,7 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
         if (getProperties().size() > 0) {
             ele.appendChild(getPropertiesAsDOM(document));
         }
-        
+
         // goals
         for (Goal sg: getSubGoals()) {
             ele.appendChild(sg.getAsDOM(document));
@@ -208,7 +208,7 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
     public void setFromDOM(Element ele, Goal targetGoal) throws MoiseException {
         setPropertiesFromDOM(ele);
         setTarget(targetGoal);
-    
+
         String operator = ele.getAttribute("operator");
         for (PlanOpType opt: PlanOpType.values()) {
             if (opt.opName().equals(operator)) {
@@ -216,12 +216,12 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
                 break;
             }
         }
-        
+
         String sr = ele.getAttribute("success-rate");
         if (sr != null && sr.length()>0) {
             setSuccessRate(Double.parseDouble(sr));
         }
-        
+
         // goals
         for (Element eg: DOMUtils.getDOMDirectChilds(ele, Goal.getXMLTag())) {
             Goal gs = new Goal(eg.getAttribute("id"));
@@ -229,6 +229,6 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
             sch.addGoal(gs);
             gs.setFromDOM(eg, sch);
             subGoals.add(gs);
-        }        
+        }
     }
 }

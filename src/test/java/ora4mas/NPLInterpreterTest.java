@@ -43,7 +43,7 @@ public class NPLInterpreterTest {
         out.write(np);
         out.close();
     }
-    
+
     @Test
     public void testWPGroupHJouse() throws ParseException, Exception {
         String fName = "examples/test/house-os.xml";
@@ -53,14 +53,14 @@ public class NPLInterpreterTest {
         }
         OS os = OS.loadOSFromURI(fName);
         String np = os2nopl.transform(os);
-        
+
         Group g = new Group("g1");
         NormativeProgram p = new NormativeProgram();
         new nplp(new StringReader(np)).program(p,g);
 
         NPLInterpreter i = new NPLInterpreter();
         i.loadNP(p.getRoot().getScope(ASSyntax.parseLiteral("group(house_group)")));
-        
+
         assertTrue(i.holds(ASSyntax.parseLiteral("subrole(roofer,building_company)")));
         assertTrue(i.holds(ASSyntax.parseLiteral("tsubrole(roofer,building_company)")));
         assertTrue(i.holds(ASSyntax.parseLiteral("tsubrole(roofer,soc)")));
@@ -72,9 +72,9 @@ public class NPLInterpreterTest {
         assertTrue(i.holds(ASSyntax.parseLiteral("fcompatible(roofer,window_fitter,gr_inst)")));
         assertFalse(i.holds(ASSyntax.parseLiteral("fcompatible(building_company,house_owner,gr_inst)")));
         assertFalse(i.holds(ASSyntax.parseLiteral("fcompatible(roofer,house_owner,gr_inst)")));
-        
+
         // change OE
-        
+
         g.addPlayer("a","plumber");
         g.addPlayer("b","house_owner");
         g.addPlayer("c","site_prep_contractor");
@@ -84,13 +84,13 @@ public class NPLInterpreterTest {
         g.addPlayer("g","door_fitter");
         g.addPlayer("h","electrician");
         g.addPlayer("i","painter");
-                        
+
         assertTrue(i.holds(new NPLLiteral(ASSyntax.parseLiteral("play(_,electrician,g1)"), g)));
         assertTrue(i.holds(ASSyntax.parseLiteral("rplayers(electrician,g1,1)")));
         assertTrue(i.holds(ASSyntax.parseLiteral("well_formed(g1)")));
 
     }
-    
+
     @Test
     public void testWPGroup1() throws ParseException, Exception {
         NormativeProgram p = new NormativeProgram();
@@ -101,7 +101,7 @@ public class NPLInterpreterTest {
 
         NPLInterpreter i = new NPLInterpreter();
         i.loadNP(p.getRoot().getScope(ASSyntax.parseLiteral("group(wpgroup)")));
-        
+
         assertTrue(i.holds(ASSyntax.parseLiteral("role_cardinality(writer,1,5)")));
         assertFalse(i.holds(ASSyntax.parseLiteral("role_cardinality(writer,1)")));
 
@@ -113,24 +113,24 @@ public class NPLInterpreterTest {
         assertTrue(i.holds(ASSyntax.parseLiteral("compatible(writer,editor,gr_inst)")));
         assertTrue(i.holds(ASSyntax.parseLiteral("fcompatible(editor,writer,gr_inst)")));
         assertTrue(i.holds(ASSyntax.parseLiteral("fcompatible(writer,editor,gr_inst)")));
-        
+
         // add players
         g.addPlayer("jaime", "editor");
         g.addPlayer("olivier", "writer");
         assertTrue(i.holds(ASSyntax.parseLiteral("well_formed(g1)")));
-        
+
         // change OE
         g.addPlayer("jomi", "editor");
         assertFalse(i.holds(ASSyntax.parseLiteral("well_formed(g1)")));
         g.removePlayer("jomi", "editor");
         g.addPlayer("jomi", "writer");
         assertTrue(i.holds(ASSyntax.parseLiteral("well_formed(g1)")));
-                
+
         assertTrue(i.holds(ASSyntax.parseLiteral("fplay(jaime,editor,g1)")));
         assertTrue(i.holds(ASSyntax.parseLiteral("fplay(jaime,author,g1)")));
         assertTrue(i.holds(ASSyntax.parseLiteral("fplay(jaime,soc,g1)")));
         assertFalse(i.holds(ASSyntax.parseLiteral("fplay(jaime,writer,g1)")));
-        
+
         assertFalse(i.holds(ASSyntax.parseFormula("play(jaime,R1,Gr) & play(jaime,R2,Gr) & R1 < R2 & not compatible(R1,R2)")));
     }
 
@@ -140,18 +140,18 @@ public class NPLInterpreterTest {
         String np = os2nopl.transform(os);
 
         Group g = new Group("g1");
-        
+
         NormativeProgram p = new NormativeProgram();
         new nplp(new StringReader(np)).program(p, g);
 
         NPLInterpreter i = new NPLInterpreter();
         i.loadNP(p.getRoot().getScope(ASSyntax.parseLiteral("group(auctionGroup)")));
-        
+
         // add players
         g.addPlayer("jaime", "auctioneer");
         g.addPlayer("olivier", "participant");
         assertTrue(i.holds(ASSyntax.parseLiteral("well_formed(g1)")));
-        
+
         // test compatibility
         assertFalse(i.holds(ASSyntax.parseFormula("tcompatible(auctioneer,participant,gr_inst)")));
         assertTrue(i.holds(ASSyntax.parseFormula("fcompatible(auctioneer,soc,gr_inst)")));
@@ -159,12 +159,12 @@ public class NPLInterpreterTest {
 
         assertTrue(i.holds(ASSyntax.parseFormula("fcompatible(participant,soc,gr_inst)")));
         assertFalse(i.holds(ASSyntax.parseFormula("fcompatible(soc,participant,gr_inst)")));
-        
+
         assertFalse(i.holds(ASSyntax.parseFormula("fcompatible(auctioneer,participant,gr_inst)")));
         assertFalse(i.holds(ASSyntax.parseFormula("fcompatible(participant,auctioneer,gr_inst)")));
-        
+
     }
-    
+
     @Test
     public void testWPGroupVerify() throws ParseException, Exception {
         NormativeProgram p = new NormativeProgram();
@@ -176,41 +176,41 @@ public class NPLInterpreterTest {
         NPLInterpreter i = new NPLInterpreter();
         Scope wp = p.getRoot().getScope(ASSyntax.parseLiteral("group(wpgroup)"));
         i.loadNP(wp);
-        
+
         g.addPlayer("jaime", "editor");
         g.addPlayer("olivier", "writer");
         g.addPlayer("jomi", "writer");
         assertTrue(i.holds(ASSyntax.parseLiteral("well_formed(wp1)")));
         assertEquals(0, i.getActiveObligations().size());
-        
+
         // simulates a role that cannot be played
         g.addPlayer("bob", "role1");
         assertTrue(i.holds(ASSyntax.parseLiteral("well_formed(wp1)")));
         try {
             i.verifyNorms();
             assertTrue(false); // should throw exception
-        } catch (NormativeFailureException e) { 
+        } catch (NormativeFailureException e) {
             assertEquals("role_in_group(bob,role1,wp1)", e.getFail().getTerm(0).toString());
         }
         g.removePlayer("bob", "role1");
-        
-        
+
+
         // simulates cardinality failure
         g.addPlayer("bob","editor");
         assertFalse(i.holds(ASSyntax.parseLiteral("well_formed(wp1)")));
         try {
             i.verifyNorms();
             assertTrue(false); // should throw exception
-        } catch (NormativeFailureException e) { 
+        } catch (NormativeFailureException e) {
             assertEquals("role_cardinality(editor,wp1,2,1)", e.getFail().getTerm(0).toString());
         }
         g.removePlayer("bob","editor");
-        
+
         // simulates compatibility obligation
         g.addPlayer("jaime","writer");
         i.verifyNorms(); // no problem here, roles are compatible
         g.addPlayer("jaime","anotherrole");
-        
+
         assertTrue(wp.removeNorm("role_in_group") != null); // remove this norm to allows jaime to adopt the new role
         assertTrue(wp.removeNorm("role_compatibility") != null);
         i.init();
@@ -227,11 +227,11 @@ public class NPLInterpreterTest {
         try {
             i.verifyNorms();
             assertTrue(false); // should throw exception
-        } catch (NormativeFailureException e) { 
+        } catch (NormativeFailureException e) {
             assertEquals("well_formed_responsible(wp1)", e.getFail().getTerm(0).toString());
         }
     }
-    
+
     @Test
     public void testWPSchemeVerify() throws ParseException, Exception {
         //for (Literal l: oi.getNPLI().getAg().getBB())
@@ -249,7 +249,7 @@ public class NPLInterpreterTest {
         oi.setGroup(g);
 
         assertFalse(oi.getNPLI().holds(ASSyntax.parseLiteral("is_finished(\"sch2\")")));
-        
+
 
         // mission obligation
         oi.getNPLI().setUpdateInterval(100);
@@ -275,16 +275,16 @@ public class NPLInterpreterTest {
         assertEquals(4, cobl);
         assertEquals(1, cperm);
         Thread.sleep(1100);
-        
+
         assertEquals(4,oi.getNbNPLI().getActiveObligations().size());
         assertEquals(1,oi.getNbNPLI().getActivePermissions().size());
         assertEquals(0,oi.getNbNPLI().getUnFulfilledObligations().size());
         assertEquals(0,oi.getNbNPLI().getFulfilledObligations().size());
         assertEquals(0,oi.getNbNPLI().getInactiveObligations().size());
-        
+
         // mission permission
         //assertTrue(oi.getNPLI().holds(ASSyntax.parseLiteral("permitted(jaime,nc3,committed(jaime,mman,S),_)")));
-        
+
         // test some rules
         assertFalse(oi.getNPLI().holds(ASSyntax.parseLiteral("well_formed(\"sch2\")")));
 
@@ -295,9 +295,9 @@ public class NPLInterpreterTest {
         Literal r = oi.execute(ASSyntax.parseLiteral("commitMission(jomi,ma)"));
         assertNotNull(r);
         assertEquals("fail(mission_permission(jomi,ma,sch2))",r.toString());
-        assertNull(oi.execute(ASSyntax.parseLiteral("commitMission(jomi,mColaborator)")));        
+        assertNull(oi.execute(ASSyntax.parseLiteral("commitMission(jomi,mColaborator)")));
         assertNull(oi.execute(ASSyntax.parseLiteral("commitMission(jomi,mBib)")));
-        
+
         assertTrue(oi.getNPLI().holds(ASSyntax.parseLiteral("well_formed(sch2)")));
         assertTrue(oi.getNPLI().holds(ASSyntax.parseLiteral("well_formed(sch2)")));
 
@@ -325,10 +325,10 @@ public class NPLInterpreterTest {
             }
         }
         assertEquals(1,obls.size());
-        
+
         // jomi fulfilled 2 obl, olivier 2
         //assertEquals(4, oi.getNPLI().getInactiveObligations().size());
-        
+
         // test cardinality (in this case cause an obligation)
         /*
          *         assertTrue(oi.getNPLI().holds(ASSyntax.parseLiteral("mplayers(mBib,_,1)")));
@@ -339,31 +339,31 @@ public class NPLInterpreterTest {
         System.out.println(r);
         //assertEquals("fail(mission_cardinality(mBib,sch2,2,1))", r.toString());
         System.out.println( oi.getNPLI().getActiveObligations());
-        */ 
-        
+        */
+
         // olivier commits to mission col
         assertNull(oi.execute(ASSyntax.parseLiteral("commitMission(olivier,mColaborator)")));
-        
+
         // olivier leaves mission col
         r = oi.execute(ASSyntax.parseLiteral("leaveMission(olivier,mColaborator)"));
         assertEquals("fail(mission_left(olivier,mColaborator,sch2))", r.toString());
-        
+
         // there must be one obligation: jaime for its goal
-        Thread.sleep(300);  
+        Thread.sleep(300);
         obls = oi.getNPLI().getActiveObligations();
         assertEquals(1,obls.size());
-        
+
         assertNull(oi.execute(ASSyntax.parseLiteral("commitMission(olivier,mColaborator)")));
         obls = oi.getNPLI().getActiveObligations();
         assertEquals(1,obls.size());
-        
+
         // jaime do setgoalachieved
         r = oi.execute(ASSyntax.parseLiteral("setGoalAchieved(bob,wtitle)"));
         assertNotNull(r);
         assertEquals("fail(ach_not_committed_goal(sch2,wtitle,bob))", r.toString());
         assertNull(oi.execute(ASSyntax.parseLiteral("setGoalAchieved(jaime,wtitle)")));
         // only one obligation: wabs
-        Thread.sleep(300);  
+        Thread.sleep(300);
         obls = oi.getNPLI().getActiveObligations();
         assertEquals(1,obls.size());
         assertEquals("done(sch2,wabs,jaime)", obls.get(0).getTerm(2).toString());
@@ -372,11 +372,11 @@ public class NPLInterpreterTest {
         System.out.println("abs");
         assertNull(oi.execute(ASSyntax.parseLiteral("setGoalAchieved(jaime,wabs)")));
         assertNull(oi.execute(ASSyntax.parseLiteral("setGoalAchieved(jaime,wsectitles)")));
-        
+
         assertFalse(oi.getNPLI().holds(ASSyntax.parseLiteral("enabled(sch2,fdv)")));
         assertTrue(oi.getNPLI().holds(ASSyntax.parseLiteral("enabled(sch2,wsecs)")));
         assertTrue(oi.getNPLI().holds(new NPLLiteral(ASSyntax.parseLiteral("satisfied(sch2,fdv)"), oi.getScheme())));
-        Thread.sleep(300);  
+        Thread.sleep(300);
         obls = oi.getNPLI().getActiveObligations();
         assertEquals(2,obls.size()); // obls for jomi and olivier
         Collections.sort(obls);
@@ -430,20 +430,20 @@ public class NPLInterpreterTest {
         //System.out.println("Unful: "+unful);
         assertTrue(unful.size() >= 1);
         //assertEquals("achieved(\"sch2\",wp,jaime)", unful.get(0).getTerm(2).toString());
-        
+
         assertNull(oi.execute(ASSyntax.parseLiteral("setGoalAchieved(jaime,wp)")));
-        
-        Thread.sleep(300);  
+
+        Thread.sleep(300);
         obls = oi.getNPLI().getActiveObligations();
         assertEquals(0,obls.size()); // no more obligations
         assertTrue(oi.getNPLI().getUnFulfilledObligations().size() >= 1); // the jaime wp goal
         //assertEquals(11, oi.getNPLI().getFulfilledObligations().size());
         //assertEquals(1, oi.getNPLI().getInactiveObligations().size());
-        
+
         assertTrue(oi.getNPLI().holds(ASSyntax.parseLiteral("is_finished(sch2)")));
         assertTrue(oi.getNPLI().holds(new NPLLiteral(ASSyntax.parseLiteral("satisfied(sch2,wp)"), oi)));
         assertTrue(oi.getNPLI().holds(ASSyntax.parseLiteral("mission_accomplished(sch2,mManager)")));
-        
+
         // leave missions
         r = oi.execute(ASSyntax.parseLiteral("leaveMission(olivier,mColaborator)"));
         assertNull(r);
@@ -451,7 +451,7 @@ public class NPLInterpreterTest {
         obls = oi.getNPLI().getActiveObligations();
         assertEquals(0,obls.size()); // no more obligations
     }
-    
+
     /*
     public void testMonitorSch() throws Exception {
         OS os = OS.loadOSFromURI("examples/writePaper/wp-os.xml");
@@ -464,19 +464,19 @@ public class NPLInterpreterTest {
         engine.setScope( schscope );
         assertEquals("group(wpgroup)", engine.getScope().getFather().getId().toString() );
         assertTrue( engine.holds( ASSyntax.parseLiteral("role_cardinality(editor,1,1)")));
-        
+
         Group g = new Group("wp1");
         g.addPlayer("jaime", "editor");
         g.addPlayer("olivier", "writer");
         g.addPlayer("jomi", "writer");
         g.addResponsibleForScheme("msch");
         g.setMonitorSch("msch");
-        
+
         Scheme sch = new Scheme("msch");
         sch.addGroupResponsibleFor(g);
         engine.setDynamicFacts( oe2np.transform(sch) );
         engine.verifyNorms();
-        
+
         g.addPlayer("jomi", "editor");
         engine.setDynamicFacts( oe2np.transform(sch) );
         assertTrue( engine.holds(ASSyntax.parseLiteral("group_id(wp1) ")));
@@ -486,10 +486,10 @@ public class NPLInterpreterTest {
         assertTrue( engine.holds(ASSyntax.parseLiteral("scheme_id(msch)")));
         assertTrue( engine.holds(ASSyntax.parseLiteral("responsible(wp1,msch)")));
         assertTrue( engine.holds(ASSyntax.parseLiteral("mplayers(ms,msch,0)")));
-        
+
         assertTrue( engine.holds( engine.getNorm("n9").getCondition() ));
         assertEquals(2, engine.verifyNorms()[0].size() );
-        
+
         // test obligations in scheme monitor
         gr = p.getRoot().findScope("scheme(writePaperSch)");
         schscope = gr.findScope("scheme(monitoringSch)");
@@ -500,7 +500,7 @@ public class NPLInterpreterTest {
         s1.addGroupResponsibleFor(g);
         Scheme monSch = new Scheme("mm");
         monSch.setMonitoredSch(s1);
-        
+
         engine.setDynamicFacts( oe2np.transform(monSch));
         engine.verifyNorms();
 
@@ -510,9 +510,9 @@ public class NPLInterpreterTest {
         engine.verifyNorms();
         //System.out.println(engine.getFulfilledObligations());
         //System.out.println(engine.getInactiveObligations());
-        
+
     }*/
-    
+
     @Test
     public void testTimeTerm() throws Exception {
         TimeTerm t1 = new TimeTerm(1,"day");
@@ -527,24 +527,24 @@ public class NPLInterpreterTest {
         t1 = (TimeTerm)t1.capply(null);
         Thread.sleep(200);
         assertFalse(t1.equals(new TimeTerm(0,"now")));
-        
+
         //long v2 = (long)t1.solve();
         //assertFalse(v1 == v2);
-        
+
         TimeTerm n = new TimeTerm(0,"never");
         assertEquals(n,new TimeTerm(0,"never"));
         assertFalse(n.equals(t1));
         assertFalse(n.equals(t2));
-        
+
         assertEquals("now + 1 days", TimeTerm.toRelTimeStr( (long) t2.solve() + System.currentTimeMillis()));
         assertEquals("now", TimeTerm.toRelTimeStr( (long) t1.solve()));
-        
+
         TimeTerm t3 = new TimeTerm(3,"seconds");
         assertEquals("now + 3 seconds", TimeTerm.toRelTimeStr( (long) t3.solve() + System.currentTimeMillis()));
-        
+
         t1 = new TimeTerm(0, null);
         Thread.sleep(100);
         t2 = (TimeTerm)t1.clone();
         assertEquals(t1,t2);
-    }    
+    }
 }

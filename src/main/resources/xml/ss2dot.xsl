@@ -5,23 +5,23 @@
 <xsl:stylesheet
      xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
      version="1.0"
-     
+
      xmlns:os='http://moise.sourceforge.net/os'
 >
-        
+
 <xsl:output encoding="ISO-8859-1" method="text" />
 <xsl:strip-space elements="*"/>
 
 
 <xsl:template match="organisational-specification">
     <xsl:text>digraph </xsl:text>
-    <xsl:value-of select="@id" /> 
+    <xsl:value-of select="@id" />
     <xsl:text> {
-    </xsl:text> 
-    <xsl:text>rankdir=BT;
-    
     </xsl:text>
-    <xsl:apply-templates select="structural-specification" /> 
+    <xsl:text>rankdir=BT;
+
+    </xsl:text>
+    <xsl:apply-templates select="structural-specification" />
     <xsl:text>
 }</xsl:text>
 </xsl:template>
@@ -46,7 +46,7 @@
     <xsl:if test="count(extends)=0">
         <xsl:value-of select="@id"/>
         <xsl:text> -> soc;
-    </xsl:text> 
+    </xsl:text>
     </xsl:if>
 </xsl:template>
 

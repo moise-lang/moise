@@ -14,7 +14,7 @@ public class ToPrologTest {
 
     OE oe;
     SchemeInstance sch;
-    
+
     @Before
     public void setUp() throws Exception {
         oe = OE.createOE("test", "examples/tutorial/jojOS.xml");
@@ -28,7 +28,7 @@ public class ToPrologTest {
         gi.setArgumentValue("M2Ag", "carlos");
         assertEquals(gi.getAsProlog(),"g3(carlos)");
     }
-    
+
     @Test
     public void testGoalSpec() {
         Goal g = sch.getSpec().getGoal("g3");
@@ -46,7 +46,7 @@ public class ToPrologTest {
 
         //g = oe.getOS().getSS().getRootGrSpec();
         // the order changes always, improve this test
-        //assertEquals("group_specification(team,[role(coach,1,2,[],[link(authority,player,inter_group)])],[attack(1,1),defense(1,1)],properties([]))", g.getAsProlog());   
+        //assertEquals("group_specification(team,[role(coach,1,2,[],[link(authority,player,inter_group)])],[attack(1,1),defense(1,1)],properties([]))", g.getAsProlog());
     }
-    
+
 }

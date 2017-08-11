@@ -9,17 +9,17 @@ import java.io.Serializable;
  * @author Jomi
  */
 public abstract class Player implements Serializable {
-    
+
     protected OEAgent player = null;
-    
+
     protected Player(OEAgent ag) {
         player = ag;
     }
-    
-    public OEAgent getPlayer()  { 
-        return player; 
+
+    public OEAgent getPlayer()  {
+        return player;
     }
-    
+
     protected void setPlayer(OEAgent ag) {
         player = ag;
     }

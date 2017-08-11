@@ -3,12 +3,12 @@ package moise.os.ss;
 
 /**
  * Represents a Compatibility between two roles.
- * 
+ *
  * @author Jomi Fred Hubner
  */
 public class Compatibility extends RoleRel {
 
-    
+
     private static final long serialVersionUID = 1L;
 
 
@@ -22,9 +22,9 @@ public class Compatibility extends RoleRel {
     public Compatibility(Group grSpec) {
         this(null, null, grSpec);
     }
-    
-    protected String getTypeStr() { 
-        return "compatibility"; 
+
+    protected String getTypeStr() {
+        return "compatibility";
     }
     public String getXMLTag() {
         return "compatibility";
@@ -44,5 +44,5 @@ public class Compatibility extends RoleRel {
         }
         return false;
     }
-    
+
 }

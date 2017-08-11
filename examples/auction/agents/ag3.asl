@@ -15,19 +15,19 @@ threshold(3).
 //!test_ally.
 
 // plan for the bid organisational goal
-+!bid[scheme(Sch)] 
++!bid[scheme(Sch)]
    :  goalArgument(Sch, auction, "N", N) & // get the auction number
-      (threshold(T) & N < T) 
+      (threshold(T) & N < T)
       |
       (.my_name(I) & winner(_,I) & not alliance(I,_))
    <- !bid_normally.
 
-+!bid[scheme(_)] 
++!bid[scheme(_)]
    : .my_name(I) & not winner(_,I) & not alliance(I,_)
    <- !alliance;
       !bid_normally.
 
-+!bid[scheme(Sch)] 
++!bid[scheme(Sch)]
    :  goalArgument(Sch, auction, "N", N) &    // get the auction number
       commitment(Ag, mAuctioneer, Sch) &  // get the agent committed to mAuctineer
       alliance(_,A)
@@ -35,19 +35,19 @@ threshold(3).
       ?bid(A,C);
       .send(Ag, tell, place_bid(N,B+C)).
 
-+!bid_normally 
++!bid_normally
    :  goalArgument(Sch, auction, "N", N) &  // get the auction number
       commitment(Ag, mAuctioneer, Sch)  // get the agent committed to mAuctineer
    <- ?default_bid_value(B);
       .send(Ag, tell, place_bid(N,B)).
 
-+!alliance 
++!alliance
    <- ?ally(A);
       print("Proposing alliance to ",A);
       .send(A,tell,alliance).
-   
+
 // remember the winners
-+goalState(Sch, winner, _, _, satisfied) 
++goalState(Sch, winner, _, _, satisfied)
    :  goalArgument(Sch, auction, "N", N) &
       goalArgument(Sch, winner, "W", W)
    <- .term2string(A,W);
@@ -58,13 +58,13 @@ threshold(3).
 //    see all agents committed to that missions
 //    remove the winners from those agents
 //    propose alliance to the one of the remaining agents
-+?ally(Ally) 
++?ally(Ally)
     : specification(scheme_specification(doAuction,_Root_Goal,Missions)) &
-      .findall(Ag, 
+      .findall(Ag,
           .member(mission(MId,_MinCard,_MaxCard,MGoals,_Prefered),Missions) & // for all missions in the OS
           .member(bid,MGoals) &                                               // if 'bid' is a goal of that mission
           commitment(Ag,MId,_) &                                              // for all agents committed to that mission
-          not winner(_,Ag) & not .my_name(Ag),                                // that is neither a winner nor myself 
+          not winner(_,Ag) & not .my_name(Ag),                                // that is neither a winner nor myself
           ListAg
       ) &
       .length(ListAg) > 0
@@ -72,10 +72,10 @@ threshold(3).
       .nth( math.random(.length(ListAg)), ListAg, Ally);                     // randomly select an agent from the options (this will be ag2 in the example)
       .print("Selected ally is ",Ally).
 +?ally(ag2). // default strategy to select an ally
- 
+
 +!test_ally : specification(scheme_specification(doAuction,_Root_Goal,Missions))
    <- ?ally(A);
-      .print("Ally is ",A).      
+      .print("Ally is ",A).
 +!test_ally // no spec yet... wait a bit and try latter
    <- .wait(200);
       !!test_ally.

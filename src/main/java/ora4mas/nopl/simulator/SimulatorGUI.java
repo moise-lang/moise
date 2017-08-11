@@ -31,7 +31,7 @@ import ora4mas.nopl.SchemeBoard;
 
 public class SimulatorGUI {
     List<AgentGUI> ags = new ArrayList<AgentGUI>();
-    
+
     // singleton pattern
     private static SimulatorGUI simulatorGUISingleton = null;
     public static SimulatorGUI getInstance() {
@@ -48,12 +48,12 @@ public class SimulatorGUI {
             CartagoService.enableDebug(ORA4MASConstants.ORA4MAS_WSNAME);
             final CartagoContext ctx = CartagoService.startSession(ORA4MASConstants.ORA4MAS_WSNAME, new AgentIdCredential("simulator"));
             final WorkspaceId wid = ctx.getJoinedWspId(ORA4MASConstants.ORA4MAS_WSNAME);
-            
+
             JPanel posfile = new JPanel(new FlowLayout(FlowLayout.LEFT));
             posfile.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Specification file", TitledBorder.LEFT, TitledBorder.TOP));
             final JTextField fileTF = new JTextField(30); fileTF.setText("org-spec.xml");
             posfile.add(fileTF);
-            
+
             // Group creation panel
             JPanel grp = new JPanel(new FlowLayout(FlowLayout.LEFT));
             grp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Group Board Creation", TitledBorder.LEFT, TitledBorder.TOP));
@@ -83,8 +83,8 @@ public class SimulatorGUI {
                     }
                 }
             });
-    
-            
+
+
             // Scheme creation panel
             JPanel schp = new JPanel(new FlowLayout(FlowLayout.LEFT));
             schp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Scheme Board Creation", TitledBorder.LEFT, TitledBorder.TOP));
@@ -105,7 +105,7 @@ public class SimulatorGUI {
                             return;
                         }
                         ctx.doAction(aid, new Op("debug", new Object[] { "inspector_gui(on)" } ));
-                        
+
                         for (AgentGUI a: ags) {
                             a.initArtsCBmodel();
                             a.initOpsCBmodel();
@@ -115,11 +115,11 @@ public class SimulatorGUI {
                     }
                 }
             });
-    
+
             // Agent creation panel
             JPanel agp = new JPanel(new FlowLayout(FlowLayout.LEFT));
             agp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Agent Creation", TitledBorder.LEFT, TitledBorder.TOP));
-            final JTextField agNameTF = new JTextField(10); 
+            final JTextField agNameTF = new JTextField(10);
             agp.add(new JLabel("agent name: "));
             agp.add(agNameTF);
             JButton crAgBT = new JButton("create");
@@ -138,7 +138,7 @@ public class SimulatorGUI {
                     }
                 }
             });
-    
+
             frame = new JFrame("Moise Simulador - ORA4MAS");
             frame.getContentPane().setLayout(new GridLayout(0,1));
             frame.add(posfile);
@@ -156,7 +156,7 @@ public class SimulatorGUI {
     public void addAg(AgentGUI a) {
         ags.add(a);
     }
-    
+
     public static void main(String[] args) throws CartagoException {
         CartagoService.startNode();
         SimulatorGUI.getInstance();

@@ -71,20 +71,20 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
     protected NPLInterpreter     nengine;
     protected NormativeListener  myNPLListener;
-    
+
     protected CollectiveOE       orgState;
     //protected ArtifactId         monitorSchArt = null;
     protected GUIInterface gui = null;
-    
+
     protected boolean running = true;
     protected UpdateGuiThread updateGUIThread = null;
-    
+
     protected String oeId = null; // the id of the org
-    
+
     protected String ownerAgent = null; // the name of the agent that created this artifact
-    
+
     protected List<ArtifactId> listeners = new ArrayList<ArtifactId>();
-    
+
     protected Logger logger = Logger.getLogger(OrgArt.class.getName());
 
     public static String fixOSFile(String osFile) {
@@ -107,10 +107,10 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         Scope root = p.getRoot();
         Scope scope = root.findScope(type);
         if (scope == null)
-            throw new MoiseException("scope for "+type+" does not exist!");            
+            throw new MoiseException("scope for "+type+" does not exist!");
         nengine.loadNP(scope);
     }
-    
+
     public NPLInterpreter getNormativeEngine() {
         return nengine;
     }
@@ -123,7 +123,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         else
             failed("you can not change the owner");
     }
-    
+
     protected void destroy() {
         if (ownerAgent != null && getCurrentOpAgentId() != null && (!getOpUserName().equals(ownerAgent)) ) {
             failed("you can not destroy the artifact, only the owner can!");
@@ -143,7 +143,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             }
         }*/
         signal(sglDestroyed, new Atom(getId().getName()));
-        
+
         running = false;
         if (updateGUIThread != null)
             updateGUIThread.interrupt();
@@ -156,12 +156,12 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             e.printStackTrace();
         }
     }
-    
+
     protected void installNormativeSignaler() {
         // version that works (using internal op)
         myNPLListener = new NormativeListener() {
-            public void created(DeonticModality o) {  
-                defineObsProperty(o.getFunctor(), getTermsAsProlog(o)).addAnnot( getNormIdTerm(o) );                
+            public void created(DeonticModality o) {
+                defineObsProperty(o.getFunctor(), getTermsAsProlog(o)).addAnnot( getNormIdTerm(o) );
                 //signalsQueue.offer(new Pair<String, Structure>(sglOblCreated, o));
             }
             public void fulfilled(DeonticModality o) {
@@ -183,8 +183,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             public void inactive(DeonticModality o) {
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
             }
-            
-            public void failure(Structure f) {     
+
+            public void failure(Structure f) {
                 execInternalOp("NPISignals", sglNormFailure, f);
             }
         };
@@ -192,7 +192,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         // version that does not work
         /*
         myNPLListener = new NormativeListener() {
-            public void created(DeonticModality o) {  
+            public void created(DeonticModality o) {
                 defineObsProperty(o.getFunctor(), getTermsAsProlog(o));
             }
             public void fulfilled(DeonticModality o) {
@@ -205,35 +205,35 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                     // ignore, the obligations was not there anymore
                 }
             }
-            public void unfulfilled(DeonticModality o) { 
+            public void unfulfilled(DeonticModality o) {
                 beginExternalSession();
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
                 signal(sglOblUnfulfilled, new JasonTermWrapper(o));
                 endExternalSession(true);
             }
-            public void inactive(DeonticModality o) {    
+            public void inactive(DeonticModality o) {
                 beginExternalSession();
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
                 //signal(sglOblInactive, new JasonTermWrapper(o));
                 endExternalSession(true);
             }
-            
-            public void failure(Structure f) {     
+
+            public void failure(Structure f) {
                 beginExternalSession();
-                signal(sglNormFailure, new JasonTermWrapper(f));                
+                signal(sglNormFailure, new JasonTermWrapper(f));
                 endExternalSession(true);
             }
         };
         */
         nengine.addListener(myNPLListener);
     }
-    
+
     // Manage the signal related to changes in NPI ===> too slow!
     // TODO: wait for a better solution from cartago
     // solved now by exec int op
-    
+
     //Queue<Pair<String, Structure>> signalsQueue = new ConcurrentLinkedQueue<Pair<String,Structure>>();
-    
+
     /*
     @INTERNAL_OPERATION void NPISignals() {
         Pair<String,Structure> s = null;
@@ -242,7 +242,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             while (s != null) {
                 //System.out.println("******"+s);
                 signal(s.getFirst(), new JasonTermWrapper(s.getSecond()));
-                s = signalsQueue.poll();                
+                s = signalsQueue.poll();
             }
             await_time(500);
         }
@@ -252,9 +252,9 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     @INTERNAL_OPERATION void NPISignals(String signal, Term arg) {
         signal(signal, new JasonTermWrapper(arg));
     }
-    
+
     // subscribe protocol
-    
+
     @LINK void subscribeDFP(ArtifactId subscriber) throws OperationException {
         listeners.add(subscriber);
         notifyListeners();
@@ -270,7 +270,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         }
     }
 
-    
+
     protected void ora4masOperationTemplate(Operation op, String errorMsg) {
         if (!running) return;
         CollectiveOE bak = orgState.clone();
@@ -285,12 +285,12 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             else
                 failed(errorMsg, "reason", new JasonTermWrapper(e.getFail()));
         } catch (Exception e) {
-            orgState = bak; 
+            orgState = bak;
             failed(e.toString());
             e.printStackTrace();
         }
     }
-    
+
     protected void postReorgUpdates(OS os, String nplId, String ss) throws MoiseException, ParseException {
         // change normative program
         initNormativeEngine(os, nplId);
@@ -303,7 +303,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                 gui.setNormativeProgram(getNPLSrc());
                 gui.setSpecification(specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL(ss))));
             }
-            
+
             /*if (WebInterface.isRunning()) {
                 String osSpec = specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("os")));
                 String oeId = getCreatorId().getWorkspaceId().getName();
@@ -313,10 +313,10 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             */
         } catch (Exception e) {
             e.printStackTrace();
-        }                
-        
+        }
+
     }
-    
+
     static Object[] getTermsAsProlog(DeonticModality o) {
         Object[] terms = new Object[o.getArity()];
         int i = 0;
@@ -324,15 +324,15 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             terms[i++] = new JasonTermWrapper(t);
         return terms;
     }
-    
+
     static Object getNormIdTerm(DeonticModality o) {
         return new JasonTermWrapper(
                 ASSyntax.createStructure(
-                        "norm", 
-                        new Atom(o.getNorm().getId()), 
+                        "norm",
+                        new Atom(o.getNorm().getId()),
                         o.getUnifierAsTerm()));
     }
-    
+
     static Object[] getTermsAsProlog(Literal o) {
         Object[] terms = new Object[o.getArity()];
         int i = 0;
@@ -340,39 +340,39 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             terms[i++] = new JasonTermWrapper(t);
         return terms;
     }
-    
+
 
     abstract protected String getStyleSheetName();
-    
+
     protected String getAsDot() {
         return null;
     }
-    
+
     private DocumentBuilder parser;
     public DocumentBuilder getParser() throws ParserConfigurationException {
         if (parser == null)
             parser = DOMUtils.getParser();
         return parser;
     }
-    
-    
+
+
     public String specToStr(ToXML spec, Transformer transformer) throws Exception {
         StringWriter so = new StringWriter();
         InputSource si = new InputSource(new StringReader(DOMUtils.dom2txt(spec)));
         transformer.transform(new DOMSource(getParser().parse(si)), new StreamResult(so));
-        return so.toString();        
+        return so.toString();
     }
-    
-    
+
+
     private Transformer guiStyleSheet = null;
     protected Transformer getStyleSheet() throws TransformerConfigurationException, IOException {
         if (getStyleSheetName() == null)
             return null;
         if (guiStyleSheet == null)
             guiStyleSheet = DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL( getStyleSheetName() ));
-        return guiStyleSheet;                    
+        return guiStyleSheet;
     }
-    
+
     private Transformer nsTransformer = null;
     public Transformer getNSTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError, IOException {
         if (nsTransformer == null)
@@ -382,14 +382,14 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
     protected void updateGuiOE() {
         if (gui != null && updateGUIThread != null)
-            updateGUIThread.update();                
+            updateGUIThread.update();
     }
 
     /** manages listener to be notified about agents that quit the system */
 
     class Ora4masWSPRuleEngine extends AbstractWSPRuleEngine {
         List<OrgArt> l = new ArrayList<OrgArt>();
-        
+
         void addListener(OrgArt o) {
             l.add(o);
         }
@@ -405,10 +405,10 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             }
         }
     };
-    
+
     private static Ora4masWSPRuleEngine wspEng = null;
-    
-    public synchronized void initWspRuleEngine() {   
+
+    public synchronized void initWspRuleEngine() {
         /*ICartagoController ctrl = CartagoService.getController("default");
         for (ArtifactId aid: ctrl.getCurrentArtifacts()) {
             System.out.println("*** "+aid);
@@ -422,17 +422,17 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                         // TODO: use new cartago API
                         CartagoBasicContext cartagoCtx = new CartagoBasicContext("OrgArt setup", CartagoService.MAIN_WSP_NAME);
                         cartagoCtx.doAction(new Op("setWSPRuleEngine", wspEng), -1);
-                        wspEng.addListener(OrgArt.this);    
+                        wspEng.addListener(OrgArt.this);
                     } catch (CartagoException e) {
                         e.printStackTrace();
-                    } 
+                    }
                 };
             }.start();
         }
     }
-    
+
     public void agKilled(String agName) {
-        
+
     }
 
 
@@ -442,32 +442,32 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             if (gui != null)
                 gui.remove();
             gui = GUIInterface.add(id, "... "+title+" "+id+" ...", nengine, hasOE);
-            
+
             updateGUIThread = new UpdateGuiThread();
             updateGUIThread.start();
-         
+
             updateGuiOE();
-            
+
             gui.setNormativeProgram(getNPLSrc());
         }
         if (kind.equals("inspector_gui(off)")) {
-            if (gui != null) 
+            if (gui != null)
                 gui.remove();
             try {
-                updateGUIThread.interrupt();                
+                updateGUIThread.interrupt();
             } catch (Exception e) {}
             gui = null;
-        }    
+        }
     }
-    
+
     class UpdateGuiThread extends Thread {
         boolean ok = false;
-        
+
         void update() {
             ok = false;
             //notifyAll();
         }
-        
+
         @Override
         public void run() {
             try {
@@ -497,14 +497,14 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             }
         }
     }
-    
+
     public String getDebugText() {
         StringBuilder out = new StringBuilder();
         String space = "";
         if (orgState != null) {
             out.append(orgState.toString());
             out.append("\n\n\n** dynamic facts:\n");
-            for (Literal l: orgState.transform()) 
+            for (Literal l: orgState.transform())
                 out.append("     "+l+"\n");
             out.append("\n\n\n** facts:\n");
             space = "     ";
@@ -517,7 +517,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     public String getNPLSrc() {
         return "";
     }
-    
+
     protected static String fixAgName(String ag) {
         if (ag.startsWith("\""))
             return ag.substring(1, ag.length()-1);
@@ -528,13 +528,13 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     public String getOpUserName() {
         return getCurrentOpAgentId().getAgentName();
     }
-    
+
     // DFP methods
-    
+
     public boolean isRelevant(PredicateIndicator pi) {
         return orgState.isRelevant(pi);
     }
-    
+
     public Iterator<Unifier> consult(Literal l, Unifier u) {
         return orgState.consult(l, u);
     }

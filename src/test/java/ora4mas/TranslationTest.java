@@ -21,7 +21,7 @@ public class TranslationTest {
     @Test
     public void testWP() throws ParseException, Exception {
         OS os = OS.loadOSFromURI("examples/writePaper/wp-os.xml");
-        
+
         String np = os2nopl.transform(os);
         System.out.println(np);
         BufferedWriter out = new BufferedWriter(new FileWriter("examples/writePaper/wp-gen.npl"));
@@ -35,7 +35,7 @@ public class TranslationTest {
     @Test
     public void testGgroupWithoutRole() throws ParseException, Exception {
         OS os = OS.loadOSFromURI("examples/test/groupwithoutrole.xml");
-        
+
         String np = os2nopl.transform(os);
         //System.out.println(np);
         BufferedWriter out = new BufferedWriter(new FileWriter("examples/test/groupwithoutrole.npl"));

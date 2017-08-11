@@ -17,17 +17,17 @@ public class XmlFilter extends javax.swing.filechooser.FileFilter {
     public String getDescription() {
         return "XML files";
     }
-    
+
     public static String askOSFile() {
         JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
         fc.setDialogTitle("Choose the OS XML file specification");
         fc.addChoosableFileFilter(new XmlFilter());
         int returnVal = fc.showOpenDialog(null);
-        
+
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             return fc.getSelectedFile().getAbsolutePath();
         }
         return null;
     }
-    
+
 }

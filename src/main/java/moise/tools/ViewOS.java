@@ -10,7 +10,7 @@ import java.awt.event.WindowEvent;
  * @author Jomi Fred Hubner
  */
 public class ViewOS extends SimOE {
-    
+
     public ViewOS(String OSxmlURI) throws Exception {
         super(OSxmlURI);
         frame.tabPanel.remove(0);
@@ -19,7 +19,7 @@ public class ViewOS extends SimOE {
         frame.showOS();
         frame.setVisible(true);
     }
-    
+
     public static void main(String[] args) {
         if (args.length != 1) {
             System.err.println("pass as argument the uri for the OS file (in xml)");
@@ -38,5 +38,5 @@ public class ViewOS extends SimOE {
             System.exit(1);
         }
     }
-    
+
 }

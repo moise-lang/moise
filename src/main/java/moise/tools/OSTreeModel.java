@@ -17,25 +17,25 @@ import moise.os.ss.Role;
  * @author  jomi
  */
 public class OSTreeModel {
-    
+
     DefaultTreeModel       treeModel;
-    
+
     JTree                  jTree;
-    
+
     /** Creates new OSTreeModel */
     public OSTreeModel() {
         setOS(null);
     }
-    
+
     public OSTreeModel(JTree j) {
         setOS(null);
         jTree = j;
     }
-    
+
     public DefaultTreeModel getModel() {
         return treeModel;
     }
-    
+
     public void setOS(OS os) {
         DefaultMutableTreeNode rootNode;
         if (os != null) {
@@ -48,38 +48,38 @@ public class OSTreeModel {
         DefaultMutableTreeNode grSpecNode = new DefaultMutableTreeNode("Groups");
         ssNode.add(rolesNode);
         ssNode.add(grSpecNode);
-        
+
         DefaultMutableTreeNode fsNode = new DefaultMutableTreeNode("FS");
-        
+
         DefaultMutableTreeNode dsNode = new DefaultMutableTreeNode("NS");
-        
+
         rootNode.add(ssNode);
         rootNode.add(fsNode);
         rootNode.add(dsNode);
-        
+
         if (os != null) {
             addRoles(os, rolesNode);
             addGr(os.getSS().getRootGrSpec(), grSpecNode);
-            
+
             // os schemas
             for (Scheme sch: os.getFS().getSchemes()) {
                 addSch(sch, fsNode);
             }
         }
-        
+
         treeModel = new DefaultTreeModel(rootNode);
     }
-    
+
     public void setJTree(JTree j) {
         jTree = j;
     }
-    
+
     private void addRoles(OS os, DefaultMutableTreeNode place) {
         for (Role r: os.getSS().getRolesDef()) {
             place.add(new DefaultMutableTreeNode( r ));
         }
     }
-    
+
     private void addGr(Group gr, DefaultMutableTreeNode place) {
         if (gr == null) return;
         DefaultMutableTreeNode nGr = new DefaultMutableTreeNode(gr);
@@ -88,18 +88,18 @@ public class OSTreeModel {
             addGr( g, nGr);
         }
     }
-    
+
     private void addSch(Scheme sch, DefaultMutableTreeNode place) {
         DefaultMutableTreeNode nSCH = new DefaultMutableTreeNode(sch);
         place.add(nSCH);
-        
+
         // goals
         DefaultMutableTreeNode nGoals = new DefaultMutableTreeNode("Goals & plans");
         nSCH.add(nGoals);
         for (Goal g: sch.getGoals()) {
             addGoal(g, nGoals);
         }
-        
+
         // missions
         DefaultMutableTreeNode nMis = new DefaultMutableTreeNode("Missions");
         nSCH.add(nMis);
@@ -107,12 +107,12 @@ public class OSTreeModel {
             nMis.add(new DefaultMutableTreeNode(m));
         }
     }
-    
+
     private void addGoal(Goal g, DefaultMutableTreeNode place) {
         DefaultMutableTreeNode nG = new DefaultMutableTreeNode(g);
         place.add(nG);
         if (g.getPlan() != null) {
-            
+
             for (Goal gs: g.getPlan().getSubGoals()) {
                 addGoal(gs, nG);
             }

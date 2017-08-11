@@ -36,7 +36,7 @@ import jaca.ToProlog;
 public class Scheme extends CollectiveOE {
 
     // dynamic facts for which this class can answer "consult" (from DynamicFactsProvider interface and used by NPL interpreter)
-    public final static Literal[] dynamicFacts = { 
+    public final static Literal[] dynamicFacts = {
         createLiteral("scheme_id", new VarTerm("SID")),
         createLiteral("committed", new VarTerm("Ag"), new VarTerm("Mis"), new VarTerm("SID")),
         createLiteral("leaved_mission", new VarTerm("Ag"), new VarTerm("Mis"), new VarTerm("SID")),
@@ -45,7 +45,7 @@ public class Scheme extends CollectiveOE {
         createLiteral(Group.playPI.getFunctor(), new VarTerm("Ag"), new VarTerm("Role"), new VarTerm("Gr")), // from group
         createLiteral(Group.responsiblePI.getFunctor(), new VarTerm("Gr"), new VarTerm("Sch"))               // from group
     };
-    
+
 
     public final static PredicateIndicator schemePI      = dynamicFacts[0].getPredicateIndicator();
     public final static PredicateIndicator committedPI   = dynamicFacts[1].getPredicateIndicator();
@@ -55,16 +55,16 @@ public class Scheme extends CollectiveOE {
 
     // specification
     private moise.os.fs.Scheme spec;
-    
+
     // responsible groups
     private ConcurrentSkipListSet<Group>   groups  = new ConcurrentSkipListSet<Group>();
-    
+
     // the literal is done(schemeId, goalId, agent name)
     private ConcurrentSkipListSet<Literal> doneGoals = new ConcurrentSkipListSet<Literal>();
-    
+
     // values for goal arguments (key = goal + arg, value = value)
     private HashMap<Pair<String,String>,String> goalArgs = new HashMap<Pair<String,String>,String>();
-    
+
     // list of satisfied goals
     private Set<String> satisfiedGoals = new HashSet<String>(); // we use "contains" a lot, so remains HashSet
 
@@ -80,23 +80,23 @@ public class Scheme extends CollectiveOE {
     public Set<Literal> getDoneGoals() {
         return (Set<Literal>)doneGoals.clone();
     }
-    
+
     public boolean resetGoal(Goal goal) {
         boolean changed = resetGoalAndPreConditions(goal);
-        
+
         if (goal.hasPlan()) {
             // also reset subgoals
             for (Goal g: goal.getPlan().getSubGoals()) {
-                changed = resetGoal(g) || changed;            
+                changed = resetGoal(g) || changed;
             }
         }
-        
+
         if (changed) {
             // reset also satisfied goals
             satisfiedGoals.clear();
         }
         return changed;
-    }  
+    }
     private boolean resetGoalAndPreConditions(Goal goal) {
         boolean changed = false;
         Atom gAtom = createAtom(goal.toString());
@@ -106,26 +106,26 @@ public class Scheme extends CollectiveOE {
             if (l.getTerm(1).equals(gAtom)) {
                 iAchGoals.remove();
                 changed = true;
-            }    
+            }
         }
-        
+
         // recompute for all goals which this goal is pre condition
         for (Goal g: spec.getGoals()) {
             if (g.getPreConditionGoals().contains(goal)) {
                 changed = resetGoalAndPreConditions(g) || changed;
             }
         }
-                
+
         return changed;
     }
-    
+
     public void setGoalArgValue(String goal, String arg, String value) {
         goalArgs.put(new Pair<String,String>(goal,arg), value);
     }
     public String getGoalArgValue(String goal, String arg) {
         return goalArgs.get(new Pair<String,String>(goal,arg));
     }
-    
+
     public void addGroupResponsibleFor(Group g) {
         groups.remove(g);
         groups.add(g);
@@ -145,8 +145,8 @@ public class Scheme extends CollectiveOE {
         return l;
     }
 
-    
-    
+
+
 
     @Override
     PredicateIndicator getPlayerPI() {
@@ -156,9 +156,9 @@ public class Scheme extends CollectiveOE {
     PredicateIndicator getExPlayerPI() {
         return exCommittedPI;
     }
-    
+
     // DFP methods
-    
+
     public Literal[] getDynamicFacts() {
         return dynamicFacts;
     }
@@ -168,8 +168,8 @@ public class Scheme extends CollectiveOE {
         PredicateIndicator pi = l.getPredicateIndicator();
         if (pi.equals(getPlayerPI()) ||  pi.equals(getExPlayerPI()) || pi.equals(monitorSchPI))
             return super.consult(l, u);
-        
-        if (pi.equals(Group.playPI) || pi.equals(Group.responsiblePI)) { 
+
+        if (pi.equals(Group.playPI) || pi.equals(Group.responsiblePI)) {
             return consultProviders(l, u, groups.iterator());
 
         } else if (pi.equals(schemePI)) {
@@ -177,18 +177,18 @@ public class Scheme extends CollectiveOE {
             if (u.unifies(lCopy, termId))
                 return LogExpr.createUnifIterator(u);
             else
-                return LogExpr.EMPTY_UNIF_LIST.iterator(); 
-            
+                return LogExpr.EMPTY_UNIF_LIST.iterator();
+
         } else if (pi.equals(donePI)) {
             return consult(l, u, doneGoals);
-    
+
         } else if (pi.equals(satisfiedPI)) {
             Term lCopy = l.getTerm(1).capply(u);
             if (lCopy.isGround()) {
                 if (satisfiedGoals.contains(lCopy.toString())) {
                     return LogExpr.createUnifIterator(u);
                 } else {
-                    return LogExpr.EMPTY_UNIF_LIST.iterator(); 
+                    return LogExpr.EMPTY_UNIF_LIST.iterator();
                 }
             } else {
                 // usually this alternative is not used (the term is group in the NP), so we do not improve its performance.
@@ -200,17 +200,17 @@ public class Scheme extends CollectiveOE {
                         lu.add(c);
                 }
                 return lu.iterator();
-            }            
+            }
         }
-        return LogExpr.EMPTY_UNIF_LIST.iterator(); 
+        return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
-      
-    
+
+
     public ToProlog getResponsibleGroupsAsProlog() {
         return getCollectionAsProlog(getIdsGroupsResponsibleFor());
     }
-    
-    
+
+
     /** returns a list of agents committed to a particular goal */
     public ListTerm getCommittedAgents(Goal g) {
         ListTerm lCommittedBy = new ListTermImpl();
@@ -218,13 +218,13 @@ public class Scheme extends CollectiveOE {
         for (Player p: getPlayers()) {
             for (Goal mg: spec.getMission(p.getTarget()).getGoals()) {
                 if (mg.equals(g))
-                    tail.append(new Atom(p.getAg()));                    
+                    tail.append(new Atom(p.getAg()));
             }
         }
         return lCommittedBy;
     }
-    
-    
+
+
     /** discover goals that are now satisfied, returns true if some new goal was satisfied */
     public boolean computeSatisfiedGoals() {
         boolean changed = false;
@@ -237,15 +237,15 @@ public class Scheme extends CollectiveOE {
         }
         return changed;
     }
-    
+
     public void setAsSatisfied(String g) {
         satisfiedGoals.add(g);
     }
-    
+
     public boolean isSatisfied(Goal g) {
         if (satisfiedGoals.contains(g.getId()))
             return true;
-        
+
         // all pre-conditions
         //    satisfied(S,G) :-     // no agents have to achieve -- automatically satisfied by its pre-conditions
         //           goal(_,G,PCG,_,0,_) & all_satisfied(S,PCG).
@@ -281,14 +281,14 @@ public class Scheme extends CollectiveOE {
             for (Player p: getPlayers())
                 if (missions.contains( p.getTarget() )) //.equals(mission))
                     v++;
-                        
+
             return a >= v;
         } else {
             return a == g.getMinAgToSatisfy();
-        }        
+        }
     }
-    
-        
+
+
     public Scheme clone() {
         Scheme g = new Scheme(spec,id);
         g.monSch = this.monSch;
@@ -325,7 +325,7 @@ public class Scheme extends CollectiveOE {
         //out.append("\n  accomplished missions:\n");
         //for (String m: accomplisedMissions)
         //    out.append("    "+m+"\n");
-        
+
         return out.toString();
     }
 }

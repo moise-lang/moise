@@ -4,18 +4,18 @@
 scope main {                               // definition of a scope of norms
 
     // some facts
-    a(2).                                   
+    a(2).
     student(bob,2).
     student(carlos,3).
 
     // example of rule (Jason syntax)
-    vl(X) :- a(A) & b(B) & A<B & X=A*B.     
-    
+    vl(X) :- a(A) & b(B) & A<B & X=A*B.
+
     // alice has 4 seconds to achieve a value of b < 0
     norm n1: vl(X) & X >= 5
        -> obligation(alice,n1, b(Y) & Y<0, `now`+`4 seconds`).
-    
+
     // bob and carlos are obliged to sanction
     norm n2: vl(X) & X > 10 & student(A,V)
-       -> obligation(A,student(A,_),sanction(X*V),`now`+`15 seconds`).    
+       -> obligation(A,student(A,_),sanction(X*V),`now`+`15 seconds`).
 }

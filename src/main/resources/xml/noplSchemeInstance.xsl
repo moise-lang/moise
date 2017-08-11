@@ -19,19 +19,19 @@
       <h2 style="{$h-style}"><xsl:value-of select="@id" /> (scheme instance)</h2>
       <hr />
 
-      created from specification 
+      created from specification
       <xsl:call-template name="SchemeSpecRef">
             <xsl:with-param name="id"><xsl:value-of select="@specification"/></xsl:with-param>
       </xsl:call-template>
 
       <xsl:if test="@owner">
-         , owner is 
+         , owner is
          <xsl:call-template name="AgentRef">
             <xsl:with-param name="id"><xsl:value-of select="@owner"/></xsl:with-param>
          </xsl:call-template>
       </xsl:if>
       <br/>
-      
+
       <xsl:apply-templates select="well-formed" />
       <xsl:apply-templates select="responsible-groups" />
       <br/>
@@ -40,10 +40,10 @@
           <img alt="" style="max-width:100%;width: expression(this.width > 100% ? 100%: true);" >
                 <xsl:attribute name="src">
                     <xsl:value-of select="@id"/><xsl:text>.svg</xsl:text>
-                </xsl:attribute>      
+                </xsl:attribute>
           </img>
       </xsl:if>
-      
+
       <xsl:apply-templates select="players" />
       <xsl:apply-templates select="goals" />
 

@@ -14,25 +14,25 @@ import moise.oe.SchemeInstance;
  * @author  jomi
  */
 public class OETreeModel {
-    
+
     DefaultTreeModel       treeModel;
-    
+
     JTree                  jTree;
-    
+
     /** Creates new OSTreeModel */
     public OETreeModel() {
         setOE(null);
     }
-    
+
     public OETreeModel(JTree j) {
         setOE(null);
         jTree = j;
     }
-    
+
     public DefaultTreeModel getModel() {
         return treeModel;
     }
-    
+
     public void setOE(OE oe) {
         DefaultMutableTreeNode rootNode;
         if (oe != null) {
@@ -43,17 +43,17 @@ public class OETreeModel {
         DefaultMutableTreeNode agNode  = new DefaultMutableTreeNode("Agents");
         DefaultMutableTreeNode grNode  = new DefaultMutableTreeNode("Groups");
         DefaultMutableTreeNode schNode = new DefaultMutableTreeNode("Schemes");
-        
+
         rootNode.add(agNode);
         rootNode.add(grNode);
         rootNode.add(schNode);
-        
+
         if (oe != null) {
             for (OEAgent ag: oe.getAgents()) {
                 DefaultMutableTreeNode agN = new DefaultMutableTreeNode( ag );
                 agNode.add(agN);
             }
-            
+
             for (GroupInstance gi: oe.getGroups()) {
                 addGr( gi, grNode );
             }
@@ -63,14 +63,14 @@ public class OETreeModel {
                 schNode.add(schN);
             }
         }
-        
+
         treeModel = new DefaultTreeModel(rootNode);
     }
-    
+
     public void setJTree(JTree j) {
         jTree = j;
     }
-    
+
     private void addGr(GroupInstance g, DefaultMutableTreeNode place) {
         DefaultMutableTreeNode nG = new DefaultMutableTreeNode(g);
         place.add(nG);

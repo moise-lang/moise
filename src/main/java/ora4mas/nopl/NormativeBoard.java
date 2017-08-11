@@ -33,30 +33,30 @@ import ora4mas.nopl.oe.CollectiveOE;
 /**
  * Artifact to manage a normative program (NPL)
  * <br/><br/>
- * 
+ *
  * <b>Operations</b> (see details in the methods list below):
  * <ul>
  * <li>load a NPL program
  * <li>addFact
  * <li>removeFact
  * </ul>
- * 
+ *
  * <b>Observable properties</b>:
  * <ul>
  * <li>obligation(ag,reason,goal,deadline): current active obligations.</br>
  *     e.g. <code>obligation(bob,n4,committed(ag2,mBib,s1),1475417322254)</code>
  * </ul>
- * 
+ *
  * <b>Signals</b> the same signals of SchemeBoard.
  * </ul>
- * 
+ *
  * @see SchemeBoard
  * @author Jomi
  */
 public class NormativeBoard extends OrgArt {
 
     protected Map<String, DynamicFactsProvider> dynProviders = new HashMap<String, DynamicFactsProvider>();
-    
+
     protected Logger logger = Logger.getLogger(NormativeBoard.class.getName());
 
     /**
@@ -77,12 +77,12 @@ public class NormativeBoard extends OrgArt {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }         
+        }
     }
-    
+
     /**
      * Loads a normative program
-     * 
+     *
      * @param nplProgram       a string with the NPL program (or a file name)
      *
      * @throws ParseException  if the OS file is not correct
@@ -105,7 +105,7 @@ public class NormativeBoard extends OrgArt {
             throw e;
         }
         nengine.loadNP(p.getRoot());
-        
+
         if (gui != null) {
             gui.setNormativeProgram(getNPLSrc());
         }
@@ -114,13 +114,13 @@ public class NormativeBoard extends OrgArt {
     @OPERATION public void debug(String kind) throws Exception {
         super.debug(kind, "Norm Board", false);
     }
-    
+
     @OPERATION void addFact(String f) throws jason.asSyntax.parser.ParseException, NormativeFailureException {
         nengine.addFact(ASSyntax.parseLiteral(f));
         nengine.verifyNorms();
         updateGuiOE();
     }
-    
+
     @OPERATION void removeFact(String f) throws jason.asSyntax.parser.ParseException, NormativeFailureException {
         nengine.removeFact(ASSyntax.parseLiteral(f));
         nengine.verifyNorms();
@@ -132,17 +132,17 @@ public class NormativeBoard extends OrgArt {
         nengine.verifyNorms();
         updateGuiOE();
     }
-    
+
 
     @OPERATION @LINK void doSubscribeDFP(String artName) throws OperationException {
         ArtifactId aid = lookupArtifact(artName);
         execLinkedOp(aid, "subscribeDFP", getId());
     }
-    
+
     @OPERATION @LINK public void destroy() {
         super.destroy();
     }
-    
+
     @Override
     public String getDebugText() {
         boolean first = true;
@@ -161,32 +161,32 @@ public class NormativeBoard extends OrgArt {
         }
         return out.toString();
     }
-    
+
     @Override
     public String getNPLSrc() {
         return nengine.getNormsString();
     }
-    
+
     protected String getStyleSheetName() {
-        return null;                 
+        return null;
     }
-    
+
     public Element getAsDOM(Document document) {
         return nengine.getAsDOM(document);
     }
-    
+
     // DFP methods
-    
+
     public boolean isRelevant(PredicateIndicator pi) {
         for (DynamicFactsProvider p: dynProviders.values())
             if (p.isRelevant(pi))
                 return true;
         return false;
     }
-    
+
     public Iterator<Unifier> consult(Literal l, Unifier u) {
         for (DynamicFactsProvider p: dynProviders.values())
-            if (p.isRelevant(l.getPredicateIndicator())) 
+            if (p.isRelevant(l.getPredicateIndicator()))
                 return p.consult(l, u);
         return null;
     }

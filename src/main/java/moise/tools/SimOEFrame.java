@@ -55,16 +55,16 @@ import moise.xml.DOMUtils;
  */
 @SuppressWarnings("unchecked")
 public class SimOEFrame extends JFrame {
-    
+
     private static final long serialVersionUID = 1L;
 
     SimOE         ag            = null;
     Object        currentObject = null; // which object is selected
-    
+
     boolean       hasSim        = true;
-    
+
     Stack<Object> history       = new Stack<Object>();
-    
+
     TransformerFactory tFactory   = TransformerFactory.newInstance();
     Transformer osTransformer     = null;
     Transformer oeTransformer     = null;
@@ -80,35 +80,35 @@ public class SimOEFrame extends JFrame {
     Transformer grTransformer     = null;
     Transformer schTransformer    = null;
     Transformer briefOE           = null;
-    
+
     public SimOEFrame(SimOE ag) {
         this(ag, true);
     }
-    
+
     public SimOEFrame(SimOE ag, boolean addSim) {
         super("Moise ("+ag.getName()+")");
         this.ag = ag;
         this.hasSim = addSim;
-        
+
         // to load .xsl from the moise.jar
         tFactory.setURIResolver(new URIResolver() {
             public Source resolve(String href, String base) throws TransformerException {
                 return getXSL(href);
             }
         });
-        
+
         initComponents(addSim);
     }
-    
+
     public void centerScreen() {
         try {
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             setBounds(0, 0, 800, (int)(screenSize.height * 0.7)); //(int)(screenSize.width * 0.8)
             setLocation(screenSize.width / 2 - this.getWidth() / 2, screenSize.height / 2 - this.getHeight() / 2);
-            
+
             EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    setVisible(true);            
+                    setVisible(true);
                 }
             });
         } catch (Exception e) {
@@ -116,7 +116,7 @@ public class SimOEFrame extends JFrame {
             e.printStackTrace();
         }
     }
-    
+
     public void showOS() {
         try {
             currentObject = ag.getCurrentOS();
@@ -124,24 +124,24 @@ public class SimOEFrame extends JFrame {
             showCurrentObject();
         } catch (Exception e) {        }
     }
-    
+
     protected void uptadeOSComps() {
         try {
             OSTreeModel osTreeModel = new OSTreeModel(osTree);
             osTreeModel.setOS( ag.getCurrentOS());
             osTree.setModel( osTreeModel.getModel() );
-            
+
             Group grs = ag.getCurrentOS().getSS().getRootGrSpec();
             if (grs != null) {
                 mySetModelPreserPosSelectedIndex(grSpecsInGrCreation, grs.getAllSubGroupsTree());
             }
             mySetModelPreserPosSelectedIndex(schSpecInSchStart, ag.getCurrentOS().getFS().getSchemes());
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     public void showOE() {
         try {
             currentObject = ag.getCurrentOE();
@@ -153,11 +153,11 @@ public class SimOEFrame extends JFrame {
             e.printStackTrace();
         }
     }
-    
+
     protected void uptadeOEComps() {
         OE oe = ag.getCurrentOE();
         if (oe == null) return;
-        
+
         try {
             OETreeModel oeTreeModel = new OETreeModel(oeTree);
             oeTreeModel.setOE( oe );
@@ -166,49 +166,49 @@ public class SimOEFrame extends JFrame {
                 // rebuild the list of current groups
                 List allWithRoot = new ArrayList(oe.getAllSubGroupsTree());
                 allWithRoot.add("root");
-                
+
                 mySetModelPreserPosSelectedIndex(grCreatedGroups, allWithRoot);
-                
+
                 mySetModelPreserPosSelectedIndex(grInstancesInGroup, oe.getAllSubGroupsTree());
-                
+
                 updateAgentRoleComponents();
-                
+
                 // rebuild the list of current SCHs
                 mySetModelPreserPosSelectedIndex(schInstancesInMission, oe.getSchemes());
-                
+
                 mySetModelPreserPosSelectedIndex(schInstancesInGoal, oe.getSchemes());
                 updateSchemeGoalsCB();
-                
+
                 mySetModelPreserPosSelectedIndex(schInstanceInSchFinish, oe.getSchemes());
-                
+
                 mySetModelPreserPosSelectedIndex(schInstanceInAbort, oe.getSchemes());
-                
+
                 mySetModelPreserPosSelectedIndex(schInstanceInRespGr, oe.getSchemes());
                 updateSchemeRespGoals();
-                
-                
+
+
                 // missions
                 updateAgentMissionComponents();
-                
+
                 // agNames
                 mySetModelPreserPosSelectedIndex(agNamesInRole, oe.getAgents());
-                
+
                 mySetModelPreserPosSelectedIndex(agNamesInMission, oe.getAgents());
-                
+
                 mySetModelPreserPosSelectedIndex(agNamesInRemoveAg, oe.getAgents());
-    
+
                 mySetModelPreserPosSelectedIndex(agNamesInGoalInstance, oe.getAgents());
-            }        
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
-    
+
+
     private void mySetModelPreserPosSelectedIndex(JComboBox cb, Collection c) {
         mySetModelPreserPosSelectedIndex(cb, new Vector(c));
     }
-    
+
     private void mySetModelPreserPosSelectedIndex(JComboBox cb, Vector v) {
         int oldSize = cb.getModel().getSize();
         int oldPos = cb.getSelectedIndex();
@@ -218,7 +218,7 @@ public class SimOEFrame extends JFrame {
             cb.setSelectedIndex(oldPos);
         }
     }
-    
+
     /**
      * set the combo box Goals for the selected scheme
      */
@@ -232,7 +232,7 @@ public class SimOEFrame extends JFrame {
             setGoalState.setEnabled(false);
         }
     }
-    
+
     /**
      * update the goal interface components
      */
@@ -242,7 +242,7 @@ public class SimOEFrame extends JFrame {
         GoalInstance gi = (GoalInstance)goalInstanceInGoal.getSelectedItem();
         if (gi != null) {
             setGoalState.setEnabled(true);
-            
+
             if (gi.getSpec().hasArguments()) {
                 Collection<String> args = gi.getSpec().getArguments().keySet();
                 if (args != null) {
@@ -251,7 +251,7 @@ public class SimOEFrame extends JFrame {
                 }
                 updateGoalArgValue();
             }
-            
+
             goalStateInGoal.setSelectedIndex(0);
             if (gi.isSatisfied()) {
                 goalStateInGoal.setSelectedIndex(1);
@@ -261,7 +261,7 @@ public class SimOEFrame extends JFrame {
             }
         }
     }
-    
+
     /**
      * update the goal argument value
      */
@@ -275,7 +275,7 @@ public class SimOEFrame extends JFrame {
             argValueInGoal.setText(argVal.toString());
         }
     }
-    
+
     /**
      * set the combo box responsible groups for the selected scheme
      */
@@ -296,7 +296,7 @@ public class SimOEFrame extends JFrame {
             }
         }
     }
-    
+
     /**
      * update the agent role interface components
      */
@@ -327,7 +327,7 @@ public class SimOEFrame extends JFrame {
             agAdoptRole.setEnabled(true);
         }
     }
-    
+
     /**
      * update the agent mission interface components
      */
@@ -358,23 +358,23 @@ public class SimOEFrame extends JFrame {
             okMission.setEnabled(true);
         }
     }
-    
-    
+
+
     public void show(String s) {
         currentObject = s;
         pushHistory(currentObject);
         showCurrentObject();
     }
-    
-    
-    
+
+
+
     protected Object getCurrentObject() {
         return currentObject;
     }
     protected void setCurrentObject(Object o ) {
         currentObject = o;
     }
-    
+
     @SuppressWarnings("unused")
     protected void showCurrentObject() {
         if (currentObject == null) {
@@ -384,9 +384,9 @@ public class SimOEFrame extends JFrame {
         String type = showAs.getSelectedItem().toString();
         if (type.startsWith("brief"))
             type = "html";
-        
+
         textArea.setContentType("text/"+type);
-        
+
         try {
             // try String
             String s = (String) currentObject;
@@ -406,11 +406,11 @@ public class SimOEFrame extends JFrame {
             }
             return;
         } catch (Exception e) {}
-        
+
         StringWriter so = new StringWriter();
-        
+
         boolean isHtml = showAs.getSelectedItem().equals("html") || showAs.getSelectedItem().equals("brief-html");
-        
+
         try {
             // try OE
             OE oe = (OE) currentObject;
@@ -434,12 +434,12 @@ public class SimOEFrame extends JFrame {
                 }
             }
         } catch (Exception e) {}
-        
+
         try {
             // try agent
             OEAgent oeAg = (OEAgent) currentObject;
             if (showAs.getSelectedItem().equals("xml")) {
-                textArea.setText( DOMUtils.dom2txt(oeAg) ); 
+                textArea.setText( DOMUtils.dom2txt(oeAg) );
             } else if (isHtml) {
                 try {
                     getAgTransformer().setParameter("agentId", oeAg.getId());
@@ -451,7 +451,7 @@ public class SimOEFrame extends JFrame {
                 }
             }
         } catch (Exception e) {}
-        
+
         try {
             // try scheme instance
             SchemeInstance sch = (SchemeInstance)currentObject;
@@ -468,7 +468,7 @@ public class SimOEFrame extends JFrame {
                 }
             }
         } catch (Exception e) {}
-        
+
         try {
             // try group instance
             GroupInstance gr = (GroupInstance) currentObject;
@@ -485,7 +485,7 @@ public class SimOEFrame extends JFrame {
                 }
             }
         } catch (Exception e) {}
-        
+
         try {
             // try OS
             OS os = (OS) currentObject;
@@ -501,7 +501,7 @@ public class SimOEFrame extends JFrame {
                 }
             }
         } catch (Exception e) {}
-        
+
         try {
             //
             // try Role
@@ -521,7 +521,7 @@ public class SimOEFrame extends JFrame {
                 return;
             }
         } catch (Exception e) {}
-        
+
         try {
             //
             // try Mission
@@ -546,7 +546,7 @@ public class SimOEFrame extends JFrame {
                 return;
             }
         } catch (Exception e) {}
-        
+
         try {
             //
             // try Goal
@@ -571,13 +571,13 @@ public class SimOEFrame extends JFrame {
                 return;
             }
         } catch (Exception e) {}
-        
+
         try {
             // try Group spec
             Group gr = (Group) currentObject;
             if (showAs.getSelectedItem().equals("xml")) {
                 textArea.setText( DOMUtils.dom2txt(gr));
-                
+
             } else {
                 try {
                     getGrSpecTransformer().setParameter("grSpecId", gr.getId());
@@ -589,13 +589,13 @@ public class SimOEFrame extends JFrame {
                 }
             }
         } catch (Exception e) {}
-        
+
         try {
             // try scheme spec
             Scheme sch = (Scheme) currentObject;
             if (showAs.getSelectedItem().equals("xml")) {
                 textArea.setText( DOMUtils.dom2txt(sch));
-                
+
             } else {
                 try {
                     getSchSpecTransformer().setParameter("schemeSpecId", sch.getId());
@@ -613,7 +613,7 @@ public class SimOEFrame extends JFrame {
             SS ss = (SS) currentObject;
             if (showAs.getSelectedItem().equals("xml")) {
                 textArea.setText( DOMUtils.dom2txt(ss));
-                
+
             } else {
                 try {
                     getSSTransformer().transform(new DOMSource( ag.getOS_DOM()), new StreamResult(so));
@@ -624,13 +624,13 @@ public class SimOEFrame extends JFrame {
                 }
             }
         } catch (Exception e) {}
-        
+
         try {
             // try FS
             FS fs = (FS) currentObject;
             if (showAs.getSelectedItem().equals("xml")) {
                 textArea.setText( DOMUtils.dom2txt(fs));
-                
+
             } else {
                 try {
                     getFSTransformer().transform(new DOMSource( ag.getOS_DOM()), new StreamResult(so));
@@ -641,13 +641,13 @@ public class SimOEFrame extends JFrame {
                 }
             }
         } catch (Exception e) {}
-        
+
         try {
             // try DS
             NS ds = (NS) currentObject;
             if (showAs.getSelectedItem().equals("xml")) {
                 textArea.setText( DOMUtils.dom2txt(ds));
-                
+
             } else {
                 try {
                     getDSTransformer().transform(new DOMSource( ag.getOS_DOM()), new StreamResult(so));
@@ -658,8 +658,8 @@ public class SimOEFrame extends JFrame {
                 }
             }
         } catch (Exception e) {}
-        
-        
+
+
         try {
             if (showAs.getSelectedItem().equals("html") || showAs.getSelectedItem().equals("brief-html")) {
                 textArea.setText(so.toString());
@@ -681,14 +681,14 @@ public class SimOEFrame extends JFrame {
             return null;
         }
     }
-    
+
     private Transformer getOSTransformer() throws TransformerConfigurationException {
         if (osTransformer == null) {
             osTransformer = tFactory.newTransformer(getXSL("os"));
         }
         return osTransformer;
     }
-    
+
     private Transformer getGrSpecTransformer() throws TransformerConfigurationException {
         if (grSpecTransformer == null) {
             grSpecTransformer = tFactory.newTransformer(getXSL("groupSpec"));
@@ -709,21 +709,21 @@ public class SimOEFrame extends JFrame {
         }
         return roleTransformer;
     }
-    
+
     private Transformer getMissionTransformer() throws TransformerConfigurationException {
         if (missionTransformer == null) {
             missionTransformer   = tFactory.newTransformer(getXSL("mission"));
         }
         return missionTransformer;
     }
-    
+
     private Transformer getGoalTransformer() throws TransformerConfigurationException {
         if (goalTransformer == null) {
             goalTransformer   = tFactory.newTransformer(getXSL("goal"));
         }
         return goalTransformer;
     }
-    
+
     private Transformer getSSTransformer() throws TransformerConfigurationException {
         if (ssTransformer == null) {
             ssTransformer   = tFactory.newTransformer(getXSL("ss"));
@@ -742,7 +742,7 @@ public class SimOEFrame extends JFrame {
         }
         return dsTransformer;
     }
-    
+
     private Transformer getOETransformer() throws TransformerConfigurationException {
         if (oeTransformer == null) {
             oeTransformer   = tFactory.newTransformer(getXSL("oe"));
@@ -773,7 +773,7 @@ public class SimOEFrame extends JFrame {
         }
         return schTransformer;
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -986,470 +986,470 @@ public class SimOEFrame extends JFrame {
             OESimTabPanel.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EtchedBorder(), "OE dynamics simulation", javax.swing.border.TitledBorder.TRAILING, javax.swing.border.TitledBorder.DEFAULT_POSITION));
             jTabbedPane3.setTabPlacement(javax.swing.JTabbedPane.LEFT);
             jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
             jLabel6.setText("subgroup of");
             jPanel15.add(jLabel6);
-    
+
             grCreatedGroups.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "root" }));
             jPanel15.add(grCreatedGroups);
-    
+
             jLabel7.setText("group specification");
             jPanel15.add(jLabel7);
-    
+
             jPanel15.add(grSpecsInGrCreation);
-    
+
             okGroupCreation.setText("ok");
             okGroupCreation.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     okGroupCreationActionPerformed(evt);
                 }
             });
-    
+
             jPanel15.add(okGroupCreation);
-    
+
             jTabbedPane3.addTab("create", null, jPanel15, "");
-    
+
             jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
             jLabel20.setText("group instance");
             jPanel21.add(jLabel20);
-    
+
             jPanel21.add(grInstancesInGroup);
-    
+
             okFinishGr.setText("finish");
             okFinishGr.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     okFinishGrActionPerformed(evt);
                 }
             });
-    
+
             jPanel21.add(okFinishGr);
-    
+
             jTabbedPane3.addTab("remove", null, jPanel21, "");
-    
+
             OESimTabPanel.addTab("groups", null, jTabbedPane3, "");
-    
+
             jTabbedPane2.setTabPlacement(javax.swing.JTabbedPane.LEFT);
             jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
             jLabel9.setText("scheme specification");
             jPanel19.add(jLabel9);
-    
+
             jPanel19.add(schSpecInSchStart);
-    
+
             okSCHStart.setText("start");
             okSCHStart.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     okSCHStartActionPerformed(evt);
                 }
             });
-    
+
             jPanel19.add(okSCHStart);
-    
+
             jTabbedPane2.addTab("start", null, jPanel19, "");
-    
+
             jPanel30.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
             jPanel9.setLayout(new java.awt.GridBagLayout());
-    
+
             jPanel29.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 1));
-    
+
             jPanel29.setBorder(new javax.swing.border.TitledBorder(null, "scheme selection", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 2, 11)));
             jLabel12.setText("scheme");
             jPanel29.add(jLabel12);
-    
+
             schInstanceInRespGr.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     schInstanceInRespGrActionPerformed(evt);
                 }
             });
-    
+
             jPanel29.add(schInstanceInRespGr);
-    
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
             gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
             gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
             jPanel9.add(jPanel29, gridBagConstraints);
-    
+
             jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 1));
-    
+
             jPanel18.setBorder(new javax.swing.border.TitledBorder(null, "add group", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 2, 11)));
             jPanel18.add(grInRespGr);
-    
+
             addRespGr.setText("add");
             addRespGr.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     addRespGrActionPerformed(evt);
                 }
             });
-    
+
             jPanel18.add(addRespGr);
-    
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
             jPanel9.add(jPanel18, gridBagConstraints);
-    
+
             jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 1));
-    
+
             jPanel28.setBorder(new javax.swing.border.TitledBorder(null, "remove group", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 2, 11)));
             jPanel28.add(schGrsInRespGr);
-    
+
             remRespGr.setText("remove");
             remRespGr.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     remRespGrActionPerformed(evt);
                 }
             });
-    
+
             jPanel28.add(remRespGr);
-    
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
             jPanel9.add(jPanel28, gridBagConstraints);
-    
+
             jPanel30.add(jPanel9);
-    
+
             jTabbedPane2.addTab("responsible groups", null, jPanel30, "");
-    
+
             jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
             jPanel23.setLayout(new java.awt.GridBagLayout());
-    
+
             jPanel24.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 1));
-    
+
             jPanel24.setBorder(new javax.swing.border.TitledBorder(null, "goal selection", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 2, 11)));
             jLabel13.setText("scheme");
             jPanel24.add(jLabel13);
-    
+
             schInstancesInGoal.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent evt) {
                     schInstancesInGoalItemStateChanged(evt);
                 }
             });
-    
+
             jPanel24.add(schInstancesInGoal);
-    
+
             jLabel14.setText("goal");
             jPanel24.add(jLabel14);
-    
+
             goalInstanceInGoal.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent evt) {
                     goalInstanceInGoalItemStateChanged(evt);
                 }
             });
-    
+
             jPanel24.add(goalInstanceInGoal);
-    
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
             gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
             jPanel23.add(jPanel24, gridBagConstraints);
-    
+
             jPanel26.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 1));
-    
+
             jPanel26.setBorder(new javax.swing.border.TitledBorder(null, "state", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 2, 11)));
             goalStateInGoal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "waiting", "satisfied", "impossible" }));
             jPanel26.add(goalStateInGoal);
             jPanel26.add(new JLabel("by"));
             jPanel26.add(agNamesInGoalInstance);
-    
+
             setGoalState.setText("set");
             setGoalState.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     setGoalStateActionPerformed(evt);
                 }
             });
-    
+
             jPanel26.add(setGoalState);
-    
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
             gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
             gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
             jPanel23.add(jPanel26, gridBagConstraints);
-    
+
             jPanel25.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 1));
-    
+
             jPanel25.setBorder(new javax.swing.border.TitledBorder(null, "arguments", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 2, 11)));
             jLabel15.setText("argument");
             jPanel25.add(jLabel15);
-    
+
             goalArgListInGoal.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent evt) {
                     goalArgListInGoalItemStateChanged(evt);
                 }
             });
-    
+
             jPanel25.add(goalArgListInGoal);
-    
+
             jLabel16.setText("value");
             jPanel25.add(jLabel16);
-    
+
             argValueInGoal.setColumns(10);
             argValueInGoal.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     setArgValueActionPerformed(evt);
                 }
             });
-    
+
             jPanel25.add(argValueInGoal);
-    
+
             setArgValue.setText("set");
             setArgValue.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     setArgValueActionPerformed(evt);
                 }
             });
-    
+
             jPanel25.add(setArgValue);
-    
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridwidth = 2;
             gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
             gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
             jPanel23.add(jPanel25, gridBagConstraints);
-    
+
             jPanel22.add(jPanel23);
-    
+
             jTabbedPane2.addTab("goals state", null, jPanel22, "");
-    
+
             jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
             jLabel18.setText("scheme instance");
             jPanel10.add(jLabel18);
-    
+
             jPanel10.add(schInstanceInSchFinish);
-    
+
             finishScheme.setText("finish");
             finishScheme.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     finishSchemeActionPerformed(evt);
                 }
             });
-    
+
             jPanel10.add(finishScheme);
-    
+
             jTabbedPane2.addTab("finish", null, jPanel10, "");
-    
+
             jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
             jLabel17.setText("scheme instance");
             jPanel12.add(jLabel17);
-    
+
             jPanel12.add(schInstanceInAbort);
-    
+
             abortMission.setText("abort");
             abortMission.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     abortMissionActionPerformed(evt);
                 }
             });
-    
+
             jPanel12.add(abortMission);
-    
+
             jTabbedPane2.addTab("abort", null, jPanel12, "");
-    
+
             OESimTabPanel.addTab("schemes", null, jTabbedPane2, "");
-    
+
             jTabbedPane4.setTabPlacement(javax.swing.JTabbedPane.LEFT);
             jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
             jLabel1.setText("agent's name");
             jPanel13.add(jLabel1);
-    
+
             agName.setColumns(10);
             agName.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     agCreationOkPerformed(evt);
                 }
             });
-    
+
             jPanel13.add(agName);
-    
+
             agCreationOk.setText("create");
             agCreationOk.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     agCreationOkPerformed(evt);
                 }
             });
-    
+
             jPanel13.add(agCreationOk);
-    
+
             jTabbedPane4.addTab("create", null, jPanel13, "");
-    
+
             jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
             jLabel3.setText("agent");
             jPanel14.add(jLabel3);
-    
+
             agNamesInRole.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     agNamesInRoleActionPerformed(evt);
                 }
             });
-    
+
             jPanel14.add(agNamesInRole);
-    
+
             adoptORgiveUpRole.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "adopts", "gives up" }));
             adoptORgiveUpRole.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent evt) {
                     adoptORgiveUpRoleItemStateChanged(evt);
                 }
             });
-    
+
             jPanel14.add(adoptORgiveUpRole);
-    
+
             jLabel4.setText("the role");
             jPanel14.add(jLabel4);
-    
+
             jPanel14.add(agRolesInRole);
-    
+
             jLabel5.setText("in the group");
             jPanel14.add(jLabel5);
-    
+
             jPanel14.add(grInRole);
-    
+
             agAdoptRole.setText("ok");
             agAdoptRole.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     agAdoptRoleActionPerformed(evt);
                 }
             });
-    
+
             jPanel14.add(agAdoptRole);
-    
+
             jTabbedPane4.addTab("roles", null, jPanel14, "");
-    
+
             jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
             jLabel8.setText("agent");
             jPanel20.add(jLabel8);
-    
+
             agNamesInMission.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     agNamesInMissionActionPerformed(evt);
                 }
             });
-    
+
             jPanel20.add(agNamesInMission);
-    
+
             commitORuncommit.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "commits", "uncommits" }));
             commitORuncommit.addItemListener(new java.awt.event.ItemListener() {
                 public void itemStateChanged(java.awt.event.ItemEvent evt) {
                     commitORuncommitItemStateChanged(evt);
                 }
             });
-    
+
             jPanel20.add(commitORuncommit);
-    
+
             jLabel10.setText("to the mission");
             jPanel20.add(jLabel10);
-    
+
             jPanel20.add(missionInMission);
-    
+
             jLabel11.setText("in the scheme");
             jPanel20.add(jLabel11);
-    
+
             jPanel20.add(schInstancesInMission);
-    
+
             okMission.setText("ok");
             okMission.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     okMissionActionPerformed(evt);
                 }
             });
-    
+
             jPanel20.add(okMission);
-    
+
             jTabbedPane4.addTab("missions", null, jPanel20, "");
-    
+
             jPanel27.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
             jLabel22.setText("agent");
             jPanel27.add(jLabel22);
-    
+
             jPanel27.add(agNamesInRemoveAg);
-    
+
             removeAg.setText("remove");
             removeAg.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     removeAgActionPerformed(evt);
                 }
             });
-    
+
             jPanel27.add(removeAg);
-    
+
             checkRemoveAg.setSelected(true);
             checkRemoveAg.setText("check consistencies");
             checkRemoveAg.setToolTipText("will (or not) check if the agent is playing a role");
             jPanel27.add(checkRemoveAg);
-    
+
             jTabbedPane4.addTab("remove", null, jPanel27, "");
-    
+
             OESimTabPanel.addTab("agents", null, jTabbedPane4, "");
-            
+
             getContentPane().add(OESimTabPanel, java.awt.BorderLayout.SOUTH);
         }
 
         pack();
     }//GEN-END:initComponents
-    
+
     private void schInstanceInRespGrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_schInstanceInRespGrActionPerformed
         // Add your handling code here:
         updateSchemeRespGoals();
     }//GEN-LAST:event_schInstanceInRespGrActionPerformed
-    
+
     private void remRespGrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_remRespGrActionPerformed
         // Add your handling code here:
         ag.remResponsibleGroupToSCH( (SchemeInstance)schInstanceInRespGr.getSelectedItem(), (GroupInstance)schGrsInRespGr.getSelectedItem());
     }//GEN-LAST:event_remRespGrActionPerformed
-    
+
     private void addRespGrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRespGrActionPerformed
         // Add your handling code here:
         ag.addResponsibleGroupToSCH( (SchemeInstance)schInstanceInRespGr.getSelectedItem(), (GroupInstance)grInRespGr.getSelectedItem());
     }//GEN-LAST:event_addRespGrActionPerformed
-    
+
     private void commitORuncommitItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_commitORuncommitItemStateChanged
         // Add your handling code here:
         updateAgentMissionComponents();
     }//GEN-LAST:event_commitORuncommitItemStateChanged
-    
+
     private void agNamesInMissionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agNamesInMissionActionPerformed
         // Add your handling code here:
         updateAgentMissionComponents();
     }//GEN-LAST:event_agNamesInMissionActionPerformed
-    
+
     private void agNamesInRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agNamesInRoleActionPerformed
         // Add your handling code here:
         updateAgentRoleComponents();
     }//GEN-LAST:event_agNamesInRoleActionPerformed
-    
+
     private void adoptORgiveUpRoleItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_adoptORgiveUpRoleItemStateChanged
         // Add your handling code here:
         updateAgentRoleComponents();
     }//GEN-LAST:event_adoptORgiveUpRoleItemStateChanged
-    
+
     private void removeAgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAgActionPerformed
         // Add your handling code here:
         ag.removeAg(agNamesInRemoveAg.getSelectedItem().toString(), checkRemoveAg.isSelected());
     }//GEN-LAST:event_removeAgActionPerformed
-    
+
     private void abortMissionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortMissionActionPerformed
         // Add your handling code here:
         ag.abortSCH((SchemeInstance)schInstanceInAbort.getSelectedItem());
     }//GEN-LAST:event_abortMissionActionPerformed
-    
+
     private void okFinishGrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okFinishGrActionPerformed
         // Add your handling code here:
         ag.removeGr( grInstancesInGroup.getSelectedItem().toString() );
     }//GEN-LAST:event_okFinishGrActionPerformed
-    
+
     private void finishSchemeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_finishSchemeActionPerformed
         // Add your handling code here:
         ag.finishSCH((SchemeInstance)schInstanceInSchFinish.getSelectedItem());
     }//GEN-LAST:event_finishSchemeActionPerformed
-    
+
     private void setGoalStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setGoalStateActionPerformed
         // Add your handling code here:
         GoalInstance gi = (GoalInstance)goalInstanceInGoal.getSelectedItem();
@@ -1462,7 +1462,7 @@ public class SimOEFrame extends JFrame {
             }
         }
     }//GEN-LAST:event_setGoalStateActionPerformed
-    
+
     private void setArgValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setArgValueActionPerformed
         // Add your handling code here:
         GoalInstance gi = (GoalInstance)goalInstanceInGoal.getSelectedItem();
@@ -1473,22 +1473,22 @@ public class SimOEFrame extends JFrame {
             }
         }
     }//GEN-LAST:event_setArgValueActionPerformed
-    
+
     private void goalArgListInGoalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_goalArgListInGoalItemStateChanged
         // Add your handling code here:
         updateGoalArgValue();
     }//GEN-LAST:event_goalArgListInGoalItemStateChanged
-    
+
     private void goalInstanceInGoalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_goalInstanceInGoalItemStateChanged
         // Add your handling code here:
         updateGoalsComponents();
     }//GEN-LAST:event_goalInstanceInGoalItemStateChanged
-    
+
     private void schInstancesInGoalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_schInstancesInGoalItemStateChanged
         // Add your handling code here:
         updateSchemeGoalsCB();
     }//GEN-LAST:event_schInstancesInGoalItemStateChanged
-    
+
     private void okMissionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okMissionActionPerformed
         // Add your handling code here:
         if (commitORuncommit.getSelectedIndex() == 0) {
@@ -1501,22 +1501,22 @@ public class SimOEFrame extends JFrame {
             schInstancesInMission.getSelectedItem().toString());
         }
     }//GEN-LAST:event_okMissionActionPerformed
-    
+
     private void okSCHStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okSCHStartActionPerformed
         // Add your handling code here:
         ag.startSCH(schSpecInSchStart.getSelectedItem().toString());
     }//GEN-LAST:event_okSCHStartActionPerformed
-    
+
     private void pushHistory(Object o) {
         if (o == null) return;
-        
+
         if (history.isEmpty()) {
             history.push(o);
         } else if (history.peek() != o) {
             back.setToolTipText(history.peek().toString());
             history.push(o);
         }
-        
+
         if (history.size() <= 1) {
             back.setEnabled(false);
             back.setToolTipText("no back");
@@ -1525,7 +1525,7 @@ public class SimOEFrame extends JFrame {
         }
         //System.out.println("pushing "+o.toString());
     }
-    
+
     public void pbackActionPerformed() {
         backActionPerformed(null);
     }
@@ -1535,7 +1535,7 @@ public class SimOEFrame extends JFrame {
             history.pop();
             if (! history.isEmpty()) {
                 currentObject = history.peek();
-                
+
                 // set tool tiop
                 history.pop();
                 if (! history.isEmpty()) {
@@ -1552,7 +1552,7 @@ public class SimOEFrame extends JFrame {
             back.setEnabled(true);
         }
     }//GEN-LAST:event_backActionPerformed
-    
+
     private void agAdoptRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agAdoptRoleActionPerformed
         // Add your handling code here:
         if (adoptORgiveUpRole.getSelectedIndex() == 0) {
@@ -1565,17 +1565,17 @@ public class SimOEFrame extends JFrame {
             grInRole.getSelectedItem().toString());
         }
     }//GEN-LAST:event_agAdoptRoleActionPerformed
-    
+
     private void okGroupCreationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okGroupCreationActionPerformed
         // Add your handling code here:
         ag.createGr(grCreatedGroups.getSelectedItem().toString(), grSpecsInGrCreation.getSelectedItem().toString());
     }//GEN-LAST:event_okGroupCreationActionPerformed
-    
+
     private void agCreationOkPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agCreationOkPerformed
         // Add your handling code here:
         ag.createAg( agName.getText().trim());
     }//GEN-LAST:event_agCreationOkPerformed
-    
+
     private void oeTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_oeTreeValueChanged
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)evt.getPath().getLastPathComponent();
         currentObject = node.getUserObject();
@@ -1587,7 +1587,7 @@ public class SimOEFrame extends JFrame {
             showCurrentObject();
         } catch (Exception e) {}
     }//GEN-LAST:event_oeTreeValueChanged
-        
+
     private void hyperLink(javax.swing.event.HyperlinkEvent evt) {//GEN-FIRST:event_hyperLink
         // Add your handling code here:
         if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
@@ -1653,13 +1653,13 @@ public class SimOEFrame extends JFrame {
             showCurrentObject();
         }
     }//GEN-LAST:event_hyperLink
-    
+
     private void changeShowAs(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_changeShowAs
         // Add your handling code here:
         showCurrentObject();
     }//GEN-LAST:event_changeShowAs
-        
-    
+
+
     private void osTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_osTreeValueChanged
         // Add your handling code here:
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)evt.getPath().getLastPathComponent();
@@ -1672,14 +1672,14 @@ public class SimOEFrame extends JFrame {
             showCurrentObject();
         } catch (Exception e) {}
     }//GEN-LAST:event_osTreeValueChanged
-    
-    
+
+
     private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
         //System.exit(0);
         //ag.stopAg();
     }//GEN-LAST:event_exitForm
-    
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel27;
     private javax.swing.JPanel jPanel25;
@@ -1781,5 +1781,5 @@ public class SimOEFrame extends JFrame {
     private javax.swing.JButton okGroupCreation;
     private javax.swing.JPanel jPanel29;
     // End of variables declaration//GEN-END:variables
-    
+
 }

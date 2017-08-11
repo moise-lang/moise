@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 
 /**
  * Represents a norm (permission, obligation, ...) from a role to a mission.
- * 
+ *
  * @navassoc - role - Role
  * @navassoc - mission - Mission
  *
@@ -29,7 +29,7 @@ public class Norm extends MoiseElement implements ToXML {
     protected TimeConstraint tc = null;
     protected NS             ns = null;
     protected OpTypes        op = OpTypes.obligation;
-    
+
     public Norm(NS ns) throws MoiseConsistencyException {
         this.ns = ns;
     }
@@ -45,29 +45,29 @@ public class Norm extends MoiseElement implements ToXML {
     public void setType(OpTypes op) {
         this.op = op;
     }
-    
+
     public OpTypes getType() {
         return op;
     }
-    
+
     public void setRole(Role r) throws MoiseConsistencyException {
         if (r == null) {
             throw new MoiseConsistencyException("the role can not be null in a norm.");
         }
         role = r;
     }
-    
+
     public void setRole(String roleId) throws MoiseConsistencyException {
         Role r = ns.getOS().getSS().getRoleDef(roleId);
         if (r == null)
             throw new MoiseConsistencyException("the role "+roleId+" is not defined and thus can not be used in a norm.");
         setRole(r);
     }
-    
+
     public Role getRole() {
         return role;
     }
-    
+
     public void setMission(Mission m) throws MoiseConsistencyException {
         if (m == null) {
             throw new MoiseConsistencyException("the mission can not be null in a norm.");
@@ -81,18 +81,18 @@ public class Norm extends MoiseElement implements ToXML {
             throw new MoiseConsistencyException("the mission "+missionId+" is not defined and thus can not be used in a norm.");
         setMission(m);
     }
-    
+
     public Mission getMission() {
         return mission;
     }
-    
+
     public void setTimeConstraint(TimeConstraint  t) {
         tc = t;
     }
     public TimeConstraint getTimeConstraint() {
         return tc;
     }
-    
+
     public String getCondition() {
         if (condition == null || condition.length() == 0)
             return "true";
@@ -102,7 +102,7 @@ public class Norm extends MoiseElement implements ToXML {
     public void setCondition(String r) {
         condition = r;
     }
-    
+
 
     public String toString() {
         return op + "(" + role +","+ mission +","+ tc + ")";
@@ -129,7 +129,7 @@ public class Norm extends MoiseElement implements ToXML {
         }
         return ele;
     }
-    
+
     public void setFromDOM(Element ele) throws MoiseException {
         setPropertiesFromDOM(ele);
         setId(ele.getAttribute("id"));
@@ -142,5 +142,5 @@ public class Norm extends MoiseElement implements ToXML {
         if (ele.getAttribute("condition") != null && ele.getAttribute("condition").length()>0) {
             setCondition(ele.getAttribute("condition"));
         }
-    }   
+    }
 }

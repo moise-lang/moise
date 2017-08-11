@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
-<organisational-specification 
+<organisational-specification
     id="mining-robots"
     os-version="0.3"
-  
+
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='http://moise.sourceforge.net/os http://moise.sourceforge.net/xml/os.xsd' >
-    
+
     <structural-specification>
         <role-definitions>
             <role id="miner"/>
@@ -33,13 +33,13 @@
                 <role id="courier"/>
             </roles>
             <links>
-                <link from="miner" to="miner" 
-                type="communication" 
-                scope="intra-group" 
+                <link from="miner" to="miner"
+                type="communication"
+                scope="intra-group"
                 bi-dir="false"/>
-                <link from="leader" to="miner" 
-                type="authority" 
-                scope="intra-group" 
+                <link from="leader" to="miner"
+                type="authority"
+                scope="intra-group"
                 bi-dir="false"/>
             </links>
 
@@ -80,7 +80,7 @@
                     </goal>
                 </plan>
             </goal>
-  
+
             <mission id="mMiner" min="1" max="1">
                 <goal id="mp"/>
                 <goal id="proposeMP"/>

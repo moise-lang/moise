@@ -26,27 +26,27 @@ import org.xml.sax.InputSource;
  * @author Jomi Fred Hubner
  */
 public class SimOE {
-    
+
     public static boolean debug = false;
-    
+
     protected OE currentOE  = null;
     protected OS currentOS  = null;
-    
+
     protected String OExml  = null;
     protected Node   OE_DOM = null;
-    
+
     protected String OSxml  = null;
     protected Node   OS_DOM = null;
     protected DocumentBuilder parser = null;
-    
-    
+
+
     public    SimOEFrame frame;
     private   String     name = "OrgView";
-    
-    
+
+
     //private static String xmlURI = "xml/";
     //private static String binURI = "./";
-    
+
     public static void main(String[] args) {
         //String binDir = ".";
         String file = null;
@@ -60,7 +60,7 @@ public class SimOE {
             file = file.replaceAll("\\\\", "/");
             System.out.println("Openning "+file);
         }
-        
+
         try {
             if (file != null) {
                 SimOE v = new SimOE(file);
@@ -83,8 +83,8 @@ public class SimOE {
             System.exit(1);
         }
     }
-    
-    
+
+
     public SimOE() {
         this(true);
     }
@@ -92,8 +92,8 @@ public class SimOE {
         frame = new SimOEFrame(this, addSim);
         createUpdateScreenThread();
     }
-    
-    
+
+
     public SimOE(String OSxmlURI) throws Exception {
         this();
         currentOE = OE.createOE("print", OSxmlURI);
@@ -104,7 +104,7 @@ public class SimOE {
             frame.showOE();
         }
     }
-    
+
     public SimOE(OE oe) throws Exception {
         this(oe, true);
     }
@@ -117,24 +117,24 @@ public class SimOE {
         frame.setVisible(true);
         frame.showOE();
     }
-    
+
     public void setOE(OE oe) {
         currentOE = oe;
     }
-    
+
     public OE getCurrentOE() {
         return currentOE;
     }
-    
+
     public void setName(String s) {
         name = s;
         frame.setTitle("Moise+ ("+name+")");
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     protected String getOExml() {
         if (currentOE == null) {
             return "";
@@ -145,7 +145,7 @@ public class SimOE {
         }
         return OExml;
     }
-    
+
     protected Node getOE_DOM() {
         if (currentOE == null) {
             return null;
@@ -155,7 +155,7 @@ public class SimOE {
                 if (parser == null) {
                     parser = DOMUtils.getParser();
                 }
-                
+
                 OE_DOM = DOMUtils.getAsXmlDocument(currentOE); //.getAsXmlDocument(); //arser.parse(new InputSource(new StringReader(getOExml())));//parser.getDocument();
             }
         } catch (Exception e) {
@@ -163,11 +163,11 @@ public class SimOE {
         }
         return OE_DOM;
     }
-    
+
     protected OS getCurrentOS() {
         return currentOS;
     }
-    
+
     protected String getOSxml() {
         if (currentOS == null) {
             return "";
@@ -175,10 +175,10 @@ public class SimOE {
         if (OSxml == null) {
             OSxml = DOMUtils.dom2txt(currentOS); //OSGenerateXML.generateOS(currentOS);
         }
-        
+
         return OSxml;
     }
-    
+
     protected Node getOS_DOM() {
         if (currentOS == null) {
             return null;
@@ -188,7 +188,7 @@ public class SimOE {
                 if (parser == null) {
                     parser = DOMUtils.getParser();
                 }
-                
+
                 InputSource si = new InputSource(new StringReader(getOSxml()));
                 //si.setSystemId(xmlURI);
                 OS_DOM = parser.parse(si);
@@ -198,7 +198,7 @@ public class SimOE {
         }
         return OS_DOM;
     }
-    
+
 
     protected void setOS(OS os) {
         try {
@@ -209,10 +209,10 @@ public class SimOE {
             e.printStackTrace();
         }
     }
-    
+
     private boolean running = true;
     private boolean needsScreenUpdate = true;
-    
+
     // creates a thread that updates (if necessary) the screen each second
     private void createUpdateScreenThread() {
         new Thread() {
@@ -236,12 +236,12 @@ public class SimOE {
             }
         }.start();
     }
-    
-    
-    
+
+
+
     // for simulation
     // ***************************
-        
+
     public void updateScreen() {
         needsScreenUpdate = true;
         //OExml = null;
@@ -249,12 +249,12 @@ public class SimOE {
         //frame.uptadeOEComps();
         //frame.showCurrentObject();
     }
-    
+
     public void disposeWindow() {
         frame.dispose();
         running = false;
     }
-    
+
     void createAg(String name) {
         removeErrorLastFromFrame();
         try {
@@ -264,7 +264,7 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
+
     void removeAg(String name, boolean check) {
         removeErrorLastFromFrame();
         try {
@@ -275,8 +275,8 @@ public class SimOE {
             e.printStackTrace();
         }
     }
-    
-    
+
+
     void createGr(String superGroup, String spec) {
         removeErrorLastFromFrame();
         try {
@@ -290,7 +290,7 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
+
     void removeGr(String grId) {
         removeErrorLastFromFrame();
         try {
@@ -300,8 +300,8 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
-    
+
+
     SchemeInstance startSCH(String schSpecId) {
         removeErrorLastFromFrame();
         try {
@@ -313,7 +313,7 @@ public class SimOE {
         }
         return null;
     }
-    
+
     void finishSCH(SchemeInstance sch) {
         removeErrorLastFromFrame();
         try {
@@ -323,7 +323,7 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
+
     void abortSCH(SchemeInstance sch) {
         removeErrorLastFromFrame();
         try {
@@ -333,7 +333,7 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
+
     void addResponsibleGroupToSCH(SchemeInstance sch, GroupInstance gr) {
         removeErrorLastFromFrame();
         try {
@@ -343,7 +343,7 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
+
     void remResponsibleGroupToSCH(SchemeInstance sch, GroupInstance gr) {
         removeErrorLastFromFrame();
         try {
@@ -353,7 +353,7 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
+
     void agCommitsMission(String agId, String missionId, String schId) {
         removeErrorLastFromFrame();
         try {
@@ -364,7 +364,7 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
+
     void agUncommitsMission(String agId, String missionId, String schId) {
         removeErrorLastFromFrame();
         try {
@@ -375,7 +375,7 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
+
     void agAdoptsRole(String agId, String roleId, String grId) {
         removeErrorLastFromFrame();
         try {
@@ -386,7 +386,7 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
+
     void agGiveUpRole(String agId, String roleId, String grId) {
         removeErrorLastFromFrame();
         try {
@@ -397,8 +397,8 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
-    
+
+
     void setGoalArg(GoalInstance gi, String arg, String val) {
         removeErrorLastFromFrame();
         try {
@@ -408,8 +408,8 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
-    
+
+
     void setGoalStateSatisfied(GoalInstance gi, OEAgent ag) {
         removeErrorLastFromFrame();
         try {
@@ -419,7 +419,7 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
+
     void setGoalStateImpossible(GoalInstance gi, OEAgent ag) {
         removeErrorLastFromFrame();
         try {
@@ -429,8 +429,8 @@ public class SimOE {
             frame.show("Error="+e);
         }
     }
-    
-    
+
+
     void removeErrorLastFromFrame() {
         // remove last error
         try {
@@ -440,15 +440,15 @@ public class SimOE {
             }
         } catch (Exception e) {}
     }
-    
+
     protected static void print(String s) {
         if (debug) {
             System.err.println("** "+s);
         }
     }
-    
+
     protected static void printErr(String s) {
         System.err.println("Error: "+s);
     }
-    
+
 }

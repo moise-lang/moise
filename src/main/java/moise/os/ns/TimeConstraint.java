@@ -12,11 +12,11 @@ public class TimeConstraint implements Serializable {
     private static final long serialVersionUID = 1L;
 
     String tc = "All";
-    
+
     public TimeConstraint(String desc) {
         tc = desc;
     }
-    
+
     public String getTC() {
         return tc;
     }

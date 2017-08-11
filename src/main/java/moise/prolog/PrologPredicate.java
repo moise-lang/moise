@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/** 
+/**
  * A general PrologPredicate:
  * <functor>(id,attributes([<terms>]), <terms>)
  */
 public class PrologPredicate implements ToProlog {
     String functor;
-    
+
     List<String> attributes = new ArrayList<String>();
     List<String> terms = new ArrayList<String>();
-    
+
     public PrologPredicate(String f) {
         functor = f;
     }
-    
+
     /** adds a boolean attribute */
     public void addAttribute(String id, boolean value) {
         if (value) {
@@ -30,11 +30,11 @@ public class PrologPredicate implements ToProlog {
             attributes.add(id+("("+value+")"));
         }
     }
-    
+
     public void addTerm(String t) {
         terms.add(t);
     }
-    
+
     public String getAsProlog() {
         StringBuffer p = new StringBuffer(functor);
         if (attributes.size() > 0 || terms.size() > 0) {
@@ -60,9 +60,9 @@ public class PrologPredicate implements ToProlog {
         if (attributes.size() > 0 || terms.size() > 0) {
             p.append(")");
         }
-        return p.toString(); 
+        return p.toString();
     }
-    
+
     public String toString() {
         return getAsProlog();
     }

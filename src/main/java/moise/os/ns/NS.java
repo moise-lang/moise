@@ -16,41 +16,41 @@ import org.w3c.dom.Element;
 
 /**
  * Represents a Normative Specification.
- * 
+ *
  * @composed - norms * Norm
- * 
+ *
  * @author Jomi Fred Hubner
  */
 public class NS extends MoiseElement implements ToXML {
-    
+
     private static final long serialVersionUID = 1L;
 
     public enum OpTypes { obligation, permission };
-    
+
     protected Set<Norm> norms = new HashSet<Norm>();
     private   OS        os    = null;
-    
+
     protected String    nplProgram = null;
-    
+
     //protected Map<String,String>   opTypes   = new HashMap<String,String> ();
-    
+
     /** Creates new NS */
     public NS(OS os) {
         super();
         this.os = os;
     }
-    
+
     public OS getOS() {
         return os;
     }
-    
+
     public void addNorm(Norm n) {
         norms.add(n);
     }
     public void addNorm(Collection<Norm> ns) {
         norms.addAll(ns);
     }
-    
+
     public Norm getNorm(String nId) {
         for (Norm n: norms) {
             if (n.getId().equals(nId))
@@ -58,15 +58,15 @@ public class NS extends MoiseElement implements ToXML {
         }
         return null;
     }
-    
+
     public Collection<Norm> getNorms() {
         return norms;
     }
-    
+
     public String getNPLNorms() {
         return nplProgram;
     }
-    
+
     /** returns true whether there is a <i>type</i> norm from roleId to missionId.
      *  if some of the parameters is null, it will not considered in the comparison
      */
@@ -88,14 +88,14 @@ public class NS extends MoiseElement implements ToXML {
                     has = false;
                 }
             }
-            
+
             if (has) {
                 return true;
             }
         }
         return false;
     }
-    
+
     /** remove the norms for the role r */
     public void removeNorms(Role r) {
         for (Norm n: norms) {
@@ -107,18 +107,18 @@ public class NS extends MoiseElement implements ToXML {
             }
         }
     }
-    
-    
+
+
     public static String getXMLTag() {
         return "normative-specification";
     }
-    
+
     public Element getAsDOM(Document document) {
         Element ele = (Element) document.createElement(getXMLTag());
         if (getProperties().size() > 0) {
             ele.appendChild( getPropertiesAsDOM(document));
         }
-        
+
         for (Norm n: norms) {
             ele.appendChild(n.getAsDOM(document));
         }
@@ -136,7 +136,7 @@ public class NS extends MoiseElement implements ToXML {
             }
             addNorm(n);
         }
-        
+
         for (Element e: DOMUtils.getDOMDirectChilds(ele, "npl-norms")) {
             if (nplProgram == null)
                 nplProgram = "";

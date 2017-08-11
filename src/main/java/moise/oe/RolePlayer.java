@@ -22,16 +22,16 @@ import org.w3c.dom.Element;
  @navassoc - agent   - OEAgent
  @navassoc - role-specification - Role
  @navassoc - group   - GroupInstance
- 
+
  @author Jomi Fred Hubner
 */
 public class RolePlayer extends Player implements ToXML {
-    
+
     private static final long serialVersionUID = 1L;
 
     final private Role          role;
     final private GroupInstance gr;
-    
+
     protected RolePlayer(Role role, OEAgent ag, GroupInstance gr) throws MoiseConsistencyException {
         super(ag);
         if (role == null) {
@@ -40,10 +40,10 @@ public class RolePlayer extends Player implements ToXML {
         this.role = role;
         this.gr   = gr;
     }
-    
+
     public Role            getRole()    { return role; }
     public GroupInstance   getGroup()   { return gr; }
-    
+
     /**
      * gives all links of type <code>type</code> (e.g. "communication")
      * that this role player has.
@@ -68,7 +68,7 @@ public class RolePlayer extends Player implements ToXML {
         }
         return all;
     }
-    
+
     /**
      *   returns a collection of missions this role player is obliged to commit to.
      *
@@ -82,9 +82,9 @@ public class RolePlayer extends Player implements ToXML {
     public Collection<Permission> getObligations() {
         return getNorms(OpTypes.obligation);
     }
-    
+
     /**
-     *   returns a collection of missions where this role player 
+     *   returns a collection of missions where this role player
      *   is permitted to commit to.
      *
      *   each element in the returned collection is a Permission Object
@@ -97,27 +97,27 @@ public class RolePlayer extends Player implements ToXML {
     public Collection<Permission> getPermissions() {
         return getNorms(OpTypes.permission);
     }
-    
+
     private Collection<Permission> getNorms(OpTypes type) {
         //    for all schemes where responsible group includes my roles group
         //        for all missions in the scheme that the role is obligated/permitted and this agent is not yet committed to
         //           if mission cardinality is not ok
         //               oooops, the agent must/can commit to!
         List<Permission> all = new ArrayList<Permission>();
-        
+
         // all schemes
         for (SchemeInstance sch: gr.getRespSchemes()) {
-            if (sch.isCommitable()) {                
+            if (sch.isCommitable()) {
                 for (Mission mis: sch.getSpec().getMissions()) { // the mission in preferable order
-                    
+
                     // is the mission an obligation/permission for the role
                     if (role.getNorms( type, mis.getId()).size() > 0) {
-                        
+
                         // am i not commit to
                         if (player.getMission( mis.getId(), sch) == null) {
-                            
+
                             // is cardinality not ok
-                            
+
                             if (type == OpTypes.obligation) {
                                 // test the minimum number of players
                                 if (! player.missionMinCardinalityCheck(mis, sch)) {
@@ -136,11 +136,11 @@ public class RolePlayer extends Player implements ToXML {
                 }
             }
         }
-        
+
         Collections.sort(all, new ObligationComparator());
         return all;
     }
-    
+
     @Override
     public int hashCode() {
         final int PRIME = 31;
@@ -174,14 +174,14 @@ public class RolePlayer extends Player implements ToXML {
         return "role-player";
     }
 
-    
+
     public Element getAsDOM(Document document) {
         Element rpEle = (Element) document.createElement(getXMLTag());
         rpEle.setAttribute("role", getRole().getId());
         rpEle.setAttribute("agent", getPlayer().getId());
         return rpEle;
     }
-    
+
     public String toString() {
         return player + "->" + role  + "(" + gr + ")";
     }

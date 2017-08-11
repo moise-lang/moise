@@ -63,7 +63,7 @@
       <xsl:call-template name="AgentRef">
             <xsl:with-param name="id"><xsl:value-of select="@agent"/></xsl:with-param>
       </xsl:call-template>
-      plays 
+      plays
       <xsl:call-template name="RoleRef">
             <xsl:with-param name="id"><xsl:value-of select="@role"/></xsl:with-param>
       </xsl:call-template>
@@ -88,13 +88,13 @@
       <xsl:call-template name="GroupRef">
             <xsl:with-param name="id"><xsl:value-of select="@id"/></xsl:with-param>
       </xsl:call-template>
-      created from specification 
+      created from specification
       <xsl:call-template name="GrSpecRef">
             <xsl:with-param name="id"><xsl:value-of select="@specification"/></xsl:with-param>
       </xsl:call-template>
       <br/>
       </span>
-      
+
       <xsl:apply-templates select="well-formed" />
       <xsl:apply-templates select="players" />
       <xsl:apply-templates select="subgroups" />
@@ -103,8 +103,8 @@
 
 
 <xsl:template match="well-formed">
-   
-    <br/><b style="{$txt-style}">Formation:</b> 
+
+    <br/><b style="{$txt-style}">Formation:</b>
     <blockquote>
         <span style="{$txt-style}">
         <xsl:apply-templates />
@@ -151,7 +151,7 @@
       <xsl:apply-templates select="well-formed" />
       <xsl:apply-templates select="responsible-groups" />
       <br/>
-      
+
       <xsl:apply-templates select="players" />
       <br/>
       <xsl:apply-templates select="goals" />
@@ -166,7 +166,7 @@
         <b style="{$txt-style}">no</b> group is responsible for this scheme!
     </xsl:if>
     <xsl:if test="count(group)>0">
-    
+
         <b style="{$txt-style}">Responsible groups</b>:
             <span style="{$txt-style}">
             <xsl:for-each select="group">
@@ -187,7 +187,7 @@
       <xsl:call-template name="AgentRef">
             <xsl:with-param name="id"><xsl:value-of select="@agent"/></xsl:with-param>
       </xsl:call-template>
-      committed to 
+      committed to
       <xsl:call-template name="MissionRef">
             <xsl:with-param name="id"><xsl:value-of select="@mission"/></xsl:with-param>
       </xsl:call-template>
@@ -197,12 +197,12 @@
 
 <xsl:template match="goals">
          <table border="0" cellspacing="3" cellpadding="6">
-         <tr style="{$trh-style}"> 
+         <tr style="{$trh-style}">
          <th valign="top" style="{$th-style}">goal</th>
-         <th valign="top" style="{$th-style}">state</th> 
+         <th valign="top" style="{$th-style}">state</th>
          <th valign="top" style="{$th-style}">committed / achieved by</th>
          <th valign="top" style="{$th-style}">arguments</th>
-         <th valign="top" style="{$th-style}">plan : dependencies </th> 
+         <th valign="top" style="{$th-style}">plan : dependencies </th>
          </tr>
          <xsl:apply-templates select="goal[@root='true']" />
          </table>
@@ -212,12 +212,12 @@
       <tr style="{$trh-style}">
       <td style="{$td-style}">
       <pre><xsl:value-of select="@depth"/><xsl:value-of select="@specification"/></pre></td>
-      
+
       <td style="{$td-style}">
          <xsl:value-of select="@state"/>
          <xsl:if test="@satisfied-ags != '[]'">
             : <xsl:value-of select="@satisfied-ags"/>
-         </xsl:if> 
+         </xsl:if>
       </td>
       <td style="{$td-style}"><xsl:value-of select="@committed-ags"/>/<xsl:value-of select="@achieved-by"/></td>
       <td style="{$td-style}">
@@ -241,7 +241,7 @@
               <xsl:text> : </xsl:text>
           </xsl:if>
           <xsl:text> { </xsl:text>
-          <i>           
+          <i>
           <xsl:for-each select="depends-on" >
                 <xsl:if test="@explicit = 'true'">
                    <b><xsl:value-of select="@goal"/></b>
@@ -256,18 +256,18 @@
       </xsl:if>
       </td>
       </tr>
-      
+
       <xsl:if test="count(plan)>0">
           <xsl:for-each select="plan/goal" >
               <xsl:variable name="subGoal" select="@id" />
               <xsl:apply-templates select="../../../goal[@specification=$subGoal]"/>
           </xsl:for-each>
       </xsl:if>
-      
+
 </xsl:template>
 
 <xsl:template match="plan">
-                    <xsl:variable name="pOp" select='@operator'/> 
+                    <xsl:variable name="pOp" select='@operator'/>
                     <xsl:if test="string-length(@successRate)>0">
                         <sub>(<xsl:value-of select="@successRate"/>)&#160;</sub>
                     </xsl:if>

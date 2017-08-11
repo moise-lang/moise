@@ -26,7 +26,7 @@ public class CartagoTest {
         WorkspaceId wid = ctx.getJoinedWspId(ORA4MASConstants.ORA4MAS_WSNAME);
         ArtifactId g1 = ctx.makeArtifact(wid, "g1",   GroupBoard.class.getName(),  new Object[] {"examples/writePaper/wp-os.xml", "wpgroup"});
         assertNotNull(g1);
-        
+
         ArtifactId[] arts = CartagoService.getController(ORA4MASConstants.ORA4MAS_WSNAME).getCurrentArtifacts();
         assertTrue(arts.length > 0);
         boolean has = false;

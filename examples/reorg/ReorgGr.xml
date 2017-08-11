@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<organisational-specification 
+<organisational-specification
     id="ReorgGr"
     os-version="0.4"
-  
+
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='http://moise.sourceforge.net/os http://moise.sourceforge.net/xml/os.xsd'>
-    
+
     <structural-specification>
         <role-definitions>
             <role id="Reorg" />
@@ -20,7 +20,7 @@
             <role id="ReorgExpert">       <extends role="Designer"/>  </role>
             <role id="Monitored"/>
         </role-definitions>
-        
+
         <group-specification id="reorgGr">
             <roles>
                 <role id="Selector"   min="1" max="1" />
@@ -43,7 +43,7 @@
             </formation-constraints>
         </group-specification>
     </structural-specification>
-    
+
     <functional-specification>
         <scheme id="reorganization" >
             <goal id="reorganization">
@@ -64,7 +64,7 @@
                     <goal id="implementation"/>
                 </plan>
             </goal>
-            
+
             <mission id="m1" min="1">
                 <goal id="invitation"/>
                 <goal id="implementation"/>
@@ -86,7 +86,7 @@
             </mission>
         </scheme>
     </functional-specification>
-    
+
     <normative-specification>
         <norm id="n1" type="obligation" role="OrgManager"     mission="m1" />
         <norm id="n2" type="permission" role="OrgParticipant" mission="m5" />

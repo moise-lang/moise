@@ -9,5 +9,5 @@ package moise.reorg.commands;
 public class ChangeSS extends ChangeOS {
 
     private static final long serialVersionUID = 1L;
-  
+
 }

@@ -11,7 +11,7 @@
   <xsl:for-each select="agent">
       <xsl:value-of select="@id" />
       <xsl:text>; </xsl:text>
-  </xsl:for-each>     
+  </xsl:for-each>
 </xsl:template>
 
 
@@ -20,7 +20,7 @@
       <xsl:call-template name="AgentRef">
             <xsl:with-param name="id"><xsl:value-of select="@agent"/></xsl:with-param>
       </xsl:call-template>
-        
+
       <xsl:text> (</xsl:text>
       <xsl:call-template name="RoleRef">
             <xsl:with-param name="id"><xsl:value-of select="@role"/></xsl:with-param>
@@ -52,7 +52,7 @@
       </xsl:call-template>
       <xsl:text>)</xsl:text>
       </span>
-      
+
       <xsl:apply-templates select="players" />
       <xsl:apply-templates select="subgroups" />
     </li>
@@ -110,7 +110,7 @@
             <xsl:for-each select="group">
                 <xsl:call-template name="GroupRef">
                     <xsl:with-param name="id"><xsl:value-of select="@id"/></xsl:with-param>
-                </xsl:call-template>, 
+                </xsl:call-template>,
             </xsl:for-each>
             </span>
 </xsl:template>

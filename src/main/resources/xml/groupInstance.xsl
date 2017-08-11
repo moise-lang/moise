@@ -20,20 +20,20 @@
     <xsl:if test="@id=$groupId">
       <h2 style="{$h-style}"><xsl:value-of select="@id" /> (group)</h2>
       <hr />
-      
-      created from specification 
+
+      created from specification
       <xsl:call-template name="GrSpecRef">
             <xsl:with-param name="id"><xsl:value-of select="@specification"/></xsl:with-param>
       </xsl:call-template>
       <xsl:if test="@owner">
-         , owner is 
+         , owner is
          <xsl:call-template name="AgentRef">
             <xsl:with-param name="id"><xsl:value-of select="@owner"/></xsl:with-param>
          </xsl:call-template>
       </xsl:if>
 
       <br/>
-      
+
       <xsl:apply-templates select="well-formed" />
       <xsl:apply-templates select="players" />
 

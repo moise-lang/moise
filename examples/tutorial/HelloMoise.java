@@ -13,7 +13,7 @@ public class HelloMoise {
             OE currentOE = OE.createOE("winGame", "jojOS.xml");
 
             System.out.println("Final OE in XML format:\n"+DOMUtils.dom2txt(currentOE));
-            
+
             new moise.tools.SimOE(currentOE);
 
         } catch (Exception e) {
@@ -21,5 +21,5 @@ public class HelloMoise {
             System.exit(1);
         }
     }
-    
+
 }

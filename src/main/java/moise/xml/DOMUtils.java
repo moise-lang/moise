@@ -39,7 +39,7 @@ import org.xml.sax.SAXParseException;
 public class DOMUtils {
     private static Transformer transformer = null;
     private static DocumentBuilder builder = null;
-    
+
     public static String dom2txt(ToXML ele) {
         StringWriter so = new StringWriter();
         try {
@@ -61,7 +61,7 @@ public class DOMUtils {
         }
         return so.toString();
     }
-    
+
     public static Document getAsXmlDocument(ToXML ele) {
         Document document = getBuilder().newDocument();
         document.appendChild( ele.getAsDOM( document ));
@@ -97,7 +97,7 @@ public class DOMUtils {
         }
         return r;
     }
-    
+
     static private DocumentBuilder getBuilder() {
         if (builder == null) {
             try {
@@ -110,8 +110,8 @@ public class DOMUtils {
         }
         return builder;
     }
-    
-    
+
+
     static private Transformer getTransformer() {
         if (transformer == null) {
             try {
@@ -124,39 +124,39 @@ public class DOMUtils {
         }
         return transformer;
     }
-    
+
     public static Validator getOSSchemaValidator() throws SAXException, IOException {
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema = schemaFactory.newSchema(new StreamSource(DOMUtils.class.getResource("/xml/os.xsd").openStream()));
         return schema.newValidator();
     }
-    
+
     public static DocumentBuilder getParser() throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        
+
         DocumentBuilder builder = factory.newDocumentBuilder();
-        
+
         // set up the error handler
         builder.setErrorHandler(new ErrorHandler() {
             public void warning(SAXParseException exception) throws SAXException {
                 System.out.println("**Parsing Warning** "+
-                        "\n  Line:    " +  exception.getLineNumber() + 
-                        "\n  URI:     " +  exception.getSystemId() + 
+                        "\n  Line:    " +  exception.getLineNumber() +
+                        "\n  URI:     " +  exception.getSystemId() +
                         "\n  Message: " +  exception.getMessage());
                 throw new SAXException("Warning encountered");
             }
             public void error(SAXParseException exception) throws SAXException {
                 System.out.println("**Parsing Error** "+
-                        "\n  Line:    " +  exception.getLineNumber() + 
-                        "\n  URI:     " +  exception.getSystemId() + 
+                        "\n  Line:    " +  exception.getLineNumber() +
+                        "\n  URI:     " +  exception.getSystemId() +
                         "\n  Message: " +  exception.getMessage());
                 throw new SAXException("Error encountered");
             }
             public void fatalError(SAXParseException exception) throws SAXException {
                 System.out.println("**Parsing Fatal Error** "+
-                        "\n  Line:    " +  exception.getLineNumber() + 
-                        "\n  URI:     " +  exception.getSystemId() + 
+                        "\n  Line:    " +  exception.getLineNumber() +
+                        "\n  URI:     " +  exception.getSystemId() +
                         "\n  Message: " +  exception.getMessage());
                 throw new SAXException("Fatal Error encountered");
             }
@@ -164,7 +164,7 @@ public class DOMUtils {
 
         return builder;
     }
-    
+
     private static TransformerFactory tFactory = null;
     public static TransformerFactory getTransformerFactory() {
         if (tFactory == null) {
@@ -182,8 +182,8 @@ public class DOMUtils {
         }
         return tFactory;
     }
-    
-    
+
+
     public static StreamSource getXSL(String href) throws IOException {
         if (!href.endsWith(".xsl"))
             href += ".xsl";
@@ -196,7 +196,7 @@ public class DOMUtils {
             if (f.exists()) {
                 ss = new StreamSource(new FileInputStream(f));
             } else {
-                ss = new StreamSource(DOMUtils.class.getResource("/xml/"+href).openStream()); 
+                ss = new StreamSource(DOMUtils.class.getResource("/xml/"+href).openStream());
             }
         }
         return ss;

@@ -1,13 +1,13 @@
 
 !start.
 
-+!start : true 
++!start : true
    <- makeArtifact(org,"ora4mas.nopl.OrgBoard",["t3.xml"],AId);
       createGroup(g1,wpgroup,GId);
       focus(GId);
       adoptRole(editor);
       adoptRole(writer);
-          
+
       createScheme(s1,writePaperSch,SId);
       addScheme(s1);
 

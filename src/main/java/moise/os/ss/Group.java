@@ -21,7 +21,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Represents a Group Specification.
- * 
+ *
  * @navassoc - roles  * Role
  * @composed - subgroups  * Group
  * @navassoc - super-group  - Group
@@ -34,17 +34,17 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
 
     // the roles that can be played in this group
     protected CardinalitySet<Role>  roles     = new CardinalitySet<Role>();
-    
+
     protected CardinalitySet<Group> subgroups = new CardinalitySet<Group>();
-    
+
     protected Group                superGr    = null;
     protected Set<Link>            links      = new HashSet<Link>();
     protected Set<Compatibility>   compatibilities = new HashSet<Compatibility>();
     //protected String               monitoring  = null;
     protected SS                   ss          = null;
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     /** Creates new GrSpec */
     public Group(SS ss) {
         super();
@@ -64,12 +64,12 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
     public Group getSuperGroup() {
         return superGr;
     }
-    
+
     /** returns true if this group is not a subgroup of another group */
     public boolean isRoot() {
         return superGr == null;
     }
-    
+
     public SS getSS() {
         return ss;
     }
@@ -82,11 +82,11 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
         return monitoring;
     }
     */
-    
+
     //
     // Role methods
     //
-    
+
     /**
      * adds the roleId role into the playable roles in this group
      */
@@ -118,7 +118,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
         return roles.contains(r);
     }
 
-    
+
     public void setRoleCardinality(String roleId, Cardinality c) throws MoiseConsistencyException {
         Role r = ss.getRoleDef(roleId);
         if (r == null) {
@@ -128,8 +128,8 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
             roles.setCardinality(r, c);
         }
     }
-    
-    
+
+
     /**
      * returns the cardinality for the <roleId>. If it is not defined, returns null.
      */
@@ -141,28 +141,28 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
      * returns a collection of this group's roles
      */
     public CardinalitySet<Role> getRoles() {
-        return roles; 
+        return roles;
     }
-    
+
     //
     // Link methods
     // ------------------------
-    
+
     public void addLink(Link l) {
         links.add(l);
     }
-    
+
     /**
      * returns a collection for the Link objects defined in this group
      */
     public Collection<Link> getLinks() {
         return links;
     }
-    
+
     public int getLinksQty() {
         return links.size();
     }
-    
+
     /**
      * gets the links of this group an its supergroups's extendible links
      */
@@ -175,7 +175,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
         }
         return all;
     }
-    
+
     /**
      * gets the group's Link objects which are extendible to sub groups
      */
@@ -186,10 +186,10 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
                 all.add(l);
             }
         }
-        
+
         return all;
     }
-    
+
     //
     // compatibility methods
     // -----------------------------
@@ -198,7 +198,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
         compatibilities.add(c);
     }
 
-    
+
     /**
      * gets the group's Compatibility objects which are extendible to sub groups
      */
@@ -209,12 +209,12 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
                 all.add(c);
             }
         }
-        
+
         return all;
     }
 
     /**
-     * gets the Compatibility objects of this group an its 
+     * gets the Compatibility objects of this group an its
      * supergroups's Extendible compatibilities
      */
     public Collection<Compatibility> getUpCompatibilities() {
@@ -226,18 +226,18 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
         }
         return all;
     }
-    
+
     /**
      * return a collection of this group Compatibility objects
      */
     public Collection<Compatibility> getCompatibilities() {
         return compatibilities;
     }
-    
+
     public int getCompatibilitiesQty() {
         return compatibilities.size();
     }
-    
+
     //
     // Subgroups methods
     //
@@ -245,7 +245,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
         subgroups.add(gr);
         gr.setSuperGroup(this);
     }
-    
+
     /**
      * gets the direct sub groups of this group
      */
@@ -259,14 +259,14 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
     public Collection<Group> getAllSubGroupsTree() {
         Set<Group> all = new HashSet<Group>();
         all.add(this);
-        for (Group gr: subgroups) { 
+        for (Group gr: subgroups) {
             all.addAll( gr.getAllSubGroupsTree());
         }
         return all;
     }
-    
+
     /**
-     * gets the grId subgroup of this group (does not looks for the subgroups' subgroups) 
+     * gets the grId subgroup of this group (does not looks for the subgroups' subgroups)
      */
     public Group getSubGroup(String grId) {
         for (Group gr: subgroups) {
@@ -276,7 +276,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
         }
         return null;
     }
-    
+
     /**
      * looks for grId in this group and in its subgroups
      */
@@ -284,7 +284,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
         if (this.getId().equals(grId)) {
             return this;
         }
-        for (Group gr: subgroups) { 
+        for (Group gr: subgroups) {
             Group g = gr.findSubGroup(grId);
             if (g != null) {
                 return g;
@@ -306,22 +306,22 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
     public Cardinality getSubGroupCardinality(Group gr) {
         return subgroups.getCardinality(gr);
     }
-    
+
     public static String getXMLTag() {
         return "group-specification";
     }
-    
+
     public Element getAsDOM(Document document) {
         Element ele = (Element) document.createElement(getXMLTag());
         ele.setAttribute("id",getId());
         //if (getMonitoringSch() != null)
         //    ele.setAttribute("monitoring-scheme", getMonitoringSch());
-        
+
         // properties
         if (getProperties().size() > 0) {
             ele.appendChild( getPropertiesAsDOM(document));
         }
-        
+
         // roles
         if (!getRoles().isEmpty()) {
             Element rolesEle = (Element)document.createElement("roles");
@@ -332,7 +332,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
             }
             ele.appendChild(rolesEle);
         }
-        
+
         // links
         if (getLinksQty() > 0) {
             Element linksEle = (Element)document.createElement("links");
@@ -341,8 +341,8 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
             }
             ele.appendChild(linksEle);
         }
-        
-        
+
+
         // subgroups
         if (!getSubGroups().isEmpty()) {
             Element sgrsEle = (Element)document.createElement("subgroups");
@@ -351,7 +351,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
             }
             ele.appendChild(sgrsEle);
         }
-        
+
         Element cfEle = (Element)document.createElement("formation-constraints");
 
         // role cardinality
@@ -364,7 +364,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
                 cfEle.appendChild(cardEle);
             }
         }
-        
+
         // sub group cardinality
         for (Group gr: subgroups) {
             Cardinality card = subgroups.getCardinality(gr);
@@ -375,7 +375,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
                 cfEle.appendChild(cardEle);
             }
         }
-        
+
         // the cardinality of this group
         Cardinality card = subgroups.getCardinality(this);
         if (card != null && ! card.equals(Cardinality.defaultValue)) {
@@ -384,22 +384,22 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
             cardEle.setAttribute("id",getId());
             cfEle.appendChild(cardEle);
         }
-        
-        
+
+
         // compatibilities
         for (Compatibility c: getCompatibilities()) {
             cfEle.appendChild(c.getAsDOM(document));
         }
         ele.appendChild(cfEle);
-        
+
         return ele;
     }
-    
+
     public void setFromDOM(Element ele) throws MoiseException {
         NodeList nl;
-        
+
         setPropertiesFromDOM(ele);
-        
+
         // monitoring-scheme
         //if (ele.getAttribute("monitoring-scheme").length() > 0)
         //    setMonitoringSch(ele.getAttribute("monitoring-scheme"));
@@ -415,7 +415,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
                     getSS().addRoleDef(new Role(roleId, getSS())).addSuperRole("soc");
                 }
                 addRole(roleId);
-                
+
                 // reads role cardinality
                 Cardinality c = new Cardinality();
                 c.setFromDOM(rEle);
@@ -434,7 +434,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
                 addLink(l);
             }
         }
-        
+
         // subgroups
         e = DOMUtils.getDOMDirectChild(ele,"subgroups");
         if (e != null) {
@@ -449,13 +449,13 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
                 setSubGroupCardinality(gr.getId(),c);
             }
         }
-        
-        // include 
+
+        // include
         nl = ele.getElementsByTagName("include-group-specification");
         for (int i=0; i<nl.getLength(); i++) {
             Element iEle = (Element)nl.item(i);
             String uri = iEle.getAttribute("uri");
-            
+
             // is the uri full path?
             if (uri.indexOf( System.getProperty("file.separator")) < 0) {
                 String fatherURI = ss.getOS().getURI();
@@ -464,7 +464,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
                     uri = fatherURI + uri;
                 }
             }
-            
+
             OS incOS = OS.loadOSFromURI(uri);
             if (incOS != null) {
                 ss.importRoleDef(incOS.getSS().getRolesDef());
@@ -477,21 +477,21 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
                 throw new MoiseXMLParserException("Error in included URI "+uri+".");
             }
         }
-        
+
 
         e = DOMUtils.getDOMDirectChild(ele,"formation-constraints");
         if (e != null) {
             // role cardinality
             // sub group cardinality
             // the cardinality of this group
-            
+
             nl = e.getElementsByTagName("cardinality");
             for (int i=0; i<nl.getLength(); i++) {
                 Element cEle = (Element)nl.item(i);
 
                 Cardinality card = new Cardinality();
                 card.setFromDOM(cEle);
-                
+
                 if (cEle.getAttribute("object").equals("role")) {
                     setRoleCardinality(cEle.getAttribute("id"), card);
                 } else if (cEle.getAttribute("object").equals("group")) {
@@ -507,9 +507,9 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
                 compat.setFromDOM(cEle);
                 addCompatibility(compat);
             }
-        }   
+        }
     }
-    
+
     /** returns a string as a prolog predicate representing the group specification.
      *  <p>The format is: group_specification(group type id, list of role, list of subgroups, properties).<br/>
      *  each role in the list is: role(id, list of sub-roles, min cardinality, max cardinality, list of compatible roles, list of links).<br/>
@@ -517,28 +517,28 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
      */
     public String getAsProlog() {
         StringBuilder s = new StringBuilder("group_specification("+getId()+",[");
-        
+
         // roles
         String v = "";
         for (Role r: getRoles()) {
 
             s.append(v+"role("+r.getId()+",[");
-            
+
             // inheritance
             String v1 = "";
             for (Role subr: r.getSubRoles()) {
                 s.append(v1+ subr.getId());
-                v1 = ",";                
+                v1 = ",";
             }
-            
+
             // cardinality
             Cardinality card = roles.getCardinality(r);
             s.append("],"+card.getMin()+","+card.getMax()+",[");
-            
+
             // compatibilities of the role
             v1 = "";
-            for (Compatibility c: r.getCompatibilities(this)) { 
-                if (c.getSource().equals(r)) 
+            for (Compatibility c: r.getCompatibilities(this)) {
+                if (c.getSource().equals(r))
                     s.append(v1+c.getTarget().getId()); // use target
                 else
                     s.append(v1+c.getSource().getId()); // use source
@@ -550,7 +550,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
             v1 = "";
             for (Link l: r.getLinks(this)) {
                 String other = "";
-                if (l.sourceContains(r)) 
+                if (l.sourceContains(r))
                     other = l.getTarget().getId(); // use target
                 else
                     other = l.getSource().getId(); // use source
@@ -562,7 +562,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
             v=",";
         }
         s.append("],");
-        
+
         // subgroups
         s.append("[");
         v = "";
@@ -576,7 +576,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
 
         // properties
         s.append(getPropertiesAsProlog());
-        
+
         s.append(")");
         return s.toString();
     }

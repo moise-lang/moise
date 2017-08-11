@@ -64,17 +64,17 @@
           </td>
           </tr>
       </xsl:if>
-      
+
       <tr style="{$trh-style}">
           <th valign="top" style="{$th-style}">Roles</th>
           <td style="{$td-style}"><xsl:apply-templates select="../../groups/group" /></td>
       </tr>
-      
+
       <tr style="{$trh-style}">
           <th valign="top" style="{$th-style}">Missions</th>
           <td style="{$td-style}"><xsl:apply-templates select="../../schemes/scheme" /></td>
       </tr>
-      
+
       <xsl:if test="count(permission)>0">
           <tr style="{$trh-style}">
           <th valign="top" style="{$th-style}">Permitted missions</th>
@@ -169,11 +169,11 @@
 
 <xsl:template match="role-player">
     <xsl:if test="@agent=$agentId">
-      plays 
+      plays
       <xsl:call-template name="RoleRef">
             <xsl:with-param name="id"><xsl:value-of select="@role"/></xsl:with-param>
       </xsl:call-template>
-      in 
+      in
       <xsl:call-template name="GroupRef">
             <xsl:with-param name="id"><xsl:value-of select="../../@id"/></xsl:with-param>
       </xsl:call-template>
@@ -183,11 +183,11 @@
 
 <xsl:template match="mission-player">
     <xsl:if test="@agent=$agentId">
-      committed to 
+      committed to
       <xsl:call-template name="MissionRef">
             <xsl:with-param name="id"><xsl:value-of select="@mission"/></xsl:with-param>
       </xsl:call-template>
-      in 
+      in
       <xsl:call-template name="SchemeRef">
             <xsl:with-param name="id"><xsl:value-of select="../../@id"/></xsl:with-param>
       </xsl:call-template>

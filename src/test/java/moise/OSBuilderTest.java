@@ -9,17 +9,17 @@ import moise.os.OSBuilder;
 
 public class OSBuilderTest {
 
-    
+
     @Test
     public void testOS1() throws Exception {
         OSBuilder b = new OSBuilder();
-        
+
         b.addRootGroup("r");
         b.addSubGroup("r", "g1");
         b.addRole("g1", "r1");
-        
+
         b.addScheme("st", "job_delivered");
-        
+
         /*
         <goal id="job_delivered">
             <plan operator="parallel">
@@ -43,7 +43,7 @@ public class OSBuilderTest {
             </plan>
         </goal>
         */
-        
+
         b.addGoal("st", "job_delivered", "assist || assemble");
         b.addGoal("st", "assist", "go_to_buy, buy_items, go_to_workshop, assist_assemble");
         b.addGoal("st", "assemble", "go_to_workshop, do_assemble, stop, deliver");
@@ -52,8 +52,8 @@ public class OSBuilderTest {
         b.addMission("st", "mag2", "buy_items,do_assemble");
 
         b.getOS().getNS().setProperty("mission_permission", "ignore");
-        
+
         b.save("test.xml");
         assertNotNull( OS.loadOSFromURI("test.xml") );
-    }    
+    }
 }

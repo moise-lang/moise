@@ -1,4 +1,4 @@
-/* 
+/*
 
 test setCardinality
 
@@ -13,14 +13,14 @@ mas t1 {
     agent ag1 {
         //roles: editor in g1
     }
-    
+
     organisation oe: ../../writePaper/wp-os.xml {
         group g1: wpgroup {
             players: ag1 editor
             owner: ag1
             debug
         }
-        
+
         scheme s1: writePaperSch {
             owner: ag1
             debug

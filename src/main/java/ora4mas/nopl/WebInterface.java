@@ -28,9 +28,9 @@ import moise.xml.DOMUtils;
 
 /** Web Interface for ORA4MAS */
 public class WebInterface  {
-    
+
     static WebInterface singleton = null;
-    
+
     HttpServer httpServer = null;
     int        httpServerPort = 3271;
     String     httpServerURL = "http://localhost:"+httpServerPort;
@@ -39,10 +39,10 @@ public class WebInterface  {
     //protected static String osID = "";
     protected Map<String,Map<String,String>> oePages = new HashMap<String, Map<String,String>>();
 
-    
+
     private WebInterface() {
     }
-    
+
     public synchronized static WebInterface get() {
         if (singleton == null) {
             singleton = new WebInterface();
@@ -50,15 +50,15 @@ public class WebInterface  {
         }
         return singleton;
     }
-    
+
     public static boolean isRunning() {
         return singleton != null;
     }
-    
+
     public String getURL() {
         return httpServerURL;
     }
-    
+
     private void startHttpServer()  {
         if (httpServer == null) {
             try {
@@ -78,11 +78,11 @@ public class WebInterface  {
         }
     }
 
-    void registerRootBrowserView() {        
+    void registerRootBrowserView() {
         if (httpServer == null)
             return;
         try {
-            httpServer.createContext("/", new HttpHandler() {                                
+            httpServer.createContext("/", new HttpHandler() {
                 public void handle(HttpExchange exchange) throws IOException {
                     String requestMethod = exchange.getRequestMethod();
                     Headers responseHeaders = exchange.getResponseHeaders();
@@ -110,10 +110,10 @@ public class WebInterface  {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                            }                            
+                            }
                         }
                         responseBody.write(so.toString().getBytes());
-                    }                                
+                    }
                     responseBody.close();
                 }
             });
@@ -129,14 +129,14 @@ public class WebInterface  {
         if (nameEnd >= 0)
             return query.substring(nameStart,nameEnd).trim();
         else
-            return query.substring(nameStart).trim();        
+            return query.substring(nameStart).trim();
     }
-    
-    private void registerOEListBrowserView() {        
+
+    private void registerOEListBrowserView() {
         if (httpServer == null)
             return;
         try {
-            httpServer.createContext("/oe", new HttpHandler() {                                
+            httpServer.createContext("/oe", new HttpHandler() {
                 public void handle(HttpExchange exchange) throws IOException {
                     String requestMethod = exchange.getRequestMethod();
                     Headers responseHeaders = exchange.getResponseHeaders();
@@ -148,7 +148,7 @@ public class WebInterface  {
                         responseBody.write(("<html><head><title>Moise (list of organisational entities)</title><meta http-equiv=\"refresh\" content=\""+refreshInterval+"\" ></head><body>").getBytes());
                         for (String oeId: oePages.keySet()) {
                             responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'>organisation <b>"+oeId+"</b></p></font>").getBytes());
-                            
+
                             Map<String,String> pages = oePages.get(oeId);
                             StringWriter os  = new StringWriter();
                             StringWriter gr  = new StringWriter();  gr.append("<br/><scan style='color: red; font-family: arial;'>groups</scan> <br/>");
@@ -174,7 +174,7 @@ public class WebInterface  {
                             responseBody.write( sch.toString().getBytes());
                             responseBody.write( nor.toString().getBytes());
                         }
-                    }                                
+                    }
                     responseBody.write("<hr/>by <a href=\"http://moise.sf.net\" target=\"_blank\">Moise</a>".getBytes());
                     responseBody.write("</body></html>".getBytes());
                     responseBody.close();
@@ -189,18 +189,18 @@ public class WebInterface  {
     private String lastDot = "";
     private File lastImgFile = null;
     private byte[] lastData = null;
-    
+
     public String registerOEBrowserView(final String oeId, final String pathSpec, final String id, final OrgArt orgArt) {
         if (httpServer == null)
             return null;
         try {
             String addr = "/" + oeId + pathSpec + id;
-            httpServer.createContext(addr, new HttpHandler() {                                
+            httpServer.createContext(addr, new HttpHandler() {
                 public void handle(HttpExchange exchange) throws IOException {
                     String requestMethod = exchange.getRequestMethod();
                     Headers responseHeaders = exchange.getResponseHeaders();
                     OutputStream responseBody = exchange.getResponseBody();
-                    
+
                     if (requestMethod.equalsIgnoreCase("GET")) {
                         try {
                             if (exchange.getRequestURI().getPath().endsWith("svg")) {
@@ -224,7 +224,7 @@ public class WebInterface  {
                                             out.close();
                                             Process p = Runtime.getRuntime().exec(program+" -Tsvg "+fin.getAbsolutePath()+" -o "+lastImgFile.getAbsolutePath());
                                             p.waitFor();
-                                            
+
                                             lastData = new byte[(int)lastImgFile.length()];
                                             FileInputStream in = new FileInputStream(lastImgFile);
                                             in.read(lastData);
@@ -247,9 +247,9 @@ public class WebInterface  {
                                     responseBody.write("</pre>".getBytes());
                                 } else if (exchange.getRequestURI().getPath().endsWith(".npl")) {
                                     responseBody.write(("<html><head><title>"+id+".npl</title></head><body><pre>").getBytes());
-                                    responseBody.write(orgArt.getNPLSrc().getBytes());                                            
+                                    responseBody.write(orgArt.getNPLSrc().getBytes());
                                     responseBody.write("</pre>".getBytes());
-                                } else {                            
+                                } else {
                                     //String path = exchange.getRequestURI().getPath();
                                     responseBody.write(("<html><head><title>"+id+"</title><meta http-equiv=\"refresh\" content=\""+refreshInterval+"\"></head><body>").getBytes());
                                     StringWriter so = new StringWriter();
@@ -264,15 +264,15 @@ public class WebInterface  {
                                     so = new StringWriter();
                                     orgArt.getNSTransformer().transform(new DOMSource(DOMUtils.getAsXmlDocument(orgArt.getNormativeEngine())), new StreamResult(so));
                                     responseBody.write(so.toString().getBytes());
-                                    responseBody.write(("<hr/><a href="+id+".npl>NPL program</a>").getBytes());                                
-                                    responseBody.write((" / <a href="+id+"/debug>debug page</a>").getBytes());                                
+                                    responseBody.write(("<hr/><a href="+id+".npl>NPL program</a>").getBytes());
+                                    responseBody.write((" / <a href="+id+"/debug>debug page</a>").getBytes());
                                 }
                                 responseBody.write("</body></html>".getBytes());
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }                                
+                    }
                     responseBody.close();
                 }
             });
@@ -288,14 +288,14 @@ public class WebInterface  {
         }
         return null;
     }
-    
+
     public void removeOE(String oeId, String id) {
         if (oeId == null) return;
         String addr = oePages.get(oeId).remove(id);
         if (addr != null)
             httpServer.removeContext(addr);
     }
-    
+
     String dpath = null;
     String getDotPath() throws Exception {
         if (dpath == null) {
@@ -306,26 +306,26 @@ public class WebInterface  {
                 r = "/opt/local/bin/dot";
             if (new File(r).exists()) {
                 dpath = r;
-            } else { 
+            } else {
                 r = "/usr/bin/dot";
                 if (new File(r).exists()) {
                     dpath = r;
-                }            
-            }            
+                }
+            }
         }
         return dpath;
     }
 
     HttpContext osContext = null;
-    
-    String registerOSBrowserView(String oeId, String osId, final String osSpec) {        
+
+    String registerOSBrowserView(String oeId, String osId, final String osSpec) {
         if (httpServer == null)
             return null;
         try {
             String addr = "/" + oeId + "/os";
             if (osContext != null)
                 httpServer.removeContext(osContext);
-            osContext = httpServer.createContext(addr, new HttpHandler() {                                
+            osContext = httpServer.createContext(addr, new HttpHandler() {
                 public void handle(HttpExchange exchange) throws IOException {
                     String requestMethod = exchange.getRequestMethod();
                     Headers responseHeaders = exchange.getResponseHeaders();
@@ -335,7 +335,7 @@ public class WebInterface  {
 
                     if (requestMethod.equalsIgnoreCase("GET")) {
                         responseBody.write(osSpec.getBytes());
-                    }                                
+                    }
                     responseBody.close();
                 }
             });
@@ -345,7 +345,7 @@ public class WebInterface  {
                 oePages.put(oeId, pages);
             }
             pages.put("specification", addr);
-            return httpServerURL+addr;                          
+            return httpServerURL+addr;
         } catch (Exception e) {
             e.printStackTrace();
         }

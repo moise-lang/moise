@@ -1,4 +1,4 @@
-/* 
+/*
 
 test an OS with "pure" NPL in the NS
 
@@ -12,6 +12,6 @@ bob has the obligation for g(33)
 mas t3 {
 
     agent ag3
-    
+
 }
 

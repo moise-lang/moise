@@ -5,16 +5,16 @@ import java.util.HashMap;
 import java.util.Map;
 /**
  * Organisational Entity
- * 
+ *
  * @composed - groups * Group
  * @composed - schemes * Scheme
- * 
+ *
  * @author jomi
  */
 public class OE implements Serializable {
     Map<String, Group>  groups  = new HashMap<String, Group>();
     Map<String, Scheme> schemes = new HashMap<String, Scheme>();
-    
+
     public void addGroup(Group g) {
         groups.put(g.getId(), g);
     }
@@ -30,7 +30,7 @@ public class OE implements Serializable {
     public Scheme removeSch(String id) {
         return schemes.remove(id);
     }
-    
+
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder("--- (simple) OE ---\n\n");

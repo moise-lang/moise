@@ -10,7 +10,7 @@ public class MoiseException extends java.lang.Exception {
     private static final long serialVersionUID = 1L;
 
     public MoiseException() {
-        
+
     }
     /**
      * Constructs a <code>MoiseException</code> with the specified message.

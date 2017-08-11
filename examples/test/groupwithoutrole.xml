@@ -2,16 +2,16 @@
 
 <?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
 
-<organisational-specification 
+<organisational-specification
 
     id="testsg"
     os-version="0.8"
-  
+
     xmlns='http://moise.sourceforge.net/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xsi:schemaLocation='http://moise.sourceforge.net/os
                         http://moise.sourceforge.net/xml/os.xsd' >
-    
+
     <structural-specification>
 
         <role-definitions>
@@ -48,11 +48,11 @@
 
 
     <functional-specification>
-        
+
     </functional-specification>
 
     <normative-specification>
-       
+
     </normative-specification>
 </organisational-specification>
 

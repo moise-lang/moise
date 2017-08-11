@@ -20,32 +20,32 @@ import org.w3c.dom.Element;
 
 /**
     Represents an instance goal (in an instance scheme)
-    
+
     @navassoc - specification    - Goal
     @navassoc - plan-to-fulfil   - PlanInstance
     @navassoc - part-of-plan     - PlanInstance
     @navassoc - state            - GoalState
     @navassoc - scheme           - SchemeInstance
     @navassoc - committed-agents * OEAgent
-    
+
     @author Jomi Fred Hubner
  */
 public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
-    
+
     private static final long serialVersionUID = 1L;
 
-    public enum GoalState { waiting,  
+    public enum GoalState { waiting,
                             enabled,
                             satisfied,
                             impossible
     };
-    
+
     protected Goal     spec = null;
-    
+
     protected PlanInstance inPlan = null; // the plan this goal belongs to
     protected PlanInstance plan = null;   // the plan to achieve this goal
 
-    protected GoalState            state = GoalState.waiting; 
+    protected GoalState            state = GoalState.waiting;
     protected SchemeInstance       sch;
     protected Map<String,Object>   args = null;
     protected List<OEAgent>        comAgs       = new ArrayList<OEAgent>(); // committed agents
@@ -64,7 +64,7 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
             }
         }
     }
-    
+
     public Goal getSpec() {
         return spec;
     }
@@ -72,12 +72,12 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
     public SchemeInstance getScheme() {
         return sch;
     }
-    
+
     public void setInPlan(PlanInstance pi) {
         inPlan = pi;
     }
-    
-    
+
+
     /** set the plan that achieves this goal */
     public void setPlanToAchieve(PlanInstance pi) throws MoiseConsistencyException {
         if (! spec.hasPlan()) {
@@ -88,12 +88,12 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
             plan = pi;
         }
     }
-    
+
     public PlanInstance getPlanToAchieve() {
         return plan;
     }
-    
-    
+
+
     /**
      * set an argument's value for this instance goal
      *
@@ -112,27 +112,27 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
             throw new MoiseException("the goal "+spec+" has not the "+arg+" argument.");
         }
     }
-    
+
     public Object getArgumentValue(String arg) {
         if (args == null)
             return null;
         else
             return args.get(arg);
     }
-    
+
     /** returns all this goal arguments (key=argId, value=Object)  */
     public Map<String,Object> getArgumentValues() {
         return args;
     }
-    
+
     /**
      * sets that this goal is achieved by the agent a.
      * only committed agents can achieve the goal.
-     * 
-     * If all agents committed to the goal set it as achieved, 
+     *
+     * If all agents committed to the goal set it as achieved,
      * the goal is considered as satisfied.
-     * 
-     * if this goal is achieved and belongs to a plan without committed agents, 
+     *
+     * if this goal is achieved and belongs to a plan without committed agents,
      * check if this super goal was also achieved
      */
     public void setAchieved(OEAgent a) throws MoiseConsistencyException, MoiseCardinalityException {
@@ -145,7 +145,7 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
             }
             if (isCommitted() && achievedAgs.size() >= min) {
                 state = GoalState.satisfied;
-                
+
                 // check super goal achievement
                 setSuperAchieved();
             }
@@ -170,12 +170,12 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
                     h.state = GoalState.satisfied;
                     h.setSuperAchieved();
                 }
-                
+
             } else if (inPlan.getSpec().getOp() == PlanOpType.choice) {
                 // one of the choices was satisfied, set the goal as also satisfied
                 h.state = GoalState.satisfied;
                 h.setSuperAchieved();
-                
+
             } else if (inPlan.getSpec().getOp() == PlanOpType.sequence) {
                 // if this goal is the last in the plan, the super goal is achieved
                 if (inPlan.getLastGoal().equals(this)) {
@@ -186,11 +186,11 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
         }
     }
 
-    
+
     /**
      * sets this goal as impossible to be achieved.
-     * 
-     * if this goal belongs to a plan without committed agents, 
+     *
+     * if this goal belongs to a plan without committed agents,
      * check if this super goal was also impossible
      */
     public void setImpossible(OEAgent a) throws MoiseConsistencyException {
@@ -210,7 +210,7 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
             if (inPlan.getSpec().getOp() == PlanOpType.parallel) {
                 h.state = GoalState.impossible;
                 h.setSuperImpossible();
-                
+
             } else if (inPlan.getSpec().getOp() == PlanOpType.choice) {
                 boolean all = true;
                 for (GoalInstance gi: inPlan.getGoals()) {
@@ -223,42 +223,42 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
                     h.state = GoalState.impossible;
                     h.setSuperImpossible();
                 }
-                
+
             } else if (inPlan.getSpec().getOp() == PlanOpType.sequence) {
                 h.state = GoalState.impossible;
                 h.setSuperImpossible();
             }
-        }       
+        }
     }
-    
+
     /**
      * adds the agent a in the set of agents committed to this goal
      */
     public void committed(OEAgent a) {
         comAgs.add(a);
     }
-    
+
     /**
      * removes the agent a in the set of agents committed to this goal
      */
     public void uncommitted(OEAgent a) {
         comAgs.remove(a);
     }
-    
+
     /** returns true if this goal is
-     *     not satisfied yet, 
-     *     the scheme is well formed 
-     *     super goal is not satisfied,  
+     *     not satisfied yet,
+     *     the scheme is well formed
+     *     super goal is not satisfied,
      *     super goal is not impossible,
      */
     public boolean isEnabled() {
         if (state == GoalState.enabled)         return true;
         if (state == GoalState.impossible)      return false;
         if (state == GoalState.satisfied)       return false;
-        
+
         // state is waiting, check if becomes possible
         if (checkEnabled() && !hasSuperGoalInState(GoalState.satisfied) && !hasSuperGoalInState(GoalState.impossible) && (sch == null || sch.isWellFormed())) {
-            
+
             // check plan
             PlanInstance pi = getPlanToAchieve();
             if (pi == null) {
@@ -290,22 +290,22 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
         }
         return false;
     }
-    
+
     /** the goal is enabled in the scheme state, i.e., its pre-condition goals are satisfied. */
     private boolean checkEnabled() {
         // compute the possibility
         if (sch == null) { // there is no scheme to check permission
             return true;
         }
-        
+
         if (inPlan == null) { // there is no plan where this goal is in
             return true;
         }
-        
+
         if (sch.getSpec().getRoot().getId().equals(this.spec.getId())) { // this goal is the SCH root
             return true;
         }
-        
+
         // there is plan (sequence) that defines if the goal is possible
         // (choice or parallel does not defines permission)
         if (inPlan.getSpec().getOp() == PlanOpType.sequence) {
@@ -326,19 +326,19 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
     }
 
     /** a goal is achieved if enough committed agents have set it as satisfied */
-    public boolean isSatisfied()   {  
-        return state == GoalState.satisfied;  
+    public boolean isSatisfied()   {
+        return state == GoalState.satisfied;
     }
-    
+
     public GoalState getState() {
         if (state == GoalState.waiting) isEnabled(); // check if the goal becomes possible
-        return state; 
+        return state;
     }
-    
+
     public boolean isImpossible()  { return state == GoalState.impossible;  }
-    
+
     public boolean isCommitted()   { return !comAgs.isEmpty();  }
-    
+
     public boolean hasComittedAgents()              { return !comAgs.isEmpty(); }
     public Collection<OEAgent> getCommittedAgents() { return comAgs;  }
     public Collection<OEAgent> getAchievedAgents()  { return achievedAgs; }
@@ -356,12 +356,12 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
         }
         return false;
     }
-    
+
     public static String getXMLTag() {
         return "goal";
     }
 
-    
+
     public Element getAsDOM(Document document) {
         Element giEle = (Element) document.createElement(getXMLTag());
         giEle.setAttribute("specification", getSpec().getId());
@@ -369,7 +369,7 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
         giEle.setAttribute("root", (inPlan == null)+"");
         giEle.setAttribute("committed-ags", getCommittedAgents().toString());
         giEle.setAttribute("achieved-by", getAchievedAgents().toString());
-    
+
         // arguments
         Map<String,Object> args = getArgumentValues();
         if (args != null) {
@@ -382,29 +382,29 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
                 giEle.appendChild(argEle);
             }
         }
-    
+
         // plan
         if (getSpec().getPlan() != null) {
             giEle.appendChild(getSpec().getPlan().getAsDOM(document));
         }
-        
+
         // explicit dependencies
         if (getSpec().hasDependence()) {
             for (Goal dg: getSpec().getDependencies()) {
                 Element ea = (Element) document.createElement("depends-on");
                 ea.setAttribute("goal", dg.getId());
-                giEle.appendChild(ea);                
+                giEle.appendChild(ea);
             }
-        }        
-        
+        }
+
         return giEle;
-    }    
+    }
 
     @Override
     public int hashCode() {
         return sch.hashCode()+spec.hashCode();
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
@@ -416,7 +416,7 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
         }
         return false;
     }
-    
+
     public String getAsProlog() {
         StringBuilder s = new StringBuilder(spec.getId());
         if (spec.getArguments() != null && !spec.getArguments().isEmpty()) {
@@ -439,5 +439,5 @@ public class GoalInstance extends MoiseElement implements ToXML, ToProlog {
     public String toString() {
         return spec.toString();
     }
-    
+
 }

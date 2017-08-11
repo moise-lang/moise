@@ -20,7 +20,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Represents a Structural Specification.
- * 
+ *
  * @navassoc - root-group  - Group
  * @composed - roles-definition  * Role
  *
@@ -34,7 +34,7 @@ public class SS extends MoiseElement implements ToXML {
     protected Map<String,Role>   roles      = new HashMap<String,Role>();
     protected Set<String>        linkTypes  = new HashSet<String>();
     protected OS                 os         = null;
-    
+
     /** Creates a new SS */
     public SS(OS os) {
         super();
@@ -50,14 +50,14 @@ public class SS extends MoiseElement implements ToXML {
         addLinkType("communication");
         addLinkType("acquaintance");
     }
-    
+
     /**
      * calls addRoleDef(r, true)
      */
-    public Role addRoleDef(Role r) throws MoiseConsistencyException { 
+    public Role addRoleDef(Role r) throws MoiseConsistencyException {
         return addRoleDef(r, true);
     }
-    public Role addRoleDef(Role r, boolean check) throws MoiseConsistencyException { 
+    public Role addRoleDef(Role r, boolean check) throws MoiseConsistencyException {
         if (check && roles.get(r.getId()) != null) {
             throw new MoiseConsistencyException("the role "+r.getId()+" already exists.");
         }
@@ -69,7 +69,7 @@ public class SS extends MoiseElement implements ToXML {
         }
         return r;
     }
-    
+
     /**
      * add all roles of iRole in this SS (check = false)
      */
@@ -101,12 +101,12 @@ public class SS extends MoiseElement implements ToXML {
             }
         }
     }
-    
-    
+
+
     public Role getRoleDef(String id) {
         return roles.get(id);
     }
-    
+
     public Collection<Role> getRolesDef() {
         return roles.values();
     }
@@ -120,19 +120,19 @@ public class SS extends MoiseElement implements ToXML {
     public boolean hasLinkType(String lt) {
         return linkTypes.contains(lt);
     }
-    
+
     public Collection<String> getLinkTypes() {
         return linkTypes;
     }
 
-    public void setRootGrSpec(Group gr) { 
-        rootGrSpec = gr; 
+    public void setRootGrSpec(Group gr) {
+        rootGrSpec = gr;
     }
-    
+
     public Group getRootGrSpec() {
         return rootGrSpec;
     }
-    
+
     public OS getOS() {
         return os;
     }
@@ -140,21 +140,21 @@ public class SS extends MoiseElement implements ToXML {
     public static String getXMLTag() {
         return "structural-specification";
     }
-    
+
     public Element getAsDOM(Document document) {
         Element ele = (Element) document.createElement(getXMLTag());
 
         if (getProperties().size() > 0) {
             ele.appendChild( getPropertiesAsDOM(document));
         }
-        
+
         // roles def
         if (getRolesDef().size() > 1) {
             Element rdefsEle = (Element) document.createElement("role-definitions");
             DFSRoles(getRoleDef("soc"), rdefsEle, document);
             ele.appendChild(rdefsEle);
         }
-        
+
         // link types
         if (getLinkTypes().size() > 0) {
             Element ltypesEle = (Element) document.createElement("link-types");
@@ -165,12 +165,12 @@ public class SS extends MoiseElement implements ToXML {
             }
             ele.appendChild(ltypesEle);
         }
-        
+
         // groups
         if (getRootGrSpec() != null) {
             ele.appendChild( getRootGrSpec().getAsDOM(document));
         }
-        
+
         return ele;
     }
 
@@ -188,7 +188,7 @@ public class SS extends MoiseElement implements ToXML {
     public void setFromDOM(Element ele) throws MoiseException {
         NodeList nl;
         setPropertiesFromDOM(ele);
-            
+
         // role defs
         Element rdEle = DOMUtils.getDOMDirectChild(ele,"role-definitions");
         if (rdEle != null) {
@@ -218,6 +218,6 @@ public class SS extends MoiseElement implements ToXML {
             gr.setFromDOM(gEle);
             setRootGrSpec(gr);
         }
-        
+
     }
 }

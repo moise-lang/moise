@@ -19,33 +19,33 @@
     <xsl:if test="@id=$roleId">
       <h2><xsl:value-of select="@id" /> (role)</h2>
       <hr />
-      
+
       <xsl:if test="count(extends)>0">
-        <b>Extends</b> 
+        <b>Extends</b>
         <ul><xsl:apply-templates select="extends" /></ul>
       </xsl:if>
-      
+
       <xsl:apply-templates select="properties" />
-    
+
       <xsl:if test="count(specialization)>0">
-        <b>Specializations</b> 
+        <b>Specializations</b>
         <ul><xsl:apply-templates select="specialization" /></ul>
       </xsl:if>
-      
+
       <xsl:if test="count(group)=0">
         it is an <b>abstract</b> role (it can not be played).
       </xsl:if>
-      
+
       <xsl:if test="count(group)>0">
         Can be played in the following <b>groups</b>
         <ul><xsl:apply-templates select="group" /></ul>
       </xsl:if>
-      
+
       <xsl:if test="count(deontic-relation)>0">
         This role has the following <b>deontic relations</b> to missions
         <ul><xsl:apply-templates select="deontic-relation" /></ul>
       </xsl:if>
-      
+
     </xsl:if>
 </xsl:template>
 
@@ -82,7 +82,7 @@
             using the following links
             <ul><xsl:apply-templates select="link" /></ul>
         </xsl:if>
-        
+
         <xsl:if test="count(compatibility)>0">
             and the following  compatibilities
             <ul><xsl:apply-templates select="compatibility" /></ul>
@@ -96,7 +96,7 @@
             <li>
             <xsl:call-template name="RoleRef">
                <xsl:with-param name="id"><xsl:value-of select="@from" /></xsl:with-param>
-            </xsl:call-template> 
+            </xsl:call-template>
             <xsl:text> </xsl:text>
             <i><xsl:value-of select="@type" /></i> link to
             <xsl:call-template name="RoleRef">
@@ -114,7 +114,7 @@
             <li>
             <xsl:call-template name="RoleRef">
                <xsl:with-param name="id"><xsl:value-of select="@from" /></xsl:with-param>
-            </xsl:call-template> 
+            </xsl:call-template>
             compatible with
             <xsl:call-template name="RoleRef">
                <xsl:with-param name="id"><xsl:value-of select="@to" /></xsl:with-param>

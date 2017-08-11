@@ -3,7 +3,7 @@ digraph wp {
     compound=true;
 
 
-    subgraph cluster_SS { label="Structure" labelloc=t labeljust=r fontname="Italic" 
+    subgraph cluster_SS { label="Structure" labelloc=t labeljust=r fontname="Italic"
         // role hierarchy
         author [shape=box,style=rounded,fontname="Italic"];
         author -> soc [arrowhead=onormal,arrowsize=1.5];
@@ -23,27 +23,27 @@ digraph wp {
         editor -> writer  [arrowhead=diamond,arrowtail=diamond,style=dotted];
     }
 
-    subgraph cluster_writePaperSch { label="writePaperSch" labelloc=t labeljust=r fontname="Italic" 
+    subgraph cluster_writePaperSch { label="writePaperSch" labelloc=t labeljust=r fontname="Italic"
         // goals
-        wp [shape=plaintext,fontname="Helvetic"]; 
+        wp [shape=plaintext,fontname="Helvetic"];
         fdv -> wp [samehead=true,arrowhead=none];
-        fdv [shape=plaintext,fontname="Helvetic"]; 
+        fdv [shape=plaintext,fontname="Helvetic"];
         wtitle -> fdv [samehead=true,arrowhead=none];
-        wtitle [shape=plaintext,fontname="Helvetic"]; 
+        wtitle [shape=plaintext,fontname="Helvetic"];
         wabs -> fdv [samehead=true,arrowhead=none];
-        wabs [shape=plaintext,fontname="Helvetic"]; 
+        wabs [shape=plaintext,fontname="Helvetic"];
         wsectitles -> fdv [samehead=true,arrowhead=none];
-        wsectitles [shape=plaintext,fontname="Helvetic"]; 
+        wsectitles [shape=plaintext,fontname="Helvetic"];
         sv -> wp [samehead=true,arrowhead=none];
-        sv [shape=plaintext,fontname="Helvetic"]; 
+        sv [shape=plaintext,fontname="Helvetic"];
         wsecs -> sv [samehead=true,arrowhead=none];
-        wsecs [shape=plaintext,fontname="Helvetic"]; 
+        wsecs [shape=plaintext,fontname="Helvetic"];
         finish -> sv [samehead=true,arrowhead=none];
-        finish [shape=plaintext,fontname="Helvetic"]; 
+        finish [shape=plaintext,fontname="Helvetic"];
         wconc -> finish [samehead=true,arrowhead=tee];
-        wconc [shape=plaintext,fontname="Helvetic"]; 
+        wconc [shape=plaintext,fontname="Helvetic"];
         wrefs -> finish [samehead=true,arrowhead=tee];
-        wrefs [shape=plaintext,fontname="Helvetic"]; 
+        wrefs [shape=plaintext,fontname="Helvetic"];
 
         // missions
         mManager [fontname="Helvetic", shape=diamond, style=rounded];
@@ -58,13 +58,13 @@ digraph wp {
         mBib -> wrefs [arrowsize=0.5];
     }
 
-    subgraph cluster_monitoringSch { label="monitoringSch" labelloc=t labeljust=r fontname="Italic" 
+    subgraph cluster_monitoringSch { label="monitoringSch" labelloc=t labeljust=r fontname="Italic"
         // goals
-        monitor [shape=plaintext,fontname="Helvetic"]; 
+        monitor [shape=plaintext,fontname="Helvetic"];
         sanction -> monitor [samehead=true,arrowhead=vee];
-        sanction [shape=plaintext,fontname="Helvetic"]; 
+        sanction [shape=plaintext,fontname="Helvetic"];
         reward -> monitor [samehead=true,arrowhead=vee];
-        reward [shape=plaintext,fontname="Helvetic"]; 
+        reward [shape=plaintext,fontname="Helvetic"];
 
         // missions
         ms [fontname="Helvetic", shape=diamond, style=rounded];

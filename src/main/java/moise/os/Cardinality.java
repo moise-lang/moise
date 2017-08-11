@@ -19,23 +19,23 @@ public class Cardinality implements Serializable, ToXML {
     private static final long serialVersionUID = 1L;
 
     public static final Cardinality defaultValue = new Cardinality();
-    
+
     protected int max = Integer.MAX_VALUE;
     protected int min = 0;
-    
+
     public Cardinality() {
     }
-    
+
     /** Creates new Cardinality */
     public Cardinality(int minimum, int maximum) {
         max = maximum;
         min = minimum;
     }
-    
+
     public int getMin() {
         return min;
     }
-    
+
     public int getMax() {
         return max;
     }
@@ -50,7 +50,7 @@ public class Cardinality implements Serializable, ToXML {
         }
         return false;
     }
-    
+
     public String toString() {
         String sMin = "0";
         if (min != defaultValue.getMin()) {
@@ -60,9 +60,9 @@ public class Cardinality implements Serializable, ToXML {
         if (max != defaultValue.getMax()) {
             sMax = max+"";
         }
-        return "("+sMin+","+sMax+")"; 
+        return "("+sMin+","+sMax+")";
     }
-    
+
     /** returns cardinality in format Min..Max */
     public String toStringFormat2() {
         String sMin = "0";
@@ -73,13 +73,13 @@ public class Cardinality implements Serializable, ToXML {
         if (max != defaultValue.getMax()) {
             sMax = max+"";
         }
-        return sMin+".."+sMax; 
+        return sMin+".."+sMax;
     }
 
     public String getXMLTag() {
         return "cardinality";
     }
-    
+
     public Element getAsDOM(Document document) {
         Element ele = (Element) document.createElement(getXMLTag());
         if (getMin() != defaultValue.getMin()) {
@@ -90,7 +90,7 @@ public class Cardinality implements Serializable, ToXML {
         }
         return ele;
     }
-    
+
     public void setFromDOM(Element ele) throws MoiseException {
         try {
             String sMin = ele.getAttribute("min");
@@ -100,17 +100,17 @@ public class Cardinality implements Serializable, ToXML {
         } catch (Exception ex) {
             throw new MoiseXMLParserException("the value ("+ele.getAttribute("min")+") for min is not numeric!");
         }
-        
+
         try {
             String sMax = ele.getAttribute("max");
             if (sMax != null && sMax.length() > 0) {
                 max = Integer.parseInt(sMax);
             }
             if (max < min) {
-                throw new MoiseXMLParserException("the max value ("+max+") is less than min value ("+min+")!");                
+                throw new MoiseXMLParserException("the max value ("+max+") is less than min value ("+min+")!");
             }
         } catch (Exception ex) {
             throw new MoiseXMLParserException("the value ("+ele.getAttribute("max")+") for max is not numeric!");
         }
-    }    
+    }
 }

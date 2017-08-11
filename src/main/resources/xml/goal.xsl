@@ -24,14 +24,14 @@
 <xsl:template match="os:goal">
       <h2><xsl:value-of select="@id" /> (<xsl:value-of select="@type" /> goal)</h2>
       <hr />
-      
+
       <xsl:value-of select="@ds" />
 
       <p/>
       Number of agents that should satisfy this goal to be considered globally satisfied: <xsl:value-of select="@min"/>
-      
+
       <xsl:apply-templates select="os:properties" />
-      
+
       <xsl:if test="count(os:argument)>0" >
           <p/>Arguments:
           <ul>
@@ -46,14 +46,14 @@
           </xsl:for-each>
           </ul>
       </xsl:if>
-      
+
       <xsl:if test="count(os:plan)>0" >
           <p/>Plan:
           <ul>
           <xsl:apply-templates select="os:plan"/>
           </ul>
       </xsl:if>
-      
+
       <xsl:if test="../@operator != ''" >
           <p/>In plan:
           <ul>

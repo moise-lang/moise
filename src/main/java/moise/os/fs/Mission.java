@@ -20,19 +20,19 @@ import org.w3c.dom.Element;
 
  @navassoc - goals * Goal
  @navassoc - scheme - Scheme
- 
+
  @author Jomi Fred Hubner
 */
 public class Mission extends moise.common.MoiseElement implements ToXML, ToProlog {
-    
+
     private static final long serialVersionUID = 1L;
 
     protected Set<Goal>     goals      = new HashSet<Goal>();
     protected Set<Mission>  preferable = new HashSet<Mission>();
-    
+
     protected Scheme sch = null;
-    
-    /** 
+
+    /**
      * Creates a new Mission
      * @param id the identification of the role
      */
@@ -43,8 +43,8 @@ public class Mission extends moise.common.MoiseElement implements ToXML, ToProlo
             this.sch = sch;
         }
     }
-    
-    
+
+
     public Goal addGoal(String goalSpecId) throws MoiseConsistencyException {
         Goal g = sch.getGoal( goalSpecId );
         if (g == null) {
@@ -53,14 +53,14 @@ public class Mission extends moise.common.MoiseElement implements ToXML, ToProlo
         goals.add(g);
         return g;
     }
-    
+
     /**
      * returns a collection of GoalSpec objects of this Mission
      */
     public Collection<Goal> getGoals() {
         return goals;
     }
-    
+
     public void addPreferable(String missionId) throws MoiseConsistencyException {
         Mission m = sch.getFS().findMission(missionId);
         if (m == null) {
@@ -68,14 +68,14 @@ public class Mission extends moise.common.MoiseElement implements ToXML, ToProlo
         }
         preferable.add(m);
     }
-    
+
     /**
      * returns a collection of Mission objects preferable to this mission
      */
     public Collection<Mission> getPreferables() {
         return preferable;
     }
-    
+
     /**
      * returns a collection of Mission objects preferable to this mission
      * including the transitivity of the preference relation. For instance,
@@ -90,10 +90,10 @@ public class Mission extends moise.common.MoiseElement implements ToXML, ToProlo
                 all.addAll( m.getAllPreferables() );
             }
         }
-        
+
         return all;
     }
-    
+
     public int compareTo(Object o) {
         Mission mo = (Mission)o;
         if (getAllPreferables().contains( mo )) { // the other mission is preferable
@@ -107,18 +107,18 @@ public class Mission extends moise.common.MoiseElement implements ToXML, ToProlo
 
     /** returns a string representing the goal in Prolog syntax, format:
      *     mission(id,min,max cardinality,list of goals,list of preferred missions)
-     */ 
+     */
     public String getAsProlog() {
         Cardinality card = sch.getMissionCardinality(this);
         StringBuilder s = new StringBuilder("mission("+getId()+","+card.getMin()+","+card.getMax()+",[");
-        
+
         // goals
         String v="";
         for (Goal gs: getGoals()) {
             s.append(v+gs.getId());
             v=",";
-        }        
-        
+        }
+
         // Preferable
         s.append("],[");
         v="";
@@ -126,11 +126,11 @@ public class Mission extends moise.common.MoiseElement implements ToXML, ToProlo
             s.append(v+misPref.getId());
             v=",";
         }
-        
+
         s.append("])");
         return s.toString();
     }
-    
+
     public static String getXMLTag() {
         return "mission";
     }
@@ -159,17 +159,17 @@ public class Mission extends moise.common.MoiseElement implements ToXML, ToProlo
             prefEle.setAttribute("mission", misPref.getId());
             ele.appendChild(prefEle);
         }
-        
+
         return ele;
     }
-    
+
     public void setFromDOM(Element ele) throws MoiseException {
         setPropertiesFromDOM(ele);
-        
+
         Cardinality card = new Cardinality();
         card.setFromDOM(ele);
         sch.setMissionCardinality(this, card);
-        
+
         for (Element g: DOMUtils.getDOMDirectChilds(ele, Goal.getXMLTag())) {
             Goal gs = sch.getGoal(g.getAttribute("id"));
             if (gs == null) {
@@ -183,7 +183,7 @@ public class Mission extends moise.common.MoiseElement implements ToXML, ToProlo
             addPreferable(p.getAttribute("mission"));
         }
     }
-    
+
     public String toString() {
         return getFullId();
     }

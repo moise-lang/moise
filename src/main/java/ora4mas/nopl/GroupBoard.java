@@ -38,7 +38,7 @@ import ora4mas.nopl.tools.os2nopl;
 /**
  * Artifact to manage a group instance.
  * <br/><br/>
- * 
+ *
  * <b>Operations</b> (see details in method list below):
  * <ul>
  * <li>adoptRole
@@ -48,7 +48,7 @@ import ora4mas.nopl.tools.os2nopl;
  * <li>setParentGroup
  * <li>destroy
  * </ul>
- * 
+ *
  * <b>Observable properties</b>:
  * <ul>
  * <li>play(ag,role,group): agent ag is playing the role in the group.
@@ -58,7 +58,7 @@ import ora4mas.nopl.tools.os2nopl;
  * <li>parent group: the id of the parent group (used in subgroups)
  * <li>formationStatus: whether the group is well-formed (values are ok and nok)
  * </ul>
- * 
+ *
  * <b>Signals</b> (obligations has the form: obligation(to whom, maintenance condition, what, deadline)):
  * <ul>
  * <li>oblCreated(o): the obligation <i>o</i> is created
@@ -67,7 +67,7 @@ import ora4mas.nopl.tools.os2nopl;
  * <li>oblInactive(o): the obligation <i>o</i> is inactive (e.g. its maintenance condition does not hold anymore)
  * <li>normFailure(f): the failure <i>f</i> has happened (e.g. due some regimentation)
  * </ul>
- * 
+ *
  * @navassoc - specification - moise.os.ss.Group
  * @see moise.os.ss.Group
  * @author Jomi
@@ -96,11 +96,11 @@ public class GroupBoard extends OrgArt {
     protected Group getGrpState() {
         return (Group)orgState;
     }
-    
-    
+
+
     /**
      * Initialises the group board
-     * 
+     *
      * @param osFile            the organisation specification file (path and file name)
      * @param grType            the type of the group (as defined in the OS)
      * @throws ParseException   if the OS file is not correct
@@ -112,9 +112,9 @@ public class GroupBoard extends OrgArt {
 
         final String grId = getId().getName();
         orgState   = new Group(grId);
-       
+
         final OS os = OS.loadOSFromURI(osFile);
-        
+
         spec = os.getSS().getRootGrSpec().findSubGroup(grType);
 
         if (spec == null)
@@ -135,7 +135,7 @@ public class GroupBoard extends OrgArt {
 
         // install monitor of agents quitting the system
         initWspRuleEngine();
-        
+
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_OI))) {
             WebInterface w = WebInterface.get();
             try {
@@ -145,19 +145,19 @@ public class GroupBoard extends OrgArt {
             }
         }
     }
-    
+
     @OPERATION public void debug(String kind) throws Exception {
         super.debug(kind, "Group Board", true);
         if (gui != null) {
             gui.setSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
         }
     }
-    
+
     /**
-     * The agent executing this operation tries to destroy the instance of the group     
-     *                                  
+     * The agent executing this operation tries to destroy the instance of the group
+     *
      */
-    @OPERATION @LINK public void destroy() {        
+    @OPERATION @LINK public void destroy() {
         if (parentGroup != null) {
             try {
                 execLinkedOp(parentGroup, "removeSubgroup", getGrpState().getId());
@@ -167,7 +167,7 @@ public class GroupBoard extends OrgArt {
         }
         super.destroy();
     }
-    
+
     @Override
     public void agKilled(String agName) {
         //logger.info("****** "+agName+" has quit!");
@@ -183,10 +183,10 @@ public class GroupBoard extends OrgArt {
             }
         }
     }
-    
+
     /**
-     * The agent executing this operation tries to connect the group to a parentGroup     
-     *  
+     * The agent executing this operation tries to connect the group to a parentGroup
+     *
      * @param parentGroupId                                 the group Id to connect to
      */
     @OPERATION public void setParentGroup(String parentGroupId) throws OperationException {
@@ -194,15 +194,15 @@ public class GroupBoard extends OrgArt {
         getGrpState().setParentGroup(parentGroupId);
         execLinkedOp(parentGroup, "addSubgroup", getGrpState().getId(), spec.getId(), parentGroupId);
         execLinkedOp(parentGroup, "updateSubgroupPlayers", orgState.getId(), orgState.getPlayers());
-        execLinkedOp(parentGroup, "updateSubgroupFormationStatus", getGrpState().getId(), isWellFormed());        
+        execLinkedOp(parentGroup, "updateSubgroupFormationStatus", getGrpState().getId(), isWellFormed());
         execLinkedOp(parentGroup, "updateSubgroupPlayers", orgState.getId(), orgState.getPlayers());
         getObsProperty(obsPropParentGroup).updateValue(new JasonTermWrapper(getGrpState().getParentGroup()));
         updateGuiOE();
     }
-    
+
     /**
      * The agent executing this operation tries to adopt a role in the group
-     * 
+     *
      * @param role                        the role being adopted
      */
     @OPERATION public void adoptRole(String role)  {
@@ -213,9 +213,9 @@ public class GroupBoard extends OrgArt {
             public void exec() throws NormativeFailureException, Exception {
                 boolean oldStatus = isWellFormed();
                 orgState.addPlayer(ag, role);
-    
+
                 nengine.verifyNorms();
-                
+
                 boolean status = isWellFormed();
                 if (parentGroup != null) {
                     execLinkedOp(parentGroup, "updateSubgroupPlayers", orgState.getId(), orgState.getPlayers());
@@ -225,14 +225,14 @@ public class GroupBoard extends OrgArt {
                     }
                 }
                 notifyObservers();
-    
-                defineObsProperty(obsPropPlay, 
-                        new JasonTermWrapper(ag), 
-                        new JasonTermWrapper(role), 
-                        new JasonTermWrapper(GroupBoard.this.getId().getName()));            
-                if (status != oldStatus) { 
+
+                defineObsProperty(obsPropPlay,
+                        new JasonTermWrapper(ag),
+                        new JasonTermWrapper(role),
+                        new JasonTermWrapper(GroupBoard.this.getId().getName()));
+                if (status != oldStatus) {
                     getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
-                    
+
                     while (!futureSchemes.isEmpty()) {
                         String sch = futureSchemes.remove(0);
                         //logger.info("Since the group "+orgState.getId()+" is now well formed, adding scheme "+sch);
@@ -242,10 +242,10 @@ public class GroupBoard extends OrgArt {
             }
         }, "Error adopting role "+role);
     }
-    
+
     /**
      * The agent executing this operation tries to give up a role in the group
-     * 
+     *
      * @param role                        the role being removed/leaved
      */
     @OPERATION public void leaveRole(final String role)  {
@@ -267,9 +267,9 @@ public class GroupBoard extends OrgArt {
 
     private boolean leaveRoleWithoutVerify(String ag, String role, boolean oldStatus)  throws CartagoException, OperationException {
         boolean status = isWellFormed();
-        removeObsPropertyByTemplate(obsPropPlay, 
-                new JasonTermWrapper(ag), 
-                new JasonTermWrapper(role), 
+        removeObsPropertyByTemplate(obsPropPlay,
+                new JasonTermWrapper(ag),
+                new JasonTermWrapper(role),
                 new JasonTermWrapper(this.getId().getName()));
         if (status != oldStatus)
             getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
@@ -292,38 +292,38 @@ public class GroupBoard extends OrgArt {
         }
     }
     */
-    
+
     /**
      * The agent executing this operation tries to add a scheme under the responsibility of a group
-     * 
+     *
      * @param schId                        the scheme Id being added
-     */ 
+     */
     @OPERATION public void addScheme(final String schId) {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 ArtifactId schAr = lookupArtifact(schId);
                 getGrpState().addResponsibleForScheme(schId);
                 nengine.verifyNorms();
-                
+
                 schemes.add(schAr);
 
                 notifyObservers();
-    
+
                 // update in subgroups
                 for (Group sg: getGrpState().getSubgroups()) {
                     ArtifactId sgid = lookupArtifact(sg.getId());
-                    execLinkedOp(sgid, "addScheme", schId);                
+                    execLinkedOp(sgid, "addScheme", schId);
                 }
                 getObsProperty(obsPropSchemes).updateValue(getGrpState().getResponsibleForAsProlog());
-            }                
+            }
         }, "Error adding scheme "+schId);
     }
 
     /**
      * The group will be responsible for the scheme when its formation is Ok
-     * 
+     *
      * @param schId                        the scheme Id being added
-     */ 
+     */
     @OPERATION public void addSchemeWhenFormationOk(String schId) {
         if (!running) return;
         if (isWellFormed()) {
@@ -332,22 +332,22 @@ public class GroupBoard extends OrgArt {
             futureSchemes.add(schId);
         }
     }
-    
+
     /**
      * The agent executing this operation tries to remove a scheme that is under the responsibility of a group
-     * 
+     *
      * @param schId                        the scheme Id being removed
-     */ 
+     */
     @OPERATION public void removeScheme(final String schId) {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
-                ArtifactId schAid = lookupArtifact(schId); 
+                ArtifactId schAid = lookupArtifact(schId);
                 getGrpState().removeResponsibleForScheme(schId);
                 nengine.verifyNorms();
                 execLinkedOp(schAid, "removeResponsibleGroup", orgState.getId());
-    
+
                 getObsProperty(obsPropSchemes).updateValue(getGrpState().getResponsibleForAsProlog());
-    
+
                 schemes.remove(schAid);
             }
         }, "Error removing scheme "+schId);
@@ -361,12 +361,12 @@ public class GroupBoard extends OrgArt {
             // update in subgroups
             for (Group sg: getGrpState().getSubgroups()) {
                 ArtifactId sgid = lookupArtifact(sg.getId());
-                execLinkedOp(sgid, "addListener", artId);                
+                execLinkedOp(sgid, "addListener", artId);
             }
-            
+
         } catch (Exception e) {
             failed(e.toString());
-        }   
+        }
     }
 
 
@@ -378,7 +378,7 @@ public class GroupBoard extends OrgArt {
             execLinkedOp(a, "updateRolePlayers", orgState.getId(), orgState.getPlayers());
         }
     }
-    
+
     @LINK void updateSubgroupPlayers(final String grId, final Collection<Player> rp) {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
@@ -386,15 +386,15 @@ public class GroupBoard extends OrgArt {
 
                 Group g = getGrpState().getSubgroup(grId);
                 g.clearPlayers();
-                for (Player p: rp) 
+                for (Player p: rp)
                     g.addPlayer(p.getAg(), p.getTarget());
-                
+
                 nengine.verifyNorms();
-        
+
                 boolean status = isWellFormed();
                 if (status != oldStatus)
                     getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
-                
+
                 if (parentGroup != null) {
                     execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status); // my new formation status
                     execLinkedOp(parentGroup, "updateSubgroupPlayers", grId, rp);
@@ -403,17 +403,17 @@ public class GroupBoard extends OrgArt {
         }, null);
     }
 
-    
+
     @LINK void updateSubgroupFormationStatus(final String grId, final boolean isWellFormed) {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 boolean oldStatus = isWellFormed();
-    
+
                 logger.fine("updating status of "+grId+" to "+isWellFormed);
                 getGrpState().setSubgroupWellformed(grId, isWellFormed);
-    
+
                 nengine.verifyNorms();
-        
+
                 boolean status = isWellFormed();
                 if (status != oldStatus) {
                     logger.fine("now I, "+orgState.getId()+", am "+status);
@@ -426,23 +426,23 @@ public class GroupBoard extends OrgArt {
             }
         }, null);
     }
-    
+
     @LINK void addSubgroup(final String grId, final String grType, final String parentGr) {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 boolean oldStatus = isWellFormed();
-        
+
                 getGrpState().addSubgroup(grId, grType, parentGr);
-                
+
                 nengine.verifyNorms();
-    
+
                 boolean status = isWellFormed();
                 if (status != oldStatus)
                     getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
                 getObsProperty(obsPropSubgroups).updateValue(getGrpState().getSubgroupsAsProlog());
-    
+
                 if (parentGroup != null) {
-                    execLinkedOp(parentGroup, "addSubgroup", grId, grType, parentGr);    
+                    execLinkedOp(parentGroup, "addSubgroup", grId, grType, parentGr);
                     execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
                 }
             }
@@ -453,18 +453,18 @@ public class GroupBoard extends OrgArt {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 boolean oldStatus = isWellFormed();
-        
+
                 getGrpState().removeSubgroup(grId);
-    
+
                 nengine.verifyNorms();
-    
+
                 boolean status = isWellFormed();
                 if (status != oldStatus)
                     getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
                 getObsProperty(obsPropSubgroups).updateValue(getGrpState().getSubgroupsAsProlog());
-    
+
                 if (parentGroup != null) {
-                    execLinkedOp(parentGroup, "removeSubgroup", grId);    
+                    execLinkedOp(parentGroup, "removeSubgroup", grId);
                     execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);  // update my formation status
                 }
             }
@@ -474,19 +474,19 @@ public class GroupBoard extends OrgArt {
 
     /**
      * Commands that the owner of the group can perform.
-     * 
+     *
      * @param cmd, possible values (as strings):
      *     adoptRole(<agent>,<role>)
      *     setCardinality(<element type>,<element id>,<new min>,<new max>)
      *              [element type= role/subgroup]
-     *     
+     *
      * @throws CartagoException
      * @throws jason.asSyntax.parser.ParseException
-     * @throws NoValueException 
-     * @throws MoiseException 
+     * @throws NoValueException
+     * @throws MoiseException
      */
     @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException, NoValueException, MoiseException, ParseException {
-        // this operation is available only for the owner of the artifact        
+        // this operation is available only for the owner of the artifact
         if (getCurrentOpAgentId() != null && (!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager")) {
             failed("Error: agent '"+getOpUserName()+"' is not allowed to run "+cmd,"reason",new JasonTermWrapper("not_allowed_to_start(admCommand)"));
         } else {
@@ -500,7 +500,7 @@ public class GroupBoard extends OrgArt {
             }
         }
     }
-    
+
     public void setCardinality(String element, String id, int min, int max) throws MoiseException, ParseException {
         if (element.equals("role")) {
             spec.setRoleCardinality(id, new Cardinality(min,max));
@@ -509,10 +509,10 @@ public class GroupBoard extends OrgArt {
 
             postReorgUpdates(spec.getSS().getOS(), "group("+spec.getId()+")", "ss");
         } else {
-            System.out.println("setCardinality not implemented for "+element+". Ask the developers to provide you this feature!");            
+            System.out.println("setCardinality not implemented for "+element+". Ask the developers to provide you this feature!");
         }
     }
-    
+
     @Override
     public String getNPLSrc() {
         if (spec != null)
@@ -522,14 +522,14 @@ public class GroupBoard extends OrgArt {
     }
 
     protected String getStyleSheetName() {
-        return "noplGroupInstance";                
+        return "noplGroupInstance";
     }
 
     public boolean isWellFormed() {
         Term aGr = ASSyntax.createAtom(this.getId().getName());
         return nengine.holds(ASSyntax.createLiteral("well_formed", aGr));
     }
-    
+
     public Element getAsDOM(Document document) {
         return getGrAsDOM(getGrpState(), spec.getId(), isWellFormed(), ownerAgent, getGrpState(), document);
     }
@@ -538,16 +538,16 @@ public class GroupBoard extends OrgArt {
         Element grEle = (Element) document.createElement( GroupInstance.getXMLTag());
         grEle.setAttribute("id", gr.getId());
         grEle.setAttribute("specification", spec);
-        
+
         // status
         Element wfEle = (Element) document.createElement("well-formed");
         if (isWellFormed) {
-            wfEle.appendChild(document.createTextNode("ok"));      
+            wfEle.appendChild(document.createTextNode("ok"));
         } else {
-            wfEle.appendChild(document.createTextNode("not ok"));  
+            wfEle.appendChild(document.createTextNode("not ok"));
         }
         grEle.appendChild(wfEle);
-            
+
         // players
         if (!gr.getPlayers().isEmpty()) {
             Element plEle = (Element) document.createElement("players");
@@ -570,7 +570,7 @@ public class GroupBoard extends OrgArt {
             }
             grEle.appendChild(rfEle);
         }
-        
+
         // subgroups
         boolean has = false;
         Element sgEle = (Element) document.createElement("subgroups");
@@ -582,29 +582,29 @@ public class GroupBoard extends OrgArt {
         }
         if (has)
             grEle.appendChild(sgEle);
-        
+
         // parent group
         grEle.setAttribute("parent-group", gr.getParentGroup());
-        
+
         if (owner != null)
             grEle.setAttribute("owner", owner);
 
         return grEle;
     }
-    
+
     public String getAsDot() {
         os2dot t = new os2dot();
         t.showFS = false;
         t.showNS = false;
         t.showLinks = true;
-        
+
         try {
-            
+
             StringWriter so = new StringWriter();
             so.append("digraph "+getGrpState().getId()+" {\n");
             so.append("    rankdir=BT;\n");
             so.append("    compound=true;\n\n");
-            
+
             so.append( t.transformRolesDef(spec.getSS()));
             //so.append( t.transform(spec.getSS().getRootGrSpec(), getGrpState()) );
             so.append( t.transform(spec, getGrpState()) );
@@ -614,7 +614,7 @@ public class GroupBoard extends OrgArt {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return null;
     }
 }

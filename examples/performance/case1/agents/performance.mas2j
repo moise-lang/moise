@@ -1,6 +1,6 @@
-/* 
+/*
   Example used to test performance of ORA4MAS
-  
+
   by Jomi (2011)
 */
 
@@ -12,7 +12,7 @@ MAS ora4masPerf {
 
     agents:
 	    starter agentArchClass c4jason.CAgentArch;
-		
+
         agA ag.asl [beliefs="role_to_play(r011)"] agentArchClass c4jason.CAgentArch #2;
         agB ag.asl [beliefs="role_to_play(r012)"] agentArchClass c4jason.CAgentArch #2;
         agC ag.asl [beliefs="role_to_play(r013)"] agentArchClass c4jason.CAgentArch #2;
@@ -26,7 +26,7 @@ MAS ora4masPerf {
         agK ag.asl [beliefs="role_to_play(r025)"] agentArchClass c4jason.CAgentArch #2;
         agL ag.asl [beliefs="role_to_play(r026)"] agentArchClass c4jason.CAgentArch #2;
 
-    classpath: "../../../../lib/moise.jar";   // moise: where the artifacts are included 
-               
+    classpath: "../../../../lib/moise.jar";   // moise: where the artifacts are included
+
 }
 

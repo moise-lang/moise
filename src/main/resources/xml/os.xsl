@@ -3,11 +3,11 @@
 <xsl:stylesheet
      xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
      version="1.0"
-     
+
      xmlns:os='http://moise.sourceforge.net/os'
 >
-    
-    
+
+
 <xsl:param name="h1-style" select="'color: red; font-family: arial;'" />
 <xsl:param name="h2-style" select="'color: red; font-family: arial;'" />
 <xsl:param name="h3-style" select="'color: green; font-family: arial;'" />
@@ -17,7 +17,7 @@
 <xsl:param name="td-style"  select="'text-align: left; vertical-align: top; font-family: arial;'" />
 <xsl:param name="trh-style" select="'background-color: #ece7e6; font-family: arial; vertical-align: top;'" />
 <xsl:param name="tr-style"  select="'background-color: #ece7e6; font-family: arial;'" />
-    
+
 <xsl:output encoding="ISO-8859-1" method="html" />
 <xsl:strip-space elements="*"/>
 <xsl:include href="functions.xsl" />
@@ -28,11 +28,11 @@
       <head>
         <title><xsl:value-of select="@id" /></title>
       </head>
-   
+
       <body>
          <h1 style="{$h1-style}">Organisational Specification: <i><xsl:value-of select="@id" /></i></h1>
          <xsl:apply-templates select="os:properties" />
-         
+
          <xsl:apply-templates select="os:structural-specification" />
          <xsl:apply-templates select="os:functional-specification" />
          <xsl:apply-templates select="os:normative-specification" />
@@ -43,7 +43,7 @@
 
 <xsl:template match="os:structural-specification">
     <hr/><h2 style="{$h2-style}">Structural Specification</h2>
-  
+
     <xsl:apply-templates select="os:properties" />
 
     <h3 style="{$h3-style}">Roles</h3>
@@ -79,7 +79,7 @@
     <xsl:param name="gid" select="@id"/>
     <h3 style="{$h3-style}">Group <i><xsl:value-of select="@id" /></i></h3>
     <a id="{$gid}" />
-    
+
     <blockquote>
     <!--
     Defined in
@@ -95,7 +95,7 @@
         <xsl:for-each select="os:roles/os:role">
             <xsl:call-template name="RoleRef">
                <xsl:with-param name="id"><xsl:value-of select="@id"/></xsl:with-param>
-            </xsl:call-template>            
+            </xsl:call-template>
             <xsl:if test="not(position()=last())"><xsl:text>, </xsl:text></xsl:if>
         </xsl:for-each>
         <xsl:text>.</xsl:text>
@@ -117,7 +117,7 @@
     <blockquote>
         <xsl:apply-templates select="os:subgroups/os:group-specification" />
     </blockquote>
-    
+
     <xsl:apply-templates select="os:links">
         <xsl:with-param name="soExtends">false</xsl:with-param>
     </xsl:apply-templates>
@@ -153,7 +153,7 @@
             <li style="{$txt-style}">
             <xsl:call-template name="RoleRef">
                <xsl:with-param name="id"><xsl:value-of select="@from" /></xsl:with-param>
-            </xsl:call-template> 
+            </xsl:call-template>
             <xsl:text> has a </xsl:text>
             <i><xsl:value-of select="@type" /></i>
             <xsl:text> link to </xsl:text>
@@ -165,7 +165,7 @@
             </xsl:if>
             <xsl:text> (</xsl:text>
             <xsl:value-of select="@scope" />
-            
+
             <xsl:if test="$soExtends='false'">
                 <xsl:text>, </xsl:text>
                 <xsl:if test="@extends-subgroups='true'">extends to subgroups</xsl:if>
@@ -177,7 +177,7 @@
         </xsl:if>
     </xsl:for-each>
     </ul>
-    
+
     <xsl:apply-templates select="../../../os:links">
          <xsl:with-param name="soExtends">true</xsl:with-param>
     </xsl:apply-templates>
@@ -197,7 +197,7 @@
     <xsl:if test="$soExtends='false'">
         Constraint Formation
     </xsl:if>
-        
+
     <ul>
     <xsl:if test="count(os:cardinality)>0 and $soExtends='false'" >
         <li style="{$txt-style}">Cardinalities</li>
@@ -223,8 +223,8 @@
         </xsl:for-each>
         </ul>
     </xsl:if>
-    
-    
+
+
     <xsl:if test="count(os:compatibility)>0">
         <xsl:if test="$soExtends='false'">
             <li style="{$txt-style}">Local compatibilities</li>
@@ -314,13 +314,13 @@
 
 
      FS
-   
-  
+
+
 -->
 
 <xsl:template match="os:functional-specification">
     <hr/><h2 style="{$h2-style}">Functional Specification</h2>
-  
+
     <xsl:apply-templates select="os:properties" />
     <xsl:apply-templates select="os:scheme" />
 
@@ -335,7 +335,7 @@
     <xsl:if test="count(.//os:goal)>0">
         <p/>
         <table border="0" cellspacing="3" cellpadding="6">
-        <tr style="{$trh-style}"> 
+        <tr style="{$trh-style}">
         <th valign="top" style="{$th-style}">goal</th>
         <th valign="top" style="{$th-style}">mission</th>
         <th valign="top" style="{$th-style}">type</th>
@@ -343,7 +343,7 @@
         <th valign="top" style="{$th-style}">ttf</th>
         <th valign="top" style="{$th-style}">description</th>
         <th valign="top" style="{$th-style}">arguments</th>
-        <th valign="top" style="{$th-style}">plan</th>   
+        <th valign="top" style="{$th-style}">plan</th>
         </tr>
         <xsl:apply-templates select="os:goal|os:goal/os:plan//os:goal" />
         </table>
@@ -366,7 +366,7 @@
             <xsl:with-param name="id"><xsl:value-of select="@id"/></xsl:with-param>
         </xsl:call-template>
         </td>
-        
+
         <td style="{$td-style}">
         <xsl:variable name="gId" select='@id'/>
         <!-- xsl:value-of select="//os:mission[os:goal/@id = $gId]/@id"/ -->
@@ -377,7 +377,7 @@
         </td>
 
         <td style="{$td-style}">
-        <xsl:value-of select="@type"/> 
+        <xsl:value-of select="@type"/>
         </td>
 
         <td style="{$td-style}">
@@ -388,18 +388,18 @@
                 <xsl:value-of select="@min"/>
             </xsl:if>
         </td>
-        
+
         <td style="{$td-style}">
-        <xsl:value-of select="@ttf"/> 
+        <xsl:value-of select="@ttf"/>
         </td>
 
         <td style="{$td-style}">
-            <xsl:value-of select="@ds"/> 
+            <xsl:value-of select="@ds"/>
             <xsl:if test="string-length(@location)>0">
             <br/>@<xsl:value-of select="@location"/>
             </xsl:if>
         </td>
-        
+
         <td style="{$td-style}">
         <xsl:if test="count(os:argument)>0" >
           <xsl:text>{</xsl:text>
@@ -414,13 +414,13 @@
           <xsl:text>}</xsl:text>
         </xsl:if>
         </td>
-         
+
         <td style="{$td-style}">
         <xsl:if test="count(os:plan)>0">
           <xsl:apply-templates select="os:plan" />
         </xsl:if>
         <xsl:if test="count(os:depends-on)>0">
-          depends on 
+          depends on
           <xsl:for-each select="os:depends-on">
                 <xsl:call-template name="GoalRef">
                     <xsl:with-param name="id"><xsl:value-of select="@goal"/></xsl:with-param>
@@ -429,13 +429,13 @@
           </xsl:for-each>
         </xsl:if>
         </td>
-        
+
     </tr>
 </xsl:template>
 
 
 <xsl:template match="os:plan">
-        <xsl:variable name="pOp" select='@operator'/> 
+        <xsl:variable name="pOp" select='@operator'/>
         <xsl:if test="string-length(@successRate)>0">
             <sub>(<xsl:value-of select="@successRate"/>)&#160;</sub>
         </xsl:if>
@@ -450,17 +450,17 @@
             </xsl:if>
         </xsl:for-each>
         <xsl:apply-templates select="property" />
-    
+
         <!-- xsl:call-template name="GoalRef">
             <xsl:with-param name="id"><xsl:value-of select="../@id"/></xsl:with-param>
         </xsl:call-template
 
-        <xsl:variable name="pOp" select='@operator'/> 
+        <xsl:variable name="pOp" select='@operator'/>
         <xsl:text> = </xsl:text>
         <xsl:if test="string-length(@success-rate) > 0 and @success-rate != 1.0" >
                 <sub>(<xsl:value-of select="@success-rate"/>)&#160;</sub>
         </xsl:if>
-        
+
         <xsl:for-each select="os:goal">
             <xsl:call-template name="GoalRef">
                 <xsl:with-param name="id"><xsl:value-of select="@id"/></xsl:with-param>
@@ -472,7 +472,7 @@
             </xsl:if>
         </xsl:for-each>
         <xsl:text>.</xsl:text>
-        
+
         <xsl:if test="count(os:goal/os:plan) > 0">
             <ul>
                <xsl:apply-templates select="os:goal/os:plan" />
@@ -480,7 +480,7 @@
         </xsl:if>
         <xsl:apply-templates select="os:properties" />
     </li>
-    -->    
+    -->
 </xsl:template>
 
 
@@ -506,8 +506,8 @@
                      <xsl:with-param name="max"><xsl:value-of select="@max" /></xsl:with-param>
                  </xsl:call-template>
          </xsl:if>
-    
-         <xsl:variable name="misId" select='@id'/> 
+
+         <xsl:variable name="misId" select='@id'/>
          <xsl:if test="count(os:preferred)>0">
              <br/><xsl:text>preferred = </xsl:text>
              <xsl:for-each select="os:preferred">
@@ -527,12 +527,12 @@
 <xsl:template match="os:normative-specification">
     <hr/><h2 style="{$h2-style}">Normative Specification</h2>
     <xsl:apply-templates select="properties" />
-    
+
     <table border="0" cellspacing="3" cellpadding="6">
-    <tr style="{$trh-style}"> 
+    <tr style="{$trh-style}">
     <th style="{$th-style}">id</th>
     <th style="{$th-style}">condition</th>
-    <th style="{$th-style}">role</th> 
+    <th style="{$th-style}">role</th>
     <th style="{$th-style}">relation</th>
     <th style="{$th-style}">mission</th>
     <th style="{$th-style}">time constraint</th>
@@ -552,30 +552,30 @@
         <td style="{$td-style}">
         <xsl:value-of select="@condition"/>
         </td>
-        <td style="{$td-style}"> 
+        <td style="{$td-style}">
         <xsl:call-template name="RoleRef">
             <xsl:with-param name="id"><xsl:value-of select="@role"/></xsl:with-param>
         </xsl:call-template>
         </td>
-        
+
         <td style="{$td-style}">
         <i><xsl:value-of select="@type"/> </i>
         </td>
-        
+
         <td style="{$td-style}">
         <xsl:call-template name="MissionRef">
             <xsl:with-param name="id"><xsl:value-of select="@mission"/></xsl:with-param>
         </xsl:call-template>
         </td>
-        
+
         <td style="{$td-style}">
         <xsl:value-of select="@time-constraint"/>
         </td>
-        
+
         <td style="{$td-style}">
         <xsl:value-of select="@referee"/>
         </td>
-        
+
         <td style="{$td-style}">
         <xsl:apply-templates select="os:properties" />
         </td>
@@ -588,8 +588,8 @@
         <br/><b>Properties</b>:
         <ul>
         <xsl:apply-templates select="os:property" >
-            <xsl:sort select="@id" /> 
-        </xsl:apply-templates > 
+            <xsl:sort select="@id" />
+        </xsl:apply-templates >
         </ul>
         </span>
       </xsl:if>

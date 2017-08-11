@@ -20,15 +20,15 @@ import org.w3c.dom.Element;
 
  @composed - plan-to-achieve - Plan
  @navassoc - type - GoalType
- 
+
  @author Jomi Fred Hubner
 */
 public class Goal extends MoiseElement implements ToXML, ToProlog {
-    
+
     private static final long serialVersionUID = 1L;
 
     public enum GoalType { performance, achievement, maintenance };
-    
+
     protected Plan     plan = null;   // the plan to achieve this goal (in case the goal is the head of a plan)
     protected Plan     inPlan = null; // the plan where this goal belongs
     protected Scheme   sch = null;    // the scheme of this goal
@@ -39,47 +39,47 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
     protected String   ttf = ""; // time to fulfill
     protected List<Goal> dependencies = null; // explicit goals this goal depend on to be enabled
     protected String   location = "";
-        
+
     public Goal(String goal) {
         setId(goal);
     }
-    
+
     public boolean hasArguments() {
         return args != null && !args.isEmpty();
     }
-    
+
     public void addArgument(String argId, Object value) {
         if (args == null) {
             args = new LinkedHashMap<String,Object>(); // use linked to preserve order
         }
-        args.put(argId, value);     
+        args.put(argId, value);
     }
-    
+
     public void setScheme(Scheme sch) {
         this.sch = sch;
     }
     public Scheme getScheme() {
         return sch;
     }
-    
+
     public void setInPlan(Plan p) {
         inPlan = p;
     }
     public Plan getInPlan() {
         return inPlan;
     }
-    
+
     /**
      * returns a map of the goal's arguments (key is the argument, value is the default value)
      */
     public Map<String,Object> getArguments() {
         return args;
     }
-    
+
     public void setPlan(Plan p) {
         plan = p;
     }
-     
+
     /** gets the plan to achieve this goal (in case the goal is the head of a plan) */
     public Plan getPlan() {
         return plan;
@@ -88,24 +88,24 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
     public boolean hasPlan() {
         return plan != null;
     }
-    
+
     public void setDescription(String s) {
         if (s != null && s.trim().length() > 0)
             desc = s.trim();
     }
-    
-    
+
+
     public String getDescription() {
         return desc;
     }
-    
+
     public void addDependence(Goal g) {
         if (dependencies == null)
             dependencies = new ArrayList<Goal>();
         dependencies.add(g);
     }
     public boolean hasDependence() {
-        return dependencies != null && !dependencies.isEmpty();        
+        return dependencies != null && !dependencies.isEmpty();
     }
     public List<Goal> getDependencies() {
         return dependencies;
@@ -113,14 +113,14 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
 
     public List<Goal> getPreConditionGoals() {
         List<Goal> r = new ArrayList<Goal>();
-        
+
         if (hasDependence())  // add explicit dependencies
             r.addAll(getDependencies());
-        
+
         //if (sch.getRoot().getId().equals(this.getId())) { // this goal is the SCH root
         //    return true;
         //}
-        
+
         // there is plan (sequence) that defines if the goal is permitted
         // (choice or parallel does not defines permission)
         if (plan != null) {
@@ -133,7 +133,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             } else if (plan.getOp() == PlanOpType.choice) {
                 // all goals are condition
                 r.addAll( plan.getSubGoals() );
-            } 
+            }
         } else if (inPlan != null) {
             Goal tg = this;
             while (tg != null) {
@@ -166,7 +166,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
         return minAgToSat;
     }
 
-    
+
     public GoalType getType() {
         return type;
     }
@@ -176,7 +176,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             setMinAgToSatisfy(1);
         }
     }
-    
+
     public String getTTF() {
         return ttf;
     }
@@ -190,12 +190,12 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
     public void setLocation(String l) {
         location = l;
     }
-    
-    
+
+
     public static String getXMLTag() {
         return "goal";
     }
-    
+
     public boolean isRoot() {
         return getInPlan() == null;
     }
@@ -205,11 +205,11 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
         else
             return getInPlan().getTargetGoal().getDepth()+1;
     }
-    
-    
+
+
     /** returns a string representing the goal in Prolog syntax, format:
      *     goal(id, type, description, #ags to satisfy,time to fulfill, list of arguments, plan)[location(L)]
-     */ 
+     */
     public String getAsProlog() {
         StringBuilder s = new StringBuilder("goal("+getId()+","+type);
 
@@ -217,19 +217,19 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
         if (getDescription() != null)
             s.append(getDescription());
         s.append("\",");
-        
+
         // agents to satisfy
         if (getMinAgToSatisfy() != -1)
             s.append(getMinAgToSatisfy());
         else
             s.append("all");
-        
+
         // ttf
         if (ttf == null || ttf.length() == 0)
             s.append(",\"infinity");
         else
             s.append(",\""+ttf);
-        
+
         // arguments
         s.append("\",[");
         if (hasArguments()) {
@@ -247,15 +247,15 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             s.append(getPlan().getAsProlog());
 
         s.append(")");
-        
+
         // use annotation for location
         if (location != null && location.length() > 0) {
         	s.append("[location(\""+location+"\")]");
         }
-        
+
         return s.toString();
     }
-    
+
     public Element getAsDOM(Document document) {
         Element ele = (Element) document.createElement(getXMLTag());
         ele.setAttribute("id", getId());
@@ -278,7 +278,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
                 ea.setAttribute("id", id);
                 String vl = args.get(id).toString();
                 if (vl.length() > 0) {
-                    ea.setAttribute("value", vl.toString());                    
+                    ea.setAttribute("value", vl.toString());
                 }
                 ele.appendChild(ea);
             }
@@ -287,7 +287,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             for (Goal dg: getDependencies()) {
                 Element ea = (Element) document.createElement("depends-on");
                 ea.setAttribute("goal", dg.getId());
-                ele.appendChild(ea);                
+                ele.appendChild(ea);
             }
         }
         if (ttf != null && ttf.length() > 0)
@@ -299,7 +299,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
         }
         return ele;
     }
-    
+
     public void setFromDOM(Element ele, Scheme sch) throws MoiseException {
         setPropertiesFromDOM(ele);
         setScheme(sch);
@@ -329,7 +329,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             }
             addArgument(ea.getAttribute("id"), value);
         }
-        
+
         // dependencies
         for (Element ea: DOMUtils.getDOMDirectChilds(ele, "depends-on")) {
             if (ea.hasAttribute("goal")) {
@@ -348,6 +348,6 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             Plan plan = new Plan(sch);
             plan.setFromDOM(ep, this);
             sch.addPlan(plan);
-        }        
+        }
     }
 }

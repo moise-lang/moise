@@ -27,14 +27,14 @@ import jaca.ToProlog;
 
 /**
  Represents the instance group of one Group Specification
- 
+
  @navassoc - responsible_for  - Scheme
- 
+
  @author Jomi Fred Hubner
 */
 public class Group extends CollectiveOE implements ToProlog {
 
-    public final static Literal[] dynamicFacts = { 
+    public final static Literal[] dynamicFacts = {
         createLiteral("group_id",    new VarTerm("Gr")),
         createLiteral("play",        new VarTerm("Ag"), new VarTerm("Role"), new VarTerm("Gr")),
         createLiteral("leaved_role", new VarTerm("Ag"), new VarTerm("Role"), new VarTerm("Gr")),
@@ -44,13 +44,13 @@ public class Group extends CollectiveOE implements ToProlog {
         createLiteral("subgroup",             new VarTerm("SubGr"), new VarTerm("Type"), new VarTerm("SuperGr"))
     };
 
-    public final static PredicateIndicator groupPI       = dynamicFacts[0].getPredicateIndicator(); 
-    public final static PredicateIndicator playPI        = dynamicFacts[1].getPredicateIndicator(); 
-    public final static PredicateIndicator exPlayPI      = dynamicFacts[2].getPredicateIndicator(); 
-    public final static PredicateIndicator responsiblePI = dynamicFacts[3].getPredicateIndicator(); 
-    public final static PredicateIndicator parentGrPI    = dynamicFacts[4].getPredicateIndicator(); 
-    public final static PredicateIndicator subGrWFPI     = dynamicFacts[5].getPredicateIndicator(); 
-    public final static PredicateIndicator subGrPI       = dynamicFacts[6].getPredicateIndicator(); 
+    public final static PredicateIndicator groupPI       = dynamicFacts[0].getPredicateIndicator();
+    public final static PredicateIndicator playPI        = dynamicFacts[1].getPredicateIndicator();
+    public final static PredicateIndicator exPlayPI      = dynamicFacts[2].getPredicateIndicator();
+    public final static PredicateIndicator responsiblePI = dynamicFacts[3].getPredicateIndicator();
+    public final static PredicateIndicator parentGrPI    = dynamicFacts[4].getPredicateIndicator();
+    public final static PredicateIndicator subGrWFPI     = dynamicFacts[5].getPredicateIndicator();
+    public final static PredicateIndicator subGrPI       = dynamicFacts[6].getPredicateIndicator();
 
     private HashSet<String>     schemes   = new HashSet<String>();
     private Set<Literal>        schemesAsLiteralList = new ConcurrentSkipListSet<Literal>();
@@ -59,7 +59,7 @@ public class Group extends CollectiveOE implements ToProlog {
     private Set<Literal>        wellFormedSubGroups = new HashSet<Literal>();
     private String              parentGroup = "root";
     private String              type;
-    
+
     public Group(String id) {
         super(id);
     }
@@ -77,7 +77,7 @@ public class Group extends CollectiveOE implements ToProlog {
     }
 
     // subgroups
-    
+
     public Group addSubgroup(String gId, String gType, String parentGr) {
         Group g = new Group(gId);
         g.setType(gType);
@@ -113,30 +113,30 @@ public class Group extends CollectiveOE implements ToProlog {
     private Literal getSubGrWFLiteral(String sg) {
         return createLiteral(subGrWFPI.getFunctor(), createAtom(sg));
     }
-    
-    
-    
+
+
+
     public void setType(String type) {
         this.type = type;
     }
     public String getGrType() {
         return type;
     }
-    
+
     public void setParentGroup(String gId) {
         parentGroup = gId;
     }
     public String getParentGroup() {
         return parentGroup;
     }
-    
+
     @SuppressWarnings("unchecked")
     public Collection<String> getSchemesResponsibleFor() {
         return (Collection<String>)schemes.clone();
     }
-    
+
     public ToProlog getResponsibleForAsProlog() {
-        return getCollectionAsProlog(getSchemesResponsibleFor());        
+        return getCollectionAsProlog(getSchemesResponsibleFor());
     }
 
     public ToProlog getSubgroupsAsProlog() {
@@ -144,10 +144,10 @@ public class Group extends CollectiveOE implements ToProlog {
         for (Group g: subgroups.values())
             if (g.getParentGroup().equals(getId()))
                 directSubgroups.add(g.getId());
-        return getCollectionAsProlog(directSubgroups);        
+        return getCollectionAsProlog(directSubgroups);
     }
 
-    
+
     PredicateIndicator getPlayerPI() {
         return playPI;
     }
@@ -173,14 +173,14 @@ public class Group extends CollectiveOE implements ToProlog {
                     public Iterator<Unifier> consult(Literal l, Unifier u) { return Group.super.consult(l,u); }
                 });
                 providers.addAll(subgroups.values());
-                
+
                 return consultProviders(l, u, providers.iterator());
             } else {
                 return super.consult(l, u);
             }
         }
-        
-        if (pi.equals(responsiblePI)) 
+
+        if (pi.equals(responsiblePI))
             return consult(l, u, schemesAsLiteralList);
 
         Term lCopy;
@@ -189,26 +189,26 @@ public class Group extends CollectiveOE implements ToProlog {
             if (u.unifies(lCopy, termId))
                 return LogExpr.createUnifIterator(u);
             else
-                return LogExpr.EMPTY_UNIF_LIST.iterator(); 
+                return LogExpr.EMPTY_UNIF_LIST.iterator();
         }
-        
+
         if (pi.equals(parentGrPI)) {
             lCopy = l.getTerm(0);
             if (u.unifies(lCopy, createAtom(parentGroup)))
                 return LogExpr.createUnifIterator(u);
             else
-                return LogExpr.EMPTY_UNIF_LIST.iterator(); 
+                return LogExpr.EMPTY_UNIF_LIST.iterator();
         }
-        
-        if (pi.equals(subGrWFPI)) 
+
+        if (pi.equals(subGrWFPI))
             return consult(l, u, wellFormedSubGroups);
 
-        if (pi.equals(subGrPI)) 
+        if (pi.equals(subGrPI))
             return consult(l, u, subgroupsAsLiteralList.values());
-        
-        return LogExpr.EMPTY_UNIF_LIST.iterator(); 
+
+        return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
-    
+
     public Group clone() {
         Group g = new Group(id);
         g.monSch = this.monSch;
@@ -228,12 +228,12 @@ public class Group extends CollectiveOE implements ToProlog {
         g.exPlayersAsLiteralList.addAll(this.exPlayersAsLiteralList);
         return g;
     }
-    
-   
+
+
     public String getAsPrologStr() {
         return getId();
     }
-    
+
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder("Group: "+getId()+"\n  players:\n");
@@ -249,7 +249,7 @@ public class Group extends CollectiveOE implements ToProlog {
         }
         out.append("\n  subgroups: "+getSubgroupsAsProlog().getAsPrologStr());
         out.append("\n  parent group: "+getParentGroup());
-        
+
 
         return out.toString();
     }

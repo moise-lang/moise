@@ -17,46 +17,46 @@ import org.w3c.dom.Element;
 
 /**
  Represents a Functional Specification.
- 
+
  @composed - schemes * Scheme
- 
+
  @author Jomi Fred Hubner
 */
 public class FS extends MoiseElement implements ToXML {
-    
+
     private static final long serialVersionUID = 1L;
 
     protected Map<String,Scheme> schs = new HashMap<String,Scheme>();
     protected OS                 os   = null;
-    
+
     /** Creates new SS */
     public FS(OS os) {
         super();
         this.os = os;
     }
-    
+
     public void addScheme(Scheme s) {
         schs.put(s.getId(),s);
     }
-    
+
     public void addScheme(Collection<Scheme> cs) {
         for (Scheme sch: cs) {
             addScheme( sch);
         }
     }
-    
+
     public Scheme findScheme(String id) {
         return schs.get(id);
     }
-    
+
     public Collection<Scheme> getSchemes() {
         return schs.values();
     }
-    
+
     public OS getOS() {
         return os;
     }
-    
+
     /**
      * find a mission in all schemes
      */
@@ -69,7 +69,7 @@ public class FS extends MoiseElement implements ToXML {
         }
         return null;
     }
-    
+
     public Collection<Mission> getAllMissions() {
         List<Mission> all = new ArrayList<Mission>();
         for (Scheme sch: schs.values()) {
@@ -101,16 +101,16 @@ public class FS extends MoiseElement implements ToXML {
         if (getProperties().size() > 0) {
             ele.appendChild( getPropertiesAsDOM(document));
         }
-        
+
         // schemes
         for (Scheme sspec: getSchemes()) {
             ele.appendChild(sspec.getAsDOM(document));
         }
-        
+
         return ele;
     }
 
-    
+
     public void setFromDOM(Element ele) throws MoiseException {
         setPropertiesFromDOM(ele);
 

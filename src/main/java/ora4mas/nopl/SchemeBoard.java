@@ -48,7 +48,7 @@ import ora4mas.nopl.tools.os2nopl;
 /**
  * Artifact to manage a scheme instance.
  * <br/><br/>
- * 
+ *
  * <b>Operations</b> (see details in the methods list below):
  * <ul>
  * <li>commitMission
@@ -58,7 +58,7 @@ import ora4mas.nopl.tools.os2nopl;
  * <li>resetGoal
  * <li>destroy
  * </ul>
- * 
+ *
  * <b>Observable properties</b>:
  * <ul>
  * <li>commitment(ag,mission,sch): agent ag is committed to the mission in the scheme (we have as many obs prop as commitments).</br>
@@ -73,7 +73,7 @@ import ora4mas.nopl.tools.os2nopl;
  * <li>goalArgument(schemeId, goalId, argId, value): value of goals' arguments, defined by the operation setArgumentValue</br>
  *     e.g. <code>goalArgument(sch1, winner, "W", "Bob")</code>
  * </ul>
- * 
+ *
  * <b>Signals</b> (obligation o has the form: obligation(to whom, maintenance condition, what, deadline)):
  * <ul>
  * <li>oblCreated(o): the obligation <i>o</i> is created.
@@ -85,7 +85,7 @@ import ora4mas.nopl.tools.os2nopl;
  * <li>normFailure(f): the failure <i>f</i> has happened (e.g. due some regimentation).</br>
  *    e.g. <code>f = fail(mission_permission(Ag,M,Sch))</code>. The f comes from the normative program.
  * </ul>
- * 
+ *
  * @navassoc - specification - moise.os.fs.Scheme
  * @see moise.os.fs.Scheme
  * @author Jomi
@@ -93,11 +93,11 @@ import ora4mas.nopl.tools.os2nopl;
 public class SchemeBoard extends OrgArt {
 
     protected moise.os.fs.Scheme spec;
-    
+
     public static final String obsPropSpec       = "specification";
     public static final String obsPropGroups     = "groups";
     public static final String obsPropCommitment = "commitment";
-    
+
     public static final PredicateIndicator piGoalState = new PredicateIndicator("goalState", 5);
 
     protected Logger logger = Logger.getLogger(SchemeBoard.class.getName());
@@ -105,11 +105,11 @@ public class SchemeBoard extends OrgArt {
     public Scheme getSchState() {
         return (Scheme)orgState;
     }
-    
-    
+
+
     /**
      * Initialises the scheme artifact
-     * 
+     *
      * @param osFile           the organisation specification file (path and file name)
      * @param schType          the type of the scheme (as defined in the OS)
      * @throws ParseException  if the OS file is not correct
@@ -119,13 +119,13 @@ public class SchemeBoard extends OrgArt {
         osFile = OrgArt.fixOSFile(osFile);
         final OS os = OS.loadOSFromURI(osFile);
         spec = os.getFS().findScheme(schType);
-        
+
         final String schId = getId().getName();
         orgState   = new Scheme(spec, schId);
-        
+
         if (spec == null)
             throw new MoiseException("scheme "+schType+" does not exist!");
-        
+
         oeId = getCreatorId().getWorkspaceId().getName();
 
         // load normative program
@@ -137,7 +137,7 @@ public class SchemeBoard extends OrgArt {
         updateGoalStateObsProp();
         defineObsProperty(obsPropGroups,  getSchState().getResponsibleGroupsAsProlog());
         defineObsProperty(obsPropSpec, new JasonTermWrapper(spec.getAsProlog()));
-        
+
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_OI))) {
             WebInterface w = WebInterface.get();
             try {
@@ -145,18 +145,18 @@ public class SchemeBoard extends OrgArt {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }                    
+        }
     }
-    
+
     @OPERATION public void debug(String kind) throws Exception {
     	super.debug(kind, "Scheme Board", true);
     	if (gui != null) {
             gui.setSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));
         }
     }
-    
+
     /**
-     * The agent executing this operation tries to delete the scheme board artifact 
+     * The agent executing this operation tries to delete the scheme board artifact
      */
     @OPERATION @LINK public void destroy() {
         orgState.clearPlayers();
@@ -166,7 +166,7 @@ public class SchemeBoard extends OrgArt {
 		        aid = lookupArtifact(g.getId());
 		        if (aid != null)
 		            execLinkedOp(aid, "removeScheme", getId().getName());
-		        
+
 		        aid = lookupArtifact(g.getId()+"."+getId());
 		        if (aid != null)
 		            execLinkedOp(aid, "destroy");
@@ -177,7 +177,7 @@ public class SchemeBoard extends OrgArt {
 		}
 		super.destroy();
     }
-    
+
     @Override
     public void agKilled(String agName) {
         //logger.info("****** "+agName+" has quit! Removing its missions.");
@@ -185,9 +185,9 @@ public class SchemeBoard extends OrgArt {
             if (orgState.removePlayer(agName, p.getTarget())) {
                 try {
                     logger.info(agName+" has quit, mission "+p.getTarget()+" removed by the platform!");
-                    removeObsPropertyByTemplate(obsPropCommitment, 
-                            new JasonTermWrapper(agName), 
-                            new JasonTermWrapper(p.getTarget()), 
+                    removeObsPropertyByTemplate(obsPropCommitment,
+                            new JasonTermWrapper(agName),
+                            new JasonTermWrapper(p.getTarget()),
                             this.getId().getName());
                     //updateMonitorScheme();
                     updateGuiOE();
@@ -198,15 +198,15 @@ public class SchemeBoard extends OrgArt {
         }
     }
 
-    
+
     /**
      * The agent executing this operation tries to commit to a mission in the scheme.
-     * 
-     * <p>Verifications:<ul> 
+     *
+     * <p>Verifications:<ul>
      *     <li>mission max cardinality</li>
      *     <li>mission permission (if the agent plays a role that permits it to commit to the mission)</li>
-     * </ul>    
-     * 
+     * </ul>
+     *
      * @param mission                     the mission being committed to
      * @throws NormativeFailureException  the failure produced if the adoption breaks some regimentation
      * @throws CartagoException           some cartago problem
@@ -219,26 +219,26 @@ public class SchemeBoard extends OrgArt {
             public void exec() throws NormativeFailureException, Exception {
                 orgState.addPlayer(ag, mission);
                 nengine.verifyNorms();
-                
-                defineObsProperty(obsPropCommitment, 
-                        new JasonTermWrapper(ag), 
-                        new JasonTermWrapper(mission), 
+
+                defineObsProperty(obsPropCommitment,
+                        new JasonTermWrapper(ag),
+                        new JasonTermWrapper(mission),
                         new JasonTermWrapper(SchemeBoard.this.getId().getName()));
                 updateGoalStateObsProp();
-                
+
                 //updateMonitorScheme();
             }
         }, "Error committing to mission "+mission);
     }
-    
+
     /**
      * The agent executing this operation tries to leave/remove its mission in the scheme
-     * 
-     * <p>Verifications:<ul> 
+     *
+     * <p>Verifications:<ul>
      *     <li>the agent must be committed to the mission</li>
      *     <li>the mission's goals have to be satisfied (otherwise the agent is obliged to commit again to the mission)</li>
      * </ul>
-     * 
+     *
      * @param mission                     the mission being removed
      * @throws NormativeFailureException  the failure produced if the remove breaks some regimentation
      * @throws CartagoException           some cartago problem
@@ -249,21 +249,21 @@ public class SchemeBoard extends OrgArt {
             public void exec() throws NormativeFailureException, Exception {
                 if (orgState.removePlayer(getOpUserName(), mission)) {
                     nengine.verifyNorms();
-                    
-                    removeObsPropertyByTemplate(obsPropCommitment, 
-                            new JasonTermWrapper(getOpUserName()), 
-                            new JasonTermWrapper(mission), 
+
+                    removeObsPropertyByTemplate(obsPropCommitment,
+                            new JasonTermWrapper(getOpUserName()),
+                            new JasonTermWrapper(mission),
                             new JasonTermWrapper(SchemeBoard.this.getId().getName()));
-                    
+
                     //updateMonitorScheme();
-                }                
+                }
             }
         },"Error leaving mission "+mission);
     }
-    
+
     /** The agent executing this operation set the goal as performed by it.
-     *  
-     * <p>Verifications:<ul> 
+     *
+     * <p>Verifications:<ul>
      *     <li>the agent must be committed to the goal</li>
      *     <li>the goal has to be enabled</li>
      * </ul>
@@ -271,25 +271,25 @@ public class SchemeBoard extends OrgArt {
     @OPERATION public void goalAchieved(String goal) throws CartagoException {
         goalDone(getOpUserName(), goal);
     }
-    
+
     private void goalDone(final String agent, final String goal) throws CartagoException {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 getSchState().addDoneGoal(agent, goal);
                 nengine.verifyNorms();
                 if (getSchState().computeSatisfiedGoals()) { // add satisfied goals
-                    //nengine.setDynamicFacts(orgState.transform());        
+                    //nengine.setDynamicFacts(orgState.transform());
                     nengine.verifyNorms();
                 }
                 //updateMonitorScheme();
-    
+
                 updateGoalStateObsProp();
             }
         },"Error achieving goal "+goal);
     }
-    
+
     /** The agent executing this operation sets a value for a goal argument.
-     *  
+     *
      *  @param goal                     The goal to which the value should be added
      *  @param var                      name of the variable to which the value is modified
      *  @param value                    value set to the variable of the goal
@@ -300,18 +300,18 @@ public class SchemeBoard extends OrgArt {
                 getSchState().setGoalArgValue(goal, var, value.toString());
                 nengine.verifyNorms();
                 //updateMonitorScheme();
-    
+
                 updateGoalStateObsProp();
-                defineObsProperty("goalArgument", ASSyntax.createAtom(SchemeBoard.this.getId().getName()), 
-                        new Atom(goal), 
-                        ASSyntax.createString(var), 
+                defineObsProperty("goalArgument", ASSyntax.createAtom(SchemeBoard.this.getId().getName()),
+                        new Atom(goal),
+                        ASSyntax.createString(var),
                         value);
             }
         },"Error setting value of argument "+var+" of "+goal+" as "+value);
     }
-    
+
     /** The agent executing this operation reset some goal.
-     * It becomes not achieved, also goals that depends on it or sub-goals are set as unachieved    
+     * It becomes not achieved, also goals that depends on it or sub-goals are set as unachieved
      * @param goal                      The goal to be reset
      */
     @OPERATION public void resetGoal(final String goal) throws CartagoException {
@@ -322,7 +322,7 @@ public class SchemeBoard extends OrgArt {
                 }
                 nengine.verifyNorms();
                 //updateMonitorScheme();
-    
+
                 updateGoalStateObsProp();
             }
         }, "Error reseting goal "+goal);
@@ -330,23 +330,23 @@ public class SchemeBoard extends OrgArt {
 
     /**
      * Commands that the owner of the scheme can perform.
-     * 
+     *
      * @param cmd, possible values (as strings):
      *     commitMission(<agent>,<mission>),
      *     goalDone(<agent>,<goal>) -- for performance goals --,
      *     goalSatisfied(<goal>) -- for achievement goals --
      *     setCardinality(<element type>,<element id>,<new min>,<new max>)
      *              [element type=mission]
-     *     
+     *
      * @throws CartagoException
      * @throws jason.asSyntax.parser.ParseException
-     * @throws MoiseException 
-     * @throws NoValueException 
+     * @throws MoiseException
+     * @throws NoValueException
      */
     @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException, NoValueException, MoiseException, ParseException {
         if (!running) return;
         // this operation is available only for the owner of the artifact
-        if ((!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager")) {   
+        if ((!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager")) {
             failed("Error: agent '"+getOpUserName()+"' is not allowed to run "+cmd,"reason",new JasonTermWrapper("not_allowed_to_start(admCommand)"));
         } else {
             Literal lCmd = ASSyntax.parseLiteral(cmd);
@@ -361,16 +361,16 @@ public class SchemeBoard extends OrgArt {
             }
         }
     }
-    
+
     public void setCardinality(String element, String id, int min, int max) throws MoiseException, ParseException {
         if (element.equals("mission")) {
             spec.setMissionCardinality(id, new Cardinality(min,max));
             postReorgUpdates(spec.getFS().getOS(), "scheme("+spec.getId()+")", "fs");
         } else {
-            System.out.println("setCardinality not implemented for "+element+". Ask the developers to provide you this feature!");            
+            System.out.println("setCardinality not implemented for "+element+". Ask the developers to provide you this feature!");
         }
     }
-    
+
     protected void enableSatisfied(final String goal) {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
@@ -378,12 +378,12 @@ public class SchemeBoard extends OrgArt {
                 getSchState().computeSatisfiedGoals();
                 nengine.verifyNorms();
                 //updateMonitorScheme();
-    
+
                 updateGoalStateObsProp();
             }
         }, "Error setting goal "+goal+" as satisfied");
     }
-    
+
     // used by Maicon in the interaction implementation
     @LINK public void interactionCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException {
         Literal lCmd = ASSyntax.parseLiteral(cmd);
@@ -391,7 +391,7 @@ public class SchemeBoard extends OrgArt {
             goalDone(fixAgName(lCmd.getTerm(0).toString()), lCmd.getTerm(1).toString());
         }
     }
-    
+
     @LINK protected void updateRolePlayers(final String grId, final Collection<Player> rp) throws NormativeFailureException, CartagoException {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
@@ -399,20 +399,20 @@ public class SchemeBoard extends OrgArt {
                 for (Player p: rp)
                     g.addPlayer(p.getAg(), p.getTarget());
                 g.addResponsibleForScheme(orgState.getId());
-                
+
                 boolean newLink = !getSchState().getGroupsResponsibleFor().contains(g);
                 getSchState().addGroupResponsibleFor(g);
-        
+
                 nengine.verifyNorms();
-        
+
                 getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
                 if (newLink) {
                     // first time the group is linked to this scheme, create normative board
                     String nbId = grId+"."+orgState.getId();
-                    ArtifactId aid = makeArtifact(nbId, NormativeBoard.class.getName(), new ArtifactConfig() );                    
+                    ArtifactId aid = makeArtifact(nbId, NormativeBoard.class.getName(), new ArtifactConfig() );
                     execLinkedOp(aid, "load", os2nopl.transform(spec, false));
                     execLinkedOp(aid, "doSubscribeDFP", orgState.getId());
-                    
+
                     String nplProgram = spec.getFS().getOS().getNS().getNPLNorms();
                     if (nplProgram != null) {
                         StringBuilder out = new StringBuilder();
@@ -425,23 +425,23 @@ public class SchemeBoard extends OrgArt {
             }
         }, null);
     }
-    
+
     @LINK void removeResponsibleGroup(final String grId) throws CartagoException {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 getSchState().removeGroupResponsibleFor( new Group(grId) );
-        
+
                 nengine.verifyNorms();
                 //updateMonitorScheme();
-    
+
                 getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
             }
         }, null);
     }
-    
+
     // list of obs props for goal states
     private List<ObsProperty> goalStObsProps = new ArrayList<ObsProperty>();
-    
+
     protected void updateGoalStateObsProp() {
         List<Literal> goals = getGoalStates();
 
@@ -449,26 +449,26 @@ public class SchemeBoard extends OrgArt {
         Iterator<ObsProperty> iop = goalStObsProps.iterator();
         while (iop.hasNext()) {
             ObsProperty op = iop.next();
-            
+
             // search in goals
             boolean found = false;
             Iterator<Literal> i = goals.iterator();
             while (i.hasNext()) {
                 Literal g = i.next();
-                
+
                 if (isObsPropEqualsGoal(g,op)) {
                     found = true;
-                    i.remove(); // this goal does not be added                    
+                    i.remove(); // this goal does not be added
                     break;
                 }
             }
-            
+
             if (!found) { // remove
                 iop.remove();
                 removeObsPropertyByTemplate(op.getName(), op.getValues());
             }
         }
-        
+
         // add the remaining as new obs prop
         for (Literal goal: goals) {
             Object[] terms = getTermsAsProlog(goal);
@@ -480,7 +480,7 @@ public class SchemeBoard extends OrgArt {
     private boolean isObsPropEqualsGoal(Literal g, ObsProperty op) {
         if (!g.getFunctor().equals(op.getName()))
             return false;
-        for (int i=0; i<g.getArity(); i++) 
+        for (int i=0; i<g.getArity(); i++)
             //if (! ((JasonTermWrapper)op.getValue(i)).getTerm().equals(g.getTerm(i)) )
             if (! ((JasonTermWrapper)op.getValue(i)).toString().equals(g.getTerm(i).toString()) )
                 return false;
@@ -495,7 +495,7 @@ public class SchemeBoard extends OrgArt {
         }
     }
     */
-    
+
     /*
     public static List<String> computeAccomplisedMissions(String schId, Collection<Mission> missions, NPLInterpreter nengine) {
         Atom aSch = new Atom(schId);
@@ -521,14 +521,14 @@ public class SchemeBoard extends OrgArt {
     private static final Atom aWaiting   = new Atom("waiting");
     private static final Atom aEnabled   = new Atom("enabled");
     private static final Atom aSatisfied = new Atom("satisfied");
-        
+
     List<Literal> getGoalStates() {
         List<Literal> all = new ArrayList<Literal>();
         Term tSch = ASSyntax.createAtom(this.getId().getName());
         for (Goal g: spec.getGoals()) {
             Atom aGoal  = new Atom(g.getId());
             Literal lGoal = ASSyntax.createLiteral(g.getId());
-            
+
             // add arguments
             // removed to keep it compatible with obligation event
             // goalArgValue obs property was added for that
@@ -546,15 +546,15 @@ public class SchemeBoard extends OrgArt {
                     }
                 }
             }*/
-                
+
             // state
             Atom aState = aWaiting;
-            if (nengine.holds(new NPLLiteral(ASSyntax.createLiteral("satisfied", tSch, aGoal), orgState))) { 
+            if (nengine.holds(new NPLLiteral(ASSyntax.createLiteral("satisfied", tSch, aGoal), orgState))) {
                 aState = aSatisfied;
-            } else if (nengine.holds(ASSyntax.createLiteral("well_formed", tSch)) && 
+            } else if (nengine.holds(ASSyntax.createLiteral("well_formed", tSch)) &&
                 nengine.holds(ASSyntax.createLiteral("enabled", tSch, aGoal))) {
                 aState = aEnabled;
-            }              
+            }
 
             // performed by
             ListTerm lAchievedBy = new ListTermImpl();
@@ -563,7 +563,7 @@ public class SchemeBoard extends OrgArt {
                 if (p.getTerm(1).equals(aGoal))
                     tail = tail.append(p.getTerm(2));
             }
-            
+
             // create the literal
             Literal lGoalSt = ASSyntax.createLiteral(
                     piGoalState.getFunctor(),
@@ -584,12 +584,12 @@ public class SchemeBoard extends OrgArt {
         else
             return super.getNPLSrc();
     }
-    
+
     protected String getStyleSheetName() {
-        return "noplSchemeInstance";                
+        return "noplSchemeInstance";
     }
 
-    
+
     public Element getAsDOM(Document document) {
         Element schEle = (Element) document.createElement( SchemeInstance.getXMLTag());
         schEle.setAttribute("id", getSchState().getId());
@@ -602,12 +602,12 @@ public class SchemeBoard extends OrgArt {
         // status
         Element wfEle = (Element) document.createElement("well-formed");
         if (nengine.holds(ASSyntax.createLiteral("well_formed", aSch))) {
-            wfEle.appendChild(document.createTextNode("ok"));            
+            wfEle.appendChild(document.createTextNode("ok"));
         } else {
-            wfEle.appendChild(document.createTextNode("not ok"));  
+            wfEle.appendChild(document.createTextNode("not ok"));
         }
         schEle.appendChild(wfEle);
-        
+
         // players
         if (!getSchState().getPlayers().isEmpty()) {
             Element plEle = (Element) document.createElement("players");
@@ -634,7 +634,7 @@ public class SchemeBoard extends OrgArt {
         if (!goals.isEmpty()) {
             Element gsEle = (Element) document.createElement("goals");
             for (Literal lg: goals) {
-                String gId = ((Literal)lg.getTerm(1)).getFunctor(); 
+                String gId = ((Literal)lg.getTerm(1)).getFunctor();
                 Goal   gSpec = spec.getGoal(gId);
                 Element giEle = (Element) document.createElement(GoalInstance.getXMLTag());
                 giEle.setAttribute("specification", gId);
@@ -646,7 +646,7 @@ public class SchemeBoard extends OrgArt {
                 for (int i=0; i<gSpec.getDepth(); i++)
                     spaces.append("  ");
                 giEle.setAttribute("depth", spaces.toString());
-                
+
                 // arguments
                 if (gSpec.hasArguments()) {
                     for (String arg: gSpec.getArguments().keySet()) {
@@ -656,27 +656,27 @@ public class SchemeBoard extends OrgArt {
                         if (value != null) {
                             argEle.setAttribute("value", value);
                         } else {
-                            argEle.setAttribute("value", "undefined");                            
+                            argEle.setAttribute("value", "undefined");
                         }
-                        giEle.appendChild(argEle);                        
+                        giEle.appendChild(argEle);
                     }
                 }
-                
+
                 // plan
                 if (gSpec.getPlan() != null) {
                     giEle.appendChild(gSpec.getPlan().getAsDOM(document));
                 }
                 // explicit dependencies
-                
+
                 for (Goal dg: gSpec.getPreConditionGoals()) {
                     Element ea = (Element) document.createElement("depends-on");
                     if (gSpec.hasDependence() && gSpec.getDependencies().contains(dg)) {
                         ea.setAttribute("explicit", "true");
                     }
                     ea.setAttribute("goal", dg.getId());
-                    giEle.appendChild(ea);                
+                    giEle.appendChild(ea);
                 }
-                                
+
                 gsEle.appendChild(giEle);
             }
             schEle.appendChild(gsEle);
@@ -684,22 +684,22 @@ public class SchemeBoard extends OrgArt {
 
         return schEle;
     }
-    
+
     public String getAsDot() {
         StringWriter so = new StringWriter();
-        
+
         so.append("digraph "+getId()+" {ordering=out label=\""+getId()+": "+spec.getId()+"\" labelloc=t labeljust=r fontname=\"Italic\" \n");
         so.append("    rankdir=BT; \n");
-        
+
         // goals
         so.append( os2dot.transform( spec.getRoot(), 0, this));
 
-        // missions 
+        // missions
         for (Mission m: spec.getMissions()) {
             so.append( os2dot.transform(m, spec));
             for (Goal g: m.getGoals()) {
                 so.append("        "+m.getId()+" -> "+g.getId()+" [arrowsize=0.5];\n");
-            }                
+            }
         }
         for (Player p: getSchState().getPlayers()) {
             so.append("        "+p.getAg()+ "[shape=plaintext];\n");
@@ -715,7 +715,7 @@ public class SchemeBoard extends OrgArt {
     @LINK void updateMonitoredScheme(Scheme monitoredSch) throws NormativeFailureException, CartagoException {
         // TODO
         //model.setMonitoredSch(monitoredSch);
-        //nengine.setDynamicFacts(oe2np.transform(model));        
+        //nengine.setDynamicFacts(oe2np.transform(model));
         //nengine.verifyNorms();
         //updateGuiOE();
     }

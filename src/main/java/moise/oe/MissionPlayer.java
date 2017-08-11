@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
  @navassoc - agent   - OEAgent
  @navassoc - mission-specification - Mission
  @navassoc - scheme   - SchemeInstance
- 
+
  @author Jomi Fred Hubner
 */
 public class MissionPlayer extends Player implements ToXML {
@@ -22,7 +22,7 @@ public class MissionPlayer extends Player implements ToXML {
 
     final private Mission        mission;
     final private SchemeInstance sch;
-    
+
     protected MissionPlayer(Mission mission, OEAgent ag, SchemeInstance sch) throws MoiseConsistencyException {
         super(ag);
         if (mission == null) {
@@ -34,7 +34,7 @@ public class MissionPlayer extends Player implements ToXML {
 
     public Mission getMission() { return mission; }
     public SchemeInstance getScheme() { return sch; }
-    
+
     public static String getXMLTag() {
         return "mission-player";
     }

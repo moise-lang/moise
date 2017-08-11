@@ -1,6 +1,6 @@
 
 /**
- *    This program creates an OE with the JojOS (RoboCup) and 
+ *    This program creates an OE with the JojOS (RoboCup) and
  *    "runs" some social events on it by calling the OE's methods.
  */
 
@@ -30,12 +30,12 @@ public class TutorialFS {
 
             // OE creation
             OE currentOE = OE.createOE("winGame", "jojFS.xml");
-            
+
             TutorialSS.createSS(currentOE);
             createFS(currentOE);
 
             System.out.println("final OE in XML format:\n"+DOMUtils.dom2txt(currentOE));
-            
+
             new moise.tools.SimOE(currentOE);
 
         } catch (Exception e) {
@@ -43,5 +43,5 @@ public class TutorialFS {
             System.exit(1);
         }
     }
-    
+
 }

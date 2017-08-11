@@ -34,11 +34,11 @@ import org.w3c.dom.Element;
  @composed - agents   * OEAgent
  @composed - groups   * GroupInstance
  @composed - schemes  * SchemeInstance
- 
+
  @author Jomi Fred Hubner
 */
 public class OE extends Event implements Cloneable, ToXML {
-    
+
     private static final long serialVersionUID = 1L;
 
     protected GoalInstance         purpose = null;
@@ -46,8 +46,8 @@ public class OE extends Event implements Cloneable, ToXML {
     protected Map<String,OEAgent>  agents  = new HashMap<String,OEAgent>();
     protected Map<String,GroupInstance>    groups  = new HashMap<String,GroupInstance>();
     protected Map<String,SchemeInstance>   schs    = new HashMap<String,SchemeInstance>();
-    
-    
+
+
     public OE(GoalInstance purpose, OS os) throws MoiseConsistencyException {
         if (os == null) {
             throw new MoiseConsistencyException("OS can not be null!");
@@ -55,7 +55,7 @@ public class OE extends Event implements Cloneable, ToXML {
         this.purpose = purpose;
         this.os      = os;
     }
-    
+
     /**
      * Creates a new organisational entity with <i>purpose</i> and organisation specification as
      * state in the file <i>OSxmlURI</i>. This XML file must be written in accordance with
@@ -77,7 +77,7 @@ public class OE extends Event implements Cloneable, ToXML {
             return null;
         }
     }
-    
+
     /**
      * gets a partial view of this OE, only entities allowed for the ag will be shown.
      */
@@ -89,7 +89,7 @@ public class OE extends Event implements Cloneable, ToXML {
             e.printStackTrace();
             return null;
         }
-        
+
         // change the agents' name
         int i = 1;
         for (OEAgent other: newOE.getAgents()) {
@@ -99,10 +99,10 @@ public class OE extends Event implements Cloneable, ToXML {
                 }
             }
         }
-        
+
         return newOE;
     }
-    
+
     /**
      * the clone object is a full/independent copy of this object,i.e.,
      * all OE inner objects are also cloned.
@@ -114,7 +114,7 @@ public class OE extends Event implements Cloneable, ToXML {
             ObjectOutputStream oout = new ObjectOutputStream(sout);
             oout.writeObject(this);
             oout.close();
-            
+
             // de-serialise
             ObjectInputStream oin = new ObjectInputStream(new ByteArrayInputStream( sout.toByteArray() ));
             OE oe = (OE)oin.readObject();
@@ -125,7 +125,7 @@ public class OE extends Event implements Cloneable, ToXML {
             return null;
         }
     }
-    
+
     /** since serialisation of maps has a bug, we need to rebuild them after serialisation! */
     public void rebuildHash() {
         for (GroupInstance gi: getGroups())
@@ -133,16 +133,16 @@ public class OE extends Event implements Cloneable, ToXML {
         for (SchemeInstance si: getSchemes())
             si.rebuildHash();
     }
-    
+
     public void changePurpose(String newPurpose) {
         Goal gs = new Goal(newPurpose);
         purpose = new GoalInstance(gs, null);
     }
-    
+
     public GoalInstance getPurpose() {
         return purpose;
     }
-    
+
     /**
      * gets the OS of this entity
      * @return the OS of this entity
@@ -150,11 +150,11 @@ public class OE extends Event implements Cloneable, ToXML {
     public OS getOS() {
         return os;
     }
-    
+
     //
     // Agent methods
     //
-    
+
     /**
      * Adds an agent in the OE.
      *
@@ -172,7 +172,7 @@ public class OE extends Event implements Cloneable, ToXML {
         ag.setOE(this);
         return ag;
     }
-    
+
     /**
      * Removes an agent from the OE.
      *
@@ -187,7 +187,7 @@ public class OE extends Event implements Cloneable, ToXML {
         if (ag == null) {
             throw new MoiseConsistencyException(agId+" is not an agent belonging to this OE");
         }
-        
+
         if (ag.getNumberOfRoles() > 0) {
             if (check) {
                 throw new MoiseConsistencyException(agId+" has "+ag.getNumberOfRoles()+" role(s) "+ag.getRoles()+", since it can not leave the OE");
@@ -195,18 +195,18 @@ public class OE extends Event implements Cloneable, ToXML {
                 ag.abort();
             }
         }
-        
+
         agents.remove(agId);
     }
-    
+
     public OEAgent getAgent(String agId) {
         return agents.get(agId);
     }
-    
+
     public Collection<OEAgent> getAgents() {
         return agents.values();
     }
-    
+
     /**
      * gets all agents that plays <code>role</code> in <code>gr</code>.
      * if gr == null, does not consider the group
@@ -214,7 +214,7 @@ public class OE extends Event implements Cloneable, ToXML {
     public Collection<OEAgent> getAgents(GroupInstance gr, String roleId) {
         return getAgents(gr, os.getSS().getRoleDef(roleId) );
     }
-    
+
     /**
      * gets all agents that plays <code>role</code> in <code>gr</code>.
      * if gr == null, the group is not considered
@@ -222,9 +222,9 @@ public class OE extends Event implements Cloneable, ToXML {
     public Collection<OEAgent> getAgents(GroupInstance gr, Role role) {
         List<OEAgent> all = new ArrayList<OEAgent>();
         for (OEAgent ag: agents.values()) {
-            
+
             for (RolePlayer rp: ag.getRoles()) {
-                
+
                 if (gr == null) {
                     if (rp.getRole().getEntailedRoles().values().contains(role)) {
                         all.add(ag);
@@ -236,11 +236,11 @@ public class OE extends Event implements Cloneable, ToXML {
         }
         return all;
     }
-    
+
     //
     // Group methods
     //
-    
+
     /**
      * Creates a new root group instance from the specification denoted by <i>grSpecId</i>.
      *
@@ -254,7 +254,7 @@ public class OE extends Event implements Cloneable, ToXML {
     public GroupInstance addGroup(String grSpecId) throws MoiseException {
         return addGroup(GroupInstance.getUniqueId()+"_"+grSpecId, grSpecId);
     }
-    
+
     /**
      * Creates a new root group instance (identified by grId) from the specification denoted by <i>grSpecId</i>.
      *
@@ -271,18 +271,18 @@ public class OE extends Event implements Cloneable, ToXML {
         if (! rootSpec.getId().equals(grSpecId)) {
             throw new MoiseConsistencyException(grSpecId+" is not a root group specification");
         }
-        
+
         // cardinality
         int maxSubGr = rootSpec.getSubGroupCardinality(rootSpec).getMax();
         int currSubGr = getSubGroupInstancesQty(grSpecId);
         if (currSubGr >= maxSubGr) {
             throw new MoiseCardinalityException("the group "+grSpecId+" already has the maximun ("+maxSubGr+") number of instances in "+this);
         }
-        
+
         if (findGroup(grId) != null) {
             throw new MoiseException("A group with id "+grId+" already exists in the OE.");
         }
-        
+
         GroupInstance gr = new GroupInstance(grId, rootSpec);
         groups.put(gr.getId(), gr);
         gr.setOE(this);
@@ -314,7 +314,7 @@ public class OE extends Event implements Cloneable, ToXML {
     public Collection<GroupInstance> getGroups() {
         return groups.values();
     }
-    
+
     /** return all groups of the OE, even subgroups */
     public Collection<GroupInstance> getAllSubGroupsTree() {
         Set<GroupInstance> all = new HashSet<GroupInstance>();
@@ -323,7 +323,7 @@ public class OE extends Event implements Cloneable, ToXML {
         }
         return all;
     }
-    
+
     /**
      * returns the number of grSpecId instances
      */
@@ -336,7 +336,7 @@ public class OE extends Event implements Cloneable, ToXML {
         }
         return n;
     }
-    
+
     /**
      * looks for a group with grId in this OE (and inside all its groups)
      */
@@ -352,7 +352,7 @@ public class OE extends Event implements Cloneable, ToXML {
         }
         return null;
     }
-    
+
     /**
      * finds all groups (and subgroups) that instantiates grSpec
      */
@@ -363,18 +363,18 @@ public class OE extends Event implements Cloneable, ToXML {
         }
         return res;
     }
-    
+
     /**
      * finds all groups (and subgroups) that instantiates grSpec
      */
     public Collection<GroupInstance> findInstancesOf(String grSpec) {
         return findInstancesOf( os.getSS().getRootGrSpec().findSubGroup(grSpec));
     }
-    
+
     //
     // Scheme methods
     //
-    
+
     /**
      * Creates a new scheme instance.
      *
@@ -387,7 +387,7 @@ public class OE extends Event implements Cloneable, ToXML {
     public SchemeInstance startScheme(String schSpecId) throws MoiseException {
         return startScheme(SchemeInstance.getUniqueId()+"_"+schSpecId, schSpecId);
     }
-    
+
     /**
      * Creates a new scheme instance with a particular id.
      *
@@ -406,11 +406,11 @@ public class OE extends Event implements Cloneable, ToXML {
         if (findScheme(schId) != null) {
             throw new MoiseConsistencyException("There already is a scheme with id "+schId);
         }
-        
+
         SchemeInstance sch = new SchemeInstance(schId, schSpec);
         schs.put(sch.getId(), sch);
         sch.setOE(this);
-        
+
         return sch;
     }
 
@@ -437,7 +437,7 @@ public class OE extends Event implements Cloneable, ToXML {
             schs.remove(sch.getId());
         }
     }
-    
+
     /**
      * Aborts (and removes) the scheme instance from the OE's Schemes. All agents committed to
      * this scheme missions will lost their commitment.
@@ -456,7 +456,7 @@ public class OE extends Event implements Cloneable, ToXML {
             schs.remove(sch.getId());
         }
     }
-    
+
     /**
      * looks for a Scheme with schId
      */
@@ -464,7 +464,7 @@ public class OE extends Event implements Cloneable, ToXML {
         return schs.get(schId);
     }
 
-    
+
     /**
      * finds all schemes that instantiates schSpecId
      */
@@ -498,24 +498,24 @@ public class OE extends Event implements Cloneable, ToXML {
             oeAgs.appendChild(oea.getAsDOM(document));
         }
         ele.appendChild(oeAgs);
-        
+
         // groups
         Element oeGrs = (Element) document.createElement("groups");
         for (GroupInstance gi: getGroups()) {
             oeGrs.appendChild( gi.getAsDOM(document));
         }
         ele.appendChild(oeGrs);
-        
+
         // groups
         Element oeSchs = (Element) document.createElement("schemes");
         for (SchemeInstance sch: getSchemes()) {
             oeSchs.appendChild(sch.getAsDOM(document));
         }
         ele.appendChild(oeSchs);
-        
+
         return ele;
     }
-    
+
     public String toString() {
         return "OE (with OS "+os.getId()+")";
     }

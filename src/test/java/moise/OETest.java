@@ -21,7 +21,7 @@ public class OETest {
     OE currentOE;
     OEAgent lucio, roberto, rivaldo;
     SchemeInstance sa;
-    
+
     @Before
     public void setUp() throws Exception {
         try {
@@ -45,7 +45,7 @@ public class OETest {
             OEAgent ronaldo   = currentOE.addAgent("Ronaldo");
             rivaldo   = currentOE.addAgent("Rivaldo");
             OEAgent scolari   = currentOE.addAgent("Scolari");
-            
+
             // Role Adoption
             marcos.adoptRole("goalkeeper", def);
             lucio.adoptRole("back", def);
@@ -69,9 +69,9 @@ public class OETest {
             // set the argument for the goal g3
             GoalInstance g3 = sa.getGoal("g3");
             g3.setArgumentValue("M2Ag", "Cafu");
-            
+
             sa.addResponsibleGroup(team);
-            
+
             lucio.commitToMission("m1", sa);
             roberto.commitToMission("m2", sa);
             rivaldo.commitToMission("m3", sa);
@@ -94,7 +94,7 @@ public class OETest {
         assertTrue(sa != null);
         assertEquals(sa.wellFormedStatus(),"ok");
     }
-    
+
     @Test
     public void testMissionQty() {
         try {
@@ -112,7 +112,7 @@ public class OETest {
             assertTrue(false);
         }
     }
-    
+
     @Test
     public void testPossibleGoals() throws MoiseConsistencyException, MoiseCardinalityException {
         GoalInstance g1 = sa.getGoal("g1");
@@ -128,7 +128,7 @@ public class OETest {
         assertFalse(g7.isEnabled());
         assertTrue(g1.isCommitted());
         assertFalse(g2.hasComittedAgents());
-        
+
         assertEquals("[g1]", lucio.getPossibleGoals().toString());
         assertEquals("[]", roberto.getPossibleGoals().toString());
         assertEquals("[]", rivaldo.getPossibleGoals().toString());
@@ -144,7 +144,7 @@ public class OETest {
         assertEquals(GoalState.enabled,g7.getState());
         assertEquals(GoalState.enabled,g8.getState());
         assertEquals(GoalState.enabled,g9.getState());
-        
+
         g7.setAchieved(lucio);
 
         assertEquals("[]", lucio.getPossibleGoals().toString());
@@ -154,7 +154,7 @@ public class OETest {
         assertEquals(GoalState.satisfied,g7.getState());
         assertEquals(GoalState.enabled,g8.getState());
         assertEquals(GoalState.enabled,g9.getState());
-        
+
         g8.setAchieved(roberto);
         g9.setAchieved(rivaldo);
 
@@ -165,7 +165,7 @@ public class OETest {
         assertEquals("[g3]", lucio.getPossibleGoals().toString());
         assertEquals("[]", roberto.getPossibleGoals().toString());
         assertEquals("[]", rivaldo.getPossibleGoals().toString());
-        
+
     }
 
 }

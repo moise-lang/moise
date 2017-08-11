@@ -5,7 +5,7 @@ E-Alliance application domain.
 Example 1
 ---------
 
-It is a program that creates an OE with the OS1 and 
+It is a program that creates an OE with the OS1 and
 "runs" some social events on it by calling the OE's methods.
 (see the TestOnOS1.java)
 
@@ -17,8 +17,8 @@ To run:
 Example 2
 ---------
 
-it is a program that allows the user to generate social events and see the 
+it is a program that allows the user to generate social events and see the
 result (or error) in a graphical interface.
 
-To run, start the "simOE" script 
+To run, start the "simOE" script
    $ simOE.sh

@@ -19,21 +19,21 @@ import org.w3c.dom.NodeList;
 
 /**
  Represents a Role Definition (its name and inheritance).
-  
+
  @navassoc - super-roles * Role
- 
+
  @author Jomi Fred Hubner
 */
 public class Role extends MoiseElement implements ToXML {
-    
+
     private static final long serialVersionUID = 1L;
 
     protected Set<Role> superRoles      = new HashSet<Role>();
     protected boolean   isAbstract      = true;
     protected SS        ss              = null;
-    
-    
-    /** 
+
+
+    /**
      * Creates a new Role
      * @param ss the SS this role will belongs to
      * @param id the identification of the role */
@@ -45,7 +45,7 @@ public class Role extends MoiseElement implements ToXML {
     public void setSS(SS ss) {
         this.ss = ss;
     }
-    
+
     public void addSuperRole(String superId) throws MoiseConsistencyException {
         Role superRole = ss.getRoleDef(superId);
         if (superRole == null) {
@@ -53,23 +53,23 @@ public class Role extends MoiseElement implements ToXML {
         }
         superRoles.add(superRole);
     }
-    
-    
+
+
     /**
      * gets the super roles of this role
      */
     public Collection<Role> getSuperRoles() {
         return superRoles;
     }
-    
+
     /**
      * returns true if some of the direct super roles is equal r
      */
     public boolean containsSuperRole(Role r) {
         return superRoles.contains(r);
     }
-    
-    
+
+
     /**
      * gets the super roles of this role (including the super roles of the super roles....,
      * but excluding this role).
@@ -82,15 +82,15 @@ public class Role extends MoiseElement implements ToXML {
         for (Role r: superRoles) {
             all.addAll( r.getAllSuperRoles().values());
         }
-        
+
         Map<String,Role> all2 = new HashMap<String,Role>();
         for (Role r: all) {
             all2.put(r.getId(), r);
         }
-        
+
         return all2;
     }
-    
+
     /**
      * gets the super roles of this role (including this role, the super roles of the super roles....)
      * The returned map keys are the roles' id (String) and the value is the role
@@ -100,7 +100,7 @@ public class Role extends MoiseElement implements ToXML {
         allAndI.put(getId(), this);
         return allAndI;
     }
-    
+
     /**
      * gets the direct specialisations (sub-roles) of this role.
      * It does not return the sub-sub-roles.
@@ -114,22 +114,22 @@ public class Role extends MoiseElement implements ToXML {
         }
         return all;
     }
-    
-    
+
+
     /**
      * gets a list of groups where this role can be played
      */
     public Collection<Group> getGroups() {
         Set<Group> all = new HashSet<Group>();
-        for (Group gr: ss.getRootGrSpec().getAllSubGroupsTree()) { 
+        for (Group gr: ss.getRootGrSpec().getAllSubGroupsTree()) {
             if (gr.containsRole( this )) {
                 all.add(gr);
             }
         }
         return all;
     }
-    
-    
+
+
     /**
      * gets all compatibilities for this role (and its super roles) in the context of the GrSpec
      */
@@ -142,7 +142,7 @@ public class Role extends MoiseElement implements ToXML {
         }
         return all;
     }
-    
+
     /**
      * gets all links for this role (and its super roles) in the context of the GrSpec
      */
@@ -155,14 +155,14 @@ public class Role extends MoiseElement implements ToXML {
         }
         return all;
     }
-    
+
     /**
      * gets all deontic relations (obligations, permissions, ...) for this role (and its super roles)
      */
     public Collection<Norm> getDeonticRelations() {
         return getNorms(null, null);
     }
-    
+
     /**
      * gets norms for this role (and its super roles).
      * if type != null, the norm type must be equals to type (all obligation is a permission).
@@ -171,7 +171,7 @@ public class Role extends MoiseElement implements ToXML {
     public Collection<Norm> getNorms(OpTypes type, String mission) {
         Set<Norm> all = new HashSet<Norm>();
         for (Norm op: ss.getOS().getNS().getNorms()) {
-            if (type != null && 
+            if (type != null &&
                 type != op.getType() &&
                 ! (type == OpTypes.permission && op.getType() == OpTypes.obligation)) {
                 continue;
@@ -193,7 +193,7 @@ public class Role extends MoiseElement implements ToXML {
      */
     public boolean hasNorm(OpTypes type, String mission) {
         for (Norm op: ss.getOS().getNS().getNorms()) {
-            if (type != null && 
+            if (type != null &&
                     type != op.getType() &&
                     ! (type == OpTypes.permission && op.getType() == OpTypes.obligation)) {
                 continue;
@@ -207,8 +207,8 @@ public class Role extends MoiseElement implements ToXML {
         }
         return false;
     }
-    
-    
+
+
     /** gets properties of this role (it also looks at
      *  super roles properties not "over written"
      */
@@ -227,12 +227,12 @@ public class Role extends MoiseElement implements ToXML {
         }
         return null;
     }
-    
-    
+
+
     protected void setAbstract(boolean a) {
         isAbstract = a;
     }
-    
+
     public boolean isAbstract() {
         return isAbstract;
     }
@@ -240,7 +240,7 @@ public class Role extends MoiseElement implements ToXML {
     public static String getXMLTag() {
         return "role";
     }
-    
+
     public Element getAsDOM(Document document) {
         Element ele = null;
         if (! getId().equals("soc")) {
@@ -256,9 +256,9 @@ public class Role extends MoiseElement implements ToXML {
                 ext.setAttribute("role",r.getId());
                 ele.appendChild(ext);
             }
-        }            
+        }
         return ele;
-    }    
+    }
 
     public Element getAsDetailedDom(Document document) {
         Element ele = (Element) document.createElement(getXMLTag());
@@ -269,26 +269,26 @@ public class Role extends MoiseElement implements ToXML {
 
         // super roles
         generateFullSuperRolesBranch(ele, getSuperRoles(), document);
-        
+
         // Specialisations
         for (Role r: getSubRoles()) {
             Element ext = (Element) document.createElement("specialization");
             ext.setAttribute("role",r.getId());
             ele.appendChild(ext);
         }
-        
+
         // groups
         for (Group gr: getGroups()) {
             Element ext = (Element) document.createElement("group");
             ext.setAttribute("id", gr.getId());
-            
+
             // Links
             for (Link l: getLinks(gr)) {
                 Element le = l.getAsDOM(document);
                 le.setAttribute("gr-id", l.getGrSpec().getId());
                 ext.appendChild(le);
             }
-            
+
             // Compatibilities
             for (Compatibility c: getCompatibilities(gr)) {
                 Element ce = c.getAsDOM(document);
@@ -297,7 +297,7 @@ public class Role extends MoiseElement implements ToXML {
             }
             ele.appendChild(ext);
         }
-        
+
         // Obligations Permissions
         for (Norm dr: getDeonticRelations()) {
             ele.appendChild(dr.getAsDOM(document));
@@ -313,10 +313,10 @@ public class Role extends MoiseElement implements ToXML {
         }
     }
 
-    
+
     public void setFromDOM(Element ele) throws MoiseException {
         setPropertiesFromDOM(ele);
-            
+
         // role defs
         NodeList nl = ele.getElementsByTagName("extends");
         if (nl.getLength() == 0) { // no extends

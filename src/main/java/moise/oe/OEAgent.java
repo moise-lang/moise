@@ -37,18 +37,18 @@ import org.w3c.dom.Element;
  @author Jomi Fred Hubner
 */
 public class OEAgent extends MoiseElement implements ToXML {
-    
+
     protected Map<String,RolePlayer>     roles    = new HashMap<String,RolePlayer>();    // key=grId.roleId,     value=RolePlayer
     protected Map<String,MissionPlayer>  missions = new HashMap<String,MissionPlayer>(); // key=schId.missionId, value=MissionPlayer
     protected OE                         oe       = null;
 
     private static Logger logger = Logger.getLogger(OEAgent.class.getName());
     private static final long serialVersionUID = 1L;
-    
+
     protected OEAgent(String name) {
         super(name);
     }
-    
+
     /**
      * remove the roles/missions of this agent without checking
      * (in the case the agent leaves the society without finishing its commitments)
@@ -57,11 +57,11 @@ public class OEAgent extends MoiseElement implements ToXML {
         removeAllMissions();
         removeAllRoles();
     }
-    
+
     // --------------------------------
     // Role
     //
-    
+
     /**
      * adds a role for an agent.
      *
@@ -80,7 +80,7 @@ public class OEAgent extends MoiseElement implements ToXML {
         }
         return adoptRole(roleId, gr);
     }
-    
+
     /**
      * adds a role for an agent.
      *
@@ -96,7 +96,7 @@ public class OEAgent extends MoiseElement implements ToXML {
      */
     public RolePlayer adoptRole(String roleId, GroupInstance gr) throws MoiseConsistencyException, MoiseCardinalityException {
         logger.fine(getId() + " trying to play "+roleId+" in "+gr);
-        
+
         Role role = oe.getOS().getSS().getRoleDef(roleId);
         // all moise+ checks
         if (role == null) {
@@ -105,47 +105,47 @@ public class OEAgent extends MoiseElement implements ToXML {
         if (!gr.getGrSpec().containsRole(role)) {
             throw new MoiseConsistencyException("the role "+roleId+" does not exist in the group "+gr+".");
         }
-        
+
         if (playsRole(roleId, gr) != null) {
             throw new MoiseConsistencyException("the role "+roleId+" is already being played by "+getId()+" in the group "+gr);
         }
-        
+
         if (role.isAbstract()) {
             throw new MoiseConsistencyException("the role "+roleId+" is abstract");
         }
-        
+
         // cardinality
         roleCardinalityCheck(role, gr);
-        
+
         // compatibility
         compatibilityCheck(role, gr);
-        
+
         RolePlayer rp = new RolePlayer(role, this, gr);
         gr.addPlayer(rp);
-        
+
         roles.put( gr.getId()+"."+roleId, rp);
-        
+
         return rp;
     }
-    
-    
+
+
     private void compatibilityCheck(Role newRole, GroupInstance newRoleGr) throws MoiseConsistencyException {
         Collection<Compatibility> newRoleCompats  = newRole.getCompatibilities(newRoleGr.getGrSpec());
-        
+
         // all the current roles
         for (RolePlayer curRolePlayer: roles.values()) {
             GroupInstance curRoleGr = curRolePlayer.getGroup();
             Role  curRole   = curRolePlayer.getRole();
-            
+
             //System.out.println("checking compatibilities for role "+newRole+" with "+curRole);
-            
+
             boolean ok = false;
             for (Compatibility c: newRoleCompats) {
                 //System.out.println("trying "+c);
-                
-                
+
+
                 if ( c.areCompatible(curRole,newRole)) {
-                    
+
                     if (curRoleGr.equals(newRoleGr)) { // the agents wants a new role in a group which it already belongs
                         // will look for an intra-group compatibility
                         if (c.getScope() == RoleRelScope.IntraGroup) {
@@ -166,7 +166,7 @@ public class OEAgent extends MoiseElement implements ToXML {
             }
         }
     }
-    
+
     private void roleCardinalityCheck(Role role, GroupInstance newRoleGr) throws MoiseCardinalityException {
         int maxRoles = newRoleGr.getGrSpec().getRoleCardinality(role).getMax();
         int currNbPlayers = newRoleGr.getPlayers(role.getId(), false).size();
@@ -175,8 +175,8 @@ public class OEAgent extends MoiseElement implements ToXML {
             throw new MoiseCardinalityException("the group "+newRoleGr+" already has the maximun ("+maxRoles+") number of the "+role+" role players.");
         }
     }
-    
-    
+
+
     /**
      * removes a role from an agent.
      *
@@ -195,7 +195,7 @@ public class OEAgent extends MoiseElement implements ToXML {
             throw new MoiseConsistencyException("the group "+grId+" does not exists.");
         return removeRole(roleId, gi);
     }
-    
+
     /**
      * removes a role from an agent.
      *
@@ -213,16 +213,16 @@ public class OEAgent extends MoiseElement implements ToXML {
         if (rp == null) {
             throw new MoiseConsistencyException("the role "+roleId+" is not being played by "+getId()+" in the group "+gr);
         }
-        
+
         // checks if this role is necessary for some mission
         if (oe.getOS().getSS().getBoolProperty("check-missions-in-remove-role", true)) {
             // for all missions
             //     try to find a permission from this tole to the mission
             for (MissionPlayer mp: missions.values()) {
-                
+
                 // check if rp is in the SCH's responsible groups
                 if (mp.getScheme().getResponsibleGroups().contains(gr)) {
-                    
+
                     // for all deontic relation from this role to the mission
                     Collection<Norm> cm = rp.getRole().getNorms(null, mp.getMission().getId());
                     if (cm.size() > 0) {
@@ -234,7 +234,7 @@ public class OEAgent extends MoiseElement implements ToXML {
         abortRole( rp );
         return rp;
     }
-    
+
     /**
      * removes a role of an agent without checking
      */
@@ -244,8 +244,8 @@ public class OEAgent extends MoiseElement implements ToXML {
             roles.remove( rp.getGroup().getId()+"."+rp.getRole().getId());
         }
     }
-    
-    
+
+
     /**
      * removes the roles without checking
      */
@@ -253,21 +253,21 @@ public class OEAgent extends MoiseElement implements ToXML {
         Iterator<RolePlayer> i = roles.values().iterator();
         if (i.hasNext()) {
             RolePlayer rp = i.next();
-            
+
             rp.getGroup().removePlayer(rp);
             roles.remove( rp.getGroup().getId()+"."+rp.getRole().getId());
             removeAllRoles();
         }
     }
-    
-    
+
+
     /**
      * returns an Iterator for RolePlayers objects
      */
     public Collection<RolePlayer> getRoles() {
         return roles.values();
     }
-    
+
     /**
      * returns the set of groups (class Group) where the roleId is being played
      */
@@ -280,7 +280,7 @@ public class OEAgent extends MoiseElement implements ToXML {
         }
         return all;
     }
-    
+
     /**
      * returns an object representing the roleId played by this agent
      * in the group gr. returns null if roleId is not played by this
@@ -289,8 +289,8 @@ public class OEAgent extends MoiseElement implements ToXML {
     public RolePlayer playsRole(String roleId, GroupInstance gr) {
         return roles.get( gr.getId()+"."+roleId);
     }
-    
-    
+
+
     /**
      * returns a collection of RolePlayer objects representing the
      * roles this agent plays in the group gr
@@ -304,18 +304,18 @@ public class OEAgent extends MoiseElement implements ToXML {
         }
         return all;
     }
-    
-    
+
+
     public int getNumberOfRoles() {
         return roles.size();
     }
-    
-    
+
+
     // --------------------------------
     // Mission
     //
-    
-    
+
+
     /**
      * adds a mission for an agent.
      *
@@ -333,7 +333,7 @@ public class OEAgent extends MoiseElement implements ToXML {
         }
         return commitToMission(missionId, sch);
     }
-    
+
     /**
      * adds a mission for an agent.
      *
@@ -347,16 +347,16 @@ public class OEAgent extends MoiseElement implements ToXML {
         if (MoiseElement.getPrefix(missionId) == null) {
             missionId = sch.getSpec().getId()+"."+ missionId;
         }
-        
+
         Mission mis = sch.getSpec().getMission(missionId);
         if (mis == null) {
             throw new MoiseConsistencyException("the mission "+missionId+" was not found in the scheme "+sch.getSpec());
         }
-        
+
         if (getMission(missionId, sch) != null) {
             throw new MoiseConsistencyException("the agent is already committed to the mission "+missionId+" in  scheme "+sch);
         }
-        
+
         if (sch.getRoot().isSatisfied() || sch.getRoot().isImpossible()) {
             String reason = "satisfied";
             if (sch.getRoot().isImpossible()) {
@@ -364,20 +364,20 @@ public class OEAgent extends MoiseElement implements ToXML {
             }
             throw new MoiseConsistencyException("the scheme "+sch+" is finished (the goal "+sch.getRoot()+" is "+reason+"), so you can not commit to its missions.");
         }
-        
+
         checkDS(mis, sch);
-        
+
         missionMaxCardinalityCheck(mis, sch);
-        
+
         MissionPlayer mp = new MissionPlayer(mis, this, sch);
-        
+
         sch.addPlayer(mp);
-        
+
         missions.put( sch.getId()+"."+missionId, mp);
         return mp;
     }
-    
-    
+
+
     /**
      * removes a mission from an agent.
      *
@@ -393,8 +393,8 @@ public class OEAgent extends MoiseElement implements ToXML {
         }
         return removeMission(missionId, sch);
     }
-    
-    
+
+
     /**
      * removes a mission from an agent.
      *
@@ -411,16 +411,16 @@ public class OEAgent extends MoiseElement implements ToXML {
         if (MoiseElement.getPrefix(missionId) == null) {
             missionId = sch.getSpec().getId()+"."+ missionId;
         }
-        
+
         MissionPlayer mp = getMission(missionId, sch);
         if (mp == null) {
             throw new MoiseConsistencyException( this + " is not committed to the mission "+missionId+" in the scheme "+sch);
         }
-        
+
         if (sch.getSpec().getFS().getBoolProperty("check-goals-in-remove-mission", true)) {
-            // for all mission's goals of a "running" scheme, 
-            //   the goal must 
-            //          be already satisfied or 
+            // for all mission's goals of a "running" scheme,
+            //   the goal must
+            //          be already satisfied or
             //          be impossible or
             //          be maintenance (they are never achieved)
             if (mp.getScheme().isCommitable()) {
@@ -432,13 +432,13 @@ public class OEAgent extends MoiseElement implements ToXML {
                 }
             }
         }
-        
+
         sch.removePlayer(mp);
         missions.remove(sch.getId()+"."+missionId);
-        
+
         return mp;
     }
-    
+
     /**
      * removes a mission commitment without checking
      */
@@ -449,7 +449,7 @@ public class OEAgent extends MoiseElement implements ToXML {
         MissionPlayer mp = missions.remove(sch.getId()+"."+missionId);
         sch.removePlayer(mp);
     }
-    
+
 
     /**
      * finds a mission player object for the mission "missionId" in scheme sch
@@ -459,10 +459,10 @@ public class OEAgent extends MoiseElement implements ToXML {
         if (MoiseElement.getPrefix(missionId) == null) {
             missionId = sch.getSpec().getId()+"."+ missionId;
         }
-        
+
         return missions.get(sch.getId()+"."+missionId);
     }
-    
+
     /**
      * finds a mission player object for the mission "missionId" in some scheme
      */
@@ -474,7 +474,7 @@ public class OEAgent extends MoiseElement implements ToXML {
         }
         return null;
     }
-    
+
     /**
      * checks if this agent's roles (in the scheme groups) gives him permission for the mission
      */
@@ -489,7 +489,7 @@ public class OEAgent extends MoiseElement implements ToXML {
                 if (sch.getResponsibleGroups().contains(rp.getGroup())) {
                     return; // ok!
                 }
-                
+
                 // try also in rp super groups
                 GroupInstance supergr = rp.getGroup().getSuperGroup();
                 while (supergr != null) {
@@ -500,11 +500,11 @@ public class OEAgent extends MoiseElement implements ToXML {
                 }
             }
         }
-        
-        
+
+
         throw new MoiseConsistencyException("the "+getId()+"'s roles (in the "+sch+" responsible groups) do not give him permission for the mission "+mis);
     }
-    
+
     protected void missionMaxCardinalityCheck(Mission mis, SchemeInstance sch) throws MoiseCardinalityException {
         int maxMissions = sch.getSpec().getMissionCardinality(mis.getId()).getMax();
         int currNbPlayers = sch.getPlayersQty(mis.getId());
@@ -513,20 +513,20 @@ public class OEAgent extends MoiseElement implements ToXML {
             throw new MoiseCardinalityException("the scheme "+sch+" already has the maximun ("+maxMissions+") number of the "+mis+" mission players.");
         }
     }
-    
+
     protected boolean missionMinCardinalityCheck(Mission mis, SchemeInstance sch) {
         int minMissions   = sch.getSpec().getMissionCardinality(mis.getId()).getMin();
         int currNbPlayers = sch.getPlayersQty(mis.getId());
         return (currNbPlayers >= minMissions);
     }
-    
+
     /**
      * returns an Iterator for MissionPlayers objects
      */
     public Collection<MissionPlayer> getMissions() {
         return missions.values();
     }
-    
+
     /**
      * removes all missions without checking
      */
@@ -539,16 +539,16 @@ public class OEAgent extends MoiseElement implements ToXML {
             removeAllMissions();
         }
     }
-    
+
     public int getNumberOfMissions() {
         return missions.size();
     }
-    
+
     // --------------------------------
     // useful methods
     //
-    
-    
+
+
     /**
      * returns the possible global goals for this agent
      * (see GoalInstance.isPossible method).
@@ -559,9 +559,9 @@ public class OEAgent extends MoiseElement implements ToXML {
         //       if goal isPossible
         //           ok
         ArrayList<GoalInstance> all = new ArrayList<GoalInstance>();
-        
+
         for (MissionPlayer mp: missions.values()) {
-            
+
             for (Goal gs: mp.getMission().getGoals()) {
                 GoalInstance ig = mp.getScheme().getGoal( gs );
                 if (ig.isEnabled()) {
@@ -580,8 +580,8 @@ public class OEAgent extends MoiseElement implements ToXML {
         }
         return allSch;
     }
-    
-    
+
+
     /** get the left first leaf possible goal in the agent's schemes */
     public GoalInstance getLeafestPossibleGoal() {
         for (SchemeInstance sch: getAllMySchemes()) {
@@ -625,12 +625,12 @@ public class OEAgent extends MoiseElement implements ToXML {
             if (g.isEnabled() && isMyGoal(g, p.getScheme())) {
                 return g;
             }
-            
+
         }
         return null;
     }
-    
-    
+
+
     /** returns true if i am committed to the goal <i>g</i>. */
     public boolean isMyGoal(GoalInstance g, SchemeInstance sch) {
         for (MissionPlayer mp: missions.values()) {
@@ -643,8 +643,8 @@ public class OEAgent extends MoiseElement implements ToXML {
         }
         return false;
     }
-    
-    
+
+
     /**
      *   returns a collection of mission i am obligated to commit to.
      *
@@ -662,7 +662,7 @@ public class OEAgent extends MoiseElement implements ToXML {
         //           if mission cardinality is not ok
         //               oooops, the agent must commit to!
         List<Permission> all = new ArrayList<Permission>();
-        
+
         for (RolePlayer rp: roles.values()) { // all roles
             all.addAll( rp.getObligations() );
         }
@@ -670,7 +670,7 @@ public class OEAgent extends MoiseElement implements ToXML {
         Collections.sort(all, new ObligationComparator());
         return all;
     }
-    
+
     /**
      *   returns a collection of mission i am permitted to commit to.
      *
@@ -694,27 +694,27 @@ public class OEAgent extends MoiseElement implements ToXML {
         Collections.sort(all, new ObligationComparator());
         return all;
     }
-    
-    
+
+
     /**
      * returns a string describing this agent status regarding its obligations
      */
     public String getDeonticStatus() {
         StringBuffer s = new StringBuffer();
-        
+
         for (Permission p: getObligations()) {
             s.append("The "+p.getRolePlayer().getRole()+" obligation for the mission "+p.getMission()+" in "+p.getScheme()+" is not ok. \n");
         }
-        
+
         if (s.length() == 0) {
             s.append("ok");
         }
         return s.toString();
     }
-    
+
     /**
-     * returns true if this agent has a role with a <code>type</code> link to 
-     * <code>other</code> agent. If <code>type = null</code>, any kind of link 
+     * returns true if this agent has a role with a <code>type</code> link to
+     * <code>other</code> agent. If <code>type = null</code>, any kind of link
      * can be considered.
      */
     public boolean hasLink(String type, OEAgent other) {
@@ -737,20 +737,20 @@ public class OEAgent extends MoiseElement implements ToXML {
                 }
                 if (link.isBiDir()) {
                     for (OEAgent ag: oe.getAgents( gr, link.getSource())) {
-                        if (ag.equals(other) && playsRole(rp.getRole().getId(), gr) != null) 
+                        if (ag.equals(other) && playsRole(rp.getRole().getId(), gr) != null)
                             return true;
                     }
                 } else {
                     for (OEAgent ag: oe.getAgents( gr, link.getTarget())) {
                         if (ag.equals(other))
                             return true;
-                    }                    
+                    }
                 }
             }
         }
         return false;
     }
-    
+
     public void setOE(OE oe) {
         this.oe = oe;
     }
@@ -763,7 +763,7 @@ public class OEAgent extends MoiseElement implements ToXML {
         Element ag = (Element) document.createElement(getXMLTag());
         ag.setAttribute("id", getId());
         ag.appendChild(document.createTextNode(getDeonticStatus()));
-        
+
         // obligations
         for (Permission p: getObligations()) {
             ag.appendChild(p.getAsDOM(document, "obligation"));
@@ -773,7 +773,7 @@ public class OEAgent extends MoiseElement implements ToXML {
         for (Permission p: getPermissions()) {
             ag.appendChild(p.getAsDOM(document, "permission"));
         }
-        
+
         // possible goals
         for (GoalInstance gi: getPossibleGoals()) {
             Element posg = (Element) document.createElement("possible-goal");
@@ -783,5 +783,5 @@ public class OEAgent extends MoiseElement implements ToXML {
         }
         return ag;
     }
-    
+
 }
