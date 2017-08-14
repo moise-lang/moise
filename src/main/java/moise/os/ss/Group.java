@@ -512,7 +512,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
 
     /** returns a string as a prolog predicate representing the group specification.
      *  <p>The format is: group_specification(group type id, list of role, list of subgroups, properties).<br/>
-     *  each role in the list is: role(id, list of sub-roles, min cardinality, max cardinality, list of compatible roles, list of links).<br/>
+     *  each role in the list is: role(id, list of sub-roles, list of super-roles, min cardinality, max cardinality, list of compatible roles, list of links).<br/>
      *  each link is: link(type, target, scope).
      */
     public String getAsProlog() {
@@ -527,6 +527,14 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
             // inheritance
             String v1 = "";
             for (Role subr: r.getSubRoles()) {
+                s.append(v1+ subr.getId());
+                v1 = ",";
+            }
+
+            // super-roles
+            s.append("],[");
+            v1 = "";
+            for (Role subr: r.getSuperRoles()) {
                 s.append(v1+ subr.getId());
                 v1 = ",";
             }
