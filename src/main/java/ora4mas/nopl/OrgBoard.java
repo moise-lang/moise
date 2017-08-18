@@ -100,10 +100,10 @@ public class OrgBoard extends Artifact {
             aid = lookupArtifact(id);
             failed("Artifact with id "+id+" already exists!");
         } catch (OperationException e) {
-        	aid = makeArtifact(id, GroupBoard.class.getName(), new ArtifactConfig(osFile, type) );
-	        aids.put(id, aid);
-	        defineObsProperty("group", new Atom(id), new Atom(type), aid);
-	        gaid.set(aid);
+            aid = makeArtifact(id, GroupBoard.class.getName(), new ArtifactConfig(osFile, type) );
+            aids.put(id, aid);
+            defineObsProperty("group", new Atom(id), new Atom(type), aid);
+            gaid.set(aid);
         }
     }
 

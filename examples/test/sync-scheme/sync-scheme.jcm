@@ -1,0 +1,20 @@
+/*
+    sync-scheme
+    ---------------------------
+
+    two agents, bob and alice, create independent schemes
+    and synchronise them some moments
+*/
+
+mas sync_scheme {
+
+    agent bob
+    agent alice {
+        verbose: 1
+    }
+
+    // agent source path
+    asl-path: src/agt
+              src/agt/inc
+
+}

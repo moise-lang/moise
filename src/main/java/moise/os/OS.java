@@ -164,19 +164,18 @@ public class OS extends MoiseElement implements ToXML {
 
                 // SS
                 Element ele = DOMUtils.getDOMDirectChild(osEle, SS.getXMLTag());
-                ss.setFromDOM(ele);
+                if (ele != null)
+                    ss.setFromDOM(ele);
 
                 // FS
                 ele = DOMUtils.getDOMDirectChild(osEle, FS.getXMLTag());
-                if (ele != null) {
+                if (ele != null)
                     fs.setFromDOM(ele);
-                }
 
                 // NS
                 ele = DOMUtils.getDOMDirectChild(osEle, NS.getXMLTag());
-                if (ele != null) {
+                if (ele != null)
                     ns.setFromDOM(ele);
-                }
 
                 return; // ok
             }

@@ -16,6 +16,7 @@ import cartago.CartagoException;
 import cartago.LINK;
 import cartago.OPERATION;
 import cartago.ObsProperty;
+import cartago.OpFeedbackParam;
 import cartago.OperationException;
 import jason.NoValueException;
 import jason.asSyntax.ASSyntax;
@@ -328,6 +329,36 @@ public class SchemeBoard extends OrgArt {
         }, "Error reseting goal "+goal);
     }
 
+    @OPERATION public void getState(OpFeedbackParam<Scheme> s) {
+        s.set(getSchState());
+    }
+    
+    @OPERATION public void mergeState(Object s) {
+        //System.out.println("in sche ****"+s.getClass().getName()+" "+s);
+        Scheme otherSch = (Scheme)s;
+        
+        // import commits
+        for (Player p: otherSch.getPlayers()) {
+            if (!getSchState().getPlayers().contains(p)) {
+                try {
+                    commitMission(p.getAg(), p.getTarget());
+                } catch (CartagoException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        // import goal's state
+        otherSch.getDoneGoals().removeAll(getSchState().getDoneGoals());
+        for (Literal g: otherSch.getDoneGoals()) {
+            try {
+                goalDone(g.getTerm(2).toString(), g.getTerm(1).toString());
+            } catch (CartagoException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
     /**
      * Commands that the owner of the scheme can perform.
      *
