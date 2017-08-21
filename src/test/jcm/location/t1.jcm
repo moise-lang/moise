@@ -1,0 +1,25 @@
+/*
+
+test obligations with location
+
+expected result:
+
+paper finished in right places
+
+*/
+
+mas t1 {
+
+    agent ag1 {
+    }
+
+    organisation o1: os1.xml {
+        group g1: wpgroup {
+            players: ag1 editor
+                     ag1 writer
+            responsible-for: s1
+        }
+        scheme s1: writePaperSch
+    }
+
+}

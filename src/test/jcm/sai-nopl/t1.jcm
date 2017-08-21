@@ -1,0 +1,15 @@
+/* 
+
+
+*/
+
+mas t1 {
+
+	agent ag1
+    
+   	workspace wsp_sai {    	            
+    	artifact sai: sai.bridges.jacamo.ConstitutiveArt("bh","ca1.sai")
+   	}
+    
+}
+

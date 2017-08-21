@@ -1,0 +1,144 @@
+/**/
+
+institution_id : bhInst.
+
+
+status_functions:
+
+states: site_prepared, play(A,R,G), responsible(G,S), committed(A,Mission,S), achieved(S,G,A)/*, well_formed(Group)*/.
+
+
+
+
+constitutive_rules:
+
+
+
+/*In this application, the agent Giacomo is allways the house owner.*/
+1: count-as play(giacomo,house_owner,"hsh_group").
+
+/*Rules 2 to 10: The state where the property currentWinner(Auction,Agent) holds counts as Agent playing some role in the house building.*/
+2: currentWinner(auction_for_SitePreparation,Agent)
+   count-as play(Agent,site_prep_contractor,"hsh_group")
+   while nticks(clock,Time)&(Time>5000).
+
+3: currentWinner(auction_for_Floors,Agent)
+   count-as play(Agent,bricklayer,"hsh_group")
+   while nticks(clock,Time)&(Time>5000).
+
+4: currentWinner(auction_for_Walls,Agent)
+   count-as play(Agent,bricklayer,"hsh_group")
+   while nticks(clock,Time)&(Time>5000).
+
+5: currentWinner(auction_for_Roof,Agent)
+   count-as play(Agent,roofer,"hsh_group")
+   while nticks(clock,Time)&(Time>5000).
+
+6: currentWinner(auction_for_WindowsDoors,Agent)
+   count-as play(Agent,window_fitter,"hsh_group")
+   while nticks(clock,Time)&(Time>5000).
+
+7: currentWinner(auction_for_WindowsDoors,Agent)
+   count-as play(Agent,door_fitter,"hsh_group")
+   while nticks(clock,Time)&(Time>5000).
+
+8: currentWinner(auction_for_Plumbing,Agent)
+   count-as play(Agent,plumber,"hsh_group")
+   while nticks(clock,Time)&(Time>5000).
+
+9: currentWinner(auction_for_ElectricalSystem,Agent)
+   count-as play(Agent,electrician,"hsh_group")
+   while nticks(clock,Time)&(Time>5000).
+
+10: currentWinner(auction_for_Painting,Agent)
+    count-as play(Agent,painter,"hsh_group")
+    while nticks(clock,Time)&(Time>5000).  
+
+/* Defining what counts as, from the instituional perspective, a well formed group. This constitution is necessary to constitute the commitments */
+11: count-as responsible("hsh_group","bhsch")
+    while play(Electrician1,electrician,"hsh_group")  &  not(play(Electrician2,electrician,"hsh_group") & not(Electrician1==Electrician2)) &
+          play(Site_prep_contractor1,site_prep_contractor,"hsh_group") &  not(play(Site_prep_contractor2,site_prep_contractor,"hsh_group") & not(Site_prep_contractor1==Site_prep_contractor2))&
+          play(Bricklayer1,bricklayer,"hsh_group") & play(Bricklayer2,bricklayer,"hsh_group")&not(play(Bricklayer3,bricklayer,"hsh_group")&not(Bricklayer1==Bricklayer2) & not(Bricklayer2==Bricklayer3))&play(Plumber1,plumber,"hsh_group")  &  not(play(Plumber2,plumber,"hsh_group") & not(Plumber1==Plumber2))&play(Window_fitter1,window_fitter,"hsh_group") &  not(play(Window_fitter2,window_fitter,"hsh_group")& not(Window_fitter1==Window_fitter2))&play(Door_fitter1,door_fitter,"hsh_group")& not(play(Door_fitter2,door_fitter,"hsh_group") & not(Door_fitter1==Door_fitter2))&play(Roofer1,roofer,"hsh_group") &  not(play(Roofer2,roofer,"hsh_group") & not(Roofer1==Roofer2))&play(House_owner1,house_owner,"hsh_group") &  not(play(House_owner2,house_owner,"hsh_group") & not(House_owner1==House_owner2)).
+
+
+/* Rules 13 to 22 (2nd order constitution): An the state of an agent A carrying the status function Y counts as the state committed(A,M,S) in the institution */
+12: play(A,house_owner,"hsh_group")
+    count-as committed(A,management_of_house_building,"bhsch") 
+    while responsible("hsh_group","bhsch").
+
+13: play(A,site_prep_contractor,"hsh_group")
+    count-as committed(A,prepare_site,"bhsch")
+    while responsible("hsh_group","bhsch").
+    
+14: play(A,bricklayer,"hsh_group") 
+    count-as committed(A,lay_floors,"bhsch")
+    while responsible("hsh_group","bhsch").
+    
+15: play(A,bricklayer,"hsh_group") 
+    count-as committed(A,build_walls,"bhsch")
+    while responsible("hsh_group","bhsch").
+
+16: play(A,roofer,"hsh_group")
+    count-as committed(A,build_roof,"bhsch")
+    while responsible("hsh_group","bhsch").
+
+17: play(A,window_fitter,"hsh_group")
+    count-as committed(A,fit_windows,"bhsch")
+    while responsible("hsh_group","bhsch").
+
+18: play(A,door_fitter,"hsh_group")
+    count-as committed(A,fit_doors,"bhsch")
+    while responsible("hsh_group","bhsch").
+
+19: play(A,plumber,"hsh_group")
+    count-as committed(A,install_plumbing,"bhsch")
+    while responsible("hsh_group","bhsch").
+
+20: play(A,electrician,"hsh_group")
+    count-as committed(A,install_electrical_system,"bhsch")
+    while responsible("hsh_group","bhsch").
+
+21: play(A,painter,"hsh_group")
+    count-as committed(A,paint_house,"bhsch")
+    while responsible("hsh_group","bhsch").
+
+
+
+
+/* Rules 23 to 22: the occurrence of some events in the environment counts-as, in the institution, the state achieved(S,G,A) */
+22: count-as achieved("bhsch",site_prepared,Agent)
+    when prepareSite[sai__agent(Agent)].
+    
+22a: prepareSite count-as site_prepared
+       
+
+23: count-as achieved("bhsch",electrical_system_installed,Agent)
+    when installElectricalSystem[sai__agent(Agent)].
+
+24: count-as achieved("bhsch",floors_laid,Agent)
+    when layFloors[sai__agent(Agent)].
+
+25: count-as achieved("bhsch",walls_built,Agent)
+    when buildWalls[sai__agent(Agent)].
+
+26: count-as achieved("bhsch",roof_built,Agent)
+    when buildRoof[sai__agent(Agent)].
+
+27: count-as achieved("bhsch",windows_fitted,Agent)
+    when fitWindows[sai__agent(Agent)].
+
+28: count-as achieved("bhsch",doors_fitted,Agent)
+    when fitDoors[sai__agent(Agent)].
+
+29: count-as achieved("bhsch",plumbing_installed,Agent)
+    when installPlumbing[sai__agent(Agent)].
+
+30: count-as achieved("bhsch",electrical_system_installed,Agent)
+    when installElectricalSystem[sai__agent(Agent)].
+
+31: count-as achieved("bhsch",exterior_painted,Agent)
+    when paintExterior[sai__agent(Agent)].
+
+32: count-as achieved("bhsch",interior_painted,Agent)
+    when paintInterior[sai__agent(Agent)].
+

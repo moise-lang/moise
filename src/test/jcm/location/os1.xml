@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification
+
+    id="wp"
+    os-version="0.10"
+
+    xmlns='http://moise.sourceforge.net/os'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='http://moise.sourceforge.net/os
+                        http://moise.sourceforge.net/xml/os.xsd' >
+
+    <structural-specification>
+
+        <role-definitions>
+            <role id="author" />
+            <role id="writer"> <extends role="author"/> </role>
+            <role id="editor"> <extends role="author"/> </role>
+        </role-definitions>
+
+        <group-specification id="wpgroup" >
+            <roles>
+                <role id="writer" min="1" max="5" />
+                <role id="editor" min="1" max="1" />
+            </roles>
+            <links>
+                <link from="writer" to="editor" type="acquaintance"
+                      scope="intra-group" extends-subgroups="true" bi-dir="false"/>
+                <link from="editor" to="writer" type="authority"
+                      scope="intra-group" extends-subgroups="true" bi-dir="false"/>
+                <link from="author" to="author" type="communication"
+                      scope="intra-group" extends-subgroups="true" bi-dir="false"/>
+            </links>
+
+            <formation-constraints>
+                <compatibility from="editor" to="writer" type="compatibility"
+                               scope="intra-group" extends-subgroups="false"
+                               bi-dir="true"/>
+            </formation-constraints>
+        </group-specification>
+    </structural-specification>
+
+
+
+    <functional-specification>
+        <scheme id="writePaperSch" >
+            <properties>
+                <property id="fairness" value="on" />
+            </properties>
+
+            <goal id="wp" ttf="5 seconds">
+                <plan operator="sequence" >
+                    <goal id="fdv" ds="First Draft Version">
+                        <plan operator="sequence">
+                            <goal id="wtitle"     ttf="1 day" ds="Write a title" location="jurere"/>
+                            <goal id="wabs"       ttf="1 day" ds="Write an abstract"/>
+                            <goal id="wsectitles" ttf="1 day" ds="Write the sections' title" />
+                        </plan>
+                    </goal>
+                    <goal id="sv" ds="Submission Version">
+                        <plan operator="sequence">
+                            <goal id="wsecs"  ttf="7 days" ds="Write sections"/>
+                            <goal id="finish" ds="Finish paper" >
+                                <plan operator="parallel">
+                                    <goal id="wconc"  ttf="1 day"  ds="Write a conclusion" location="lagoa"/>
+                                    <goal id="wrefs"  ttf="1 hour" ds="Complete references and link them to text"/>
+                                </plan>
+                            </goal>
+                            <goal id="submit" min="1" />
+                            <goal id="present" location="aamas2017_sao_paulo" />
+                        </plan>
+                    </goal>
+                </plan>
+            </goal>
+
+            <mission id="mColaborator" min="1" max="5">
+                <goal id="wsecs"/>
+                <goal id="submit"/>
+            </mission>
+
+            <mission id="mManager" min="1" max="1">
+                <goal id="wabs"/>
+                <goal id="wp"/>
+                <goal id="wtitle"/>
+                <goal id="wconc"/>
+                <goal id="wsectitles"/>
+                <goal id="present"/>
+            </mission>
+
+            <mission id="mBib" min="1" max="1">
+                <goal id="wrefs"/>
+                <preferred mission="mColaborator"/>
+                <preferred mission="mManager"/>
+            </mission>
+        </scheme>
+    </functional-specification>
+
+    <normative-specification>
+        <properties>
+            <property id="default_management"  value="fail" />
+            <property id="role_compatibility"  value="prohibition" />
+            <property id="mission_cardinality" value="prohibition" />
+        </properties>
+
+        <norm id = "n1"
+                          type="obligation"
+                          role="editor" mission="mManager" />
+        <norm id = "n2"
+                          type="obligation"
+                          role="writer" mission="mBib"
+                          time-constraint="1 day"  />
+        <norm id = "n3"
+                          type="obligation"
+                          role="writer" mission="mColaborator"
+                          time-constraint="1 day"  />
+    </normative-specification>
+</organisational-specification>

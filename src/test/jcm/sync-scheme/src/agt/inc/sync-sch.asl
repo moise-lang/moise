@@ -6,7 +6,7 @@
 // whenever some goal becomes satisfied, informs alice
 +goalState(S,_,_,_,satisfied)
    <- .my_name(Me);
-      for (true & ::commitment(A,_,S) & A \== Me) {
+      for (::commitment(A,_,S) & A \== Me) {
          .print("send update to ",A)
          !send_update(A);
       }.
