@@ -42,6 +42,7 @@ import npl.parser.ParseException;
  * <ul>
  * <li>group(group_id, group_type, artid): group_id of type group_type exists in the organisational entity
  * <li>scheme(scheme_id, scheme_type, artid): scheme_id of type scheme_type exists in the organisational entity
+ * <li>specification: the OS in a prolog like representation.
  * </ul>
  *
  */
@@ -65,6 +66,8 @@ public class OrgBoard extends Artifact {
         osFile = OrgArt.fixOSFile(osFile);
         this.osFile = osFile;
         OS os = OS.loadOSFromURI(osFile);
+
+        defineObsProperty(SchemeBoard.obsPropSpec, new JasonTermWrapper(os.getAsProlog()));
 
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_OI))) {
             WebInterface w = WebInterface.get();

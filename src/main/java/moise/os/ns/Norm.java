@@ -1,5 +1,8 @@
 package moise.os.ns;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import moise.common.MoiseConsistencyException;
 import moise.common.MoiseElement;
 import moise.common.MoiseException;
@@ -7,9 +10,6 @@ import moise.os.fs.Mission;
 import moise.os.ns.NS.OpTypes;
 import moise.os.ss.Role;
 import moise.xml.ToXML;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Represents a norm (permission, obligation, ...) from a role to a mission.
@@ -112,6 +112,17 @@ public class Norm extends MoiseElement implements ToXML {
         return "norm";
     }
 
+    /** returns a string representing the goal in Prolog syntax, format:
+     *     norm(id, role, type, mission)
+     */
+    public String getAsProlog() {
+        StringBuilder s = new StringBuilder("norm("+getId()+",");
+        s.append(getRole()+",");
+        s.append(getType()+",");
+        s.append(getMission()+")");
+        return s.toString();
+    }
+    
     public Element getAsDOM(Document document) {
         Element ele = (Element) document.createElement(getXMLTag());
         ele.setAttribute("id", getId());

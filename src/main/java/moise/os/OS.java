@@ -17,7 +17,9 @@ import moise.common.MoiseElement;
 import moise.common.MoiseException;
 import moise.common.MoiseXMLParserException;
 import moise.os.fs.FS;
+import moise.os.fs.Scheme;
 import moise.os.ns.NS;
+import moise.os.ns.Norm;
 import moise.os.ss.SS;
 import moise.xml.DOMUtils;
 import moise.xml.ToXML;
@@ -84,6 +86,30 @@ public class OS extends MoiseElement implements ToXML {
     public SS getSS() { return ss; }
     public FS getFS() { return fs; }
     public NS getNS() { return ns; }
+    
+    /** returns a string representing the goal in Prolog syntax, format:
+     *     os(id, root group, [schemes], [norms])
+     */
+    public String getAsProlog() {
+        StringBuilder s = new StringBuilder("os("+getId()+",");        
+        s.append( ss.getRootGrSpec().getAsProlog());
+        s.append(",[");
+
+        String v = "";
+        for (Scheme sch: fs.getSchemes()) {
+            s.append(v+sch.getAsProlog());
+            v = ",";
+        }
+        s.append("],[");
+
+        v = "";
+        for (Norm n: ns.getNorms()) {
+            s.append(v+n.getAsProlog());
+            v = ",";
+        }
+        s.append("])");
+        return s.toString();
+    }
 
     // XML methods
 

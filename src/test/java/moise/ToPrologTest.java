@@ -1,13 +1,18 @@
 package moise;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Literal;
+import jason.asSyntax.parser.ParseException;
 import moise.oe.GoalInstance;
 import moise.oe.OE;
 import moise.oe.SchemeInstance;
+import moise.os.OS;
 import moise.os.fs.Goal;
 
 public class ToPrologTest {
@@ -47,6 +52,16 @@ public class ToPrologTest {
         //g = oe.getOS().getSS().getRootGrSpec();
         // the order changes always, improve this test
         //assertEquals("group_specification(team,[role(coach,1,2,[],[link(authority,player,inter_group)])],[attack(1,1),defense(1,1)],properties([]))", g.getAsProlog());
+        OS os = OS.loadOSFromURI("examples/auction/auction-os.xml");
+        System.out.println(os.getAsProlog());
+        
+        Literal ospl = null;
+        try {
+            ospl = ASSyntax.parseLiteral(os.getAsProlog());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        assertNotNull(ospl);
     }
 
 }

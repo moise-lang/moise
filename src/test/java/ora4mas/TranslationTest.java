@@ -34,11 +34,11 @@ public class TranslationTest {
 
     @Test
     public void testGgroupWithoutRole() throws ParseException, Exception {
-        OS os = OS.loadOSFromURI("examples/test/groupwithoutrole.xml");
+        OS os = OS.loadOSFromURI("src/test/jcm/groupwithoutrole.xml");
 
         String np = os2nopl.transform(os);
         //System.out.println(np);
-        BufferedWriter out = new BufferedWriter(new FileWriter("examples/test/groupwithoutrole.npl"));
+        BufferedWriter out = new BufferedWriter(new FileWriter("src/test/jcm/groupwithoutrole.npl"));
         out.write(np);
         out.close();
         NormativeProgram p = new NormativeProgram();
