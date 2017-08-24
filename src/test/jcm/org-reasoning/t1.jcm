@@ -1,0 +1,24 @@
+/*
+
+test rules role_mission, role_goal, ...
+
+expected result:
+
+[ag1] I play role painter
+[ag1] my mission will be paint_house in scheme build_house_sch
+[ag1]      goal exterior_painted
+[ag1]      goal interior_painted
+
+*/
+
+mas t1 {
+
+    agent ag1
+
+    organisation o: ../house-os.xml {
+        group g: house_group {
+            players: ag1 painter
+        }
+    }
+
+}

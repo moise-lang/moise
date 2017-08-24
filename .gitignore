@@ -5,8 +5,8 @@ mas.log
 
 examples/performance/case1/profiling*
 examples/writePaper/wp-gen.npl
-examples/test/groupwithoutrole.npl
-examples/test/dyn-scheme/x.xml
+src/test/jcm/groupwithoutrole.npl
+src/test/jcm/dyn-scheme/x.xml
 
 .stop___MAS
 .gradle
@@ -31,5 +31,7 @@ test.xml
 hs_err_pid*
 
 doc/ora4mas/readme.html
+doc/ora4mas/index.html
+doc/api
 readme.html
 release-notes.html
