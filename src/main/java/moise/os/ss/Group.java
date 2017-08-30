@@ -534,7 +534,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
             // super-roles
             s.append("],[");
             v1 = "";
-            for (Role subr: r.getSuperRoles()) {
+            for (Role subr: r.getAllSuperRoles().values()) {
                 s.append(v1+ subr.getId());
                 v1 = ",";
             }
@@ -577,7 +577,7 @@ public class Group extends MoiseElement implements ToXML, ToProlog {
         for (Group gr: getSubGroups()) {
             // sub group cardinality
             Cardinality card = subgroups.getCardinality(gr);
-            s.append(v+gr.getId()+"("+card.getMin()+","+card.getMax()+")");
+            s.append(v+"subgroup("+card.getMin()+","+card.getMax()+","+gr.getAsProlog()+")");
             v = ",";
         }
         s.append("],");

@@ -24,6 +24,9 @@
    <role id="plumber" >              <extends role="building_company"/>  </role>
    <role id="electrician" >          <extends role="building_company"/>  </role>
    <role id="painter" >              <extends role="building_company"/>  </role>
+
+   <role id="r2" />
+   <role id="r4"> <extends role="r2"/> <extends role="painter"/>  </role>
 </role-definitions>
 
 <group-specification id="house_group">
@@ -39,10 +42,24 @@
   <role id="painter"              min="1" max="1"/>
  </roles>
 
+
  <links>
   <link from="house_owner"      type="authority"     to="building_company" scope="intra-group" />
   <link from="building_company" type="communication" to="house_owner"      scope="intra-group" />
  </links>
+
+ <subgroups>
+     <group-specification id="g2" min="1" max="1">
+         <roles>
+             <role id="r2" min="1"/>
+         </roles>
+     </group-specification>
+     <group-specification id="g4" min="1" max="1">
+         <roles>
+             <role id="r4" min="1"/>
+         </roles>
+     </group-specification>
+ </subgroups>
 
  <formation-constraints>
     <compatibility from="building_company" to="building_company"  scope="intra-group" />
