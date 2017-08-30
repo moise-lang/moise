@@ -25,3 +25,4 @@
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
 { include("$jacamoJar/templates/org-obedient.asl") }
+{ include("$moiseJar/asl/org-rules.asl") }
