@@ -91,8 +91,11 @@ public class OS extends MoiseElement implements ToXML {
      *     os(id, root group, [schemes], [norms])
      */
     public String getAsProlog() {
-        StringBuilder s = new StringBuilder("os("+getId()+",");        
-        s.append( ss.getRootGrSpec().getAsProlog());
+        StringBuilder s = new StringBuilder("os("+getId()+",");
+        if (ss.getRootGrSpec() != null) 
+            s.append( ss.getRootGrSpec().getAsProlog());
+        else
+            s.append("no_group");
         s.append(",[");
 
         String v = "";
