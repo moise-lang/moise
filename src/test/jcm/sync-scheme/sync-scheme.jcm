@@ -9,9 +9,7 @@
 mas sync_scheme {
 
     agent bob
-    agent alice {
-        verbose: 1
-    }
+    agent alice
 
     // agent source path
     asl-path: src/agt

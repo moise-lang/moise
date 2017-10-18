@@ -217,6 +217,8 @@ public class SchemeBoard extends OrgArt {
         commitMission(getOpUserName(), mission);
     }
     private void commitMission(final String ag, final String mission) throws CartagoException {
+        if (orgState.hasPlayer(ag, mission))
+            return;
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 orgState.addPlayer(ag, mission);
@@ -357,11 +359,7 @@ public class SchemeBoard extends OrgArt {
             // import goal's state
             otherSch.getDoneGoals().removeAll(getSchState().getDoneGoals());
             for (Literal g: otherSch.getDoneGoals()) {
-                try {
-                    goalDone(g.getTerm(2).toString(), g.getTerm(1).toString());
-                } catch (CartagoException e) {
-                    e.printStackTrace();
-                }
+                goalDone(g.getTerm(2).toString(), g.getTerm(1).toString());
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE,"Error merging with "+s,e);

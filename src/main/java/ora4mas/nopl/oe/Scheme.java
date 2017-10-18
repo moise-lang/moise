@@ -146,8 +146,6 @@ public class Scheme extends CollectiveOE {
     }
 
 
-
-
     @Override
     PredicateIndicator getPlayerPI() {
         return committedPI;

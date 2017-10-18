@@ -2,8 +2,8 @@
 !start.
 
 +!start
-   <- createWorkspace(wb);
-      joinWorkspace(wb,O4MWsp);
+   <- createWorkspace(wbob);
+      joinWorkspace(wbob,O4MWsp);
 
       makeArtifact(myorg, "ora4mas.nopl.OrgBoard", ["src/org/org.xml"], OrgArtId)[wid(O4MWsp)];
       tmporg::focus(OrgArtId);
