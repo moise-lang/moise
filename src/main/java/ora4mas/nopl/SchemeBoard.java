@@ -299,7 +299,12 @@ public class SchemeBoard extends OrgArt {
     @OPERATION public void setArgumentValue(final String goal, final String var, final Object value) throws CartagoException {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
-                getSchState().setGoalArgValue(goal, var, value);
+                Object pvl = value;
+                // try to parse value as jason term 
+                try {
+                    pvl = ASSyntax.parseTerm(value.toString());
+                } catch (Exception e) {}
+                getSchState().setGoalArgValue(goal, var, pvl);
                 nengine.verifyNorms();
                 //updateMonitorScheme();
 
@@ -307,7 +312,7 @@ public class SchemeBoard extends OrgArt {
                 defineObsProperty("goalArgument", ASSyntax.createAtom(SchemeBoard.this.getId().getName()),
                         new Atom(goal),
                         ASSyntax.createString(var),
-                        value);
+                        pvl);
             }
         },"Error setting value of argument "+var+" of "+goal+" as "+value);
     }
