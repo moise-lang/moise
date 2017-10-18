@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
@@ -298,7 +299,7 @@ public class SchemeBoard extends OrgArt {
     @OPERATION public void setArgumentValue(final String goal, final String var, final Object value) throws CartagoException {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
-                getSchState().setGoalArgValue(goal, var, value.toString());
+                getSchState().setGoalArgValue(goal, var, value);
                 nengine.verifyNorms();
                 //updateMonitorScheme();
 
@@ -334,28 +335,32 @@ public class SchemeBoard extends OrgArt {
     }
     
     @OPERATION public void mergeState(Object s) {
-        //System.out.println("in sche ****"+s.getClass().getName()+" "+s);
-        Scheme otherSch = (Scheme)s;
-        
-        // import commits
-        for (Player p: otherSch.getPlayers()) {
-            if (!getSchState().getPlayers().contains(p)) {
+        try {
+            Scheme otherSch = (Scheme)s;
+            
+            // import commits
+            for (Player p: otherSch.getPlayers()) {
+                if (!getSchState().getPlayers().contains(p)) {
+                    try {
+                        commitMission(p.getAg(), p.getTarget());
+                    } catch (CartagoException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            
+            // import goal's state
+            otherSch.getDoneGoals().removeAll(getSchState().getDoneGoals());
+            for (Literal g: otherSch.getDoneGoals()) {
                 try {
-                    commitMission(p.getAg(), p.getTarget());
+                    goalDone(g.getTerm(2).toString(), g.getTerm(1).toString());
                 } catch (CartagoException e) {
                     e.printStackTrace();
                 }
             }
-        }
-        
-        // import goal's state
-        otherSch.getDoneGoals().removeAll(getSchState().getDoneGoals());
-        for (Literal g: otherSch.getDoneGoals()) {
-            try {
-                goalDone(g.getTerm(2).toString(), g.getTerm(1).toString());
-            } catch (CartagoException e) {
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            logger.log(Level.SEVERE,"Error merging with "+s,e);
+            failed("error merging");
         }
     }
     
@@ -681,11 +686,11 @@ public class SchemeBoard extends OrgArt {
                 // arguments
                 if (gSpec.hasArguments()) {
                     for (String arg: gSpec.getArguments().keySet()) {
-                        String value = getSchState().getGoalArgValue(gId, arg);
+                        Object value = getSchState().getGoalArgValue(gId, arg);
                         Element argEle = (Element) document.createElement("argument");
                         argEle.setAttribute("id",arg);
-                        if (value != null) {
-                            argEle.setAttribute("value", value);
+                        if (value != null && value.toString().length() > 0) {
+                            argEle.setAttribute("value", value.toString());
                         } else {
                             argEle.setAttribute("value", "undefined");
                         }

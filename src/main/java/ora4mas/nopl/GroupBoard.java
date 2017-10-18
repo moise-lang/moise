@@ -209,6 +209,9 @@ public class GroupBoard extends OrgArt {
         adoptRole(getOpUserName(), role);
     }
     private void adoptRole(final String ag, final String role) {
+        if (orgState.hasPlayer(ag, role))
+            return;
+        
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 boolean oldStatus = isWellFormed();

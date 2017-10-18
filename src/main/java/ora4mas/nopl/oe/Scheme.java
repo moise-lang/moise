@@ -63,7 +63,7 @@ public class Scheme extends CollectiveOE {
     private ConcurrentSkipListSet<Literal> doneGoals = new ConcurrentSkipListSet<Literal>();
 
     // values for goal arguments (key = goal + arg, value = value)
-    private HashMap<Pair<String,String>,String> goalArgs = new HashMap<Pair<String,String>,String>();
+    private HashMap<Pair<String,String>,Object> goalArgs = new HashMap<Pair<String,String>,Object>();
 
     // list of satisfied goals
     private Set<String> satisfiedGoals = new HashSet<String>(); // we use "contains" a lot, so remains HashSet
@@ -119,10 +119,10 @@ public class Scheme extends CollectiveOE {
         return changed;
     }
 
-    public void setGoalArgValue(String goal, String arg, String value) {
+    public void setGoalArgValue(String goal, String arg, Object value) {
         goalArgs.put(new Pair<String,String>(goal,arg), value);
     }
-    public String getGoalArgValue(String goal, String arg) {
+    public Object getGoalArgValue(String goal, String arg) {
         return goalArgs.get(new Pair<String,String>(goal,arg));
     }
 

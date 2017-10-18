@@ -67,6 +67,9 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
         return p;
     }
 
+    public boolean hasPlayer(String ag, String obj) {
+        return players.contains(new Player(ag,obj));
+    }
 
     public boolean removePlayer(String ag, String obj) {
         Player p = new Player(ag,obj);
