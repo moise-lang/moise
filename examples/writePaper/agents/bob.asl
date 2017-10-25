@@ -57,7 +57,7 @@ my_role(editor).
 
 +goalState(sch1, wp, _, _, satisfied)
    <- .wait(1000);
-      removeScheme(sch1);
+      destroyScheme(sch1);
       .print("starting a new scheme...");
       !!run_scheme(sch2).
 

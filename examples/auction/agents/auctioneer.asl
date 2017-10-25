@@ -91,7 +91,7 @@ auction_id(0).
    :  auction_id(N) & N < 5
    <- .wait(1000);
       .abolish(place_bid(_,_));
-      o::removeScheme(Sch);
+      o::destroyScheme(Sch);
    .
 
 /*

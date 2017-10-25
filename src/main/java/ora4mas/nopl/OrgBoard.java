@@ -33,9 +33,9 @@ import npl.parser.ParseException;
  * <b>Operations</b> (see details in method list below):
  * <ul>
  * <li>createGroup
- * <li>removeGroup
+ * <li>destroyGroup
  * <li>createScheme
- * <li>removeScheme
+ * <li>destroyScheme
  * </ul>
  *
  * <b>Observable properties</b>:
@@ -110,7 +110,7 @@ public class OrgBoard extends Artifact {
         }
     }
 
-    @OPERATION public void removeGroup(String id) {
+    @OPERATION public void destroyGroup(String id) {
         try {
             ArtifactId aid = aids.remove(id);
             if (aid == null) {
@@ -137,7 +137,7 @@ public class OrgBoard extends Artifact {
         }
     }
 
-    @OPERATION public void removeScheme(String id) {
+    @OPERATION public void destroyScheme(String id) {
         try {
             ArtifactId aid = aids.remove(id);
             if (aid == null) {

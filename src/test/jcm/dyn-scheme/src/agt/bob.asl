@@ -24,7 +24,7 @@
    <- .print("*** all done! ***");
       .print("scheme will be destroyed in 10 seconds")
       .wait(10000);
-      removeScheme(Sch);
+      destroyScheme(Sch);
    .
 
 +!go_to_buy       <- .print("go_to_buy").

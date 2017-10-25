@@ -13,4 +13,4 @@
 
 +!default::kqml_received(Sender, update_sch, SchSt, _)
    <- .print("Merging with state sent by ", Sender);
-      this_ns::mergeState(SchSt).
+      mergeState(SchSt).

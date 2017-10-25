@@ -15,4 +15,6 @@ mas sync_scheme {
     asl-path: src/agt
               src/agt/inc
 
+    //platform: jade
+
 }
