@@ -50,8 +50,7 @@ threshold(3).
 +goalState(Sch, winner, _, _, satisfied)
    :  goalArgument(Sch, auction, "N", N) &
       goalArgument(Sch, winner, "W", W)
-   <- .term2string(A,W);
-      +winner(N,A).
+   <- +winner(N,W).
 
 // find and ally from the specification:
 //    see all missions with the goal "bid"

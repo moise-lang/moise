@@ -34,8 +34,8 @@ the norm was `n3` and variable `S` (from the activation condition) value was `sc
 See link:examples/test/norm-board/t3.jcm[] for an example.
 
 - new artifact: *OrgBoard*. It manages all artifacts of an organisation. Main operations are (see javadoc for more details):
-* createGroup
-* createScheme
+* createGroup, destroyGroup
+* createScheme, destroyScheme
 
 - new artifact: *NormativeBoard*. It can be loaded with any NPL program and is used to manage obligations/permissions defined in the normative specification (which is not managed by SchemeBoard anymore). When a group becomes responsible for a scheme, an instance of this artifact is created automatically.
 
