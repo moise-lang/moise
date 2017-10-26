@@ -1,0 +1,32 @@
+/*
+    reset-goal
+    ---------------------------
+
+    JaCaMo Project File
+
+    This file defines the initial state of the MAS (initial agents, environment, organisation, ....)
+
+    (see jacamo/doc/jcm.html for more information about what can be defined in this file)
+
+    JaCaMo 0.7-SNAPSHOT
+    Outubro 26, 2017 - 16:01:53
+*/
+
+mas reset_goal {
+
+    agent a
+    agent b
+
+    organisation o: org.xml {
+        group g:group1 {
+            responsible-for: s
+            players: a role1
+                     b role2
+        }
+        scheme s: scheme1
+    }
+
+    // agent source path
+    asl-path: .
+
+}
