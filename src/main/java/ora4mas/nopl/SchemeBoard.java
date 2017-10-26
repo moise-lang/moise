@@ -193,6 +193,7 @@ public class SchemeBoard extends OrgArt {
                             this.getId().getName());
                     //updateMonitorScheme();
                     updateGuiOE();
+                } catch (java.lang.IllegalArgumentException e) {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
