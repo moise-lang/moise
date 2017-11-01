@@ -3,17 +3,12 @@
     ---------------------------
 
     illustrates how agents can createan OS
+    and instantiate it
 */
 
 mas dyn_scheme {
 
     agent bob
     agent alice
-
-    // agent source path
-    asl-path: src/agt
-              src/agt/inc
-
-
 
 }

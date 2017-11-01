@@ -149,6 +149,22 @@ public class SchemeBoard extends OrgArt {
             }
         }
     }
+    
+    protected void reorganise() throws Exception {
+        getNormativeEngine().stop();
+        
+        initNormativeEngine(spec.getFS().getOS(), "scheme("+spec.getId()+")");
+        installNormativeSignaler();
+        getNormativeEngine().verifyNorms();
+        
+    	if (gui != null) {
+            gui.setSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));
+            gui.setNormativeProgram(getNPLSrc());
+            updateGuiOE();
+        }
+        getObsProperty(obsPropSpec).updateValue(new JasonTermWrapper(spec.getAsProlog()));
+    }
+    
 
     @OPERATION public void debug(String kind) throws Exception {
     	super.debug(kind, "Scheme Board", true);
@@ -332,7 +348,7 @@ public class SchemeBoard extends OrgArt {
                 }
                 nengine.verifyNorms();
                 //updateMonitorScheme();
-
+                getSchState().clearExPlayers(); // and an agent quits a mission accomplished, that was ok, the reset goal will turn this mission unaccomplished and produces a norm failure. so we remove the ex players here
                 updateGoalStateObsProp();
             }
         }, "Error reseting goal "+goal);

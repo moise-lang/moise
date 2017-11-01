@@ -72,11 +72,28 @@ public class Scheme extends CollectiveOE {
         super(id);
         this.spec = spec;
     }
+    
+    public moise.os.fs.Scheme getSpec() {
+        return spec;
+    }
 
     public void addDoneGoal(String ag, String goal) {
         doneGoals.add(createLiteral(donePI.getFunctor(), termId, createAtom(goal), createAtom(ag)));
     }
 
+    public boolean removeDoneGoal(Goal goal) {
+        Atom gAtom = createAtom(goal.getId());
+        Iterator<Literal> iAchGoals = doneGoals.iterator();
+        while (iAchGoals.hasNext()) {
+            Literal l = iAchGoals.next();
+            if (l.getTerm(1).equals(gAtom)) {
+                iAchGoals.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public Set<Literal> getDoneGoals() {
         return (Set<Literal>)doneGoals.clone();
     }
@@ -97,17 +114,9 @@ public class Scheme extends CollectiveOE {
         }
         return changed;
     }
-    private boolean resetGoalAndPreConditions(Goal goal) {
-        boolean changed = false;
-        Atom gAtom = createAtom(goal.toString());
-        Iterator<Literal> iAchGoals = doneGoals.iterator();
-        while (iAchGoals.hasNext()) {
-            Literal l = iAchGoals.next();
-            if (l.getTerm(1).equals(gAtom)) {
-                iAchGoals.remove();
-                changed = true;
-            }
-        }
+    
+    protected boolean resetGoalAndPreConditions(Goal goal) {
+        boolean changed = removeDoneGoal(goal);
 
         // recompute for all goals which this goal is pre condition
         for (Goal g: spec.getGoals()) {
@@ -238,6 +247,9 @@ public class Scheme extends CollectiveOE {
 
     public void setAsSatisfied(String g) {
         satisfiedGoals.add(g);
+    }
+    public void removeSatisfied(String g) {
+        satisfiedGoals.remove(g);
     }
 
     public boolean isSatisfied(Goal g) {

@@ -154,6 +154,9 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
         return goals.get(id);
     }
 
+    /** 
+     * returns the missions where goal g is
+     */
     public Set<String> getGoalMissionsId(Goal g) {
         Set<String> ms = new HashSet<String>();
         for (Mission m: missions)

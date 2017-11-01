@@ -87,6 +87,11 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
         players.clear();
         playersAsLiteralList.clear();
     }
+    
+    public void clearExPlayers() {
+    	exPlayers.clear();
+    	exPlayersAsLiteralList.clear();
+    }
 
     /*private void rebuildPlayerListAsLiteral() {
         List<Literal> tmp = new ArrayList<Literal>(players.size());

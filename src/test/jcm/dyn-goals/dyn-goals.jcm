@@ -1,0 +1,13 @@
+/*
+    illustrates how agents can create new goals inside
+    a running scheme (see bob.asl)
+
+    a customised SchemeBoard artifact is used to change
+    the scheme specification (see org/dorg/DynScheme.java)
+*/
+mas dyn_goals {
+
+    agent bob
+
+    java-path: src/org
+}
