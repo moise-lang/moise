@@ -14,34 +14,34 @@ public class DynScheme extends SchemeBoard {
 
     @OPERATION void addSubGoal(final String superGoalId, final String newGoalId) {
         if (spec.getGoal(newGoalId) != null) {
-        	failed("goal "+newGoalId+" already exists!");		        	
+            failed("goal "+newGoalId+" already exists!");                   
         }
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
-		        // consider the same plan, parallel by default
-		        Goal sg = spec.getGoal(superGoalId);
-		        if (sg == null)
-		            failed("the goal "+superGoalId+" wasn't found!");
-		
-		        Plan sgp = sg.getPlan();
-		        if (sgp == null) {
-		            sgp = new Plan(spec);
-		            sgp.setOp(PlanOpType.parallel);
-		        }
-		
-		        Goal g = new Goal(newGoalId);
-	            spec.addGoal(g);
-		        g.setInPlan(sgp);
-		        sgp.addSubGoal(newGoalId);
+                // consider the same plan, parallel by default
+                Goal sg = spec.getGoal(superGoalId);
+                if (sg == null)
+                    failed("the goal "+superGoalId+" wasn't found!");
+        
+                Plan sgp = sg.getPlan();
+                if (sgp == null) {
+                    sgp = new Plan(spec);
+                    sgp.setOp(PlanOpType.parallel);
+                }
+        
+                Goal g = new Goal(newGoalId);
+                spec.addGoal(g);
+                g.setInPlan(sgp);
+                sgp.addSubGoal(newGoalId);
 
-		        // reset the super goal
-		        getSchState().removeDoneGoal(sg);
-		        getSchState().removeSatisfied(sg.getId());
-		        getSchState().computeSatisfiedGoals();
-		        
-		        updateGoalStateObsProp();
-		        
-		        reorganise();
+                // reset the super goal
+                getSchState().removeDoneGoal(sg);
+                getSchState().removeSatisfied(sg.getId());
+                getSchState().computeSatisfiedGoals();
+                
+                updateGoalStateObsProp();
+                
+                reorganise();
             }
         }, "Error adding goal "+newGoalId);
     }
@@ -49,14 +49,14 @@ public class DynScheme extends SchemeBoard {
     @OPERATION void addMissionGoal(final String missionId, final String goalId) {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
-		        Mission m = spec.getMission(missionId);
-		        if (m == null) {
-		            m = new Mission(missionId, spec);
-		            spec.addMission(m);
-		        }
-		        m.addGoal(goalId);
-		        
-		        reorganise();
+                Mission m = spec.getMission(missionId);
+                if (m == null) {
+                    m = new Mission(missionId, spec);
+                    spec.addMission(m);
+                }
+                m.addGoal(goalId);
+                
+                reorganise();
             }
         }, "Error adding mission for goal "+goalId);
     }    
@@ -68,13 +68,13 @@ public class DynScheme extends SchemeBoard {
         // import goals from otherSch
         otherSch.getSpec().getGoals().removeAll(spec.getGoals());
         for (Goal g: otherSch.getSpec().getGoals()) {
-        	if (g.getInPlan() != null) {
-        		addSubGoal(g.getInPlan().getTargetGoal().getId(), g.getId());
-        		for (String m: g.getScheme().getGoalMissionsId(g))
-        			addMissionGoal(m, g.getId());
-        	}
+            if (g.getInPlan() != null) {
+                addSubGoal(g.getInPlan().getTargetGoal().getId(), g.getId());
+                for (String m: g.getScheme().getGoalMissionsId(g))
+                    addMissionGoal(m, g.getId());
+            }
         }
-    	
-    	super.mergeState(s);
+        
+        super.mergeState(s);
     }
 }

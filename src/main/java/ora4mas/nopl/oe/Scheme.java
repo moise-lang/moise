@@ -95,7 +95,7 @@ public class Scheme extends CollectiveOE {
     }
     
     public Set<Literal> getDoneGoals() {
-        return (Set<Literal>)doneGoals.clone();
+        return new HashSet<>(doneGoals);
     }
 
     public boolean resetGoal(Goal goal) {
@@ -144,7 +144,7 @@ public class Scheme extends CollectiveOE {
     }
 
     public Collection<Group> getGroupsResponsibleFor() {
-        return (Collection<Group>)groups.clone();
+        return new HashSet<>(groups);
     }
     public Collection<String> getIdsGroupsResponsibleFor() {
         Collection<String> l = new ArrayList<String>();
