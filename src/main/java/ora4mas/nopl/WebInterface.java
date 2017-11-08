@@ -299,8 +299,11 @@ public class WebInterface  {
     String dpath = null;
     String getDotPath() throws Exception {
         if (dpath == null) {
+            File f = new File(System.getProperties().get("user.home") + File.separator + ".jacamo/user.properties");
+            if (!f.exists())
+                return null;
             Properties p = new Properties();
-            p.load(new FileInputStream( new File(System.getProperties().get("user.home") + File.separator + ".jacamo/user.properties") ));
+            p.load(new FileInputStream( f ));
             String r = p.getProperty("dotPath");
             if (r == null)
                 r = "/opt/local/bin/dot";
