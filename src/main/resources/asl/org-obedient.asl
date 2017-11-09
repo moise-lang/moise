@@ -24,6 +24,7 @@
 
 // drop intentions for obligations that are not active anymore
 -obligation(Ag,_,What,_)
-   :  .my_name(Ag) & (satisfied(Scheme,Goal)=What | done(Scheme,Goal,Ag)=What)
+   :  .my_name(Ag) & (satisfied(Scheme,Goal)=What | done(Scheme,Goal,Ag)=What) &
+      .intend(Goal)
    <- .print("I am not obliged to ",Goal," anymore, dropping the intention.");
       .drop_intention(Goal).
