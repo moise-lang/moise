@@ -21,7 +21,7 @@
 <group-specification id="group1">
     <roles>
         <role id="role1" min="1" max="1"/>
-        <role id="role2" min="1" max="1"/>
+        <role id="role2" min="1" max="2"/>
     </roles>
 
     <links>
@@ -38,6 +38,7 @@
     <scheme id="scheme1">
         <goal id="goal1">
             <plan operator="sequence">
+                <goal id="goal2pre"/>
                 <goal id="goal2"    ttf="20 minutes" ds="description goal2"/>
                 <goal id="goal3"/>
                 <goal id="goal4"/>
@@ -48,7 +49,8 @@
             <goal id="goal2"/>
             <goal id="goal4"/>
         </mission>
-        <mission id="mission2" min="1" max="1">
+        <mission id="mission2" min="2" max="2">
+            <goal id="goal2pre"/>
             <goal id="goal3"/>
         </mission>
     </scheme>

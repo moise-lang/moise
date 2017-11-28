@@ -2,6 +2,18 @@ package ora4mas.nopl.oe;
 
 import static jason.asSyntax.ASSyntax.createAtom;
 import static jason.asSyntax.ASSyntax.createLiteral;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+
+import jaca.ToProlog;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
@@ -11,19 +23,8 @@ import jason.asSyntax.LogExpr;
 import jason.asSyntax.PredicateIndicator;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
-
 import moise.os.fs.Goal;
 import moise.os.fs.Plan.PlanOpType;
-import jaca.ToProlog;
 
 /**
  Represents an instance of scheme
@@ -82,16 +83,17 @@ public class Scheme extends CollectiveOE {
     }
 
     public boolean removeDoneGoal(Goal goal) {
+        boolean r = false;
         Atom gAtom = createAtom(goal.getId());
-        Iterator<Literal> iAchGoals = doneGoals.iterator();
-        while (iAchGoals.hasNext()) {
-            Literal l = iAchGoals.next();
+        Iterator<Literal> iDoneGoals = doneGoals.iterator();
+        while (iDoneGoals.hasNext()) {
+            Literal l = iDoneGoals.next();
             if (l.getTerm(1).equals(gAtom)) {
-                iAchGoals.remove();
-                return true;
+                iDoneGoals.remove();
+                r = true;
             }
         }
-        return false;
+        return r;
     }
     
     public Set<Literal> getDoneGoals() {
@@ -133,6 +135,9 @@ public class Scheme extends CollectiveOE {
     }
     public Object getGoalArgValue(String goal, String arg) {
         return goalArgs.get(new Pair<String,String>(goal,arg));
+    }
+    public Map<Pair<String,String>,Object> getGoalsArgs() {
+        return goalArgs;
     }
 
     public void addGroupResponsibleFor(Group g) {

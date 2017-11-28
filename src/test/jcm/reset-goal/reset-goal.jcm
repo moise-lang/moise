@@ -2,12 +2,14 @@ mas reset_goal {
 
     agent a
     agent b
+    agent c : b.asl
 
     organisation o: org.xml {
         group g:group1 {
             responsible-for: s
             players: a role1
                      b role2
+                     c role2
         }
         scheme s: scheme1
     }

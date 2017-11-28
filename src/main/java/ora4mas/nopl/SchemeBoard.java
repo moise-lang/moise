@@ -43,6 +43,7 @@ import npl.NPLLiteral;
 import npl.NormativeFailureException;
 import npl.parser.ParseException;
 import ora4mas.nopl.oe.Group;
+import ora4mas.nopl.oe.Pair;
 import ora4mas.nopl.oe.Player;
 import ora4mas.nopl.oe.Scheme;
 import ora4mas.nopl.tools.os2nopl;
@@ -341,9 +342,14 @@ public class SchemeBoard extends OrgArt {
      * @param goal                      The goal to be reset
      */
     @OPERATION public void resetGoal(final String goal) throws CartagoException {
+        final Goal g = spec.getGoal(goal);
+        if (g == null) {
+            failed("Goal "+goal+" does not exist in scheme "+getSchState().getId());
+            return;
+        }
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
-                if (getSchState().resetGoal(spec.getGoal(goal))) {
+                if (getSchState().resetGoal(g)) {
                     getSchState().computeSatisfiedGoals();
                 }
                 nengine.verifyNorms();
@@ -361,10 +367,11 @@ public class SchemeBoard extends OrgArt {
     @OPERATION public void mergeState(Object s) {
         try {
             Scheme otherSch = (Scheme)s;
+            Scheme tSch     = getSchState();
             
             // import commits
             for (Player p: otherSch.getPlayers()) {
-                if (!getSchState().getPlayers().contains(p)) {
+                if (!tSch.getPlayers().contains(p)) {
                     try {
                         commitMission(p.getAg(), p.getTarget());
                     } catch (CartagoException e) {
@@ -373,11 +380,17 @@ public class SchemeBoard extends OrgArt {
                 }
             }
             
+            // import goal's args
+            for (Pair<String, String> ga: otherSch.getGoalsArgs().keySet()) {
+                if (tSch.getGoalArgValue(ga.getLeft(), ga.getRight()) == null)
+                    tSch.setGoalArgValue(ga.getLeft(), ga.getRight(), otherSch.getGoalsArgs().get(ga));
+            }
+            
             // import goal's state
-            otherSch.getDoneGoals().removeAll(getSchState().getDoneGoals());
+            otherSch.getDoneGoals().removeAll(tSch.getDoneGoals());
             for (Literal g: otherSch.getDoneGoals()) {
                 goalDone(g.getTerm(2).toString(), g.getTerm(1).toString());
-            }
+            }            
         } catch (Exception e) {
             logger.log(Level.SEVERE,"Error merging with "+s,e);
             failed("error merging");
