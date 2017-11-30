@@ -39,7 +39,7 @@
        <goal id="start" />
        <goal id="bid"    ttf="10 minutes" />
        <goal id="winner" ttf="1 hour">
-         <argument id="W" />
+         <argument id="W" value="none"/>
        </goal>
      </plan>
    </goal>

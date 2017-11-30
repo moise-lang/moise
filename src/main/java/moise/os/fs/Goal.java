@@ -30,7 +30,7 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
     public enum GoalType { performance, achievement, maintenance };
 
     protected Plan     plan = null;   // the plan to achieve this goal (in case the goal is the head of a plan)
-    protected Plan     inPlan = null; // the plan where this goal belongs
+    protected Plan     inPlan = null; // the plan this goal belongs to
     protected Scheme   sch = null;    // the scheme of this goal
     protected String   desc = null;
     protected GoalType type = GoalType.performance;

@@ -72,6 +72,17 @@ public class Scheme extends CollectiveOE {
     public Scheme(moise.os.fs.Scheme spec, String id) {
         super(id);
         this.spec = spec;
+        
+        // copy initial values of goal args
+        for (Goal g: spec.getGoals()) {
+            if (g.getArguments() != null) {
+                for (String arg: g.getArguments().keySet()) {
+                    Object vl = g.getArguments().get(arg);
+                    if (vl != null && vl.toString().length()>0)
+                        setGoalArgValue(g.getId(), arg, vl);
+                }
+            }
+        }
     }
     
     public moise.os.fs.Scheme getSpec() {
