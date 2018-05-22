@@ -24,8 +24,8 @@
 +!goal5 <- .print(5); .wait(2000).
 +!goal6 <- .print(6).
 
-+goalState(_,goal5,_,_,satisfied) 
-        <- .print("adding goal 6"); 
++goalState(_,goal5,_,_,satisfied)
+        <- .print("adding goal 6");
            addSubGoal(goal1,goal6);
            addMissionGoal(mission3,goal6).
 

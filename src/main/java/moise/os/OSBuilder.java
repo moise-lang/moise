@@ -22,8 +22,16 @@ import moise.xml.DOMUtils;
  */
 public class OSBuilder {
 
-    OS os = new OS();
+    OS os;
 
+    public OSBuilder() {
+        os = new OS();
+    }
+    
+    public OSBuilder(OS os) {
+        this.os = os;
+    }
+    
     public OS getOS() {
         return os;
     }

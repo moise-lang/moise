@@ -290,7 +290,7 @@ public class os2nopl {
         for (Mission m: sch.getMissions()) {
             Cardinality c = sch.getMissionCardinality(m);
             String var = "V"+m.getId();
-            np.append(sep+"      (mission_accomplished(S,"+m.getId()+") | mplayers("+m.getId()+",S,"+var+") & "+var+" >= "+c.getMin()+" & "+var+" <= "+c.getMax()+")");
+            np.append(sep+"      (mission_accomplished(S,"+m.getId()+") | not mission_accomplished(S,"+m.getId()+") & mplayers("+m.getId()+",S,"+var+") & "+var+" >= "+c.getMin()+" & "+var+" <= "+c.getMax()+")");
             sep = " &\n";
         }
         np.append(".\n");
@@ -301,7 +301,7 @@ public class os2nopl {
         np.append("   all_satisfied(_,[]).\n");
         np.append("   all_satisfied(S,[G|T]) :- satisfied(S,G) & all_satisfied(S,T).\n");
         np.append("   any_satisfied(S,[G|_]) :- satisfied(S,G).\n");
-        np.append("   any_satisfied(S,[_|T]) :- any_satisfied(S,T).\n\n");
+        np.append("   any_satisfied(S,[G|T]) :- not satisfied(S,G) & any_satisfied(S,T).\n\n");
 
         np.append("   // enabled goals (i.e. dependence between goals)\n");
         np.append("   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & NP \\== 0 & any_satisfied(S,PCG).\n");
@@ -335,11 +335,13 @@ public class os2nopl {
             np.append("\n   // agents are obliged to fulfill their enabled goals\n");
             np.append("   norm "+NGOAL+": \n");
             np.append("           committed(A,M,S) & mission_goal(M,G) & \n");
+            //np.append("           enabled(S,G) & \n"); // tested by the maint. cond. of the norm
             np.append("           ((goal(_,G,_,achievement,_,D) & What = satisfied(S,G)) | \n");
             np.append("            (goal(_,G,_,performance,_,D) & What = done(S,G,A))) &\n");
             // TODO: implement location as annot for What. create an internal action to add this annot?
             //np.append("           ((goal(_,G,_,_,_,_)[location(L)] & WhatL = What[location(L)]) | (not goal(_,G,_,_,_,_)[location(L)] & WhatL = What)) &\n");
-            np.append("           well_formed(S) & not satisfied(S,G) & \n"); // enabled(S,G) & \n");
+            np.append("           well_formed(S) & \n");
+            np.append("           not satisfied(S,G) & \n");
             np.append("           not super_satisfied(S,G)\n");
             np.append("        -> obligation(A,enabled(S,G),What,`now` + D).\n");
             // TODO: maintenance goals
