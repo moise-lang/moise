@@ -116,8 +116,12 @@ public class OrgBoard extends Artifact {
             if (aid == null) {
                 failed("there is no group board for "+id);
             }
+            try {
+                lookupArtifact(aid.getName());
+            } catch (Exception e) {
+                failed("artifact "+aid.getName()+" does not exist!");
+            }
             removeObsPropertyByTemplate("group", new Atom(id), null, null);
-
             execLinkedOp(aid, "destroy");
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,6 +146,11 @@ public class OrgBoard extends Artifact {
             ArtifactId aid = aids.remove(id);
             if (aid == null) {
                 failed("there is no scheme board for "+id);
+            }
+            try {
+                lookupArtifact(aid.getName());
+            } catch (Exception e) {
+                failed("artifact "+aid.getName()+" does not exist!");
             }
             removeObsPropertyByTemplate("scheme", new Atom(id), null, null);
 

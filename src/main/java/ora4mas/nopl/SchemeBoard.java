@@ -73,6 +73,8 @@ import ora4mas.nopl.tools.os2nopl;
  * <li>specification: the specification of the scheme in the OS (a prolog like representation).
  * <li>obligation(ag,reason,goal,deadline): current active obligations.</br>
  *     e.g. <code>obligation(bob,ngoal(s1,mission1,g5),done(s1,bid,bob),1475417322254)</code>
+ * <li>permission(ag,reason,goal,deadline): current active permission.</br>
+ *
  * <li>goalArgument(schemeId, goalId, argId, value): value of goals' arguments, defined by the operation setArgumentValue</br>
  *     e.g. <code>goalArgument(sch1, winner, "W", "Bob")</code>
  * </ul>
@@ -138,6 +140,7 @@ public class SchemeBoard extends OrgArt {
 
         // observable properties
         updateGoalStateObsProp();
+        updateGoalArgsObsProp();
         defineObsProperty(obsPropGroups,  getSchState().getResponsibleGroupsAsProlog());
         defineObsProperty(obsPropSpec, new JasonTermWrapper(spec.getAsProlog()));
 
@@ -150,14 +153,14 @@ public class SchemeBoard extends OrgArt {
             }
         }
     }
-    
+
     protected void reorganise() throws Exception {
         getNormativeEngine().stop();
-        
+
         initNormativeEngine(spec.getFS().getOS(), "scheme("+spec.getId()+")");
         installNormativeSignaler();
         getNormativeEngine().verifyNorms();
-        
+
     	if (gui != null) {
             gui.setSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));
             gui.setNormativeProgram(getNPLSrc());
@@ -165,7 +168,7 @@ public class SchemeBoard extends OrgArt {
         }
         getObsProperty(obsPropSpec).updateValue(new JasonTermWrapper(spec.getAsProlog()));
     }
-    
+
 
     @OPERATION public void debug(String kind) throws Exception {
     	super.debug(kind, "Scheme Board", true);
@@ -320,7 +323,7 @@ public class SchemeBoard extends OrgArt {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 Object pvl = value;
-                // try to parse value as jason term 
+                // try to parse value as jason term
                 try {
                     pvl = ASSyntax.parseTerm(value.toString());
                 } catch (Exception e) {}
@@ -329,10 +332,12 @@ public class SchemeBoard extends OrgArt {
                 //updateMonitorScheme();
 
                 updateGoalStateObsProp();
-                defineObsProperty("goalArgument", ASSyntax.createAtom(SchemeBoard.this.getId().getName()),
+                updateGoalArgsObsProp();
+                /*defineObsProperty("goalArgument", ASSyntax.createAtom(SchemeBoard.this.getId().getName()),
                         new Atom(goal),
                         ASSyntax.createString(var),
                         pvl);
+                        */
             }
         },"Error setting value of argument "+var+" of "+goal+" as "+value);
     }
@@ -363,12 +368,12 @@ public class SchemeBoard extends OrgArt {
     @OPERATION public void getState(OpFeedbackParam<Scheme> s) {
         s.set(getSchState());
     }
-    
+
     @OPERATION public void mergeState(Object s) {
         try {
             Scheme otherSch = (Scheme)s;
             Scheme tSch     = getSchState();
-            
+
             // import commits
             for (Player p: otherSch.getPlayers()) {
                 if (!tSch.getPlayers().contains(p)) {
@@ -379,24 +384,24 @@ public class SchemeBoard extends OrgArt {
                     }
                 }
             }
-            
+
             // import goal's args
             for (Pair<String, String> ga: otherSch.getGoalsArgs().keySet()) {
                 if (tSch.getGoalArgValue(ga.getLeft(), ga.getRight()) == null)
                     tSch.setGoalArgValue(ga.getLeft(), ga.getRight(), otherSch.getGoalsArgs().get(ga));
             }
-            
+
             // import goal's state
             otherSch.getDoneGoals().removeAll(tSch.getDoneGoals());
             for (Literal g: otherSch.getDoneGoals()) {
                 goalDone(g.getTerm(2).toString(), g.getTerm(1).toString());
-            }            
+            }
         } catch (Exception e) {
             logger.log(Level.SEVERE,"Error merging with "+s,e);
             failed("error merging");
         }
     }
-    
+
     /**
      * Commands that the owner of the scheme can perform.
      *
@@ -508,6 +513,20 @@ public class SchemeBoard extends OrgArt {
         }, null);
     }
 
+    protected void updateGoalArgsObsProp() {
+        while (hasObsProperty("goalArgument"))
+            removeObsProperty("goalArgument");
+
+        for (Pair<String,String> garg: getSchState().getGoalsArgs().keySet()) {
+            try {
+                defineObsProperty("goalArgument", ASSyntax.createAtom(SchemeBoard.this.getId().getName()),
+                        new Atom(garg.getLeft()),
+                        ASSyntax.createString(garg.getRight()),
+                        ASSyntax.parseTerm(getSchState().getGoalsArgs().get(garg).toString()));
+            } catch (Exception e) {}
+        }
+    }
+
     // list of obs props for goal states
     private List<ObsProperty> goalStObsProps = new ArrayList<ObsProperty>();
 
@@ -527,7 +546,7 @@ public class SchemeBoard extends OrgArt {
 
                 if (isObsPropEqualsGoal(g,op)) {
                     found = true;
-                    i.remove(); // this goal does not be added
+                    i.remove(); // this goal will not be added
                     break;
                 }
             }
