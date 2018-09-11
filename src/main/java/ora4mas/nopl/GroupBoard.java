@@ -270,10 +270,16 @@ public class GroupBoard extends OrgArt {
 
     private boolean leaveRoleWithoutVerify(String ag, String role, boolean oldStatus)  throws CartagoException, OperationException {
         boolean status = isWellFormed();
-        removeObsPropertyByTemplate(obsPropPlay,
+        //System.out.println("   * a) "+obsPropPlay+"("+ag+","+role+","+getId().getName()+").");
+        try {
+            removeObsPropertyByTemplate(obsPropPlay,
                 new JasonTermWrapper(ag),
                 new JasonTermWrapper(role),
                 new JasonTermWrapper(this.getId().getName()));
+        } catch (java.lang.IllegalArgumentException e) {
+            // for some reason the prop disappears in cartago!!!!
+            // ignore
+        }
         if (status != oldStatus)
             getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
         updateGuiOE();

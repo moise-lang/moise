@@ -286,8 +286,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                 failed(errorMsg, "reason", new JasonTermWrapper(e.getFail()));
         } catch (Exception e) {
             orgState = bak;
-            failed(e.toString());
             e.printStackTrace();
+            failed(errorMsg+". "+e.toString());
         }
     }
 
