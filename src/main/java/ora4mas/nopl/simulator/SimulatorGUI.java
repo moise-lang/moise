@@ -24,7 +24,7 @@ import cartago.CartagoService;
 import cartago.Op;
 import cartago.WorkspaceId;
 import jason.infra.centralised.RunCentralisedMAS;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 import ora4mas.nopl.GroupBoard;
 import ora4mas.nopl.ORA4MASConstants;
 import ora4mas.nopl.SchemeBoard;
@@ -129,7 +129,7 @@ public class SimulatorGUI {
                     String name = agNameTF.getText().trim();
                     if (name.length() > 0) {
                         try {
-                            RuntimeServicesInfraTier rs = RunCentralisedMAS.getRunner().getRuntimeServices();
+                            RuntimeServices rs = RunCentralisedMAS.getRunner().getRuntimeServices();
                             rs.createAgent(name, "orgagent.asl", null, Arrays.asList(SimOrgAgent.class.getName()), null, null, null);
                             rs.startAgent(name);
                         } catch (Exception e1) {
