@@ -120,7 +120,8 @@ public class os2dot {
         for (Role r: ss.getRolesDef()) {
             so.append(transform(r));
             for (Role e: r.getSuperRoles()) {
-                so.append("        "+r.getId()+" -> "+e.getId()+" [arrowhead=onormal,arrowsize=1.5];\n");
+                if (!e.getId().equals("soc"))
+                    so.append("        "+r.getId()+" -> "+e.getId()+" [arrowhead=onormal,arrowsize=1.5];\n");
             }
         }
         return so.toString();
