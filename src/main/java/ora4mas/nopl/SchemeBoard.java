@@ -237,7 +237,7 @@ public class SchemeBoard extends OrgArt {
     @OPERATION public void commitMission(String mission) throws CartagoException {
         commitMission(getOpUserName(), mission);
     }
-    private void commitMission(final String ag, final String mission) throws CartagoException {
+    protected void commitMission(final String ag, final String mission) throws CartagoException {
         if (orgState.hasPlayer(ag, mission))
             return;
         ora4masOperationTemplate(new Operation() {
@@ -297,7 +297,7 @@ public class SchemeBoard extends OrgArt {
         goalDone(getOpUserName(), goal);
     }
 
-    private void goalDone(final String agent, final String goal) throws CartagoException {
+    protected void goalDone(final String agent, final String goal) throws CartagoException {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 getSchState().addDoneGoal(agent, goal);
@@ -565,7 +565,7 @@ public class SchemeBoard extends OrgArt {
         }
     }
 
-    private boolean isObsPropEqualsGoal(Literal g, ObsProperty op) {
+    protected boolean isObsPropEqualsGoal(Literal g, ObsProperty op) {
         if (!g.getFunctor().equals(op.getName()))
             return false;
         for (int i=0; i<g.getArity(); i++)
@@ -606,9 +606,9 @@ public class SchemeBoard extends OrgArt {
     }
     */
 
-    private static final Atom aWaiting   = new Atom("waiting");
-    private static final Atom aEnabled   = new Atom("enabled");
-    private static final Atom aSatisfied = new Atom("satisfied");
+    protected static final Atom aWaiting   = new Atom("waiting");
+    protected static final Atom aEnabled   = new Atom("enabled");
+    protected static final Atom aSatisfied = new Atom("satisfied");
 
     List<Literal> getGoalStates() {
         List<Literal> all = new ArrayList<Literal>();

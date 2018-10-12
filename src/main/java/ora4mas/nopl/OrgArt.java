@@ -265,7 +265,9 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             try {
                 execLinkedOp(aid, "updateDFP", getId().getName(), (DynamicFactsProvider)orgState);
             } catch (Exception e) {
-                System.out.println("removing listener "+aid.getName()+", since we failed to contact it."+e);
+                //System.out.println("removing listener "+aid.getName()+", since we failed to contact it."+e);
+                System.out.println("error with listener "+aid.getName()+", we failed to contact it."+e);
+                e.printStackTrace();
             }
         }
     }

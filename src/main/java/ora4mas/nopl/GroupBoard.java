@@ -208,7 +208,7 @@ public class GroupBoard extends OrgArt {
     @OPERATION public void adoptRole(String role)  {
         adoptRole(getOpUserName(), role);
     }
-    private void adoptRole(final String ag, final String role) {
+    protected void adoptRole(final String ag, final String role) {
         if (orgState.hasPlayer(ag, role))
             return;
         
@@ -379,7 +379,7 @@ public class GroupBoard extends OrgArt {
     }
 
 
-    private void notifyObservers() throws CartagoException {
+    protected void notifyObservers() throws CartagoException {
         for (ArtifactId a: schemes) {
             execLinkedOp(a, "updateRolePlayers", orgState.getId(), orgState.getPlayers());
         }
