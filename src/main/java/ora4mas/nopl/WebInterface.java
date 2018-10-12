@@ -37,7 +37,7 @@ public class WebInterface  {
     //static Map<String,String> pages = new TreeMap<String,String>();
     int refreshInterval = 5;
     //protected static String osID = "";
-    protected Map<String,Map<String,String>> oePages = new HashMap<String, Map<String,String>>();
+    protected Map<String,Map<String,String>> oePages = new HashMap<>();
 
 
     private WebInterface() {
@@ -278,7 +278,7 @@ public class WebInterface  {
             });
             Map<String,String> pages = oePages.get(oeId);
             if (pages == null) {
-                pages = new HashMap<String, String>();
+                pages = new HashMap<>();
                 oePages.put(oeId, pages);
             }
             pages.put(id, addr);
@@ -299,12 +299,20 @@ public class WebInterface  {
     String dpath = null;
     String getDotPath() throws Exception {
         if (dpath == null) {
+            String r = null;
             File f = new File(System.getProperties().get("user.home") + File.separator + ".jacamo/user.properties");
-            if (!f.exists())
-                return null;
-            Properties p = new Properties();
-            p.load(new FileInputStream( f ));
-            String r = p.getProperty("dotPath");
+            if (f.exists()) {
+                Properties p = new Properties();
+                p.load(new FileInputStream( f ));
+                r = p.getProperty("dotPath");
+            } else {
+                f = new File("jacamo.properties");
+                if (f.exists()) {
+                    Properties p = new Properties();
+                    p.load(new FileInputStream( f ));
+                    r = p.getProperty("dotPath");
+                }
+            }
             if (r == null)
                 r = "/opt/local/bin/dot";
             if (new File(r).exists()) {
@@ -344,7 +352,7 @@ public class WebInterface  {
             });
             Map<String,String> pages = oePages.get(oeId);
             if (pages == null) {
-                pages = new HashMap<String, String>();
+                pages = new HashMap<>();
                 oePages.put(oeId, pages);
             }
             pages.put("specification", addr);
