@@ -118,7 +118,8 @@ public class os2dot {
         StringWriter so = new StringWriter();
         so.append("        // role hierarchy\n");
         for (Role r: ss.getRolesDef()) {
-            so.append(transform(r));
+            if (!r.getId().equals("soc"))
+                so.append(transform(r));
             for (Role e: r.getSuperRoles()) {
                 if (!e.getId().equals("soc"))
                     so.append("        "+r.getId()+" -> "+e.getId()+" [arrowhead=onormal,arrowsize=1.5];\n");
@@ -321,7 +322,7 @@ public class os2dot {
     public String transform(NS ns) {
         StringWriter so = new StringWriter();
         so.append("\n\n    // NS\n");
-        Set<String> done = new HashSet<String>();
+        Set<String> done = new HashSet<>();
         for (Norm n: ns.getNorms()) {
             String e = n.getRole().toString()+n.getMission();
             if (!done.contains(e) || showConditions) {

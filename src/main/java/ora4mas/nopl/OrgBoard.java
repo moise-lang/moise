@@ -50,9 +50,9 @@ public class OrgBoard extends Artifact {
 
     String osFile = null;
 
-    Map<String,ArtifactId> aids = new HashMap<String,ArtifactId>();
+    protected Map<String,ArtifactId> aids = new HashMap<>();
     protected Logger logger = Logger.getLogger(OrgBoard.class.getName());
-
+    
     /**
      * Initialises the org board
      *
@@ -103,13 +103,21 @@ public class OrgBoard extends Artifact {
             aid = lookupArtifact(id);
             failed("Artifact with id "+id+" already exists!");
         } catch (OperationException e) {
-            aid = makeArtifact(id, GroupBoard.class.getName(), new ArtifactConfig(osFile, type) );
+            aid = makeArtifact(id, getGroupBoardClass(), new ArtifactConfig(osFile, type) );
+            grPostCreation(id, aid);
             aids.put(id, aid);
             defineObsProperty("group", new Atom(id), new Atom(type), aid);
             gaid.set(aid);
         }
     }
 
+    protected String getGroupBoardClass() {
+        return GroupBoard.class.getName();
+    }
+    
+    protected void grPostCreation(String id, ArtifactId gArtId) {
+    }
+    
     @OPERATION public void destroyGroup(String id) {
         try {
             ArtifactId aid = aids.remove(id);
@@ -134,11 +142,19 @@ public class OrgBoard extends Artifact {
             aid = lookupArtifact(id);
             failed("Artifact with id "+id+" already exists!");
         } catch (OperationException e) {
-            aid = makeArtifact(id, SchemeBoard.class.getName(), new ArtifactConfig(osFile, type) );
+            aid = makeArtifact(id, getSchemeBoardClass(), new ArtifactConfig(osFile, type) );
+            schPostCreation(id, aid);
             aids.put(id, aid);
             defineObsProperty("scheme", new Atom(id), new Atom(type), aid);
             said.set(aid);
         }
+    }
+    
+    protected String getSchemeBoardClass() {
+        return SchemeBoard.class.getName();
+    }
+    
+    protected void schPostCreation(String id, ArtifactId sArtid) {
     }
 
     @OPERATION public void destroyScheme(String id) {

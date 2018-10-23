@@ -1,19 +1,17 @@
 package ora4mas;
 
-import jason.asSemantics.Unifier;
-import jason.asSyntax.Literal;
-import jason.asSyntax.PredicateIndicator;
-
 import java.io.FileNotFoundException;
 import java.io.StringReader;
 import java.util.Iterator;
 
+import jason.asSemantics.Unifier;
+import jason.asSyntax.Literal;
+import jason.asSyntax.PredicateIndicator;
 import moise.os.OS;
 import npl.DynamicFactsProvider;
 import npl.NPLInterpreter;
 import npl.NormativeFailureException;
 import npl.NormativeProgram;
-import npl.Scope;
 import npl.parser.ParseException;
 import npl.parser.nplp;
 import ora4mas.nopl.oe.Group;
