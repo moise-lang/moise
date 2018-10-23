@@ -48,7 +48,7 @@ import npl.parser.ParseException;
  */
 public class OrgBoard extends Artifact {
 
-    String osFile = null;
+    protected String osFile = null;
 
     protected Map<String,ArtifactId> aids = new HashMap<>();
     protected Logger logger = Logger.getLogger(OrgBoard.class.getName());
@@ -103,7 +103,7 @@ public class OrgBoard extends Artifact {
             aid = lookupArtifact(id);
             failed("Artifact with id "+id+" already exists!");
         } catch (OperationException e) {
-            aid = makeArtifact(id, getGroupBoardClass(), new ArtifactConfig(osFile, type) );
+            aid = makeArtifact(id, getGroupBoardClass(), getGroupConfig(type));
             grPostCreation(id, aid);
             aids.put(id, aid);
             defineObsProperty("group", new Atom(id), new Atom(type), aid);
@@ -113,6 +113,10 @@ public class OrgBoard extends Artifact {
 
     protected String getGroupBoardClass() {
         return GroupBoard.class.getName();
+    }
+    
+    protected ArtifactConfig getGroupConfig(String type) {
+        return new ArtifactConfig(osFile, type);
     }
     
     protected void grPostCreation(String id, ArtifactId gArtId) {
