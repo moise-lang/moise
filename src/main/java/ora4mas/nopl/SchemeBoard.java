@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import cartago.ArtifactConfig;
 import cartago.ArtifactId;
 import cartago.CartagoException;
 import cartago.LINK;
@@ -483,7 +482,12 @@ public class SchemeBoard extends OrgArt {
                 if (newLink) {
                     // first time the group is linked to this scheme, create normative board
                     String nbId = grId+"."+orgState.getId();
-                    ArtifactId aid = makeArtifact(nbId, NormativeBoard.class.getName(), new ArtifactConfig() );
+                    //ArtifactId aid = makeArtifact(nbId, getNormativeBoardClass(), new ArtifactConfig() );
+                    OpFeedbackParam<ArtifactId> fb = new OpFeedbackParam<>();
+                    ArtifactId orgBoard = lookupArtifact(getCreatorId().getWorkspaceId().getName());
+                    execLinkedOp(orgBoard, "createNormativeBoard", nbId, fb);
+                    ArtifactId aid = fb.get();
+
                     execLinkedOp(aid, "load", os2nopl.transform(spec, false));
                     execLinkedOp(aid, "doSubscribeDFP", orgState.getId());
 
@@ -494,11 +498,12 @@ public class SchemeBoard extends OrgArt {
                         out.append(nplProgram);
                         out.append("\n}");
                         execLinkedOp(aid, "load", out.toString());
-                    }
+                    }                    
                 }
             }
         }, null);
     }
+    
 
     @LINK void removeResponsibleGroup(final String grId) throws CartagoException {
         ora4masOperationTemplate(new Operation() {
@@ -528,7 +533,7 @@ public class SchemeBoard extends OrgArt {
     }
 
     // list of obs props for goal states
-    private List<ObsProperty> goalStObsProps = new ArrayList<ObsProperty>();
+    private List<ObsProperty> goalStObsProps = new ArrayList<>();
 
     protected void updateGoalStateObsProp() {
         List<Literal> goals = getGoalStates();
@@ -611,7 +616,7 @@ public class SchemeBoard extends OrgArt {
     protected static final Atom aSatisfied = new Atom("satisfied");
 
     List<Literal> getGoalStates() {
-        List<Literal> all = new ArrayList<Literal>();
+        List<Literal> all = new ArrayList<>();
         Term tSch = ASSyntax.createAtom(this.getId().getName());
         for (Goal g: spec.getGoals()) {
             Atom aGoal  = new Atom(g.getId());

@@ -179,4 +179,25 @@ public class OrgBoard extends Artifact {
             e.printStackTrace();
         }
     }
+
+    @OPERATION public void createNormativeBoard(String id, OpFeedbackParam<ArtifactId> said) throws OperationException {
+        ArtifactId aid;
+        try {
+            aid = lookupArtifact(id);
+            failed("Artifact with id "+id+" already exists!");
+        } catch (OperationException e) {
+            aid = makeArtifact(id, getNormativeBoardClass(), new ArtifactConfig() );
+            normBoardPostCreation(id, aid);
+            aids.put(id, aid);
+            defineObsProperty("normative_board", new Atom(id), aid);
+            said.set(aid);
+        }
+    }
+
+    protected String getNormativeBoardClass() {
+        return NormativeBoard.class.getName();
+    }
+    protected void normBoardPostCreation(String aName, ArtifactId aid) {
+    }
+    
 }
