@@ -55,7 +55,7 @@ import ora4mas.nopl.oe.CollectiveOE;
  */
 public class NormativeBoard extends OrgArt {
 
-    protected Map<String, DynamicFactsProvider> dynProviders = new HashMap<String, DynamicFactsProvider>();
+    protected Map<String, DynamicFactsProvider> dynProviders = new HashMap<>();
 
     protected Logger logger = Logger.getLogger(NormativeBoard.class.getName());
 
@@ -115,7 +115,7 @@ public class NormativeBoard extends OrgArt {
         super.debug(kind, "Norm Board", false);
     }
 
-    @OPERATION void addFact(String f) throws jason.asSyntax.parser.ParseException, NormativeFailureException {
+    @OPERATION public void addFact(String f) throws jason.asSyntax.parser.ParseException, NormativeFailureException {
         nengine.addFact(ASSyntax.parseLiteral(f));
         nengine.verifyNorms();
         updateGuiOE();
