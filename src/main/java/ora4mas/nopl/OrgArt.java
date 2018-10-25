@@ -83,7 +83,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
     protected String ownerAgent = null; // the name of the agent that created this artifact
 
-    protected List<ArtifactId> listeners = new ArrayList<ArtifactId>();
+    protected List<ArtifactId> listeners = new ArrayList<>();
 
     protected Logger logger = Logger.getLogger(OrgArt.class.getName());
 
@@ -161,31 +161,41 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         // version that works (using internal op)
         myNPLListener = new NormativeListener() {
             public void created(DeonticModality o) {
+                beginExternalSession();
                 defineObsProperty(o.getFunctor(), getTermsAsProlog(o)).addAnnot( getNormIdTerm(o) );
+                endExternalSession(true);
                 //signalsQueue.offer(new Pair<String, Structure>(sglOblCreated, o));
             }
             public void fulfilled(DeonticModality o) {
                 try {
+                    beginExternalSession();
                     removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o)); // cause concurrent modification on cartago
                     execInternalOp("NPISignals", sglOblFulfilled, o);
+                    endExternalSession(true);
                 } catch (java.lang.IllegalArgumentException e) {
                     // ignore, the obligations was not there anymore
                 }
             }
             public void unfulfilled(DeonticModality o) {
                 try {
+                    beginExternalSession();
                     removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
                     execInternalOp("NPISignals", sglOblUnfulfilled, o);
+                    endExternalSession(true);
                 } catch (Exception e) {
                     logger.log(Level.FINE, "error removing obs prop for "+o, e);
                 }
             }
             public void inactive(DeonticModality o) {
+                beginExternalSession();
                 removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
+                endExternalSession(true);
             }
 
             public void failure(Structure f) {
+                beginExternalSession();
                 execInternalOp("NPISignals", sglNormFailure, f);
+                endExternalSession(true);
             }
         };
 
@@ -390,7 +400,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     /** manages listener to be notified about agents that quit the system */
 
     class Ora4masWSPRuleEngine extends AbstractWSPRuleEngine {
-        List<OrgArt> l = new ArrayList<OrgArt>();
+        List<OrgArt> l = new ArrayList<>();
 
         void addListener(OrgArt o) {
             l.add(o);

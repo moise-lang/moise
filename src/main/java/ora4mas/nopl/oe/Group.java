@@ -52,11 +52,11 @@ public class Group extends CollectiveOE implements ToProlog {
     public final static PredicateIndicator subGrWFPI     = dynamicFacts[5].getPredicateIndicator();
     public final static PredicateIndicator subGrPI       = dynamicFacts[6].getPredicateIndicator();
 
-    private HashSet<String>     schemes   = new HashSet<String>();
-    private Set<Literal>        schemesAsLiteralList = new ConcurrentSkipListSet<Literal>();
-    private Map<String,Group>   subgroups = new HashMap<String,Group>();
-    private Map<String,Literal> subgroupsAsLiteralList = new ConcurrentSkipListMap<String,Literal>();
-    private Set<Literal>        wellFormedSubGroups = new HashSet<Literal>();
+    private HashSet<String>     schemes   = new HashSet<>();
+    private Set<Literal>        schemesAsLiteralList = new ConcurrentSkipListSet<>();
+    private Map<String,Group>   subgroups = new HashMap<>();
+    private Map<String,Literal> subgroupsAsLiteralList = new ConcurrentSkipListMap<>();
+    private Set<Literal>        wellFormedSubGroups = new HashSet<>();
     private String              parentGroup = "root";
     private String              type;
 
@@ -140,7 +140,7 @@ public class Group extends CollectiveOE implements ToProlog {
     }
 
     public ToProlog getSubgroupsAsProlog() {
-        List<String> directSubgroups = new ArrayList<String>();
+        List<String> directSubgroups = new ArrayList<>();
         for (Group g: subgroups.values())
             if (g.getParentGroup().equals(getId()))
                 directSubgroups.add(g.getId());
@@ -162,12 +162,12 @@ public class Group extends CollectiveOE implements ToProlog {
     @Override
     public Iterator<Unifier> consult(Literal l, Unifier u) {
         PredicateIndicator pi = l.getPredicateIndicator();
-        if (pi.equals(getExPlayerPI()) || pi.equals(monitorSchPI))
+        if (pi.equals(getExPlayerPI())) // || pi.equals(monitorSchPI))
             return super.consult(l, u);
 
         if (pi.equals(getPlayerPI())) {
             if (hasSubgroup()) {
-                List<DynamicFactsProvider> providers = new ArrayList<DynamicFactsProvider>();
+                List<DynamicFactsProvider> providers = new ArrayList<>();
                 providers.add(new DynamicFactsProvider() {
                     public boolean isRelevant(PredicateIndicator pi)       { return true; }
                     public Iterator<Unifier> consult(Literal l, Unifier u) { return Group.super.consult(l,u); }
@@ -211,7 +211,7 @@ public class Group extends CollectiveOE implements ToProlog {
 
     public Group clone() {
         Group g = new Group(id);
-        g.monSch = this.monSch;
+        //g.monSch = this.monSch;
         g.players.addAll(this.players);
         g.exPlayers.addAll(this.exPlayers);
         g.schemes.addAll(this.schemes);
@@ -242,10 +242,10 @@ public class Group extends CollectiveOE implements ToProlog {
         out.append("  schemes: ");
         for (String s: schemes) {
             out.append(s);
-            if (s.equals(getMonitorSch()))
+            /*if (s.equals(getMonitorSch()))
                 out.append("(*) ");
             else
-                out.append(" ");
+                out.append(" ");*/
         }
         out.append("\n  subgroups: "+getSubgroupsAsProlog().getAsPrologStr());
         out.append("\n  parent group: "+getParentGroup());

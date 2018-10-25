@@ -12,8 +12,8 @@ import java.util.Map;
  * @author jomi
  */
 public class OE implements Serializable {
-    Map<String, Group>  groups  = new HashMap<String, Group>();
-    Map<String, Scheme> schemes = new HashMap<String, Scheme>();
+    Map<String, Group>  groups  = new HashMap<>();
+    Map<String, Scheme> schemes = new HashMap<>();
 
     public void addGroup(Group g) {
         groups.put(g.getId(), g);

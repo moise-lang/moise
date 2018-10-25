@@ -35,7 +35,7 @@ public class WebInterface  {
     int        httpServerPort = 3271;
     String     httpServerURL = "http://localhost:"+httpServerPort;
     //static Map<String,String> pages = new TreeMap<String,String>();
-    int refreshInterval = 5;
+    //int refreshInterval = 5;
     //protected static String osID = "";
     protected Map<String,Map<String,String>> oePages = new HashMap<>();
 
@@ -145,7 +145,7 @@ public class WebInterface  {
                     OutputStream responseBody = exchange.getResponseBody();
 
                     if (requestMethod.equalsIgnoreCase("GET")) {
-                        responseBody.write(("<html><head><title>Moise (list of organisational entities)</title><meta http-equiv=\"refresh\" content=\""+refreshInterval+"\" ></head><body>").getBytes());
+                        responseBody.write(("<html><head><title>Moise (list of organisational entities)</title></head><body>").getBytes());
                         for (String oeId: oePages.keySet()) {
                             responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'>organisation <b>"+oeId+"</b></p></font>").getBytes());
 
@@ -251,7 +251,7 @@ public class WebInterface  {
                                     responseBody.write("</pre>".getBytes());
                                 } else {
                                     //String path = exchange.getRequestURI().getPath();
-                                    responseBody.write(("<html><head><title>"+id+"</title><meta http-equiv=\"refresh\" content=\""+refreshInterval+"\"></head><body>").getBytes());
+                                    responseBody.write(("<html><head><title>"+id+"</title></head><body>").getBytes());
                                     StringWriter so = new StringWriter();
                                     if (orgArt.getStyleSheet() != null) {
                                         try {

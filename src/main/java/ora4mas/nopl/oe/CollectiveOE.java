@@ -36,14 +36,14 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
     protected final String id;
     protected final Term   termId;
 
-    protected String monSch;
-    protected Set<Player> players   = new ConcurrentSkipListSet<Player>();
-    protected Set<Player> exPlayers = new HashSet<Player>();
+    //protected String monSch;
+    protected Set<Player> players   = new ConcurrentSkipListSet<>();
+    protected Set<Player> exPlayers = new HashSet<>();
 
-    protected Set<Literal> playersAsLiteralList   = new ConcurrentSkipListSet<Literal>();
-    protected Set<Literal> exPlayersAsLiteralList = new ConcurrentSkipListSet<Literal>();
+    protected Set<Literal> playersAsLiteralList   = new ConcurrentSkipListSet<>();
+    protected Set<Literal> exPlayersAsLiteralList = new ConcurrentSkipListSet<>();
 
-    public final static PredicateIndicator monitorSchPI = new PredicateIndicator("monitor_scheme", 1);
+    //public final static PredicateIndicator monitorSchPI = new PredicateIndicator("monitor_scheme", 1);
 
     public CollectiveOE(String id) {
         if (id.startsWith("\""))
@@ -55,6 +55,11 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
         return id;
     }
 
+    @Override
+	public String toString() {
+		return getId();
+	}
+    
     abstract PredicateIndicator getPlayerPI();
     abstract PredicateIndicator getExPlayerPI();
 
@@ -121,12 +126,14 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
         return exPlayers;
     }
 
+    /*
     public String getMonitorSch() {
         return monSch;
     }
     public void setMonitorSch(String monSch) {
         this.monSch = monSch;
     }
+    */
 
     public abstract CollectiveOE clone();
 
@@ -168,7 +175,7 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
 
     /** transforms a Scheme Instance into NPL code (dynamic facts) */
     public List<Literal> transform() {
-        List<Literal> lg = new ArrayList<Literal>();
+        List<Literal> lg = new ArrayList<>();
         for (Literal l: getDynamicFacts()) {
             Iterator<Unifier> i = consult(l, new Unifier());
             while (i.hasNext()) {
@@ -184,8 +191,8 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
         for (Literal l: getDynamicFacts())
             if (pi.equals(l.getPredicateIndicator()))
                 return true;
-        if (pi.equals(monitorSchPI))
-            return true;
+        /*if (pi.equals(monitorSchPI))
+            return true;*/
 
         return false;
     }
@@ -197,13 +204,13 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
         } else if (l.getPredicateIndicator().equals(getExPlayerPI())) {
             return consult(l, u, exPlayersAsLiteralList);
 
-        } else if (l.getPredicateIndicator().equals(monitorSchPI)) {
+        } /*else if (l.getPredicateIndicator().equals(monitorSchPI)) {
             Term lCopy = l.getTerm(0);
             if (getMonitorSch() != null && u.unifies(lCopy, createAtom(getMonitorSch())))
                 return LogExpr.createUnifIterator(u);
             else
                 return LogExpr.EMPTY_UNIF_LIST.iterator();
-        }
+        }*/
         return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
 

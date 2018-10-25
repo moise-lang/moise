@@ -58,16 +58,16 @@ public class Scheme extends CollectiveOE {
     private moise.os.fs.Scheme spec;
 
     // responsible groups
-    private ConcurrentSkipListSet<Group>   groups  = new ConcurrentSkipListSet<Group>();
+    private ConcurrentSkipListSet<Group>   groups  = new ConcurrentSkipListSet<>();
 
     // the literal is done(schemeId, goalId, agent name)
-    private ConcurrentSkipListSet<Literal> doneGoals = new ConcurrentSkipListSet<Literal>();
+    private ConcurrentSkipListSet<Literal> doneGoals = new ConcurrentSkipListSet<>();
 
     // values for goal arguments (key = goal + arg, value = value)
-    private HashMap<Pair<String,String>,Object> goalArgs = new HashMap<Pair<String,String>,Object>();
+    private HashMap<Pair<String,String>,Object> goalArgs = new HashMap<>();
 
     // list of satisfied goals
-    private Set<String> satisfiedGoals = new HashSet<String>(); // we use "contains" a lot, so remains HashSet
+    private Set<String> satisfiedGoals = new HashSet<>(); // we use "contains" a lot, so remains HashSet
 
     public Scheme(moise.os.fs.Scheme spec, String id) {
         super(id);
@@ -142,10 +142,10 @@ public class Scheme extends CollectiveOE {
     }
 
     public void setGoalArgValue(String goal, String arg, Object value) {
-        goalArgs.put(new Pair<String,String>(goal,arg), value);
+        goalArgs.put(new Pair<>(goal,arg), value);
     }
     public Object getGoalArgValue(String goal, String arg) {
-        return goalArgs.get(new Pair<String,String>(goal,arg));
+        return goalArgs.get(new Pair<>(goal,arg));
     }
     public Map<Pair<String,String>,Object> getGoalsArgs() {
         return goalArgs;
@@ -163,7 +163,7 @@ public class Scheme extends CollectiveOE {
         return new HashSet<>(groups);
     }
     public Collection<String> getIdsGroupsResponsibleFor() {
-        Collection<String> l = new ArrayList<String>();
+        Collection<String> l = new ArrayList<>();
         for (Group g: getGroupsResponsibleFor()) {
             l.add(g.getId());
         }
@@ -189,7 +189,7 @@ public class Scheme extends CollectiveOE {
     @Override
     public Iterator<Unifier> consult(Literal l, Unifier u) {
         PredicateIndicator pi = l.getPredicateIndicator();
-        if (pi.equals(getPlayerPI()) ||  pi.equals(getExPlayerPI()) || pi.equals(monitorSchPI))
+        if (pi.equals(getPlayerPI()) ||  pi.equals(getExPlayerPI())) // || pi.equals(monitorSchPI))
             return super.consult(l, u);
 
         if (pi.equals(Group.playPI) || pi.equals(Group.responsiblePI)) {
@@ -215,7 +215,7 @@ public class Scheme extends CollectiveOE {
                 }
             } else {
                 // usually this alternative is not used (the term is group in the NP), so we do not improve its performance.
-                List<Unifier> lu = new ArrayList<Unifier>();
+                List<Unifier> lu = new ArrayList<>();
                 for (String g: satisfiedGoals) {
                     Literal sg = createLiteral("satisfied", termId, createAtom(g));
                     Unifier c = u.clone();
@@ -317,7 +317,7 @@ public class Scheme extends CollectiveOE {
 
     public Scheme clone() {
         Scheme g = new Scheme(spec,id);
-        g.monSch = this.monSch;
+        //g.monSch = this.monSch;
         g.players.addAll(this.players);
         g.exPlayers.addAll(this.exPlayers);
         g.groups.addAll(this.groups);
