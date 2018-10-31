@@ -27,7 +27,6 @@ import cartago.Artifact;
 import cartago.ArtifactId;
 import cartago.CartagoException;
 import cartago.CartagoService;
-import cartago.INTERNAL_OPERATION;
 import cartago.LINK;
 import cartago.OPERATION;
 import cartago.Op;
@@ -162,40 +161,56 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         myNPLListener = new NormativeListener() {
             public void created(DeonticModality o) {
                 beginExternalSession();
-                defineObsProperty(o.getFunctor(), getTermsAsProlog(o)).addAnnot( getNormIdTerm(o) );
-                endExternalSession(true);
+                try {
+                    defineObsProperty(o.getFunctor(), getTermsAsProlog(o)).addAnnot( getNormIdTerm(o) );
+                } finally {
+                    endExternalSession(true);                   
+                }
                 //signalsQueue.offer(new Pair<String, Structure>(sglOblCreated, o));
             }
             public void fulfilled(DeonticModality o) {
                 try {
                     beginExternalSession();
                     removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o)); // cause concurrent modification on cartago
-                    execInternalOp("NPISignals", sglOblFulfilled, o);
-                    endExternalSession(true);
+                    signal(sglOblFulfilled, new JasonTermWrapper(o));
                 } catch (java.lang.IllegalArgumentException e) {
                     // ignore, the obligations was not there anymore
+                } finally {
+                    endExternalSession(true);                   
                 }
+                //execInternalOp("NPISignals", sglOblFulfilled, o);
             }
             public void unfulfilled(DeonticModality o) {
                 try {
                     beginExternalSession();
                     removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
-                    execInternalOp("NPISignals", sglOblUnfulfilled, o);
-                    endExternalSession(true);
+                    signal(sglOblUnfulfilled, new JasonTermWrapper(o));
                 } catch (Exception e) {
                     logger.log(Level.FINE, "error removing obs prop for "+o, e);
+                } finally {
+                    endExternalSession(true);                   
                 }
+                //execInternalOp("NPISignals", sglOblUnfulfilled, o);
             }
             public void inactive(DeonticModality o) {
-                beginExternalSession();
-                removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
-                endExternalSession(true);
+                try {
+                    beginExternalSession();
+                    removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
+                } catch (java.lang.IllegalArgumentException e) {
+                    // ignore, the obligations was not there anymore
+                } finally {
+                    endExternalSession(true);                   
+                }
             }
 
             public void failure(Structure f) {
-                beginExternalSession();
-                execInternalOp("NPISignals", sglNormFailure, f);
-                endExternalSession(true);
+                try {
+                    beginExternalSession();
+                    //execInternalOp("NPISignals", sglNormFailure, f);
+                    signal(sglNormFailure, new JasonTermWrapper(f));                    
+                } finally {
+                    endExternalSession(true);                   
+                }
             }
         };
 
@@ -259,9 +274,9 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     }
     */
 
-    @INTERNAL_OPERATION void NPISignals(String signal, Term arg) {
+    /*@INTERNAL_OPERATION void NPISignals(String signal, Term arg) {
         signal(signal, new JasonTermWrapper(arg));
-    }
+    }*/
 
     // subscribe protocol
 
