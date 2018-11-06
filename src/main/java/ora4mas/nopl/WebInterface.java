@@ -296,8 +296,8 @@ public class WebInterface  {
             httpServer.removeContext(addr);
     }
 
-    String dpath = null;
-    String getDotPath() throws Exception {
+    private static String dpath = null;
+    public static String getDotPath() throws Exception {
         if (dpath == null) {
             String r = null;
             File f = new File(System.getProperties().get("user.home") + File.separator + ".jacamo/user.properties");
