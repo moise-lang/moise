@@ -1,8 +1,8 @@
 package ora4mas.nopl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -23,6 +23,10 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.MutableGraph;
+import guru.nidi.graphviz.parse.Parser;
 import jason.architecture.MindInspectorWeb;
 import moise.xml.DOMUtils;
 
@@ -204,38 +208,18 @@ public class WebInterface  {
                         try {
                             if (exchange.getRequestURI().getPath().endsWith("svg")) {
                                 responseHeaders.set("Content-Type", "image/svg+xml");
-                                String program = null;
-                                try {
-                                    program = getDotPath();
-                                } catch (java.lang.NoClassDefFoundError e) {}
-                                //for (String s: exchange.getRequestHeaders().keySet())
-                                //    System.out.println("* "+s+" = "+exchange.getRequestHeaders().getFirst(s));
-                                if (program != null) {
-                                    String dot = orgArt.getAsDot();
-                                    if (dot != null) {
-                                        if (!lastDot.endsWith(dot)) { // new dot
-                                            lastDot = dot;
-                                            File fin     = File.createTempFile("jacamo-", ".dot");
-                                            File imgFile = File.createTempFile("jacamo-", ".svg");
+                                String dot = orgArt.getAsDot();
+                                if (dot != null) {
+                                    if (!lastDot.endsWith(dot)) { // new dot
+                                        lastDot = dot;
 
-                                            FileWriter out = new FileWriter(fin);
-                                            out.append(dot);
-                                            out.close();
-                                            Process p = Runtime.getRuntime().exec(program+" -Tsvg "+fin.getAbsolutePath()+" -o "+imgFile.getAbsolutePath());
-                                            p.waitFor();
-
-                                            lastData = new byte[(int)imgFile.length()];
-                                            FileInputStream in = new FileInputStream(imgFile);
-                                            in.read(lastData);
-                                            in.close();
-                                        }
-                                        //responseHeaders.set("Last-Modified", new Date( lastImgFile.lastModified()).toGMTString() );
-                                        //responseHeaders.set("Cache-control", "max-age=2" );
-                                        //responseHeaders.set("ETag", "x"+lastImgFile.hashCode());
-                                        exchange.sendResponseHeaders(200, 0);
-                                        //exchange.sendResponseHeaders(304, -1);
-                                        responseBody.write(lastData);
+                                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                        MutableGraph g = Parser.read(dot);
+                                        Graphviz.fromGraph(g).render(Format.SVG).toOutputStream(out);
+                                        lastData = out.toByteArray();
                                     }
+                                    exchange.sendResponseHeaders(200, 0);
+                                    responseBody.write(lastData);
                                 }
                             } else {
                                 exchange.sendResponseHeaders(200, 0);
@@ -253,10 +237,7 @@ public class WebInterface  {
                                     responseBody.write(("<html><head><title>"+id+"</title></head><body>").getBytes());
                                     StringWriter so = new StringWriter();
                                     if (orgArt.getStyleSheet() != null) {
-                                        try {
-                                            if (getDotPath() != null)
-                                                orgArt.getStyleSheet().setParameter("show-oe-img", "true");
-                                        } catch (java.lang.NoClassDefFoundError e) {}
+                                        orgArt.getStyleSheet().setParameter("show-oe-img", "true");
                                         orgArt.getStyleSheet().transform(new DOMSource(DOMUtils.getAsXmlDocument(orgArt)),new StreamResult(so));
                                         responseBody.write(so.toString().getBytes());
                                     }
@@ -296,6 +277,7 @@ public class WebInterface  {
     }
 
     private static String dpath = null;
+    @Deprecated
     public static String getDotPath() throws Exception {
         if (dpath == null) {
             String r = null;

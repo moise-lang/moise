@@ -106,7 +106,6 @@ class GUI extends JFrame {
             transformer.showNS    = ns.isSelected();
 
             String dotProgram = transformer.transform(os);
-            //System.out.println(dotProgram);
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             MutableGraph g = Parser.read(dotProgram);
@@ -116,15 +115,7 @@ class GUI extends JFrame {
             if (format.equals("ps"))
                 f = Format.PS2;
             Graphviz.fromGraph(g).render(f).toOutputStream(out);
-            //return Response.ok(out.toByteArray()).build();
             return out.toByteArray();
-            /*
-            FileWriter out = new FileWriter(fin);
-            out.append(dotProgram);
-            out.close();
-            Process p = Runtime.getRuntime().exec(jtDot.getText().trim()+" -T"+format+" "+fin.getAbsolutePath()+" -o "+fimg.getAbsolutePath());
-            p.waitFor();
-            */
         } catch (Exception e1) {
             console.setText(e1.toString());
             e1.printStackTrace();
