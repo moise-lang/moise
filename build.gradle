@@ -34,6 +34,8 @@ dependencies {
 
     testCompile group: 'junit',      name: 'junit', version: '4.+'
 
+    compile group: 'guru.nidi', name: 'graphviz-java', version: '0.7.0'
+
     //umljavadoc 'org.umlgraph:umlgraph:5.6'
 }
 
@@ -58,6 +60,11 @@ task intsim (type: JavaExec, dependsOn: 'jar') {
 task sim (type: JavaExec, dependsOn: 'jar') {
     description 'runs a program that simulates some dynamics of an organisation'
     main = 'ora4mas.nopl.simulator.ConsoleSimulator'
+    classpath sourceSets.main.runtimeClasspath
+}
+
+task os2dot (type: JavaExec, dependsOn: 'jar') {
+    main = 'moise.tools.os2dotGUI'
     classpath sourceSets.main.runtimeClasspath
 }
 
