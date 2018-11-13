@@ -40,6 +40,11 @@ public class Cardinality implements Serializable, ToXML {
         return max;
     }
 
+    @Override
+    public int hashCode() {
+        return min+max;
+    }
+    
     public boolean equals(Object o) {
         if (o == null) return false;
         if (o == this) return true;

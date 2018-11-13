@@ -97,7 +97,7 @@ public class WebInterface  {
                         if (path.length() < 2) { // it is the root
                             so.append("<html><head><title>Moise Web View</title></head><body>");
                             so.append("<iframe width=\"20%\" height=\"100%\" align=left src=\"/oe\" border=5 frameborder=0 ></iframe>");
-                            so.append("<iframe width=\"78%\" height=\"100%\" align=left src=\"/groupsandschemes\" name=\"oe-frame\" border=5 frameborder=0></iframe>");
+                            so.append("<iframe width=\"78%\" height=\"100%\" align=left src=\"/groupsandschemes\" name='cf' border=5 frameborder=0></iframe>");
                             so.append("</body></html>");
                         } else {
                             if (path.indexOf("agent.xsl") > 0) {
@@ -147,7 +147,7 @@ public class WebInterface  {
                     if (requestMethod.equalsIgnoreCase("GET")) {
                         responseBody.write(("<html><head><title>Moise (list of organisational entities)</title></head><body>").getBytes());
                         for (String oeId: oePages.keySet()) {
-                            responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'>organisation <b>"+oeId+"</b></p></font>").getBytes());
+                            responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'><b>"+oeId+"</b></p></font>").getBytes());
 
                             Map<String,String> pages = oePages.get(oeId);
                             StringWriter os  = new StringWriter();
@@ -159,7 +159,7 @@ public class WebInterface  {
                             // show schemes
                             for (String id: pages.keySet()) {
                                 String addr = pages.get(id);
-                                String html = "<a href=\""+addr+"\" target=\"oe-frame\" style=\"font-family: arial; text-decoration: none\">"+id+"</a><br/>";
+                                String html = "<a href=\""+addr+"\" target='cf' style=\"font-family: arial; text-decoration: none\">"+id+"</a><br/>";
                                 if (addr.endsWith("os"))
                                     os.append(html);
                                 else if (addr.indexOf("/group") > 0)
@@ -187,7 +187,6 @@ public class WebInterface  {
 
     // used for cache below
     private String lastDot = "";
-    private File lastImgFile = null;
     private byte[] lastData = null;
 
     public String registerOEBrowserView(final String oeId, final String pathSpec, final String id, final OrgArt orgArt) {
@@ -216,17 +215,17 @@ public class WebInterface  {
                                     if (dot != null) {
                                         if (!lastDot.endsWith(dot)) { // new dot
                                             lastDot = dot;
-                                            File fin    = File.createTempFile("jacamo-", ".dot");
-                                            lastImgFile = File.createTempFile("jacamo-", ".svg");
+                                            File fin     = File.createTempFile("jacamo-", ".dot");
+                                            File imgFile = File.createTempFile("jacamo-", ".svg");
 
                                             FileWriter out = new FileWriter(fin);
                                             out.append(dot);
                                             out.close();
-                                            Process p = Runtime.getRuntime().exec(program+" -Tsvg "+fin.getAbsolutePath()+" -o "+lastImgFile.getAbsolutePath());
+                                            Process p = Runtime.getRuntime().exec(program+" -Tsvg "+fin.getAbsolutePath()+" -o "+imgFile.getAbsolutePath());
                                             p.waitFor();
 
-                                            lastData = new byte[(int)lastImgFile.length()];
-                                            FileInputStream in = new FileInputStream(lastImgFile);
+                                            lastData = new byte[(int)imgFile.length()];
+                                            FileInputStream in = new FileInputStream(imgFile);
                                             in.read(lastData);
                                             in.close();
                                         }

@@ -75,14 +75,14 @@ import ora4mas.nopl.tools.os2nopl;
 public class GroupBoard extends OrgArt {
 
     protected moise.os.ss.Group  spec;
-    protected Set<ArtifactId>    schemes     = new HashSet<ArtifactId>();
-    protected Set<ArtifactId>    listeners   = new HashSet<ArtifactId>();
+    protected Set<ArtifactId>    schemes     = new HashSet<>();
+    protected Set<ArtifactId>    listeners   = new HashSet<>();
     protected ArtifactId         parentGroup = null;
 
     /**
      * Schemes to be responsible for when well formed.
      */
-    protected List<String>       futureSchemes = new LinkedList<String>();
+    protected List<String>       futureSchemes = new LinkedList<>();
 
     public static final String obsPropSpec        = "specification";
     public static final String obsPropPlay        = Group.playPI.getFunctor();

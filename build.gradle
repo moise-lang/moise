@@ -31,7 +31,7 @@ dependencies {
     compile group: 'org.jacamo',     name: 'npl' ,     version: '0.4-SNAPSHOT', changing: true, transitive: false
     compile group: 'org.jacamo',     name: 'cartago',  version: '2.4-SNAPSHOT', changing: true
     compile group: 'org.jacamo',     name: 'jaca',     version: '2.4-SNAPSHOT', changing: true
-    
+
     testCompile group: 'junit',      name: 'junit', version: '4.+'
 
     //umljavadoc 'org.umlgraph:umlgraph:5.6'
@@ -43,6 +43,7 @@ jar {
 
 clean {
     delete 'bin'
+    delete 'doc/api'
     delete 'test.xml'
 }
 
@@ -86,6 +87,22 @@ task fixTab {
 
 task renderAsciiDocs(type: Exec) {
     commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
+}
+
+javadoc {
+    options.showAll()
+    options.encoding('UTF-8')
+    options.setUse(true)
+    options.author(true)
+    options.version(true)
+    options.windowTitle('Moise API')
+    options.docTitle('Moise API')
+    options.footer('<a href=http://moise.sf.net>Moise Site</a>')
+    destinationDir = file("${buildDir}/../doc/api")
+    doFirst {
+        javadoc.title = 'Moise API'
+        javadoc.options.docTitle = javadoc.title
+    }
 }
 
 // the following lines is used to avoid errors while generating javadoc
