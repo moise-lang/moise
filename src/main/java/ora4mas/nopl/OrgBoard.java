@@ -2,6 +2,8 @@ package ora4mas.nopl;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -48,6 +50,11 @@ import npl.parser.ParseException;
  */
 public class OrgBoard extends Artifact {
 
+    protected static Collection<OrgBoard> orgBoards = new ArrayList<>();
+    public static Collection<OrgBoard> getOrbBoards() {
+        return orgBoards;
+    }
+
     protected String osFile = null;
 
     protected Map<String,ArtifactId> aids = new HashMap<>();
@@ -80,6 +87,7 @@ public class OrgBoard extends Artifact {
                 e.printStackTrace();
             }
         }
+        orgBoards.add(this);
     }
 
 

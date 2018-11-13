@@ -1,6 +1,7 @@
 package ora4mas.nopl;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -91,6 +92,11 @@ public class GroupBoard extends OrgArt {
     public static final String obsPropParentGroup = "parentGroup";
     public static final String obsWellFormed      = "formationStatus";
 
+    protected static Collection<GroupBoard> grBoards = new ArrayList<>();
+    public static Collection<GroupBoard> getGroupBoards() {
+        return grBoards;
+    }
+    
     protected Logger logger = Logger.getLogger(GroupBoard.class.getName());
 
     protected Group getGrpState() {
@@ -144,9 +150,11 @@ public class GroupBoard extends OrgArt {
                 e.printStackTrace();
             }
         }
+        grBoards.add(this);
     }
 
     @OPERATION public void debug(String kind) throws Exception {
+        grBoards.remove(this);
         super.debug(kind, "Group Board", true);
         if (gui != null) {
             gui.setSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));

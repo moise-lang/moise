@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -55,6 +57,11 @@ import ora4mas.nopl.oe.CollectiveOE;
  */
 public class NormativeBoard extends OrgArt {
 
+    protected static Collection<NormativeBoard> normBoards = new ArrayList<>();
+    public static Collection<NormativeBoard> getNormativeBoards() {
+        return normBoards;
+    }
+
     protected Map<String, DynamicFactsProvider> dynProviders = new HashMap<>();
 
     protected Logger logger = Logger.getLogger(NormativeBoard.class.getName());
@@ -78,6 +85,7 @@ public class NormativeBoard extends OrgArt {
                 e.printStackTrace();
             }
         }
+        normBoards.add(this);
     }
 
     /**
@@ -140,6 +148,7 @@ public class NormativeBoard extends OrgArt {
     }
 
     @OPERATION @LINK public void destroy() {
+        normBoards.remove(this);
         super.destroy();
     }
 

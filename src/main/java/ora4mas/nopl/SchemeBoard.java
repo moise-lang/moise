@@ -104,6 +104,11 @@ public class SchemeBoard extends OrgArt {
 
     public static final PredicateIndicator piGoalState = new PredicateIndicator("goalState", 5);
 
+    protected static Collection<SchemeBoard> schBoards = new ArrayList<>();
+    public static Collection<SchemeBoard> getSchemeBoards() {
+        return schBoards;
+    }
+
     protected Logger logger = Logger.getLogger(SchemeBoard.class.getName());
 
     public Scheme getSchState() {
@@ -151,6 +156,7 @@ public class SchemeBoard extends OrgArt {
                 e.printStackTrace();
             }
         }
+        schBoards.add(this);
     }
 
     protected void reorganise() throws Exception {
@@ -180,6 +186,7 @@ public class SchemeBoard extends OrgArt {
      * The agent executing this operation tries to delete the scheme board artifact
      */
     @OPERATION @LINK public void destroy() {
+    	schBoards.remove(this);
         orgState.clearPlayers();
         for (Group g: getSchState().getGroupsResponsibleFor()) {
 		    ArtifactId aid;

@@ -166,13 +166,30 @@ public class WebInterface  {
                                 String html = "<a href=\""+addr+"\" target='cf' style=\"font-family: arial; text-decoration: none\">"+id+"</a><br/>";
                                 if (addr.endsWith("os"))
                                     os.append(html);
-                                else if (addr.indexOf("/group") > 0)
-                                    gr.append("- "+html);
-                                else if (addr.indexOf("/scheme") > 0)
-                                    sch.append("- "+html);
-                                else
-                                    nor.append("- "+html);
+                                //else if (addr.indexOf("/group") > 0)
+                                //    gr.append("- "+html);
+                                //else if (addr.indexOf("/scheme") > 0)
+                                //    sch.append("- "+html);
+                                //else
+                                //    nor.append("- "+html);
                             }
+                            
+                            for (GroupBoard gb: GroupBoard.getGroupBoards()) {
+                                if (gb.getOEId().equals(oeId)) {
+                                    gr.append("- <a href='/"+gb.getOEId()+"/group/"+gb.getArtId()+"' target='cf' style=\"font-family: arial; text-decoration: none\">"+gb.getArtId()+"</a><br/>");
+                                }
+                            }
+                            for (SchemeBoard sb: SchemeBoard.getSchemeBoards()) {
+                                if (sb.getOEId().equals(oeId)) {
+                                    sch.append("- <a href='/"+sb.getOEId()+"/scheme/"+sb.getArtId()+"' target='cf' style=\"font-family: arial; text-decoration: none\">"+sb.getArtId()+"</a><br/>");
+                                }
+                            }
+                            for (NormativeBoard nb: NormativeBoard.getNormativeBoards()) {
+                                if (nb.getOEId().equals(oeId)) {
+                                    nor.append("- <a href='/"+nb.getOEId()+"/norm/"+nb.getArtId()+"' target='cf' style=\"font-family: arial; text-decoration: none\">"+nb.getArtId()+"</a><br/>");
+                                }
+                            }
+                            
                             responseBody.write( os.toString().getBytes());
                             responseBody.write( gr.toString().getBytes());
                             responseBody.write( sch.toString().getBytes());

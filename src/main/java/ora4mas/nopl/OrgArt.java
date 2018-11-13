@@ -96,6 +96,13 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         } catch (Exception e) { }
         return osFile;
     }
+    
+    public String getOEId() {
+        return oeId;
+    }
+    public String getArtId() {
+        return getId().getName();
+    }
 
     protected void initNormativeEngine(OS os, String type) throws MoiseException, ParseException {
         nengine = new NPLInterpreter();
