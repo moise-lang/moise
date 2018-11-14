@@ -399,7 +399,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
 
     private Transformer guiStyleSheet = null;
-    protected Transformer getStyleSheet() throws TransformerConfigurationException, IOException {
+    public Transformer getStyleSheet() throws TransformerConfigurationException, IOException {
         if (getStyleSheetName() == null)
             return null;
         if (guiStyleSheet == null)
