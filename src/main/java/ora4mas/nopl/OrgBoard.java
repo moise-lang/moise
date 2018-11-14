@@ -56,6 +56,7 @@ public class OrgBoard extends Artifact {
     }
 
     protected String osFile = null;
+    protected String oeId = null;
 
     protected Map<String,ArtifactId> aids = new HashMap<>();
     protected Logger logger = Logger.getLogger(OrgBoard.class.getName());
@@ -80,9 +81,9 @@ public class OrgBoard extends Artifact {
             WebInterface w = WebInterface.get();
             try {
                 String osSpec = specToStr(os, DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("os")));
-                String oeId = getCreatorId().getWorkspaceId().getName();
+                this.oeId = this.getCreatorId().getWorkspaceId().getName();
 
-                w.registerOSBrowserView(oeId, os.getId(), osSpec);
+                w.registerOSBrowserView(this.oeId, os.getId(), osSpec);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -90,6 +91,9 @@ public class OrgBoard extends Artifact {
         orgBoards.add(this);
     }
 
+    public String getOEId() {
+        return this.oeId;
+    }
 
     public String specToStr(ToXML spec, Transformer transformer) throws Exception {
         StringWriter so = new StringWriter();
