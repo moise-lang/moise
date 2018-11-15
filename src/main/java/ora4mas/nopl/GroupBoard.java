@@ -99,8 +99,8 @@ public class GroupBoard extends OrgArt {
     
     protected Logger logger = Logger.getLogger(GroupBoard.class.getName());
 
-    protected Group getGrpState() {
-        return (Group)orgState;
+    public Group getGrpState() {
+        return (Group) orgState;
     }
 
 
