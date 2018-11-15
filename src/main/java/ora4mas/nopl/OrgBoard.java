@@ -95,6 +95,10 @@ public class OrgBoard extends Artifact {
         return this.oeId;
     }
 
+    public String getOSFile() {
+        return this.osFile;
+    }
+
     public String specToStr(ToXML spec, Transformer transformer) throws Exception {
         StringWriter so = new StringWriter();
         InputSource si = new InputSource(new StringReader(DOMUtils.dom2txt(spec)));
