@@ -74,6 +74,18 @@ eclipse {
     }
 }
 
+task javadocJar (type: Jar, dependsOn: javadoc) {
+    baseName 'moise'
+    classifier = 'javadoc'
+    from '${docsDir}/../../doc/api'
+}
+
+task sourceJar (type : Jar) {
+    baseName 'moise'
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
 
 publishing {
     publications {
@@ -150,18 +162,6 @@ task javadoc(overwrite: true, dependsOn: compileJava) {
     }
 }
 */
-
-task javadocJar (type: Jar, dependsOn: javadoc) {
-    baseName 'moise'
-    classifier = 'javadoc'
-    from '${docsDir}/../../doc/api'
-}
-
-task sourceJar (type : Jar) {
-    baseName 'moise'
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
 
 
 task publishMavenSF(dependsOn: [ 'jar', 'build', 'publishToMavenLocal', 'sourceJar', 'javadocJar']) {
