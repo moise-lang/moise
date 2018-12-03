@@ -265,11 +265,11 @@ public class GroupBoard extends OrgArt {
                 boolean oldStatus = isWellFormed();
                 orgState.removePlayer(getOpUserName(), role);
                 nengine.verifyNorms();
-                boolean status = leaveRoleWithoutVerify(getOpUserName(), role, oldStatus);
+                boolean newStatus = leaveRoleWithoutVerify(getOpUserName(), role, oldStatus);
                 notifyObservers();
                 if (parentGroup != null) {
                     execLinkedOp(parentGroup, "updateSubgroupPlayers", orgState.getId(), orgState.getPlayers());
-                    execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
+                    execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), newStatus);
                 }
             }
         }, "Error leaving role "+role);

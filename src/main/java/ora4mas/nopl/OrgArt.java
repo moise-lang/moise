@@ -456,13 +456,13 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                         // TODO: use new cartago API
                         CartagoBasicContext cartagoCtx = new CartagoBasicContext("OrgArt setup", CartagoService.MAIN_WSP_NAME);
                         cartagoCtx.doAction(new Op("setWSPRuleEngine", wspEng), -1);
-                        wspEng.addListener(OrgArt.this);
                     } catch (CartagoException e) {
                         e.printStackTrace();
                     }
                 };
             }.start();
         }
+        wspEng.addListener(this);
     }
 
     public void agKilled(String agName) {
