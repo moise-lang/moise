@@ -389,10 +389,20 @@ public class GroupBoard extends OrgArt {
 
     protected void notifyObservers() throws CartagoException {
         for (ArtifactId a: schemes) {
-            execLinkedOp(a, "updateRolePlayers", orgState.getId(), orgState.getPlayers());
+            try {
+                execLinkedOp(a, "updateRolePlayers", orgState.getId(), orgState.getPlayers());
+            } catch (Exception e) {
+                System.out.println("error with listener "+a.getName()+", we failed to contact it."+e);
+                e.printStackTrace();
+            }
         }
         for (ArtifactId a: listeners) {
-            execLinkedOp(a, "updateRolePlayers", orgState.getId(), orgState.getPlayers());
+            try {
+                execLinkedOp(a, "updateRolePlayers", orgState.getId(), orgState.getPlayers());
+            } catch (Exception e) {
+                System.out.println("error with listener "+a.getName()+", we failed to contact it."+e);
+                e.printStackTrace();
+            }
         }
     }
 
