@@ -103,6 +103,9 @@ public class GroupBoard extends OrgArt {
         return (Group) orgState;
     }
 
+    public moise.os.ss.Group getSpec() {
+        return spec;
+    }
 
     /**
      * Initialises the group board
@@ -392,7 +395,7 @@ public class GroupBoard extends OrgArt {
             try {
                 execLinkedOp(a, "updateRolePlayers", orgState.getId(), orgState.getPlayers());
             } catch (Exception e) {
-                System.out.println("error with listener "+a.getName()+", we failed to contact it."+e);
+                System.out.println("error with listener "+a.getName()+", we failed to contact it. "+e);
                 e.printStackTrace();
             }
         }

@@ -115,6 +115,9 @@ public class SchemeBoard extends OrgArt {
         return (Scheme)orgState;
     }
 
+    public moise.os.fs.Scheme getSpec() {
+    	return spec;
+    }
 
     /**
      * Initialises the scheme artifact
@@ -651,7 +654,7 @@ public class SchemeBoard extends OrgArt {
             Atom aState = aWaiting;
             if (nengine.holds(new NPLLiteral(ASSyntax.createLiteral("satisfied", tSch, aGoal), orgState))) {
                 aState = aSatisfied;
-            } else if (nengine.holds(ASSyntax.createLiteral("well_formed", tSch)) &&
+            } else if (isWellFormed() &&
                 nengine.holds(ASSyntax.createLiteral("enabled", tSch, aGoal))) {
                 aState = aEnabled;
             }
@@ -689,6 +692,11 @@ public class SchemeBoard extends OrgArt {
         return "noplSchemeInstance";
     }
 
+    public boolean isWellFormed() {
+        Term aGr = ASSyntax.createAtom(this.getId().getName());
+        return nengine.holds(ASSyntax.createLiteral("well_formed", aGr));
+    }
+
 
     public Element getAsDOM(Document document) {
         Element schEle = (Element) document.createElement( SchemeInstance.getXMLTag());
@@ -697,11 +705,9 @@ public class SchemeBoard extends OrgArt {
         schEle.setAttribute("root-goal", spec.getRoot().getId());
         schEle.setAttribute("owner", ownerAgent);
 
-        Term aSch = ASSyntax.createAtom(this.getId().getName());
-
         // status
         Element wfEle = (Element) document.createElement("well-formed");
-        if (nengine.holds(ASSyntax.createLiteral("well_formed", aSch))) {
+        if (isWellFormed()) {
             wfEle.appendChild(document.createTextNode("ok"));
         } else {
             wfEle.appendChild(document.createTextNode("not ok"));
@@ -793,7 +799,7 @@ public class SchemeBoard extends OrgArt {
 
         // goals
         so.append( os2dot.transform( spec.getRoot(), 0, this));
-
+        
         // missions
         for (Mission m: spec.getMissions()) {
             so.append( os2dot.transform(m, spec));

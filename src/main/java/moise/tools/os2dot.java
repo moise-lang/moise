@@ -162,7 +162,7 @@ public class os2dot {
 
         if (gInstance != null) {
             for (Player p: gInstance.getPlayers()) {
-                so.append("        "+p.getAg()+ " [URL=\"/agents/"+p.getAg()+"/all\"];\n"); // [shape=plaintext]
+                so.append("        "+p.getAg()+ " [URL=\"/agents/"+p.getAg()+"/mind\"];\n"); // [shape=plaintext]
                 so.append("        "+p.getAg()+" -> "+p.getTarget()+" [arrowsize=0.5];\n");
                 //so.append("        "+p.getAg()+" -> "+p.getTarget()+" [label=\""+id+"\",arrowsize=0.5];\n");
             }
