@@ -244,17 +244,20 @@ public class GroupBoard extends OrgArt {
                         new JasonTermWrapper(ag),
                         new JasonTermWrapper(role),
                         new JasonTermWrapper(GroupBoard.this.getId().getName()));
-                if (status != oldStatus) {
-                    getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
-
-                    while (!futureSchemes.isEmpty()) {
-                        String sch = futureSchemes.remove(0);
-                        //logger.info("Since the group "+orgState.getId()+" is now well formed, adding scheme "+sch);
-                        addScheme(sch);
-                    }
-                }
+                if (status != oldStatus)
+                    updateWellFormed(status);
             }
         }, "Error adopting role "+role);
+    }
+    
+    private void updateWellFormed(boolean status) {
+        getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
+        if (status) {
+            while (!futureSchemes.isEmpty()) {
+                String sch = futureSchemes.remove(0);
+                addScheme(sch);
+            }
+        }
     }
 
     /**
@@ -445,10 +448,9 @@ public class GroupBoard extends OrgArt {
                 nengine.verifyNorms();
 
                 boolean status = isWellFormed();
-                if (status != oldStatus) {
-                    logger.fine("now I, "+orgState.getId()+", am "+status);
-                    getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
-                }
+                if (status != oldStatus) 
+                    updateWellFormed(status);
+
                 if (parentGroup != null) {
                     execLinkedOp(parentGroup, "updateSubgroupFormationStatus", grId, isWellFormed);
                     execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
