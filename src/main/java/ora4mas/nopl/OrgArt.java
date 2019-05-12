@@ -129,6 +129,11 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         else
             failed("you can not change the owner");
     }
+    
+    protected boolean isUserAllowed() {
+        return  ownerAgent == null ||
+                (getCurrentOpAgentId() != null && (!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager"));
+    }
 
     protected void destroy() {
         if (ownerAgent != null && getCurrentOpAgentId() != null && (!getOpUserName().equals(ownerAgent)) ) {

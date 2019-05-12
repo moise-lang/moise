@@ -19,11 +19,12 @@
       <h2 style="{$h-style}"><xsl:value-of select="@id" /> (scheme instance)</h2>
       <hr />
 
-      created from specification
-      <xsl:call-template name="SchemeSpecRef">
-            <xsl:with-param name="id"><xsl:value-of select="@specification"/></xsl:with-param>
-      </xsl:call-template>
-
+      <xsl:if test="@specification != 'untyped'">
+          created from specification
+          <xsl:call-template name="SchemeSpecRef">
+                <xsl:with-param name="id"><xsl:value-of select="@specification"/></xsl:with-param>
+          </xsl:call-template>
+      </xsl:if>
       <xsl:if test="@owner">
          , owner is
          <xsl:call-template name="AgentRef">

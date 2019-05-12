@@ -236,7 +236,8 @@ public class WebInterface  {
                                         lastData = out.toByteArray();
                                     }
                                     exchange.sendResponseHeaders(200, 0);
-                                    responseBody.write(lastData);
+                                    if (lastData != null)
+                                        responseBody.write(lastData);
                                 }
                             } else {
                                 exchange.sendResponseHeaders(200, 0);
@@ -327,7 +328,7 @@ public class WebInterface  {
 
     HttpContext osContext = null;
 
-    String registerOSBrowserView(String oeId, String osId, final String osSpec) {
+    public String registerOSBrowserView(String oeId, String osId, final String osSpec) {
         if (httpServer == null)
             return null;
         try {
@@ -342,7 +343,7 @@ public class WebInterface  {
                     exchange.sendResponseHeaders(200, 0);
                     OutputStream responseBody = exchange.getResponseBody();
 
-                    if (requestMethod.equalsIgnoreCase("GET")) {
+                    if (requestMethod.equalsIgnoreCase("GET") && osSpec != null) {
                         responseBody.write(osSpec.getBytes());
                     }
                     responseBody.close();

@@ -244,15 +244,19 @@ public class SchemeBoard extends OrgArt {
      * @throws CartagoException           some cartago problem
      */
     @OPERATION public void commitMission(String mission) throws CartagoException {
-        commitMission(getOpUserName(), mission);
+        commitMission(getOpUserName(), mission, true);
     }
     protected void commitMission(final String ag, final String mission) throws CartagoException {
+    	commitMission(ag,mission,true);
+    }
+    protected void commitMission(final String ag, final String mission, boolean verufyNorms) throws CartagoException {
         if (orgState.hasPlayer(ag, mission))
             return;
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 orgState.addPlayer(ag, mission);
-                nengine.verifyNorms();
+                if (verufyNorms)
+                	nengine.verifyNorms();
 
                 defineObsProperty(obsPropCommitment,
                         new JasonTermWrapper(ag),
@@ -429,7 +433,7 @@ public class SchemeBoard extends OrgArt {
     @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException, NoValueException, MoiseException, ParseException {
         if (!running) return;
         // this operation is available only for the owner of the artifact
-        if ((!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager")) {
+        if (!isUserAllowed()) {
             failed("Error: agent '"+getOpUserName()+"' is not allowed to run "+cmd,"reason",new JasonTermWrapper("not_allowed_to_start(admCommand)"));
         } else {
             Literal lCmd = ASSyntax.parseLiteral(cmd);
@@ -445,12 +449,26 @@ public class SchemeBoard extends OrgArt {
         }
     }
 
-    public void setCardinality(String element, String id, int min, int max) throws MoiseException, ParseException {
-        if (element.equals("mission")) {
-            spec.setMissionCardinality(id, new Cardinality(min,max));
-            postReorgUpdates(spec.getFS().getOS(), "scheme("+spec.getId()+")", "fs");
+    @OPERATION public void addMission(String missionId) throws MoiseException, ParseException {
+        if (!isUserAllowed()) {
+            failed("Error: agent '"+getOpUserName()+"' is not allowed to add missions","reason",new JasonTermWrapper("not_allowed_to_start(addMission)"));
         } else {
-            System.out.println("setCardinality not implemented for "+element+". Ask the developers to provide you this feature!");
+            spec.addMission(new Mission(missionId, spec));
+            getObsProperty(obsPropSpec).updateValue(new JasonTermWrapper(spec.getAsProlog()));
+            postReorgUpdates(spec.getFS().getOS(), "scheme("+spec.getId()+")", "fs");
+        }
+    }
+
+    @OPERATION public void setCardinality(String element, String id, int min, int max) throws MoiseException, ParseException {
+        if (!isUserAllowed()) {
+            failed("Error: agent '"+getOpUserName()+"' is not allowed to set cardinality","reason",new JasonTermWrapper("not_allowed_to_start(setCardinality)"));           
+        } else {
+            if (element.equals("mission")) {
+                spec.setMissionCardinality(id, new Cardinality(min,max));
+                postReorgUpdates(spec.getFS().getOS(), "scheme("+spec.getId()+")", "fs");
+            } else {
+                System.out.println("setCardinality not implemented for "+element+". Ask the developers to provide you this feature!");
+            }
         }
     }
 
@@ -703,7 +721,8 @@ public class SchemeBoard extends OrgArt {
         schEle.setAttribute("id", getSchState().getId());
         schEle.setAttribute("specification", spec.getId());
         schEle.setAttribute("root-goal", spec.getRoot().getId());
-        schEle.setAttribute("owner", ownerAgent);
+        if (ownerAgent!=null && ownerAgent.length()>0)
+            schEle.setAttribute("owner", ownerAgent);
 
         // status
         Element wfEle = (Element) document.createElement("well-formed");
@@ -794,7 +813,10 @@ public class SchemeBoard extends OrgArt {
     public String getAsDot() {
         StringWriter so = new StringWriter();
 
-        so.append("digraph "+getId()+" {ordering=out label=\""+getId()+": "+spec.getId()+"\" labelloc=t labeljust=r fontname=\"Italic\" \n");
+        String type = "";
+        if (!spec.getId().equals("untyped"))
+            type = ": "+spec.getId();
+        so.append("digraph "+getId()+" {ordering=out label=\""+getId()+type+"\" labelloc=t labeljust=r fontname=\"Italic\" \n");
         so.append("    rankdir=BT; \n");
 
         // goals

@@ -110,7 +110,7 @@ public class os2dot {
         String label = g.getId();
         if (gInstance != null) {
             id    = gInstance.getId();
-            label = gInstance.getId() + ": " + label;
+            label = gInstance.getId()  + (label.endsWith("untyped") ? "" : ": " + label);
         }
         so.append("        "+id+" [label=\""+label+"\",shape=tab, fontname=\"Courier-Bold\",style=filled];\n");
         //so.append("     "+g.getId()+" [shape=box, fontname=\"Courier-Bold\",style=filled,fillcolor=lightyellow];\n");
