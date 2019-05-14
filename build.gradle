@@ -184,3 +184,31 @@ task publishMavenSF(dependsOn: [ 'jar', 'build', 'publishToMavenLocal', 'sourceJ
     }
   }
 }
+
+task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
+  doLast {
+    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jacamo/moise'
+    def rdir = System.getProperty("user.home")+'/pro/jacamo-mvn-repo'
+    exec {
+        commandLine 'git', 'pull'
+        workingDir rdir
+    }
+    copy {
+        from wdir
+        into rdir + '/org/jacamo/moise'
+    }
+    exec {
+        commandLine 'git', 'add', '*'
+        workingDir rdir
+    }
+    exec {
+        commandLine 'git', 'commit', '-a', '-m', 'new version of moise '+project.version
+        workingDir rdir
+    }
+    exec {
+        commandLine 'git', 'push'
+        workingDir rdir
+    }
+  }
+}
+
