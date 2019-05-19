@@ -1,3 +1,4 @@
+
 package ora4mas.nopl;
 
 import java.io.StringWriter;
@@ -212,18 +213,16 @@ public class GroupBoard extends OrgArt {
         updateGuiOE();
     }
 
+
     /**
      * The agent executing this operation tries to adopt a role in the group
      *
      * @param role                        the role being adopted
      */
     @OPERATION public void adoptRole(String role)  {
-        adoptRole(getOpUserName(), role, true);
+        adoptRole(getOpUserName(), role);
     }
     protected void adoptRole(final String ag, final String role) {
-        adoptRole(ag,role,true);
-    }
-    protected void adoptRole(final String ag, final String role, boolean verifyNorms) {
         if (orgState.hasPlayer(ag, role))
             return;
         
@@ -232,8 +231,7 @@ public class GroupBoard extends OrgArt {
                 boolean oldStatus = isWellFormed();
                 orgState.addPlayer(ag, role);
 
-                if (verifyNorms)
-                    nengine.verifyNorms();
+                nengine.verifyNorms();
 
                 boolean status = isWellFormed();
                 if (parentGroup != null) {

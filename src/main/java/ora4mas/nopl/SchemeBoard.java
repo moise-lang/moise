@@ -229,8 +229,7 @@ public class SchemeBoard extends OrgArt {
             }
         }
     }
-
-
+    
     /**
      * The agent executing this operation tries to commit to a mission in the scheme.
      *
@@ -244,27 +243,21 @@ public class SchemeBoard extends OrgArt {
      * @throws CartagoException           some cartago problem
      */
     @OPERATION public void commitMission(String mission) throws CartagoException {
-        commitMission(getOpUserName(), mission, true);
+        commitMission(getOpUserName(), mission);
     }
     protected void commitMission(final String ag, final String mission) throws CartagoException {
-    	commitMission(ag,mission,true);
-    }
-    protected void commitMission(final String ag, final String mission, boolean verufyNorms) throws CartagoException {
         if (orgState.hasPlayer(ag, mission))
             return;
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 orgState.addPlayer(ag, mission);
-                if (verufyNorms)
-                	nengine.verifyNorms();
+                nengine.verifyNorms();
 
                 defineObsProperty(obsPropCommitment,
                         new JasonTermWrapper(ag),
                         new JasonTermWrapper(mission),
                         new JasonTermWrapper(SchemeBoard.this.getId().getName()));
                 updateGoalStateObsProp();
-
-                //updateMonitorScheme();
             }
         }, "Error committing to mission "+mission);
     }
@@ -292,8 +285,6 @@ public class SchemeBoard extends OrgArt {
                             new JasonTermWrapper(getOpUserName()),
                             new JasonTermWrapper(mission),
                             new JasonTermWrapper(SchemeBoard.this.getId().getName()));
-
-                    //updateMonitorScheme();
                 }
             }
         },"Error leaving mission "+mission);
@@ -316,11 +307,8 @@ public class SchemeBoard extends OrgArt {
                 getSchState().addDoneGoal(agent, goal);
                 nengine.verifyNorms();
                 if (getSchState().computeSatisfiedGoals()) { // add satisfied goals
-                    //nengine.setDynamicFacts(orgState.transform());
                     nengine.verifyNorms();
                 }
-                //updateMonitorScheme();
-
                 updateGoalStateObsProp();
             }
         },"Error achieving goal "+goal);
@@ -342,7 +330,6 @@ public class SchemeBoard extends OrgArt {
                 } catch (Exception e) {}
                 getSchState().setGoalArgValue(goal, var, pvl);
                 nengine.verifyNorms();
-                //updateMonitorScheme();
 
                 updateGoalStateObsProp();
                 updateGoalArgsObsProp();
@@ -371,7 +358,6 @@ public class SchemeBoard extends OrgArt {
                     getSchState().computeSatisfiedGoals();
                 }
                 nengine.verifyNorms();
-                //updateMonitorScheme();
                 getSchState().clearExPlayers(); // and an agent quits a mission accomplished, that was ok, the reset goal will turn this mission unaccomplished and produces a norm failure. so we remove the ex players here
                 updateGoalStateObsProp();
             }
@@ -478,7 +464,6 @@ public class SchemeBoard extends OrgArt {
                 getSchState().setAsSatisfied(goal);
                 getSchState().computeSatisfiedGoals();
                 nengine.verifyNorms();
-                //updateMonitorScheme();
 
                 updateGoalStateObsProp();
             }
@@ -512,7 +497,10 @@ public class SchemeBoard extends OrgArt {
                     String nbId = grId+"."+orgState.getId();
                     //ArtifactId aid = makeArtifact(nbId, getNormativeBoardClass(), new ArtifactConfig() );
                     OpFeedbackParam<ArtifactId> fb = new OpFeedbackParam<>();
-                    ArtifactId orgBoard = lookupArtifact(getCreatorId().getWorkspaceId().getName());
+                    String c = orgBoardName;
+                    if (c == null)
+                        c = getCreatorId().getWorkspaceId().getName();
+                    ArtifactId orgBoard = lookupArtifact(c);
                     execLinkedOp(orgBoard, "createNormativeBoard", nbId, fb);
                     ArtifactId aid = fb.get();
 
@@ -539,7 +527,6 @@ public class SchemeBoard extends OrgArt {
                 getSchState().removeGroupResponsibleFor( new Group(grId) );
 
                 nengine.verifyNorms();
-                //updateMonitorScheme();
 
                 getObsProperty(obsPropGroups).updateValue(getSchState().getResponsibleGroupsAsProlog());
             }
@@ -810,6 +797,9 @@ public class SchemeBoard extends OrgArt {
         return schEle;
     }
 
+    protected boolean addMissionsInDot() {
+        return true;
+    }
     public String getAsDot() {
         StringWriter so = new StringWriter();
 
@@ -823,10 +813,12 @@ public class SchemeBoard extends OrgArt {
         so.append( os2dot.transform( spec.getRoot(), 0, this));
         
         // missions
-        for (Mission m: spec.getMissions()) {
-            so.append( os2dot.transform(m, spec));
-            for (Goal g: m.getGoals()) {
-                so.append("        "+m.getId()+" -> "+g.getId()+" [arrowsize=0.5];\n");
+        if (addMissionsInDot()) {
+            for (Mission m: spec.getMissions()) {
+                so.append( os2dot.transform(m, spec));
+                for (Goal g: m.getGoals()) {
+                    so.append("        "+m.getId()+" -> "+g.getId()+" [arrowsize=0.5];\n");
+                }
             }
         }
         for (Player p: getSchState().getPlayers()) {

@@ -9,11 +9,9 @@ import moise.common.MoiseException;
 import moise.os.OS;
 import moise.os.ns.NS;
 import moise.os.ss.SS;
-import npl.NormativeFailureException;
 import npl.parser.ParseException;
 import ora4mas.nopl.GroupBoard;
 import ora4mas.nopl.JasonTermWrapper;
-import ora4mas.nopl.Operation;
 import ora4mas.nopl.WebInterface;
 import ora4mas.nopl.oe.Group;
 
@@ -89,7 +87,6 @@ public class LightGroupBoard extends GroupBoard {
         grBoards.add(this);
     }
 
-
     /**
      * The agent executing this operation tries to adopt a role in the group
      *
@@ -105,26 +102,6 @@ public class LightGroupBoard extends GroupBoard {
                 e.printStackTrace();
             }
         }
-        adoptRole(getOpUserName(), role, false);
+        adoptRole(getOpUserName(), role);
     }
-    
-
-    /**
-     * The agent executing this operation tries to give up a role in the group
-     *
-     * @param role                        the role being removed/leaved
-     */
-    @OPERATION public void leaveRole(final String role)  {
-        ora4masOperationTemplate(new Operation() {
-            public void exec() throws NormativeFailureException, Exception {
-                boolean oldStatus = isWellFormed();
-                orgState.removePlayer(getOpUserName(), role);
-                //nengine.verifyNorms();
-                leaveRoleWithoutVerify(getOpUserName(), role, oldStatus);
-                notifyObservers();
-            }
-        }, "Error leaving role "+role);
-    }
-
-
 }

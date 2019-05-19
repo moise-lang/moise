@@ -7,14 +7,20 @@
       focus(Gid);
       adoptRole(father);
 
+      // ask tom to play son
+      .send(tom,achieve,adopt_role(son,g1));
+
       createScheme(s1,Sid);
       focus(Sid);
-      
-      // create a new goal g1, in mission m1 that depends on goals g0 and p
-      addGoal(g1,m1,[g0,p]);
+      addScheme(s1);
 
-      // commit to mission m1 (goal g1)
-      commitMission(m1);
+      // create a new goal g1, that depends on goals g0 and p
+      addGoal(g1,[g0,p]);
+
+      addGoal(g2,[g1]);
+
+      // commit to goal g1)
+      commitGoal(g1);
       debug(inspector_gui(on))[artifact_id(Sid)];
 
       .wait(2000);

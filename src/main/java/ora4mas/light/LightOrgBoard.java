@@ -7,7 +7,6 @@ import cartago.ArtifactId;
 import cartago.OPERATION;
 import cartago.OpFeedbackParam;
 import cartago.OperationException;
-import jason.asSyntax.Atom;
 import jason.util.Config;
 import moise.common.MoiseException;
 import npl.parser.ParseException;
@@ -58,17 +57,7 @@ public class LightOrgBoard extends OrgBoard {
     }
     
     @OPERATION public void createGroup(String id, OpFeedbackParam<ArtifactId> gaid) throws OperationException {
-        ArtifactId aid;
-        try {
-            aid = lookupArtifact(id);
-            failed("Artifact with id "+id+" already exists!");
-        } catch (OperationException e) {
-            aid = makeArtifact(id, getGroupBoardClass(), new ArtifactConfig());
-            grPostCreation(id, aid);
-            aids.put(id, aid);
-            defineObsProperty("group", new Atom(id), new Atom("untyped"), aid);
-            gaid.set(aid);
-        }
+        super.createGroup(id, "untyped", gaid);
     }
 
     @Override
@@ -76,22 +65,22 @@ public class LightOrgBoard extends OrgBoard {
         return LightGroupBoard.class.getName();
     }
     
+    @Override
+    protected ArtifactConfig getGroupConfig(String type) {
+        return new ArtifactConfig();
+    }
+    
     @OPERATION public void createScheme(String id, OpFeedbackParam<ArtifactId> said) throws OperationException {
-        ArtifactId aid;
-        try {
-            aid = lookupArtifact(id);
-            failed("Artifact with id "+id+" already exists!");
-        } catch (OperationException e) {
-            aid = makeArtifact(id, getSchemeBoardClass(), new ArtifactConfig() );
-            schPostCreation(id, aid);
-            aids.put(id, aid);
-            defineObsProperty("scheme", new Atom(id), new Atom("untyped"), aid);
-            said.set(aid);
-        }
+        super.createScheme(id, "untyped", said);
     }
     
     @Override
     protected String getSchemeBoardClass() {
         return LightSchemeBoard.class.getName();
+    }
+    
+    @Override
+    protected ArtifactConfig getSchemeConfig(String type) {
+        return new ArtifactConfig();
     }
 }

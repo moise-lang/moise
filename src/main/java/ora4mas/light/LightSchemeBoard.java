@@ -17,7 +17,6 @@ import moise.os.ns.NS;
 import npl.NormativeFailureException;
 import npl.parser.ParseException;
 import ora4mas.nopl.JasonTermWrapper;
-import ora4mas.nopl.Operation;
 import ora4mas.nopl.SchemeBoard;
 import ora4mas.nopl.WebInterface;
 import ora4mas.nopl.oe.Scheme;
@@ -119,15 +118,8 @@ public class LightSchemeBoard extends SchemeBoard {
         schBoards.add(this);
     }
     
-    @OPERATION public void addGoal(String goalId, String missionId, Object[] deps) throws MoiseException, ParseException {
-    	Mission m = spec.getMission(missionId);
-    	if (m == null) {
-    		m = new Mission(missionId, spec);
-    		spec.addMission(m);
-    	}
-    	
+    @OPERATION public void addGoal(String goalId, Object[] deps) throws MoiseException, ParseException, NormativeFailureException {
     	Goal g = getOrCreateGoal(goalId);
-		m.addGoal(goalId);
 		spec.getRoot().getPlan().addSubGoal(goalId);
 		
 		for (Object o: deps) {
@@ -136,7 +128,6 @@ public class LightSchemeBoard extends SchemeBoard {
         updateGoalStateObsProp();
         postReorgUpdates(spec.getFS().getOS(), "scheme(untyped)", "fs");
         getObsProperty(obsPropSpec).updateValue(new JasonTermWrapper(spec.getAsProlog()));
-
     }
     
     Goal getOrCreateGoal(String goalId) throws MoiseConsistencyException {
@@ -146,66 +137,26 @@ public class LightSchemeBoard extends SchemeBoard {
     		spec.addGoal(g);
     		spec.getRoot().getPlan().addSubGoal(goalId);
     		g.setInPlan(spec.getRoot().getPlan());
+    		
     	}
+		// create a corresponding mission
+		Mission m = spec.getMission(goalId);
+		if (m == null) {
+			m = new Mission(goalId, spec);
+    		spec.addMission(m);
+		}
+		m.addGoal(goalId);
+
     	return g;
     }
 
-    /**
-     * The agent executing this operation tries to commit to a mission in the scheme.
-     *
-     * <p>Verifications:<ul>
-     *     <li>mission max cardinality</li>
-     *     <li>mission permission (if the agent plays a role that permits it to commit to the mission)</li>
-     * </ul>
-     *
-     * @param mission                     the mission being committed to
-     * @throws NormativeFailureException  the failure produced if the adoption breaks some regimentation
-     * @throws CartagoException           some cartago problem
-     */
-    @OPERATION public void commitMission(String mission) throws CartagoException {
-        commitMission(getOpUserName(), mission);
-    }
-    protected void commitMission(final String ag, final String mission) throws CartagoException {
-        if (orgState.hasPlayer(ag, mission))
-            return;
-    	if (spec.getMission(mission) == null) {
-    		try {
-				addMission(mission);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-    	}
-    	commitMission(ag, mission, false);
+    @OPERATION public void commitGoal(String goalMission) throws CartagoException {
+    	commitMission(getOpUserName(), goalMission);
     }
 
-    /**
-     * The agent executing this operation tries to leave/remove its mission in the scheme
-     *
-     * <p>Verifications:<ul>
-     *     <li>the agent must be committed to the mission</li>
-     *     <li>the mission's goals have to be satisfied (otherwise the agent is obliged to commit again to the mission)</li>
-     * </ul>
-     *
-     * @param mission                     the mission being removed
-     * @throws NormativeFailureException  the failure produced if the remove breaks some regimentation
-     * @throws CartagoException           some cartago problem
-     * @throws MoiseException             some moise inconsistency (the agent is not committed to the mission)
-     */
-    @OPERATION public void leaveMission(final String mission) throws CartagoException, MoiseException {
-        ora4masOperationTemplate(new Operation() {
-            public void exec() throws NormativeFailureException, Exception {
-                if (orgState.removePlayer(getOpUserName(), mission)) {
-                    //nengine.verifyNorms();
-
-                    removeObsPropertyByTemplate(obsPropCommitment,
-                            new JasonTermWrapper(getOpUserName()),
-                            new JasonTermWrapper(mission),
-                            new JasonTermWrapper(LightSchemeBoard.this.getId().getName()));
-
-                    //updateMonitorScheme();
-                }
-            }
-        },"Error leaving mission "+mission);
+    @Override
+    protected boolean addMissionsInDot() {
+    	return false;
     }
-
+    
 }
