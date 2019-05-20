@@ -157,7 +157,6 @@ public class NormativeBoard extends OrgArt {
         boolean first = true;
         StringBuilder out = new StringBuilder(super.getDebugText());
         for (DynamicFactsProvider p: dynProviders.values()) {
-            System.out.println(p);
             if (p instanceof CollectiveOE) {
                 for (Literal l: ((CollectiveOE)p).transform()) {
                     if (first) {

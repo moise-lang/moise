@@ -323,9 +323,8 @@ public class os2nopl {
             np.append("\n   // --- commitments ---\n");
             for (Norm nrm: sch.getFS().getOS().getNS().getNorms()) {
                 if (sch.getMissions().contains(nrm.getMission())) {
-                    generateNormEntry(
-                            nrm, sch.getMissionCardinality(nrm.getMission()),
-                            np
+                    np.append(generateNormEntry(
+                            nrm, sch.getMissionCardinality(nrm.getMission()))
                     );
                 }
             }
@@ -385,7 +384,9 @@ public class os2nopl {
         }
     }
 
-    private static void generateNormEntry(Norm nrm, Cardinality card, StringBuilder np) {
+    public static String generateNormEntry(Norm nrm, Cardinality card) {
+        StringBuilder np = new StringBuilder();
+        
         String id = nrm.getId();
         String m  = nrm.getMission().getId();
         String tc = nrm.getTimeConstraint() == null ? "+`1 year`" : "+`"+nrm.getTimeConstraint().getTC()+"`";
@@ -428,6 +429,7 @@ public class os2nopl {
             np.append(" &\n           "+extraCond);
             np.append("\n        -> permission("+"A,responsible(Gr,S)"+cons);
         }
+        return np.toString();
     }
 
     public static String header(MoiseElement ele) {

@@ -14,6 +14,9 @@
       focus(Sid);
       addScheme(s1);
 
+      // add a norm to oblige tom to commit to g2
+      addNorm(obligation,son,g2);
+
       // create a new goal g1, that depends on goals g0 and p
       addGoal(g1,[g0,p]);
 

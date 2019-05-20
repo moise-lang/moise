@@ -83,4 +83,9 @@ public class LightOrgBoard extends OrgBoard {
     protected ArtifactConfig getSchemeConfig(String type) {
         return new ArtifactConfig();
     }
+    
+    @Override
+    protected String getNormativeBoardClass() {
+        return LightNormativeBoard.class.getName();
+    }
 }
