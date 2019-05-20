@@ -19,6 +19,7 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
 
+	maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
     maven { url "http://jacamo.sourceforge.net/maven2" }
     //maven { url "https://jade.tilab.com/maven/" }
 
