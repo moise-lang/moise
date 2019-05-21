@@ -105,6 +105,9 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     }
 
     protected void initNormativeEngine(OS os, String type) throws MoiseException, ParseException {
+        if (nengine != null)
+            nengine.stop();
+
         nengine = new NPLInterpreter();
 
         //System.out.println(os2nopl.transform(os));
@@ -325,7 +328,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         }
     }
 
-    protected void postReorgUpdates(OS os, String nplId, String ss) throws MoiseException, ParseException {
+    public void postReorgUpdates(OS os, String nplId, String ss) throws MoiseException, ParseException {
         // change normative program
         initNormativeEngine(os, nplId);
         installNormativeSignaler();

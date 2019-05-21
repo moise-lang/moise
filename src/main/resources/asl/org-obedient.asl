@@ -1,4 +1,4 @@
-/*   Organizational Plans
+/*   Organisational Plans
      (for an obedient agent)    */
 
 
@@ -26,5 +26,5 @@
 -obligation(Ag,_,What,_)
    :  .my_name(Ag) & (satisfied(Scheme,Goal)=What | done(Scheme,Goal,Ag)=What) &
       .intend(Goal)
-   <- .print("I am not obliged to ",Goal," anymore, dropping the intention.");
-      .drop_intention(Goal).
+   <- .print("I am not obliged to achieve ",Goal," for scheme ",Scheme," anymore, dropping the intention.");
+      .drop_intention(Goal[scheme(Scheme)]).
