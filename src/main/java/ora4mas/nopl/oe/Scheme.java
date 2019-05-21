@@ -24,6 +24,7 @@ import jason.asSyntax.PredicateIndicator;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
 import moise.os.fs.Goal;
+import moise.os.fs.Mission;
 import moise.os.fs.Plan.PlanOpType;
 
 /**
@@ -239,9 +240,12 @@ public class Scheme extends CollectiveOE {
         ListTerm lCommittedBy = new ListTermImpl();
         ListTerm tail = lCommittedBy;
         for (Player p: getPlayers()) {
-            for (Goal mg: spec.getMission(p.getTarget()).getGoals()) {
-                if (mg.equals(g))
-                    tail.append(new Atom(p.getAg()));
+            Mission m = spec.getMission(p.getTarget());
+            if (m != null) {
+                for (Goal mg: m.getGoals()) {
+                    if (mg.equals(g))
+                        tail.append(new Atom(p.getAg()));
+                }
             }
         }
         return lCommittedBy;

@@ -1,3 +1,4 @@
+
 package ora4mas.nopl;
 
 import java.io.StringWriter;
@@ -28,6 +29,7 @@ import moise.oe.GroupInstance;
 import moise.oe.RolePlayer;
 import moise.os.Cardinality;
 import moise.os.OS;
+import moise.os.ss.Role;
 import moise.tools.os2dot;
 import moise.xml.DOMUtils;
 import npl.NormativeFailureException;
@@ -211,6 +213,7 @@ public class GroupBoard extends OrgArt {
         updateGuiOE();
     }
 
+
     /**
      * The agent executing this operation tries to adopt a role in the group
      *
@@ -250,7 +253,7 @@ public class GroupBoard extends OrgArt {
         }, "Error adopting role "+role);
     }
     
-    private void updateWellFormed(boolean status) {
+    protected void updateWellFormed(boolean status) {
         getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(status ? "ok" : "nok"));
         if (status) {
             while (!futureSchemes.isEmpty()) {
@@ -282,7 +285,7 @@ public class GroupBoard extends OrgArt {
     }
 
 
-    private boolean leaveRoleWithoutVerify(String ag, String role, boolean oldStatus)  throws CartagoException, OperationException {
+    protected boolean leaveRoleWithoutVerify(String ag, String role, boolean oldStatus)  throws CartagoException, OperationException {
         boolean status = isWellFormed();
         //System.out.println("   * a) "+obsPropPlay+"("+ag+","+role+","+getId().getName()+").");
         try {
@@ -519,7 +522,7 @@ public class GroupBoard extends OrgArt {
      */
     @OPERATION @LINK public void admCommand(String cmd) throws CartagoException, jason.asSyntax.parser.ParseException, NoValueException, MoiseException, ParseException {
         // this operation is available only for the owner of the artifact
-        if (getCurrentOpAgentId() != null && (!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager")) {
+        if (!isUserAllowed()) {
             failed("Error: agent '"+getOpUserName()+"' is not allowed to run "+cmd,"reason",new JasonTermWrapper("not_allowed_to_start(admCommand)"));
         } else {
             Literal lCmd = ASSyntax.parseLiteral(cmd);
@@ -533,15 +536,32 @@ public class GroupBoard extends OrgArt {
         }
     }
 
-    public void setCardinality(String element, String id, int min, int max) throws MoiseException, ParseException {
-        if (element.equals("role")) {
-            spec.setRoleCardinality(id, new Cardinality(min,max));
-
-            getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(isWellFormed() ? "ok" : "nok"));
-
-            postReorgUpdates(spec.getSS().getOS(), "group("+spec.getId()+")", "ss");
+    @OPERATION public void addRole(String roleId) throws MoiseException, ParseException {
+        if (!isUserAllowed()) {
+            failed("Error: agent '"+getOpUserName()+"' is not allowed to add roles","reason",new JasonTermWrapper("not_allowed_to_start(addRole)"));
         } else {
-            System.out.println("setCardinality not implemented for "+element+". Ask the developers to provide you this feature!");
+            spec.getSS().addRoleDef(new Role(roleId, spec.getSS()));
+            spec.addRole(roleId);
+            getObsProperty(obsPropSpec).updateValue(new JasonTermWrapper(spec.getAsProlog()));
+            updateWellFormed(isWellFormed());
+            postReorgUpdates(spec.getSS().getOS(), "group("+spec.getId()+")", "ss");
+        }
+    }
+        
+    @OPERATION public void setCardinality(String element, String id, int min, int max) throws MoiseException, ParseException {
+        if (!isUserAllowed()) {
+            failed("Error: agent '"+getOpUserName()+"' is not allowed to change cardinalite","reason",new JasonTermWrapper("not_allowed_to_start(setCardinality)"));
+        } else {
+            if (element.equals("role")) {
+                spec.setRoleCardinality(id, new Cardinality(min,max));
+    
+                getObsProperty(obsWellFormed).updateValue(new JasonTermWrapper(isWellFormed() ? "ok" : "nok"));
+                getObsProperty(obsPropSpec).updateValue(new JasonTermWrapper(spec.getAsProlog()));
+    
+                postReorgUpdates(spec.getSS().getOS(), "group("+spec.getId()+")", "ss");
+            } else {
+                System.out.println("setCardinality not implemented for "+element+". Ask the developers to provide you this feature!");
+            }
         }
     }
 

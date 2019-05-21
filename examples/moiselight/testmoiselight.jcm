@@ -1,0 +1,14 @@
+/*
+    testmoiselight
+    ---------------------------
+
+    illustrate Moise Light
+*/
+
+mas testmoiselight {
+
+    agent alice
+    agent bob
+    agent tom
+
+}

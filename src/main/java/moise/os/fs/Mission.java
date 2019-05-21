@@ -27,8 +27,8 @@ public class Mission extends moise.common.MoiseElement implements ToXML, ToProlo
 
     private static final long serialVersionUID = 1L;
 
-    protected Set<Goal>     goals      = new HashSet<Goal>();
-    protected Set<Mission>  preferable = new HashSet<Mission>();
+    protected Set<Goal>     goals      = new HashSet<>();
+    protected Set<Mission>  preferable = new HashSet<>();
 
     protected Scheme sch = null;
 

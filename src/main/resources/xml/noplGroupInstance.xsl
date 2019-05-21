@@ -20,13 +20,17 @@
       <h2 style="{$h-style}"><xsl:value-of select="@id" /> (group)</h2>
       <hr />
 
-      created from specification
-      <xsl:call-template name="GrSpecRef">
-            <xsl:with-param name="id"><xsl:value-of select="@specification"/></xsl:with-param>
-      </xsl:call-template>
-      <xsl:if test="@parent-group = 'root'">
-         (<i>root</i> group)
+      <xsl:if test="@specification != 'untyped'">
+          created from specification
+          <xsl:call-template name="GrSpecRef">
+                <xsl:with-param name="id"><xsl:value-of select="@specification"/></xsl:with-param>
+          </xsl:call-template>
+
+          <xsl:if test="@parent-group = 'root'">
+             (<i>root</i> group)
+          </xsl:if>
       </xsl:if>
+      
       <xsl:if test="@parent-group != 'root'">
          (<i>subgroup</i> of
          <xsl:call-template name="GroupRef">

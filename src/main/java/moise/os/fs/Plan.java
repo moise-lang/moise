@@ -109,7 +109,8 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
         if (g == null) {
             throw new MoiseConsistencyException("the goal "+goalId+" is not defined in the scheme "+sch.getId());
         }
-        subGoals.add(g);
+        if (!subGoals.contains(g))
+            subGoals.add(g);
     }
 
     public List<Goal> getSubGoals() {

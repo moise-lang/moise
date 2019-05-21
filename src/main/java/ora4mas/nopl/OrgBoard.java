@@ -120,6 +120,7 @@ public class OrgBoard extends Artifact {
             failed("Artifact with id "+id+" already exists!");
         } catch (OperationException e) {
             aid = makeArtifact(id, getGroupBoardClass(), getGroupConfig(type));
+            execLinkedOp(aid, "setOrgBoardName", getId().getName());
             grPostCreation(id, aid);
             aids.put(id, aid);
             defineObsProperty("group", new Atom(id), new Atom(type), aid);
@@ -162,7 +163,8 @@ public class OrgBoard extends Artifact {
             aid = lookupArtifact(id);
             failed("Artifact with id "+id+" already exists!");
         } catch (OperationException e) {
-            aid = makeArtifact(id, getSchemeBoardClass(), new ArtifactConfig(osFile, type) );
+            aid = makeArtifact(id, getSchemeBoardClass(), getSchemeConfig(type));
+            execLinkedOp(aid, "setOrgBoardName", getId().getName());
             schPostCreation(id, aid);
             aids.put(id, aid);
             defineObsProperty("scheme", new Atom(id), new Atom(type), aid);
@@ -174,6 +176,10 @@ public class OrgBoard extends Artifact {
         return SchemeBoard.class.getName();
     }
     
+    protected ArtifactConfig getSchemeConfig(String type) {
+        return new ArtifactConfig(osFile, type);
+    }
+
     protected void schPostCreation(String id, ArtifactId sArtid) {
     }
 

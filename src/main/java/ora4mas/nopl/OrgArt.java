@@ -84,6 +84,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
     protected List<ArtifactId> listeners = new ArrayList<>();
 
+    protected String orgBoardName = null;
+    
     protected Logger logger = Logger.getLogger(OrgArt.class.getName());
 
     public static String fixOSFile(String osFile) {
@@ -131,6 +133,15 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             ownerAgent = artOwner;
         else
             failed("you can not change the owner");
+    }
+    
+    @LINK public void setOrgBoardName(String n) {
+        this.orgBoardName = n;
+    }
+    
+    protected boolean isUserAllowed() {
+        return  ownerAgent == null ||
+                (getCurrentOpAgentId() != null && (!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager"));
     }
 
     protected void destroy() {
