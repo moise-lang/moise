@@ -141,7 +141,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     
     protected boolean isUserAllowed() {
         return  ownerAgent == null ||
-                (getCurrentOpAgentId() != null && (!getOpUserName().equals(ownerAgent)) && !getOpUserName().equals("workspace-manager"));
+                getOpUserName().equals(ownerAgent) || 
+                getOpUserName().equals("workspace-manager");
     }
 
     protected void destroy() {
@@ -574,7 +575,10 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     }
 
     public String getOpUserName() {
-        return getCurrentOpAgentId().getAgentName();
+    	if (getCurrentOpAgentId() == null) 
+    		return "none";
+    	else
+    		return getCurrentOpAgentId().getAgentName();
     }
 
     // DFP methods
