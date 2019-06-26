@@ -21,6 +21,7 @@ import cartago.OperationException;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
+import jason.asSyntax.LogExpr;
 import jason.asSyntax.PredicateIndicator;
 import jason.util.Config;
 import moise.common.MoiseException;
@@ -194,9 +195,13 @@ public class NormativeBoard extends OrgArt {
 
     public Iterator<Unifier> consult(Literal l, Unifier u) {
         for (DynamicFactsProvider p: dynProviders.values())
-            if (p.isRelevant(l.getPredicateIndicator()))
-                return p.consult(l, u);
-        return null;
+            if (p.isRelevant(l.getPredicateIndicator())) {
+                Iterator<Unifier> i = p.consult(l, u);
+                if (i != null && i.hasNext()) {
+                    return i;
+                }
+            }
+        return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
 
 }

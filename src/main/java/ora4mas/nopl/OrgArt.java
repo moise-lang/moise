@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,7 +83,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
     protected String ownerAgent = null; // the name of the agent that created this artifact
 
-    protected List<ArtifactId> listeners = new ArrayList<>();
+    protected List<ArtifactId> listeners = new CopyOnWriteArrayList<>();
 
     protected String orgBoardName = null;
     
