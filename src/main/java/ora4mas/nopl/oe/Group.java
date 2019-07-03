@@ -174,14 +174,14 @@ public class Group extends CollectiveOE implements ToProlog {
                 });
                 providers.addAll(subgroups.values());
 
-                return consultProviders(l, u, providers.iterator());
+                return consultFromProviders(l, u, providers.iterator());
             } else {
                 return super.consult(l, u);
             }
         }
 
         if (pi.equals(responsiblePI))
-            return consult(l, u, schemesAsLiteralList);
+            return consultFromCollection(l, u, schemesAsLiteralList);
 
         Term lCopy;
         if (pi.equals(groupPI)) {
@@ -201,10 +201,10 @@ public class Group extends CollectiveOE implements ToProlog {
         }
 
         if (pi.equals(subGrWFPI))
-            return consult(l, u, wellFormedSubGroups);
+            return consultFromCollection(l, u, wellFormedSubGroups);
 
         if (pi.equals(subGrPI))
-            return consult(l, u, subgroupsAsLiteralList.values());
+            return consultFromCollection(l, u, subgroupsAsLiteralList.values());
 
         return LogExpr.EMPTY_UNIF_LIST.iterator();
     }

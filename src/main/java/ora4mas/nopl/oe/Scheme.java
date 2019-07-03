@@ -194,7 +194,7 @@ public class Scheme extends CollectiveOE {
             return super.consult(l, u);
 
         if (pi.equals(Group.playPI) || pi.equals(Group.responsiblePI)) {
-            return consultProviders(l, u, groups.iterator());
+            return consultFromProviders(l, u, groups.iterator());
 
         } else if (pi.equals(schemePI)) {
             Term lCopy = l.getTerm(0);
@@ -204,7 +204,7 @@ public class Scheme extends CollectiveOE {
                 return LogExpr.EMPTY_UNIF_LIST.iterator();
 
         } else if (pi.equals(donePI)) {
-            return consult(l, u, doneGoals);
+            return consultFromCollection(l, u, doneGoals);
 
         } else if (pi.equals(satisfiedPI)) {
             Term lCopy = l.getTerm(1).capply(u);

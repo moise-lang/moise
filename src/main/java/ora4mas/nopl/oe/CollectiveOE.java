@@ -199,10 +199,10 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
 
     public Iterator<Unifier> consult(Literal l, Unifier u) {
         if (l.getPredicateIndicator().equals(getPlayerPI())) {
-            return consult(l, u, playersAsLiteralList);
+            return consultFromCollection(l, u, playersAsLiteralList);
 
         } else if (l.getPredicateIndicator().equals(getExPlayerPI())) {
-            return consult(l, u, exPlayersAsLiteralList);
+            return consultFromCollection(l, u, exPlayersAsLiteralList);
 
         } /*else if (l.getPredicateIndicator().equals(monitorSchPI)) {
             Term lCopy = l.getTerm(0);
@@ -212,78 +212,6 @@ public abstract class CollectiveOE implements Serializable, DynamicFactsProvider
                 return LogExpr.EMPTY_UNIF_LIST.iterator();
         }*/
         return LogExpr.EMPTY_UNIF_LIST.iterator();
-    }
-
-    public Iterator<Unifier> consult(final Literal l, final Unifier u, final Collection<Literal> facts) {
-        return new Iterator<Unifier>() {
-            Iterator<Literal> i  = facts.iterator();
-            Unifier current      = null;
-            boolean needsUpdate  = true;
-
-            public boolean hasNext() {
-                if (needsUpdate)
-                    get();
-                return current != null;
-            }
-            public Unifier next() {
-                if (needsUpdate)
-                    get();
-                Unifier a = current;
-                if (current != null)
-                    needsUpdate = true;
-                return a;
-            }
-            private void get() {
-                needsUpdate = false;
-                current     = null;
-                while (i.hasNext()) {
-                    Unifier uc = u.clone();
-                    if (uc.unifiesNoUndo(l, i.next())) {
-                        current = uc;
-                        return;
-                    }
-                }
-            }
-            public void remove() {}
-        };
-    }
-
-    public Iterator<Unifier> consultProviders(final Literal l, final Unifier u, final Iterator<? extends DynamicFactsProvider> providers) {
-        return new Iterator<Unifier>() {
-            Iterator<Unifier> i  = null;
-            Unifier current      = null;
-            boolean needsUpdate  = true;
-
-            public boolean hasNext() {
-                if (needsUpdate)
-                    get();
-                return current != null;
-            }
-            public Unifier next() {
-                if (needsUpdate)
-                    get();
-                Unifier a = current;
-                if (current != null)
-                    needsUpdate = true;
-                return a;
-            }
-            private void get() {
-                needsUpdate = false;
-                current     = null;
-                if (i == null)
-                    if (providers.hasNext())
-                        i = providers.next().consult(l, u);
-                    else
-                        return;
-                if (i.hasNext()) {
-                    current = i.next();
-                } else {
-                    i = null;
-                    get();
-                }
-            }
-            public void remove() {}
-        };
     }
 
 }

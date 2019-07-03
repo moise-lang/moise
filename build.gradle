@@ -29,7 +29,7 @@ repositories {
 
 dependencies {
     compile group: 'org.jason-lang', name: 'jason',    version: '2.4', changing: false
-    compile group: 'org.jacamo',     name: 'npl' ,     version: '0.4', changing: true, transitive: false
+    compile group: 'org.jacamo',     name: 'npl' ,     version: '0.5-SNAPSHOT', changing: true, transitive: false
     compile group: 'org.jacamo',     name: 'cartago',  version: '2.4', changing: true
     compile group: 'org.jacamo',     name: 'jaca',     version: '2.4', changing: true
 
