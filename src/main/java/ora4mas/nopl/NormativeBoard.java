@@ -195,7 +195,7 @@ public class NormativeBoard extends OrgArt {
     }
 
     public Iterator<Unifier> consult(Literal l, Unifier u) {
-    	return consultFromProviders(l, u, dynProviders.values().iterator());
+        return consultFromProviders(l, u, dynProviders.values().iterator());
         /*for (DynamicFactsProvider p: dynProviders.values())
             if (p.isRelevant(l.getPredicateIndicator())) {
                 Iterator<Unifier> i = p.consult(l, u);
