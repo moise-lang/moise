@@ -165,7 +165,7 @@ task javadoc(overwrite: true, dependsOn: compileJava) {
 */
 
 
-task publishMavenSF(dependsOn: [ 'jar', 'build', 'publishToMavenLocal', 'sourceJar', 'javadocJar']) {
+/*task publishMavenSF(dependsOn: [ 'jar', 'build', 'publishToMavenLocal', 'sourceJar', 'javadocJar']) {
   doLast {
     description 'transfer local maven artifact to our maven2 repository at sourceforge'
 
@@ -184,7 +184,7 @@ task publishMavenSF(dependsOn: [ 'jar', 'build', 'publishToMavenLocal', 'sourceJ
         workingDir wdir
     }
   }
-}
+}*/
 
 task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {

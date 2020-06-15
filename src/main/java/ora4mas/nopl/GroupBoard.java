@@ -159,10 +159,14 @@ public class GroupBoard extends OrgArt {
     }
 
     @OPERATION public void debug(String kind) throws Exception {
-        grBoards.remove(this);
-        super.debug(kind, "Group Board", true);
-        if (gui != null) {
-            gui.setSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
+        try {
+            grBoards.remove(this);
+            super.debug(kind, "Group Board", true);
+            if (gui != null) {
+                gui.setSpecification(specToStr(spec.getSS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("ss"))));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -171,6 +175,7 @@ public class GroupBoard extends OrgArt {
      *
      */
     @OPERATION @LINK public void destroy() {
+        runningDestroy = true;
         if (parentGroup != null) {
             try {
                 execLinkedOp(parentGroup, "removeSubgroup", getGrpState().getId());
@@ -373,7 +378,7 @@ public class GroupBoard extends OrgArt {
                 execLinkedOp(schAid, "removeResponsibleGroup", orgState.getId());
 
                 getObsProperty(obsPropSchemes).updateValue(getGrpState().getResponsibleForAsProlog());
-
+                listeners.remove(schAid);
                 schemes.remove(schAid);
             }
         }, "Error removing scheme "+schId);

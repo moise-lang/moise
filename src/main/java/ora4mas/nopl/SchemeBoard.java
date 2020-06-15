@@ -178,17 +178,22 @@ public class SchemeBoard extends OrgArt {
     }
 
 
-    @OPERATION public void debug(String kind) throws Exception {
-    	super.debug(kind, "Scheme Board", true);
-    	if (gui != null) {
-            gui.setSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));
-        }
+    @OPERATION public void debug(String kind) {
+    	try {
+	    	super.debug(kind, "Scheme Board", true);
+	    	if (gui != null) {
+	            gui.setSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));
+	        }
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
     }
 
     /**
      * The agent executing this operation tries to delete the scheme board artifact
      */
     @OPERATION @LINK public void destroy() {
+    	runningDestroy = true;
     	schBoards.remove(this);
         orgState.clearPlayers();
         for (Group g: getSchState().getGroupsResponsibleFor()) {
@@ -522,6 +527,8 @@ public class SchemeBoard extends OrgArt {
     
 
     @LINK void removeResponsibleGroup(final String grId) throws CartagoException {
+        if (runningDestroy) return;
+        
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 getSchState().removeGroupResponsibleFor( new Group(grId) );

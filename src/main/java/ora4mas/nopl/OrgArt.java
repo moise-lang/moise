@@ -83,11 +83,13 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
     protected String ownerAgent = null; // the name of the agent that created this artifact
 
-    protected List<ArtifactId> listeners = new CopyOnWriteArrayList<>();
+    protected List<ArtifactId> dfpListeners = new CopyOnWriteArrayList<>();
 
     protected String orgBoardName = null;
     
     protected Logger logger = Logger.getLogger(OrgArt.class.getName());
+    
+    protected boolean runningDestroy = false;
 
     public static String fixOSFile(String osFile) {
         try {
@@ -304,12 +306,12 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     // subscribe protocol
 
     @LINK void subscribeDFP(ArtifactId subscriber) throws OperationException {
-        listeners.add(subscriber);
+        dfpListeners.add(subscriber);
         notifyListeners();
     }
 
     void notifyListeners() {
-        for (ArtifactId aid: listeners) {
+        for (ArtifactId aid: dfpListeners) {
             try {
                 execLinkedOp(aid, "updateDFP", getId().getName(), (DynamicFactsProvider)orgState);
             } catch (Exception e) {
@@ -408,8 +410,11 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
     public String specToStr(ToXML spec, Transformer transformer) throws Exception {
         StringWriter so = new StringWriter();
-        InputSource si = new InputSource(new StringReader(DOMUtils.dom2txt(spec)));
-        transformer.transform(new DOMSource(getParser().parse(si)), new StreamResult(so));
+        String specStr = DOMUtils.dom2txt(spec);
+        if (!specStr.isEmpty()) {
+            InputSource si = new InputSource(new StringReader(specStr));
+            transformer.transform(new DOMSource(getParser().parse(si)), new StreamResult(so));
+        }
         return so.toString();
     }
 
@@ -486,27 +491,31 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     }
 
 
-    protected void debug(String kind, String title, boolean hasOE) throws Exception {
-        final String id = getId().getName();
-        if (kind.equals("inspector_gui(on)")) {
-            if (gui != null)
-                gui.remove();
-            gui = GUIInterface.add(id, "... "+title+" "+id+" ...", nengine, hasOE);
-
-            updateGUIThread = new UpdateGuiThread();
-            updateGUIThread.start();
-
-            updateGuiOE();
-
-            gui.setNormativeProgram(getNPLSrc());
-        }
-        if (kind.equals("inspector_gui(off)")) {
-            if (gui != null)
-                gui.remove();
-            try {
-                updateGUIThread.interrupt();
-            } catch (Exception e) {}
-            gui = null;
+    protected void debug(String kind, String title, boolean hasOE) {
+        try {
+            final String id = getId().getName();
+            if (kind.equals("inspector_gui(on)")) {
+                if (gui != null)
+                    gui.remove();
+                gui = GUIInterface.add(id, "... "+title+" "+id+" ...", nengine, hasOE);
+    
+                updateGUIThread = new UpdateGuiThread();
+                updateGUIThread.start();
+    
+                updateGuiOE();
+    
+                gui.setNormativeProgram(getNPLSrc());
+            }
+            if (kind.equals("inspector_gui(off)")) {
+                if (gui != null)
+                    gui.remove();
+                try {
+                    updateGUIThread.interrupt();
+                } catch (Exception e) {}
+                gui = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
