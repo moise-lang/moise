@@ -110,6 +110,7 @@ public class SchemeBoard extends OrgArt {
     }
 
     protected Logger logger = Logger.getLogger(SchemeBoard.class.getName());
+    @Override protected Logger getLogger() {	return logger;   }
 
     public Scheme getSchState() {
         return (Scheme)orgState;
@@ -527,8 +528,6 @@ public class SchemeBoard extends OrgArt {
     
 
     @LINK void removeResponsibleGroup(final String grId) throws CartagoException {
-        if (runningDestroy) return;
-        
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 getSchState().removeGroupResponsibleFor( new Group(grId) );

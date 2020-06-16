@@ -88,7 +88,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     protected String orgBoardName = null;
     
     protected Logger logger = Logger.getLogger(OrgArt.class.getName());
-    
+    protected Logger getLogger() {  return logger;   }
+
     protected boolean runningDestroy = false;
 
     public static String fixOSFile(String osFile) {
@@ -101,6 +102,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         } catch (Exception e) { }
         return osFile;
     }
+    
     
     public String getOEId() {
         return oeId;
@@ -153,7 +155,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             failed("you can not destroy the artifact, only the owner can!");
             return;
         }
-
+        runningDestroy = true;
+        
         nengine.removeListener(myNPLListener);
         nengine.stop();
         if (gui != null) {
@@ -323,6 +326,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
 
     protected void ora4masOperationTemplate(Operation op, String errorMsg) {
+        if (runningDestroy) return; 
         if (!running) return;
         CollectiveOE bak = orgState.clone();
         try {
@@ -331,7 +335,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             notifyListeners();
         } catch (NormativeFailureException e) {
             orgState = bak; // takes the backup as the current model since the action failed
-            logger.info("error. "+e);
+            getLogger().info("error. "+e);
             if (errorMsg == null)
                 failed(e.getFail().toString());
             else
@@ -454,6 +458,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             for (OrgArt o: l) {
                 try {
                     o.agKilled(req.getAgentId().getAgentName());
+                } catch (InterruptedException e) {
+                    // ignore, system going down
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -486,7 +492,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         wspEng.addListener(this);
     }
 
-    public void agKilled(String agName) {
+    public void agKilled(String agName) throws Exception {
 
     }
 
