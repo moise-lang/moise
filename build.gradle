@@ -19,7 +19,7 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
 
-	maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
+    maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
     maven { url "http://jacamo.sourceforge.net/maven2" }
 }
 
@@ -28,10 +28,10 @@ repositories {
 }*/
 
 dependencies {
-    compile group: 'org.jason-lang', name: 'jason',    version: '2.4', changing: false
+    compile group: 'org.jason-lang', name: 'jason',    version: '2.5', changing: false
     compile group: 'org.jacamo',     name: 'npl' ,     version: '0.5-SNAPSHOT', changing: true, transitive: false
-    compile group: 'org.jacamo',     name: 'cartago',  version: '2.4', changing: true
-    compile group: 'org.jacamo',     name: 'jaca',     version: '2.4', changing: true
+    compile group: 'org.jacamo',     name: 'cartago',  version: '2.5', changing: true
+    compile group: 'org.jacamo',     name: 'jaca',     version: '2.5', changing: true
 
     testCompile group: 'junit',      name: 'junit', version: '4.+'
 
@@ -92,8 +92,8 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-			artifact sourceJar
-			artifact javadocJar
+            artifact sourceJar
+            artifact javadocJar
             artifactId 'moise'
         }
     }
@@ -103,6 +103,7 @@ task fixTab {
     ant.fixcrlf(eol: 'lf',  includes: '**/*.txt,**/*.bat, **/*.adoc', srcdir: '.')
     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.xsl,**/*.xsd', srcdir: 'src')
     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.xsl,**/*.xsd', srcdir: 'examples')
+    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '*.gradle', srcdir: '.')
 }
 
 task renderAsciiDocs(type: Exec) {
