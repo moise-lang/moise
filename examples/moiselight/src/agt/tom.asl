@@ -5,7 +5,7 @@
       adoptRole(R);
    .
 
-+!g2 <- .print("doing g2").
++!g2 <- .print("doing g2"); .wait(2000).
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }

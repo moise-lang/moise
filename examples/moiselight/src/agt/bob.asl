@@ -1,7 +1,9 @@
 
 +!p[scheme(S)]
-   <- lookupArtifact(S,A); focus(A);
+   <- lookupArtifact(S,A);
+      focus(A);
       .print("doing p");
+      .wait(2000);
       goalAchieved(p);
    .
 

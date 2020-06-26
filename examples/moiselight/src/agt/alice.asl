@@ -44,7 +44,7 @@
       commitGoal(q);
       debug(inspector_gui(on))[artifact_id(Sid)];
 
-      .wait(2000);
+      .wait(3000);
       .print("setting g0 as achieved");
       goalAchieved(g0);
 
@@ -55,8 +55,8 @@
       // alice becomes obliged to achieve g1 (see next plan)
    .
 
-+!g1 <- .print("doing goal g1"). // triggered by obligation based on the commitment to g1
-+!q  <- .print("doing goal q").
++!g1 <- .print("doing goal g1"); .wait(2000). // triggered by obligation based on the commitment to g1
++!q  <- .print("doing goal q");  .wait(2000).
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
