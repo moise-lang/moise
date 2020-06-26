@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.jacamo', name: 'jacamo', version: '0.8-SNAPSHOT'
+    compile group: 'org.jacamo', name: 'jacamo', version: '0.9'
 }
 
 sourceSets {
