@@ -24,9 +24,9 @@ auction_id(0).
      o::focus(OrgArtId);
 
      o::createGroup(auction, auctionGroup, GrArtId);
-	 g::focus(GrArtId);
-     g::debug(inspector_gui(on));
-	 g::adoptRole(auctioneer);
+	   g::focus(GrArtId);
+     //g::debug(inspector_gui(on));
+	   g::adoptRole(auctioneer);
    .
 -!create_group[error(E), error_msg(M), reason(R)]
    <- .print("** Error ",E," creating auction group: ",M);
@@ -43,9 +43,9 @@ auction_id(0).
    <- ?auction_id(Id); .concat("sch",Id,Sch); // create a new scheme id
       o::createScheme(Sch, doAuction, SchArtId);
       s::focus(SchArtId);
-      s::debug(inspector_gui(on));
+      //s::debug(inspector_gui(on));
       g::addScheme(Sch);
-	  s::commitMission(mAuctioneer);
+  	  s::commitMission(mAuctioneer);
    .
 -!create_scheme[error(Id), error_msg(M), code_line(Line)]
    <- .print("Error ",Id, " ",M," -- at line ", Line).

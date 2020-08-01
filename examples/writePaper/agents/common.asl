@@ -17,7 +17,7 @@
 
 +!join : joined("ora4mas",_).
 +!join
-   <- joinWorkspace("ora4mas",_).
+   <- joinWorkspace("/main/ora4mas",_).
 -!join
    <- .print("waiting to join ora4mas");
       .wait(200);
@@ -26,4 +26,3 @@
 +!quit_mission(M,S)
    <- .print("leaving my mission ",M," on ",S,"....");
       leaveMission(M)[artifact_name(S)].
-

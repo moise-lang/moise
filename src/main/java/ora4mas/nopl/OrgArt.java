@@ -26,13 +26,11 @@ import cartago.AbstractWSPRuleEngine;
 import cartago.AgentQuitRequestInfo;
 import cartago.Artifact;
 import cartago.ArtifactId;
+import cartago.CartagoEnvironment;
 import cartago.CartagoException;
-import cartago.CartagoService;
 import cartago.LINK;
 import cartago.OPERATION;
-import cartago.Op;
 import cartago.OperationException;
-import cartago.util.agent.CartagoBasicContext;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
@@ -188,56 +186,56 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         // version that works (using internal op)
         myNPLListener = new NormativeListener() {
             public void created(DeonticModality o) {
-                beginExternalSession();
+                beginExtSession();
                 try {
                     defineObsProperty(o.getFunctor(), getTermsAsProlog(o)).addAnnot( getNormIdTerm(o) );
                 } finally {
-                    endExternalSession(true);                   
+                    endExtSession();                   
                 }
                 //signalsQueue.offer(new Pair<String, Structure>(sglOblCreated, o));
             }
             public void fulfilled(DeonticModality o) {
                 try {
-                    beginExternalSession();
+                    beginExtSession();
                     removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o)); // cause concurrent modification on cartago
                     signal(sglOblFulfilled, new JasonTermWrapper(o));
                 } catch (java.lang.IllegalArgumentException e) {
                     // ignore, the obligations was not there anymore
                 } finally {
-                    endExternalSession(true);                   
+                    endExtSession();                   
                 }
                 //execInternalOp("NPISignals", sglOblFulfilled, o);
             }
             public void unfulfilled(DeonticModality o) {
                 try {
-                    beginExternalSession();
+                    beginExtSession();
                     removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
                     signal(sglOblUnfulfilled, new JasonTermWrapper(o));
                 } catch (Exception e) {
                     logger.log(Level.FINE, "error removing obs prop for "+o, e);
                 } finally {
-                    endExternalSession(true);                   
+                    endExtSession();                   
                 }
                 //execInternalOp("NPISignals", sglOblUnfulfilled, o);
             }
             public void inactive(DeonticModality o) {
                 try {
-                    beginExternalSession();
+                    beginExtSession();
                     removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
                 } catch (java.lang.IllegalArgumentException e) {
                     // ignore, the obligations was not there anymore
                 } finally {
-                    endExternalSession(true);                   
+                    endExtSession();                   
                 }
             }
 
             public void failure(Structure f) {
                 try {
-                    beginExternalSession();
+                    beginExtSession();
                     //execInternalOp("NPISignals", sglNormFailure, f);
                     signal(sglNormFailure, new JasonTermWrapper(f));                    
                 } finally {
-                    endExternalSession(true);                   
+                    endExtSession();                   
                 }
             }
         };
@@ -470,20 +468,19 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     private static Ora4masWSPRuleEngine wspEng = null;
 
     public synchronized void initWspRuleEngine() {
-        /*ICartagoController ctrl = CartagoService.getController("default");
-        for (ArtifactId aid: ctrl.getCurrentArtifacts()) {
-            System.out.println("*** "+aid);
-        }*/
-
         if (wspEng == null) {
             wspEng = new Ora4masWSPRuleEngine();
+            String wks = getId().getWorkspaceId().getFullName();
             new Thread() {
                 public void run() {
                     try {
                         // TODO: use new cartago API
-                        CartagoBasicContext cartagoCtx = new CartagoBasicContext("OrgArt setup", CartagoService.MAIN_WSP_NAME);
-                        cartagoCtx.doAction(new Op("setWSPRuleEngine", wspEng), -1);
+                        //CartagoBasicContext cartagoCtx = new CartagoBasicContext("OrgArt setup", CartagoEnvironment.ROOT_WSP_DEFAULT_NAME);
+                        //cartagoCtx.doAction(new Op("setWSPRuleEngine", wspEng), -1);
+                         
+                        CartagoEnvironment.getInstance().resolveWSP(wks).getWorkspace().setWSPRuleEngine(wspEng);
                     } catch (CartagoException e) {
+                        logger.warning("Error setting up setWSPRuleEngine: "+e.getMessage());
                         e.printStackTrace();
                     }
                 };
