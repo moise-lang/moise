@@ -186,7 +186,7 @@ public class SchemeBoard extends OrgArt {
 	            gui.setSpecification(specToStr(spec.getFS().getOS(), DOMUtils.getTransformerFactory().newTransformer(DOMUtils.getXSL("fsns"))));
 	        }
     	} catch (Exception e) {
-    		e.printStackTrace();
+    		//e.printStackTrace();
     	}
     }
 
