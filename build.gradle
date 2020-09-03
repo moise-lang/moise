@@ -107,7 +107,8 @@ task fixTab {
 }
 
 task renderAsciiDocs(type: Exec) {
-    commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
+    commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoc-docker', '{}', ';'
+    //commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
 }
 
 javadoc {

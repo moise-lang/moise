@@ -1,5 +1,14 @@
 = Release Notes for Moise
 
+== Version 1.0
+
+Version used in JaCaMo 1.0 (using cartago 3.0)
+
+== Version 0.12
+
+- use graphviz implemented in Java
+- moise light (see examples folder)
+
 == Version 0.11
 
 - the norm id used to create obligations is added as an annotation in the obligation, as well as the unifier. For instance, a belief related to current obligations in Jason is:
