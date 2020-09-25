@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.xml.transform.TransformerException;
+
 import moise.common.MoiseConsistencyException;
 import moise.os.fs.Goal;
 import moise.os.fs.Mission;
@@ -124,11 +126,11 @@ public class OSBuilder {
         return g;
     }
 
-    public String getXMLSpec() {
+    public String getXMLSpec() throws TransformerException {
         return DOMUtils.dom2txt(os);
     }
 
-    public void save(String file) throws IOException {
+    public void save(String file) throws IOException, TransformerException {
         BufferedWriter out = new BufferedWriter(new FileWriter(file));
         out.write(getXMLSpec());
         out.close();

@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.TransformerException;
 
 import moise.oe.GoalInstance;
 import moise.oe.GroupInstance;
@@ -135,7 +136,7 @@ public class SimOE {
         return name;
     }
 
-    protected String getOExml() {
+    protected String getOExml() throws TransformerException {
         if (currentOE == null) {
             return "";
         }
@@ -168,7 +169,7 @@ public class SimOE {
         return currentOS;
     }
 
-    protected String getOSxml() {
+    protected String getOSxml() throws TransformerException {
         if (currentOS == null) {
             return "";
         }

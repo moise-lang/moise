@@ -40,13 +40,11 @@ public class DOMUtils {
     private static Transformer transformer = null;
     private static DocumentBuilder builder = null;
 
-    public static String dom2txt(ToXML ele) {
+    public static String dom2txt(ToXML ele) throws TransformerException {
+        if (ele == null)
+            return "";
         StringWriter so = new StringWriter();
-        try {
-            getTransformer().transform(new DOMSource(getAsXmlDocument(ele)), new StreamResult(so));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getTransformer().transform(new DOMSource(getAsXmlDocument(ele)), new StreamResult(so));
         return so.toString();
     }
 

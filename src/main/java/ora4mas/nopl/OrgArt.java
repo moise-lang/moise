@@ -411,6 +411,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
 
 
     public String specToStr(ToXML spec, Transformer transformer) throws Exception {
+        if (spec == null)
+            return "";
         StringWriter so = new StringWriter();
         String specStr = DOMUtils.dom2txt(spec);
         if (!specStr.isEmpty()) {
