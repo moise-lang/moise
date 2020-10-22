@@ -58,6 +58,12 @@
 +!g1 <- .print("doing goal g1"); .wait(2000). // triggered by obligation based on the commitment to g1
 +!q  <- .print("doing goal q");  .wait(2000).
 
++goalState(s1,g2,_,_,satisfied)
+   <- .print("Finished!");
+       destroyGroup(g1);
+       destroyScheme(s1);
+   .
+
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
 

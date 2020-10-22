@@ -1,5 +1,5 @@
 
-+!adopt_role(R,G)
++!adopt_role(R,G) 
    <- lookupArtifact(G,A);
       focus(A);
       adoptRole(R);
