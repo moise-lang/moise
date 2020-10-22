@@ -3,12 +3,12 @@
 +!start
    <- makeArtifact(tml,"ora4mas.light.LightOrgBoard",[],OIa);
       focus(OIa);
-      createGroup(g1,Gid);
+      createGroup(grp1,Gid);
       focus(Gid);
       adoptRole(father);
 
       // ask tom to play son
-      .send(tom,achieve,adopt_role(son,g1));
+      .send(tom,achieve,adopt_role(son,grp1));
 
       createScheme(s1,Sid);
       focus(Sid);
@@ -60,8 +60,8 @@
 
 +goalState(s1,g2,_,_,satisfied)
    <- .print("Finished!");
-       destroyGroup(g1);
        destroyScheme(s1);
+       destroyGroup(grp1);
    .
 
 { include("$jacamoJar/templates/common-cartago.asl") }
