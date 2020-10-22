@@ -3,7 +3,7 @@
    <- lookupArtifact(S,A);
       focus(A);
       .print("doing p");
-      .wait(2000);
+      .wait(1000);
       goalAchieved(p);
    .
 
