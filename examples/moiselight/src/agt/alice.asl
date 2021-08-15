@@ -25,7 +25,7 @@
       //     p  --- ^ --> q --^
       //
       // possible execution:
-      //     (g0 || p) ; (g1 || q) ; g2
+      //     (g0 || p) ; (g1 || q ) ; g2
       //
       // and the allocation:
       //     p : bob   (because alice asks him to do so)
@@ -37,7 +37,7 @@
       // create a new goal g1, that depends on goals g0 and p
       addGoal(g1,[g0,p]);
       addGoal(g2,[g1,q]);
-      addGoal(q,[p]);
+      addGoal(q, [g0,p]);
 
       // Alice commentments
       commitGoal(g1);
