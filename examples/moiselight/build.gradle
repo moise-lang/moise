@@ -20,15 +20,16 @@ java {
 }
 
 repositories {
-    mavenCentral()
+  maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+  maven { url "https://repo.gradle.org/gradle/libs-releases-local" }
 
-	  maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
-    //maven { url "http://jacamo.sourceforge.net/maven2" }
-    //maven { url "https://jade.tilab.com/maven/" }
+  mavenCentral()
+
+  //maven { url "https://jade.tilab.com/maven/" }
 }
 
 dependencies {
-    implementation('org.jacamo:jacamo:0.9')
+    implementation('org.jacamo:jacamo:1.0')
 }
 
 sourceSets {
