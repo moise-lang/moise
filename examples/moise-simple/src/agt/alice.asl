@@ -1,3 +1,30 @@
+/*
+
+Agent alice wants to coordinate some tasks with bob and tom.
+
+The goals for the tasks are: g0, g1, g2, p, q
+
+With the following dependecies:
+
+                     g2
+    g0 --> g1 -------^
+    p  --- ^ --> q --^
+
+(e.g., g1 depends on g0 and p to be started)
+
+possible execution:
+    (g0 || p) ; (g1 || q ) ; g2
+
+and the allocation:
+    p : bob   (because alice asks him to do so)
+    g0: alice (by her own initiative)
+    g1: alice (because g0 was achieved and she is committed to it)
+    q : alice (because p was achived   and she is committed to it)
+    g2: tom   (because g1 and q were achieved and he is committed to it)
+
+*/
+
+
 !start.
 
 +!start
@@ -5,7 +32,7 @@
       focus(OIa);
       createGroup(grp1,Gid);
       focus(Gid);
-      adoptRole(mother);
+      adoptRole(mother); // The role mother will be created before the adoption
 
       // ask tom to play son
       .send(tom,achieve,adopt_role(son,grp1));
@@ -17,32 +44,15 @@
       // add a norm to oblige tom (as a son) to commit to g2
       addNorm(obligation,son,g2);
 
-      // plan, goals and allocation
-      //
-      // the dependecies in the scheme are:
-      //                      g2
-      //     g0 --> g1 -------^
-      //     p  --- ^ --> q --^
-      //
-      // possible execution:
-      //     (g0 || p) ; (g1 || q ) ; g2
-      //
-      // and the allocation:
-      //     p : bob   (because alice asks him to do so)
-      //     g0: alice (by her own initiative)
-      //     g1: alice (because g0 was achieved and she is committed to it)
-      //     q : alice (because p was achived   and she is committed to it)
-      //     g2: tom   (because g1 and q were achieved and he is committed to it)
-
-      // create a new goal g1, that depends on goals g0 and p
+      // create the graph of dependencies
       addGoal(g1,[g0,p]);
       addGoal(g2,[g1,q]);
       addGoal(q, [g0,p]);
 
-      // Alice commentments
-      commitGoal(g1);
+      // Alice committments
+      commitGoal(g1); // new operation of moise simple (avoids missions)
       commitGoal(q);
-      debug(inspector_gui(on))[artifact_id(Sid)];
+      //debug(inspector_gui(on))[artifact_id(Sid)];
 
       .wait(2000);
       .print("setting g0 as achieved");
