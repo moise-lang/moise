@@ -1,0 +1,13 @@
+/*
+    this demo illustrate Moise Simple
+
+    see alice.asl for more details
+*/
+
+mas demo_moise_simple {
+
+    agent alice
+    agent bob
+    agent tom
+
+}

@@ -1,7 +1,7 @@
 !start.
 
 +!start
-   <- makeArtifact(tml,"ora4mas.light.LightOrgBoard",[],OIa);
+   <- makeArtifact(tml,"ora4mas.light.LightOrgBoard",[],OIa); // NB.: the implementation of the OrgBoard is different and does not require a XML file
       focus(OIa);
       createGroup(grp1,Gid);
       focus(Gid);
