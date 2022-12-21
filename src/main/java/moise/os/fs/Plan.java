@@ -3,6 +3,7 @@ package moise.os.fs;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import moise.common.MoiseConsistencyException;
 import moise.common.MoiseElement;
@@ -225,7 +226,8 @@ public class Plan extends MoiseElement implements ToXML, ToProlog {
 
         // goals
         for (Element eg: DOMUtils.getDOMDirectChilds(ele, Goal.getXMLTag())) {
-            Goal gs = new Goal(eg.getAttribute("id"));
+            String goalId = eg.getAttribute("id");
+            Goal gs = Optional.ofNullable(sch.getGoal(goalId)).orElseGet(() -> new Goal(goalId));
             gs.setInPlan(this);
             sch.addGoal(gs);
             gs.setFromDOM(eg, sch);

@@ -335,10 +335,11 @@ public class Goal extends MoiseElement implements ToXML, ToProlog {
             if (ea.hasAttribute("goal")) {
                 String goalId = ea.getAttribute("goal");
                 Goal dog = sch.getGoal(goalId);
-                if (dog != null)
-                    addDependence(dog);
-                else
-                    System.out.println("The goal "+goalId+" was not declared in the scheme and thus can not be used as a depends-on argument for "+this);
+                if (dog == null) {
+                    dog = new Goal(goalId);
+                    sch.addGoal(dog);
+                }
+                addDependence(dog);
             }
         }
 
