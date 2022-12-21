@@ -7,8 +7,10 @@ The goals for the tasks are: g0, g1, g2, p, q
 With the following dependecies:
 
                      g2
-    g0 --> g1 -------^
-    p  --- ^ --> q --^
+  g0 ----> g1 -------^
+  |   p --- ^ --> q --^
+  |---------------^
+
 
 (e.g., g1 depends on g0 and p to be started)
 
@@ -41,13 +43,13 @@ and the allocation:
       focus(Sid);
       addScheme(s1);
 
-      // add a norm to oblige tom (as a son) to commit to g2
-      addNorm(obligation,son,g2);
-
       // create the graph of dependencies
       addGoal(g1,[g0,p]);
       addGoal(g2,[g1,q]);
       addGoal(q, [g0,p]);
+
+      // add a norm to oblige tom (as a son) to commit to g2
+      addNorm(obligation,son,g2);
 
       // Alice committments
       commitGoal(g1); // new operation of moise simple (avoids missions)
@@ -68,11 +70,11 @@ and the allocation:
 +!g1 <- .print("doing goal g1"); .wait(1000). // triggered by obligation based on the commitment to g1
 +!q  <- .print("doing goal q");  .wait(1000).
 
-+goalState(s1,g2,_,_,satisfied)
+/*+goalState(s1,g2,_,_,satisfied)
    <- .print("Finished!");
        destroyScheme(s1);
        destroyGroup(grp1);
-   .
+   . */
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
