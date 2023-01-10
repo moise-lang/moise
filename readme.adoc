@@ -9,7 +9,7 @@ Some papers describing Moise are available in the folder https://github.com/mois
 
     git clone https://github.com/moise-lang/moise.git
     cd moise
-    gradle build
+    ./gradlew build
 
 ---
 Developed by Jomi F. Hubner, Jaime S. Sichman and Olivier Boissier.
