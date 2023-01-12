@@ -10,7 +10,7 @@ public class HelloMoise {
     public static void main(String[] args) {
         try {
             // OE creation using the OS from the file os1.xml
-            OE currentOE = OE.createOE("winGame", "jojOS.xml");
+            OE currentOE = OE.createOE("winGame", "examples/tutorial/jojOS.xml");
 
             System.out.println("Final OE in XML format:\n"+DOMUtils.dom2txt(currentOE));
 

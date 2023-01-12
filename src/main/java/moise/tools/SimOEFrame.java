@@ -164,7 +164,10 @@ public class SimOEFrame extends JFrame {
             oeTree.setModel( oeTreeModel.getModel() );
             if (hasSim) {
                 // rebuild the list of current groups
-                List allWithRoot = new ArrayList(oe.getAllSubGroupsTree());
+                List allWithRoot = new ArrayList();//oe.getAllSubGroupsTree());
+                for (Object o: oe.getAllSubGroupsTree())
+                    allWithRoot.add( o.toString());
+                
                 allWithRoot.add("root");
 
                 mySetModelPreserPosSelectedIndex(grCreatedGroups, allWithRoot);
@@ -910,8 +913,8 @@ public class SimOEFrame extends JFrame {
         jPanel4.add(jPanel5, java.awt.BorderLayout.WEST);
 
         back.setText("back");
-        back.setEnabled(false);
-        back.setIcon(new ImageIcon(SimOEFrame.class.getResource("/images/back.gif")));
+        back.setEnabled(false);        
+        //back.setIcon(new ImageIcon(SimOEFrame.class.getResource("/images/back.gif")));
         back.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backActionPerformed(evt);

@@ -29,7 +29,7 @@ public class TutorialFS {
         try {
 
             // OE creation
-            OE currentOE = OE.createOE("winGame", "jojFS.xml");
+            OE currentOE = OE.createOE("winGame", "examples/tutorial/jojOS.xml");
 
             TutorialSS.createSS(currentOE);
             createFS(currentOE);

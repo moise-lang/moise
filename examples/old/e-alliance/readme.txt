@@ -1,3 +1,6 @@
+(this code is not working anymore -- use jacamo examples instead)
+(it is kept in the repository as an example of moise XML file)
+
 
 This directory contains some moise+ examples on the
 E-Alliance application domain.

@@ -20,11 +20,11 @@ public class TranslationTest {
 
     @Test
     public void testWP() throws ParseException, Exception {
-        OS os = OS.loadOSFromURI("examples/writePaper/wp-os.xml");
+        OS os = OS.loadOSFromURI("examples/specifications/wp-os.xml");
 
         String np = os2nopl.transform(os);
         System.out.println(np);
-        BufferedWriter out = new BufferedWriter(new FileWriter("examples/writePaper/wp-gen.npl"));
+        BufferedWriter out = new BufferedWriter(new FileWriter("examples/specifications/wp-gen.npl"));
         out.write(np);
         out.close();
         NormativeProgram p = new NormativeProgram();

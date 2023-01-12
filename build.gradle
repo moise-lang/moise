@@ -18,6 +18,16 @@ java {
     }
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+            srcDir 'examples/tutorial'
+        }
+    }
+}
+
+
 repositories {
     mavenCentral()
 
@@ -40,13 +50,25 @@ dependencies {
 
     testImplementation('junit:junit:4.12')
 
-    api('guru.nidi:graphviz-java:0.7.0')
+    api('guru.nidi:graphviz-java:0.7.0') {
+     exclude group: 'xml-apis', module: 'xml-apis'
+     exclude group: 'xml-apis', module: 'xml-apis-ext'
+    }
 
     //umljavadoc 'org.umlgraph:umlgraph:5.6'
+
+    // used in cartago web infrastructure
+    implementation "io.vertx:vertx-core:3.7.0"
+    implementation "io.vertx:vertx-sync:3.7.0"
+    implementation "io.vertx:vertx-unit:3.7.0"
+    implementation "io.vertx:vertx-web:3.7.0"
+    implementation "io.vertx:vertx-web-client:3.7.0"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.9.8"
 }
 
 jar {
-    baseName 'moise'
+    archiveBaseName = 'moise'
+    duplicatesStrategy = 'include'
 }
 
 clean {
@@ -55,9 +77,10 @@ clean {
     delete 'test.xml'
 }
 
+/* // not supported anymore
 task intsim (type: JavaExec, dependsOn: 'jar') {
     description 'runs an interactive simulation of some organisation'
-    main = 'jason.infra.centralised.RunCentralisedMAS'
+    main = 'jason.infra.local.RunLocalMAS'
     args 'org-simulator.mas2j'
     classpath sourceSets.main.runtimeClasspath
     workingDir project.projectDir.absolutePath + '/examples/sim'
@@ -68,27 +91,31 @@ task sim (type: JavaExec, dependsOn: 'jar') {
     main = 'ora4mas.nopl.simulator.ConsoleSimulator'
     classpath sourceSets.main.runtimeClasspath
 }
+*/
+
+
+task tutorialOS (type: JavaExec, dependsOn: 'jar') {
+    main = 'TutorialOS'
+    classpath sourceSets.main.runtimeClasspath
+}
 
 task os2dot (type: JavaExec, dependsOn: 'jar') {
     main = 'moise.tools.os2dotGUI'
     classpath sourceSets.main.runtimeClasspath
 }
 
-eclipse {
-    classpath {
-        downloadJavadoc = true
-    }
-}
 
 task javadocJar (type: Jar, dependsOn: javadoc) {
-    baseName 'moise'
+    archiveBaseName = 'moise'
     classifier = 'javadoc'
-    from '${docsDir}/../../doc/api'
+    duplicatesStrategy = 'include'
+    from javadoc.destinationDir
 }
 
 task sourceJar (type : Jar) {
-    baseName 'moise'
+    archiveBaseName = 'moise'
     classifier = 'sources'
+    duplicatesStrategy = 'include'
     from sourceSets.main.allSource
 }
 
@@ -104,6 +131,7 @@ publishing {
     }
 }
 
+
 task fixTab {
     ant.fixcrlf(eol: 'lf',  includes: '**/*.txt,**/*.bat, **/*.adoc', srcdir: '.')
     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.xsl,**/*.xsd', srcdir: 'src')
@@ -116,6 +144,7 @@ task renderAsciiDocs(type: Exec) {
     //commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
 }
 
+/*
 javadoc {
     options.showAll()
     options.encoding('UTF-8')
@@ -131,15 +160,7 @@ javadoc {
         javadoc.options.docTitle = javadoc.title
     }
 }
-
-// the following lines is used to avoid errors while generating javadoc
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-      tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-      }
-    }
-}
+*/
 
 /*
 task javadoc(overwrite: true, dependsOn: compileJava) {
