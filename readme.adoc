@@ -11,5 +11,11 @@ Some papers describing Moise are available in the folder https://github.com/mois
     cd moise
     ./gradlew build
 
+A simple demo can be seen with
+
+    ./gradlew tutorialOS
+
+More examples of Moise in use are available in https://github.com/jacamo-lang/jacamo/tree/master/examples[JaCaMo exemples].
+
 ---
 Developed by Jomi F. Hubner, Jaime S. Sichman and Olivier Boissier.
