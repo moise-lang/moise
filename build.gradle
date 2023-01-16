@@ -6,7 +6,6 @@
 defaultTasks 'jar'
 
 apply plugin: 'java-library'
-apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 version '1.0'
@@ -80,7 +79,7 @@ clean {
 /* // not supported anymore
 task intsim (type: JavaExec, dependsOn: 'jar') {
     description 'runs an interactive simulation of some organisation'
-    main = 'jason.infra.local.RunLocalMAS'
+    mainClass = 'jason.infra.local.RunLocalMAS'
     args 'org-simulator.mas2j'
     classpath sourceSets.main.runtimeClasspath
     workingDir project.projectDir.absolutePath + '/examples/sim'
@@ -88,19 +87,19 @@ task intsim (type: JavaExec, dependsOn: 'jar') {
 
 task sim (type: JavaExec, dependsOn: 'jar') {
     description 'runs a program that simulates some dynamics of an organisation'
-    main = 'ora4mas.nopl.simulator.ConsoleSimulator'
+    mainClass = 'ora4mas.nopl.simulator.ConsoleSimulator'
     classpath sourceSets.main.runtimeClasspath
 }
 */
 
 
 task tutorialOS (type: JavaExec, dependsOn: 'jar') {
-    main = 'TutorialOS'
+    mainClass = 'TutorialOS'
     classpath sourceSets.main.runtimeClasspath
 }
 
 task os2dot (type: JavaExec, dependsOn: 'jar') {
-    main = 'moise.tools.os2dotGUI'
+    mainClass = 'moise.tools.os2dotGUI'
     classpath sourceSets.main.runtimeClasspath
 }
 

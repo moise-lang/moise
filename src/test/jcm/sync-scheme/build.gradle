@@ -8,7 +8,6 @@
 defaultTasks 'run'
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 
 version '1.0'
 group   'org.jacamo'
@@ -46,7 +45,7 @@ sourceSets {
 
 task run (type: JavaExec, dependsOn: 'classes') {
     description 'runs the application'
-    main = 'jacamo.infra.JaCaMoLauncher'
+    mainClass = 'jacamo.infra.JaCaMoLauncher'
     args 'sync-scheme.jcm'
     classpath sourceSets.main.runtimeClasspath
 }
