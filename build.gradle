@@ -143,7 +143,7 @@ task renderAsciiDocs(type: Exec) {
     //commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
 }
 
-/*
+
 javadoc {
     options.showAll()
     options.encoding('UTF-8')
@@ -154,12 +154,13 @@ javadoc {
     options.docTitle('Moise API')
     options.footer('<a href=http://moise.sf.net>Moise Site</a>')
     destinationDir = file("${buildDir}/../doc/api")
+    failOnError = false
     doFirst {
         javadoc.title = 'Moise API'
         javadoc.options.docTitle = javadoc.title
     }
 }
-*/
+
 
 /*
 task javadoc(overwrite: true, dependsOn: compileJava) {

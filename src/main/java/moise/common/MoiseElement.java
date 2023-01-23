@@ -78,7 +78,7 @@ public class MoiseElement implements Serializable, Identifiable, Comparable {
 
     /**
      * returns a full id : prefix + "." + id if there is a prefix,
-     * only <id> otherwise.
+     * only id otherwise.
      */
     public String getFullId() {
         if (prefix == null) {
