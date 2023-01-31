@@ -245,7 +245,7 @@ public class os2dot {
         if (g.hasPlan()) {
             String type=",arrowhead=none";
 
-            Goal previous = null;
+//            Goal previous = null;
             int ppos = 0;
             if (g.getPlan().getOp() == PlanOpType.sequence)
                 ppos = 1;
@@ -254,10 +254,15 @@ public class os2dot {
                 so.append("        "+sg.getId()+" -> "+g.getId()+" [samehead=true"+type+"];\n");
                 if (ppos > 0) {
                     ppos++;
-                    if (previous != null)
-                        so.append("        "+previous.getId()+" -> "+sg.getId()+" [style=dotted, constraint=false, arrowhead=empty,arrowsize=0.5,color=lightgrey];\n");
-                    previous = sg;
+//                    if (previous != null)
+//                        so.append("        "+previous.getId()+" -> "+sg.getId()+" [style=dotted, constraint=false, arrowhead=empty,arrowsize=0.5,color=grey];\n");
+//                    previous = sg;
                 }
+            }
+        }
+        if (g.hasDependence()) {
+            for (Goal gd: g.getDependencies()) {
+                so.append("        "+g.getId()+" -> "+gd.getId()+" [style=dotted, constraint=false, arrowhead=vee,arrowsize=0.5,color=grey];\n");
             }
         }
 

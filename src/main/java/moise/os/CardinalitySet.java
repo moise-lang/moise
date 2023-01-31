@@ -51,9 +51,9 @@ public class CardinalitySet<T extends Identifiable> implements java.io.Serializa
         return contents.values();
     }
 
-    public void remove(T o) {
+    public boolean remove(T o) {
         cardinalities.remove(o);
-        contents.remove(o);
+        return contents.remove(o) != null;
     }
 
     /**

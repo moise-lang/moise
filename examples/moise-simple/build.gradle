@@ -1,5 +1,5 @@
 /*
-   Project testmoiselight
+   Project to test Moise Simple
 
    Gradle build file for JaCaMo Applications
    May 11, 2019 - 17:05:02
@@ -50,35 +50,6 @@ task run (type: JavaExec, dependsOn: 'classes') {
     classpath sourceSets.main.runtimeClasspath
 }
 
-
-task uberJar(type: Jar, dependsOn: 'classes') {
-    group      ' JaCaMo'
-    description 'creates a single runnable jar file with all dependencies'
-
-    manifest {
-        attributes 'Main-Class': 'jacamo.infra.JaCaMoLauncher'
-    }
-    baseName = 'jacamo-testmoiselight' // the name must start with jacamo so that jacamo...jar is found in the classpath
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    from (project.projectDir.absolutePath) {
-        include '**/*.asl'
-        include '**/*.xml'
-        include '**/*.jcm'
-        include '*.properties'
-    }
-    from (project.buildDir.absolutePath + '/jcm') {
-        include '**/*'
-    }
-    with jar
-
-    doFirst {
-        copy {
-            from 'testmoiselight.jcm'
-            rename 'testmoiselight.jcm','default.jcm'
-            into project.buildDir.absolutePath + '/jcm'
-        }
-    }
-}
 
 clean {
     delete 'bin'

@@ -1,4 +1,4 @@
-package ora4mas.light;
+package ora4mas.simple;
 
 import java.util.logging.Logger;
 
@@ -39,10 +39,10 @@ import ora4mas.nopl.oe.Group;
  * @see moise.os.ss.Group
  * @author Jomi
  */
-public class LightGroupBoard extends GroupBoard {
+public class SimpleGroupBoard extends GroupBoard {
 
     
-    protected Logger logger = Logger.getLogger(LightGroupBoard.class.getName());
+    protected Logger logger = Logger.getLogger(SimpleGroupBoard.class.getName());
 
     /**
      * Initialises the group board

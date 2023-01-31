@@ -1,6 +1,5 @@
-package ora4mas.light;
+package ora4mas.simple;
 
-import java.io.StringReader;
 import java.util.logging.Logger;
 
 import cartago.LINK;
@@ -10,7 +9,6 @@ import npl.INorm;
 import npl.Norm;
 import npl.NormFactory;
 import npl.parser.ParseException;
-import npl.parser.nplp;
 import ora4mas.nopl.NormativeBoard;
 import ora4mas.nopl.SchemeBoard;
 
@@ -38,12 +36,12 @@ import ora4mas.nopl.SchemeBoard;
  * @see SchemeBoard
  * @author Jomi
  */
-public class LightNormativeBoard extends NormativeBoard {
+public class SimpleNormativeBoard extends NormativeBoard {
 
     int id = 0;
     NormFactory factory = Norm.getFactory();
     
-    protected Logger logger = Logger.getLogger(LightNormativeBoard.class.getName());
+    protected Logger logger = Logger.getLogger(SimpleNormativeBoard.class.getName());
 
     @OPERATION @LINK public void addNorm(String type, String role, String mission) throws MoiseException, ParseException {
         try {

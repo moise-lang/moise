@@ -1,4 +1,4 @@
-package ora4mas.light;
+package ora4mas.simple;
 
 import java.util.logging.Logger;
 
@@ -31,9 +31,9 @@ import ora4mas.nopl.WebInterface;
  * </ul>
  *
  */
-public class LightOrgBoard extends OrgBoard {
+public class SimpleOrgBoard extends OrgBoard {
 
-    protected Logger logger = Logger.getLogger(LightOrgBoard.class.getName());
+    protected Logger logger = Logger.getLogger(SimpleOrgBoard.class.getName());
     
     /**
      * Initialises the org board
@@ -62,7 +62,7 @@ public class LightOrgBoard extends OrgBoard {
 
     @Override
     protected String getGroupBoardClass() {
-        return LightGroupBoard.class.getName();
+        return SimpleGroupBoard.class.getName();
     }
     
     @Override
@@ -76,7 +76,7 @@ public class LightOrgBoard extends OrgBoard {
     
     @Override
     protected String getSchemeBoardClass() {
-        return LightSchemeBoard.class.getName();
+        return SimpleSchemeBoard.class.getName();
     }
     
     @Override
@@ -86,6 +86,6 @@ public class LightOrgBoard extends OrgBoard {
     
     @Override
     protected String getNormativeBoardClass() {
-        return LightNormativeBoard.class.getName();
+        return SimpleNormativeBoard.class.getName();
     }
 }

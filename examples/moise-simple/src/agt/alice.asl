@@ -6,16 +6,20 @@ The goals for the tasks are: g0, g1, g2, p, q
 
 With the following dependecies:
 
-                     g2
-  g0 ----> g1 -------^
-  |   p --- ^ --> q --^
-  |---------------^
+                       g2 (or)
+  g0 ----> g1 --------- ^
+           ^            |
+           |            |
+           |            |
+  p ------ ^ --> q ---- ^
 
+g1 depends on g0 and p
+q  depends on p
+g2 depends on g1 or  q
 
-(e.g., g1 depends on g0 and p to be started)
-
-possible execution:
+possible executions:
     (g0 || p) ; (g1 || q ) ; g2
+    (g0 || p) ;  q  ; (g1 || g2)
 
 and the allocation:
     p : bob   (because alice asks him to do so)
@@ -30,7 +34,7 @@ and the allocation:
 !start.
 
 +!start
-   <- makeArtifact(tml,"ora4mas.light.LightOrgBoard",[],OIa); // NB.: the implementation of the OrgBoard is different and does not require a XML file
+   <- makeArtifact(tml,"ora4mas.simple.SimpleOrgBoard",[],OIa); // NB.: the implementation of the OrgBoard is different and does not require a XML file
       focus(OIa);
       createGroup(grp1,Gid);
       focus(Gid);
@@ -44,9 +48,9 @@ and the allocation:
       addScheme(s1);
 
       // create the graph of dependencies
-      addGoal(g1,[g0,p]);
-      addGoal(g2,[g1,q]);
-      addGoal(q, [g0,p]);
+      addGoal(g1,dep(and,[g0,p]));
+      addGoal(g2,dep(or, [g1,q]));
+      addGoal(q, dep(and,[p]));
 
       // add a norm to oblige tom (as a son) to commit to g2
       addNorm(obligation,son,g2);
