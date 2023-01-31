@@ -104,7 +104,7 @@ public class SimpleSchemeBoard extends SchemeBoard {
         oeId = getCreatorId().getWorkspaceId().getName();
 
         // load normative program
-        initNormativeEngine(os, "scheme(untyped)");
+        initNormativeEngine(os, "scheme("+SCHEME_NAME+")");
         installNormativeSignaler();
         initWspRuleEngine();
 
@@ -136,10 +136,7 @@ public class SimpleSchemeBoard extends SchemeBoard {
                 }
             } else if (lDeps.getTerm(0).toString().equals("or")) {
                 Goal po = getOrCreateGoal(goalId + "_dep", false);
-//                spec.removeMission(spec.getMission(po.toString()));
-                po.setMinAgToSatisfy(0);
-//            po = new Goal(goalId); // no mission for this goal
-//            spec.addGoal(g);
+                po.setMinAgToSatisfy(0); // the goal is satisfied only by its sub-goals (0 agent need to achieve it)
 
                 Plan p = new Plan(PlanOpType.choice, spec, po.toString());
                 spec.addPlan(p);
@@ -153,11 +150,11 @@ public class SimpleSchemeBoard extends SchemeBoard {
                 po.setPlan(p);
                 g.addDependence(po);
             } else {
-                failed("Wrong second argument for addGoal. Should be 'dep_and(a,b,c)' or 'dep_or(a,b,c)', but was informed '" + deps + "'.");
+                failed("Wrong second argument for addGoal. Should be 'dep(and,[a,b,c])' or 'dep(or,[a,b,c])', but was informed '" + deps + "'.");
             }
         }
         updateGoalStateObsProp();
-        postReorgUpdates(spec.getFS().getOS(), "scheme(untyped)", "fs");
+        postReorgUpdates(spec.getFS().getOS(), "scheme("+SCHEME_NAME+")", "fs");
         getObsProperty(obsPropSpec).updateValue(new JasonTermWrapper(spec.getAsProlog()));
     }
 
