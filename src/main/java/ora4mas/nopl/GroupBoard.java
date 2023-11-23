@@ -247,14 +247,14 @@ public class GroupBoard extends OrgArt {
                         execLinkedOp(parentGroup, "updateSubgroupFormationStatus", orgState.getId(), status);
                     }
                 }
-                notifyObservers();
-
                 defineObsProperty(obsPropPlay,
                         new JasonTermWrapper(ag),
                         new JasonTermWrapper(role),
                         new JasonTermWrapper(GroupBoard.this.getId().getName()));
-                if (status != oldStatus)
-                    updateWellFormed(status);
+
+                updateWellFormed(isWellFormed());
+
+                notifyObservers();
             }
         }, "Error adopting role "+role);
     }
