@@ -104,27 +104,27 @@ task os2dot (type: JavaExec, dependsOn: 'jar') {
 }
 
 
-task javadocJar (type: Jar, dependsOn: javadoc) {
-    archiveBaseName = 'moise'
-    //classifier = 'javadoc'
-    duplicatesStrategy = 'include'
-    from javadoc.destinationDir
-}
-
-task sourceJar (type : Jar) {
-    archiveBaseName = 'moise'
-    //classifier = 'sources'
-    duplicatesStrategy = 'include'
-    from sourceSets.main.allSource
-}
+//task javadocJar (type: Jar, dependsOn: javadoc) {
+//    archiveBaseName = 'moise'
+//    //classifier = 'javadoc'
+//    duplicatesStrategy = 'include'
+//    from javadoc.destinationDir
+//}
+//
+//task sourceJar (type : Jar) {
+//    archiveBaseName = 'moise'
+//    //classifier = 'sources'
+//    duplicatesStrategy = 'include'
+//    from sourceSets.main.allSource
+//}
 
 
 publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-            artifact sourceJar
-            artifact javadocJar
+            //artifact sourceJar
+            //artifact javadocJar
             artifactId 'moise'
         }
     }
