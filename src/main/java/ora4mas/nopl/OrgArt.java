@@ -60,7 +60,6 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     public final static String sglOblInactive    = "oblInactive";
     public final static String sglNormFailure    = "normFailure";
     public final static String sglSanction       = "sanction";
-
     public final static String sglDestroyed      = "destroyed";
 
     protected NPLInterpreter nengine;
@@ -78,6 +77,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
     protected String ownerAgent = null; // the name of the agent that created this artifact
 
     protected List<ArtifactId> dfpListeners = new CopyOnWriteArrayList<>();
+    protected List<ArtifactId> normativeEvtListeners = new CopyOnWriteArrayList<>();
 
     protected String orgBoardName = null;
     
@@ -189,6 +189,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                 beginExtSession();
                 try {
                     defineObsProperty(o.getFunctor(), getTermsAsProlog(o)).addAnnot( getNormIdTerm(o) );
+                    notifyNormativeEventListeners(sglOblCreated+"("+o+")");
                 } finally {
                     endExtSession();                   
                 }
@@ -199,6 +200,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                     beginExtSession();
                     removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o)); // cause concurrent modification on cartago
                     signal(sglOblFulfilled, new JasonTermWrapper(o));
+                    notifyNormativeEventListeners(sglOblFulfilled+"("+o+")");
                 } catch (java.lang.IllegalArgumentException e) {
                     // ignore, the obligations was not there anymore
                 } finally {
@@ -211,6 +213,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                     beginExtSession();
                     removeObsPropertyByTemplate(o.getFunctor(), getTermsAsProlog(o));
                     signal(sglOblUnfulfilled, new JasonTermWrapper(o));
+                    notifyNormativeEventListeners(sglOblUnfulfilled+"("+o+")");
                 } catch (Exception e) {
                     logger.log(Level.FINE, "error removing obs prop for "+o, e);
                 } finally {
@@ -233,7 +236,8 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                 try {
                     beginExtSession();
                     //execInternalOp("NPISignals", sglNormFailure, f);
-                    signal(sglNormFailure, new JasonTermWrapper(f));                    
+                    signal(sglNormFailure, new JasonTermWrapper(f));
+                    notifyNormativeEventListeners(sglNormFailure+"("+f+")");
                 } finally {
                     endExtSession();                   
                 }
@@ -247,6 +251,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
                             new JasonTermWrapper(normId),
                             new JasonTermWrapper(event.name()),
                             s);
+                    notifyNormativeEventListeners(sglSanction+"("+normId+","+event+","+s+")");
                 } finally {
                     endExtSession();
                 }
@@ -317,14 +322,14 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         signal(signal, new JasonTermWrapper(arg));
     }*/
 
-    // subscribe protocol
+    // subscribe / listners protocol
 
     @LINK void subscribeDFP(ArtifactId subscriber) throws OperationException {
         dfpListeners.add(subscriber);
-        notifyListeners();
+        notifyDFPListeners();
     }
 
-    void notifyListeners() {
+    void notifyDFPListeners() {
         for (ArtifactId aid: dfpListeners) {
             try {
                 execLinkedOp(aid, "updateDFP", getId().getName(), (DynamicFactsProvider)orgState);
@@ -335,6 +340,20 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         }
     }
 
+    @LINK void subscribeNormativeEvents(ArtifactId subscriber) throws OperationException {
+        normativeEvtListeners.add(subscriber);
+    }
+    void notifyNormativeEventListeners(String evt) {
+        for (ArtifactId aid: normativeEvtListeners) {
+            try {
+                execLinkedOp(aid, "normativeEvent", evt);
+            } catch (Exception e) {
+                // TODO: I do not know why the error occurs, commented the msg for now !!!
+                //  System.out.println("error with listener "+aid.getName()+", we failed to contact it."+e);
+                //e.printStackTrace();
+            }
+        }
+    }
 
     protected void ora4masOperationTemplate(Operation op, String errorMsg) {
         if (runningDestroy) return; 
@@ -343,7 +362,7 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
         try {
             op.exec();
             updateGuiOE();
-            notifyListeners();
+            notifyDFPListeners();
         } catch (NormativeFailureException e) {
             orgState = bak; // takes the backup as the current model since the action failed
             getLogger().info("error. "+e);
