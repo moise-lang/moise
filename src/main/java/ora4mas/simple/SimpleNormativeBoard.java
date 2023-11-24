@@ -1,16 +1,16 @@
 package ora4mas.simple;
 
-import java.util.logging.Logger;
-
 import cartago.LINK;
 import cartago.OPERATION;
 import moise.common.MoiseException;
+import npl.INPLFactory;
 import npl.INorm;
-import npl.Norm;
-import npl.NormFactory;
+import npl.NPLFactory;
 import npl.parser.ParseException;
 import ora4mas.nopl.NormativeBoard;
 import ora4mas.nopl.SchemeBoard;
+
+import java.util.logging.Logger;
 
 /**
  * Artifact to manage a normative program (NPL)
@@ -39,7 +39,7 @@ import ora4mas.nopl.SchemeBoard;
 public class SimpleNormativeBoard extends NormativeBoard {
 
     int id = 0;
-    NormFactory factory = Norm.getFactory();
+    INPLFactory factory = new NPLFactory();
     
     protected Logger logger = Logger.getLogger(SimpleNormativeBoard.class.getName());
 

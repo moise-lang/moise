@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import jason.asSyntax.Atom;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -113,6 +114,8 @@ public class NormativeBoard extends OrgArt {
             logger.warning("error parsing \n"+nplProgram);
             e.printStackTrace();
             throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         nengine.loadNP(p.getRoot());
 
@@ -126,13 +129,13 @@ public class NormativeBoard extends OrgArt {
     }
 
     @OPERATION public void addFact(String f) throws jason.asSyntax.parser.ParseException, NormativeFailureException {
-        nengine.addFact(ASSyntax.parseLiteral(f));
+        nengine.addFact(ASSyntax.parseLiteral(f).addSource(new Atom("nboard")));
         nengine.verifyNorms();
         updateGuiOE();
     }
 
     @OPERATION void removeFact(String f) throws jason.asSyntax.parser.ParseException, NormativeFailureException {
-        nengine.removeFact(ASSyntax.parseLiteral(f));
+        nengine.removeFact(ASSyntax.parseLiteral(f).addSource(new Atom("nboard")));
         nengine.verifyNorms();
         updateGuiOE();
     }
@@ -169,6 +172,7 @@ public class NormativeBoard extends OrgArt {
                 }
             }
         }
+        out.append( "\n\n"+nengine.getStateString());
         return out.toString();
     }
 

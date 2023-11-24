@@ -1,9 +1,5 @@
 package ora4mas;
 
-import java.io.FileNotFoundException;
-import java.io.StringReader;
-import java.util.Iterator;
-
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.PredicateIndicator;
@@ -12,12 +8,15 @@ import npl.DynamicFactsProvider;
 import npl.NPLInterpreter;
 import npl.NormativeFailureException;
 import npl.NormativeProgram;
-import npl.parser.ParseException;
 import npl.parser.nplp;
 import ora4mas.nopl.oe.Group;
 import ora4mas.nopl.oe.OE;
 import ora4mas.nopl.oe.Scheme;
 import ora4mas.nopl.tools.os2nopl;
+
+import java.io.FileNotFoundException;
+import java.io.StringReader;
+import java.util.Iterator;
 
 /** simple OI used to test one scheme */
 public class OI implements DynamicFactsProvider {
@@ -30,7 +29,7 @@ public class OI implements DynamicFactsProvider {
     OE     oe = new OE();
     OS     os;
 
-    public OI(String osFile, String type, String schId) throws FileNotFoundException, ParseException {
+    public OI(String osFile, String type, String schId) throws FileNotFoundException, Exception {
         os = OS.loadOSFromURI(osFile);
         spec = os.getFS().findScheme(type);
         sch = new Scheme(spec, schId);

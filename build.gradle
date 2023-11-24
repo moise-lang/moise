@@ -43,7 +43,7 @@ dependencies {
     api('org.jason:jason:3.1') {
      exclude group: 'net.sf.ingenias', module: 'jade'
     }
-    api('org.jacamo:npl:0.5')  {  transitive = false  }
+    api('org.jacamo:npl:0.6-SNAPSHOT')  {  transitive = false  }
     api('org.jacamo:cartago:3.1') {  transitive = false  }
     api('org.jacamo:jaca:3.1') {  transitive = false  }
 
@@ -106,14 +106,14 @@ task os2dot (type: JavaExec, dependsOn: 'jar') {
 
 task javadocJar (type: Jar, dependsOn: javadoc) {
     archiveBaseName = 'moise'
-    classifier = 'javadoc'
+    //classifier = 'javadoc'
     duplicatesStrategy = 'include'
     from javadoc.destinationDir
 }
 
 task sourceJar (type : Jar) {
     archiveBaseName = 'moise'
-    classifier = 'sources'
+    //classifier = 'sources'
     duplicatesStrategy = 'include'
     from sourceSets.main.allSource
 }

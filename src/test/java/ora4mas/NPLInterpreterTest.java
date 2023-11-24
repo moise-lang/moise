@@ -15,19 +15,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import npl.*;
 import org.junit.Before;
 import org.junit.Test;
 
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import moise.os.OS;
-import npl.DeonticModality;
-import npl.NPLInterpreter;
-import npl.NPLLiteral;
-import npl.NormativeFailureException;
-import npl.NormativeProgram;
-import npl.Scope;
-import npl.TimeTerm;
 import npl.parser.ParseException;
 import npl.parser.nplp;
 import ora4mas.nopl.oe.Group;
@@ -216,7 +210,7 @@ public class NPLInterpreterTest {
         i.init();
         i.loadNP(wp);
         @SuppressWarnings("unused")
-        Collection<DeonticModality> rver = i.verifyNorms();
+        Collection<NormInstance> rver = i.verifyNorms();
         //System.out.println(rver);
 
         // simulates responsible for
@@ -263,7 +257,7 @@ public class NPLInterpreterTest {
                 System.out.println("inactive "+o);
             }
         });*/
-        Collection<DeonticModality> rver = oi.getNbNPLI().verifyNorms();
+        Collection<NormInstance> rver = oi.getNbNPLI().verifyNorms();
         //System.out.println(oi.getNPLI().getSource(NPLInterpreter.OEAtom));
         int cobl = 0; int cperm = 0;
         for (Literal l: rver) {
@@ -314,8 +308,8 @@ public class NPLInterpreterTest {
         assertFalse(oi.getNPLI().holds(ASSyntax.parseLiteral("enabled(sch2,wp)")));
 
         Thread.sleep(200);
-        List<DeonticModality> obls = oi.getNPLI().getActiveObligations();
-        for (DeonticModality o: obls) {
+        List<NormInstance> obls = oi.getNPLI().getActiveObligations();
+        for (NormInstance o: obls) {
             //System.out.println(o);
             assertEquals(4,o.getArity());
             assertEquals(NormativeProgram.OblFunctor, o.getFunctor());
@@ -426,7 +420,7 @@ public class NPLInterpreterTest {
         //System.out.println(ob2);
         assertFalse(ob1.toString().equals(ob2.toString()));
 
-        List<DeonticModality> unful = oi.getNPLI().getUnFulfilledObligations();
+        var unful = oi.getNPLI().getUnFulfilledObligations();
         //System.out.println("Unful: "+unful);
         assertTrue(unful.size() >= 1);
         //assertEquals("achieved(\"sch2\",wp,jaime)", unful.get(0).getTerm(2).toString());

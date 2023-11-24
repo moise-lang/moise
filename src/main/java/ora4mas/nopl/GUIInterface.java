@@ -29,8 +29,8 @@ import javax.xml.transform.stream.StreamResult;
 import jason.asSyntax.Structure;
 import moise.xml.DOMUtils;
 import moise.xml.ToXML;
-import npl.DeonticModality;
 import npl.NPLInterpreter;
+import npl.NormInstance;
 import npl.NormativeListener;
 
 /** General GUI for OrgArts */
@@ -133,11 +133,15 @@ public class GUIInterface {
 
         // add listener for changes
         nengine.addListener(new NormativeListener() {
-           public void created(DeonticModality o) {     gui.txtLog.append("created:     "+o+"\n");  }
-           public void fulfilled(DeonticModality o) {   gui.txtLog.append("fulfilled:   "+o+"\n");  }
-           public void unfulfilled(DeonticModality o) { gui.txtLog.append("unfulfilled: "+o+"\n");  }
-           public void inactive(DeonticModality o) {    gui.txtLog.append("inactive:    "+o+"\n");  }
-           public void failure(Structure f) {      gui.txtLog.append("failure:     "+f+"\n");  }
+            @Override public void created(NormInstance o) {     gui.txtLog.append("created:     "+o+"\n");  }
+            @Override public void fulfilled(NormInstance o) {   gui.txtLog.append("fulfilled:   "+o+"\n");  }
+            @Override public void unfulfilled(NormInstance o) { gui.txtLog.append("unfulfilled: "+o+"\n");  }
+            @Override public void inactive(NormInstance o) {    gui.txtLog.append("inactive:    "+o+"\n");  }
+            @Override public void failure(Structure f) {      gui.txtLog.append("failure:     "+f+"\n");  }
+
+            @Override public void sanction(String normId, NPLInterpreter.EventType event, Structure s) {
+                gui.txtLog.append("sanction for norm "+normId+" ("+event+"):     "+s+"\n");
+            }
         });
 
         return gui;
@@ -190,8 +194,8 @@ public class GUIInterface {
     public void updateNFacts(String nFacts)  {
         if (! nFacts.equals(lastNFacts)) {
             txtNF.setText( nFacts);
+            lastNFacts = nFacts;
         }
-        lastOEStr = nFacts;
     }
 
 
