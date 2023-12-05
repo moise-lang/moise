@@ -342,7 +342,7 @@ public class os2nopl {
             np.append("           well_formed(S) & \n");
             np.append("           not satisfied(S,G) & \n");
             np.append("           not super_satisfied(S,G)\n");
-            np.append("        -> obligation(A,enabled(S,G),What,`now` + D).\n");
+            np.append("        -> obligation(A,enabled(S,G),What,D).\n");
             // TODO: maintenance goals
             //np.append("   // maintenance goals\n");
         }
@@ -389,7 +389,7 @@ public class os2nopl {
         
         String id = nrm.getId();
         String m  = nrm.getMission().getId();
-        String tc = nrm.getTimeConstraint() == null ? "+`1 year`" : "+`"+nrm.getTimeConstraint().getTC()+"`";
+        String tc = nrm.getTimeConstraint() == null ? "`1 year`" : "`"+nrm.getTimeConstraint().getTC()+"`";
         String comment = "";
         String args    = "";
         String condition = nrm.getCondition();
@@ -409,7 +409,7 @@ public class os2nopl {
         condition        = condition + "scheme_id(S) & responsible(Gr,S)";
         String mplayers  = "mplayers("+m+",S,V) & mission_cardinality("+m+",MMinCard,MMaxCard) & ";
         String fplay     = "fplay(A,"+nrm.getRole().getId()+",Gr)";
-        String cons      = args+",committed(A,"+m+",S), `now`"+tc+").\n";
+        String cons      = args+",committed(A,"+m+",S),"+tc+").\n";
         if (card.getMin() > 0 && nrm.getType() == OpTypes.obligation) { // the obligation
             np.append("   norm "+id+": "+comment+"\n");
             np.append("           "+condition);
