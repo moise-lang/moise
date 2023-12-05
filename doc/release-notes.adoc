@@ -1,5 +1,11 @@
 = Release Notes for Moise
 
+== Version 1.1
+
+- Moise Simple is included, see examples/moise-simple. Moise simple is a version that runs without XML files and withouts some concepts (as schemes, missions, links, ...).
+
+- NPL 0.6 is used, this version support _sanctions_.
+
 == Version 1.0
 
 Version used in JaCaMo 1.0 (using cartago 3.0)
