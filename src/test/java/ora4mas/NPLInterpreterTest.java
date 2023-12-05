@@ -530,11 +530,11 @@ public class NPLInterpreterTest {
         assertFalse(n.equals(t1));
         assertFalse(n.equals(t2));
 
-        assertEquals("now + 1 days", TimeTerm.toRelTimeStr( (long) t2.solve() + System.currentTimeMillis()));
-        assertEquals("now", TimeTerm.toRelTimeStr( (long) t1.solve()));
+        assertEquals("1 days", TimeTerm.toRelativeTimeStr( (long) t2.solve() + System.currentTimeMillis()));
+        assertEquals("now", TimeTerm.toRelativeTimeStr( (long) t1.solve()));
 
         TimeTerm t3 = new TimeTerm(3,"seconds");
-        assertEquals("now + 3 seconds", TimeTerm.toRelTimeStr( (long) t3.solve() + System.currentTimeMillis()));
+        assertEquals("3 seconds", TimeTerm.toRelativeTimeStr( (long) t3.solve() + System.currentTimeMillis()));
 
         t1 = new TimeTerm(0, null);
         Thread.sleep(100);
