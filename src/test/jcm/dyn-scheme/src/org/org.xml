@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
+<?xml-stylesheet href="https://moise-lang.github.io/xml/os.xsl" type="text/xsl" ?>
 
 <organisational-specification
     id="dyn-scheme"
     os-version="0.8"
 
-    xmlns='http://moise.sourceforge.net/os'
+    xmlns='https://moise-lang.github.io/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-    xsi:schemaLocation='http://moise.sourceforge.net/os
-                        http://moise.sourceforge.net/xml/os.xsd' >
+    xsi:schemaLocation='https://moise-lang.github.io/os
+                        https://moise-lang.github.io/xml/os.xsd' >
 
 <structural-specification>
 

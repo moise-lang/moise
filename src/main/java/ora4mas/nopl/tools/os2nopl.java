@@ -437,7 +437,7 @@ public class os2nopl {
         np.append("/*\n");
         np.append("    This program was automatically generated from\n");
         np.append("    the organisation specification '"+ele.getId()+"'\n    on "+new SimpleDateFormat("MMMM dd, yyyy - HH:mm:ss").format(new Date())+"\n\n");
-        np.append("    This is a MOISE tool, see more at http://moise.sourceforge.net\n\n");
+        np.append("    This is a MOISE tool, see more at https://moise-lang.github.io\n\n");
         np.append("*/\n\n");
         return np.toString();
     }

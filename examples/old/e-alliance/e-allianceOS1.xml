@@ -4,9 +4,9 @@
     id="e-alliance1"
     os-version="0.4"
 
-    xmlns='http://moise.sourceforge.net/os'
+    xmlns='https://moise-lang.github.io/os'
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-    xsi:schemaLocation='http://moise.sourceforge.net/os http://moise.sourceforge.net/xml/os.xsd'>
+    xsi:schemaLocation='https://moise-lang.github.io/os https://moise-lang.github.io/xml/os.xsd'>
 
     <structural-specification>
         <role-definitions>
