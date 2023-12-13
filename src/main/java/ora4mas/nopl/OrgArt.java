@@ -244,14 +244,15 @@ public abstract class OrgArt extends Artifact implements ToXML, DynamicFactsProv
             }
 
             @Override
-            public void sanction(String normId, NPLInterpreter.EventType event, Structure s) {
+            public void sanction(String normId, NPLInterpreter.EventType event, Literal s) {
                 try {
                     beginExtSession();
                     signal(sglSanction,
                             new JasonTermWrapper(normId),
                             new JasonTermWrapper(event.name()),
-                            s);
-                    notifyNormativeEventListeners(sglSanction+"("+normId+","+event+","+s+")");
+                            s.getTerm(0),
+                            s.getTerm(1));
+                    notifyNormativeEventListeners(s.toString());
                 } finally {
                     endExtSession();
                 }
