@@ -47,7 +47,7 @@ dependencies {
     api('org.jacamo:cartago:3.1') {  transitive = false  }
     api('org.jacamo:jaca:3.1') {  transitive = false  }
 
-    testImplementation('junit:junit:4.12')
+    testImplementation('junit:junit:4.13.1')
 
     api('guru.nidi:graphviz-java:0.7.0') {
      exclude group: 'xml-apis', module: 'xml-apis'
