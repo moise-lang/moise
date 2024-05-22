@@ -362,6 +362,7 @@ public class SchemeBoard extends OrgArt {
             public void exec() throws NormativeFailureException, Exception {
                 if (getSchState().resetGoal(g)) {
                     getSchState().computeSatisfiedGoals();
+                    getNormativeEngine().setAllActivatedNorms(null); // to empty the set of activated norms and thus allow norms to trigger again
                 }
                 nengine.verifyNorms();
                 getSchState().clearExPlayers(); // and an agent quits a mission accomplished, that was ok, the reset goal will turn this mission unaccomplished and produces a norm failure. so we remove the ex players here
