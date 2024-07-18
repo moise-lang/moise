@@ -26,6 +26,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 import moise.xml.DOMUtils;
 import moise.xml.ToXML;
@@ -139,7 +140,7 @@ public class GUIInterface {
             @Override public void inactive(NormInstance o) {    gui.txtLog.append("inactive:    "+o+"\n");  }
             @Override public void failure(Structure f) {      gui.txtLog.append("failure:     "+f+"\n");  }
 
-            @Override public void sanction(String normId, NPLInterpreter.EventType event, Structure s) {
+            @Override public void sanction(String normId, NPLInterpreter.EventType event, Literal s) {
                 gui.txtLog.append("sanction for norm "+normId+" ("+event+"):     "+s+"\n");
             }
         });

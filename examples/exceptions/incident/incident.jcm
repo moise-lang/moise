@@ -1,0 +1,92 @@
+/*
+    incident
+    ---------------------------
+
+    JaCaMo Project File
+
+    This file defines the initial state of the MAS (initial agents, environment, organisation, ....)
+
+    (see jacamo/doc/jcm.html for more information about what can be defined in this file)
+
+    JaCaMo <VERSION>
+    <DATE>
+*/
+
+mas incident {
+
+	agent ag1 {
+		beliefs: description(hard_problem)
+	    //beliefs: description(easy_problem)
+		roles: customer in g1
+	}
+
+    agent ag2 {
+    	roles: key_account_manager in g1
+    }
+    agent ag3 {
+    	roles: key_account_worker_1 in g1
+    }
+	agent ag4 {
+    	roles: key_account_worker_2 in g1, first_level_manager in g2
+    }
+    agent ag5 {
+    	roles: key_account_worker_3 in g1
+    }
+    agent ag6 {
+    	roles: key_account_worker_4 in g1
+    }
+
+    agent ag7 {
+    	beliefs: result(unsolved)
+    	//beliefs: result(solved)
+    	roles: first_level_worker_1 in g2
+    }
+	agent ag8 {
+    	roles: first_level_worker_2 in g2, second_level_manager in g3
+    }
+    agent ag9 {
+    	roles: first_level_worker_3 in g2
+    }
+    agent ag10 {
+    	roles: first_level_worker_4 in g2
+    }
+    
+    agent ag11 {
+    	beliefs: unsure(yes)
+    	//beliefs: unsure(no), result(solved)
+    	//beliefs: unsure(no), result(next_release)
+    	roles: second_level_worker_1 in g3
+    }
+	agent ag12 {
+    	roles: second_level_worker_2 in g3, developer_manager in g4
+    }
+    agent ag13 {
+    	roles: second_level_worker_3 in g3
+    }
+    agent ag14 {
+    	roles: second_level_worker_4 in g3
+    }
+    agent ag15 {
+    	roles: second_level_worker_5 in g3
+    }
+    
+
+
+    agent ag16 {
+    	roles: developer_worker_1 in g4
+    }
+	agent ag17 {
+		//beliefs: result(solved)
+		beliefs: result(next_release)
+    	roles: developer_worker_2 in g4
+    }
+
+
+	organisation o1 : incident-os.xml {
+		group g1 : key_account_management_group
+		group g2 : first_level_support_group
+		group g3 : second_level_support_group
+		group g4 : developer_group
+	}
+
+}

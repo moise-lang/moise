@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="https://moise-lang.github.io/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification
+    id="bakery" os-version="1.0"
+
+    xmlns="https://moise-lang.github.io/os"
+    
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://moise-lang.github.io/os https://moise-lang.github.io/os.xsd">
+    
+    <structural-specification>
+
+        <role-definitions>
+            <role id="kneader" />
+            <role id="baker" />
+            <role id="seller" />
+            <role id="owner" />
+        </role-definitions>
+
+        <group-specification id="bakery_group">
+            <roles>
+                <role id="kneader" min="1" max="1" />
+                <role id="baker" min="1" max="1" />
+                <role id="seller" min="1" max="1" />
+                <role id="owner" min="1" max="1" />
+            </roles>
+        </group-specification>
+
+    </structural-specification>
+
+    <functional-specification>
+
+        <scheme id="bakery_scheme">
+
+            <goal id="sellingBread">
+                <plan operator="sequence">
+                    <goal id="preparation">
+                        <plan operator="sequence">
+                            <goal id="setup">
+                                <plan operator="parallel">
+                                    <goal id="knead" />
+                                    <goal id="heatOven" />
+                                </plan>
+                            </goal>
+                            <goal id="bake" />
+                        </plan>
+                    </goal>
+                    <goal id="sell" />
+                </plan>
+            </goal>
+
+            <accountability-agreement id="a1" target="knead" condition="true">
+                <account-template id="ftKneader">
+                    <account-argument id="flourType" arity="1" />
+                    <requesting-goal id="requestFlourTypeToKneader" />
+                    <accounting-goal id="notifyFlourTypeToBaker" />
+                </account-template>
+            </accountability-agreement>
+
+            <accountability-agreement id="a2" target="preparation" condition="scheme_id(S) &amp; satisfied(S,getAuthorization)">
+                <context-goal id="getAuthorization" />
+                <account-template id="ftBaker">
+                    <account-argument id="flourType" arity="1" />
+                    <requesting-goal id="requestFlourTypeToBaker" />
+                    <accounting-goal id="notifyFlourTypeToSeller" />
+                </account-template>
+            </accountability-agreement>
+
+            <mission id="mKneader" min="1" max="1">
+                <goal id="knead" />
+                <goal id="notifyFlourTypeToBaker" />
+            </mission>
+            <mission id="mBaker" min="1" max="1">
+                <goal id="heatOven" />
+                <goal id="bake" />
+                <goal id="notifyFlourTypeToSeller" />
+                <goal id="requestFlourTypeToKneader" />
+            </mission>
+            <mission id="mSeller" min="1" max="1">
+                <goal id="sell" />
+                <goal id="getAuthorization" />
+                <goal id="requestFlourTypeToBaker" />
+            </mission>
+            <mission id="mOwner" min="1" max="1">
+                <goal id="sellingBread" />
+            </mission>
+
+        </scheme>
+
+    </functional-specification>
+
+    <normative-specification>
+        <norm id="n1" type="obligation" role="kneader"
+            mission="mKneader" />
+        <norm id="n2" type="obligation" role="baker"
+            mission="mBaker" />
+        <norm id="n3" type="obligation" role="seller"
+            mission="mSeller" />
+        <norm id="n4" type="obligation" role="owner"
+            mission="mOwner" />
+    </normative-specification>
+
+</organisational-specification>

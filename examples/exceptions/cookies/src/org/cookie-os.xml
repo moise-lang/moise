@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="https://moise-lang.github.io/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification
+    id="cookies" os-version="1.0"
+
+    xmlns="https://moise-lang.github.io/os"
+    
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://moise-lang.github.io/os https://moise-lang.github.io/os.xsd">
+
+    <structural-specification>
+
+        <role-definitions>
+            <role id="worker" />
+            <role id="warehouse">
+                <extends role="worker" />
+            </role>
+            <role id="ovenOperator">
+                <extends role="worker" />
+            </role>
+            <role id="productionLineHead">
+                <extends role="worker" />
+            </role>
+            <role id="productionManager">
+                <extends role="worker" />
+            </role>
+        </role-definitions>
+
+        <group-specification id="factory">
+            <roles>
+                <role id="warehouse" min="1" max="1" />
+                <role id="ovenOperator" min="1" max="1" />
+                <role id="productionLineHead" min="1" max="1" />
+                <role id="productionManager" min="1" max="1" />
+            </roles>
+        </group-specification>
+
+    </structural-specification>
+
+    <functional-specification>
+
+        <scheme id="tarts_sch">
+
+            <goal id="tartMaking">
+                <plan operator="sequence">
+                    <goal id="setup">
+                        <plan operator="parallel">
+                            <goal id="ingredientsCollection" ttf="5 seconds" />
+                            <goal id="cookingTemperatureSetup" />
+                        </plan>
+                    </goal>
+                    <goal id="doughMixingAndFeeding" />
+                    <goal id="cutting" />
+                    <goal id="firstTimeBaking" />
+                    <goal id="jamFilling" />
+                    <goal id="secondTimeBaking" />
+                    <goal id="packaging" />
+                </plan>
+            </goal>
+
+            <notification-policy id="np1" target="ingredientsCollection" condition="scheme_id(S) &amp; failed(S,ingredientsCollection)">
+                <exception-specification id="ingredientsShortage">
+                    <exception-argument id="availableFillings" arity="1" />
+                    <raising-goal id="notifyIngredientsShortage"/>
+                    <handling-goal id="dealWithIngredientsShortage" />
+                </exception-specification>
+            </notification-policy>
+
+            <notification-policy id="np2" target="ingredientsCollection" condition="scheme_id(S) &amp; scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,ingredientsCollection,_),_))">
+                <exception-specification id="ingredientsDelay">
+                    <exception-argument id="reason" arity="1" />
+                    <raising-goal id="notifyIngredientsDelay"/>
+                    <handling-goal id="slowdownProduction" when="raised(_,ingredientsDelay,_,Args) &amp; .member(reason(healthInspection),Args)" />
+                </exception-specification>
+            </notification-policy>
+
+            <notification-policy id="np3" target="tartMaking" condition="scheme_id(S) &amp; (failed(S,cookingTemparatureSetup) | failed(S,firstTimeBaking) | failed(S,secondTimeBaking))">
+                <exception-specification id="ovenBroken">
+                    <exception-argument id="status" arity="1" />
+                    <raising-goal id="notifyProblemWithOven"/>
+                    <handling-goal id="emergency" when="raised(_,ovenBroken,_,Args) &amp; .member(status(fire),Args)">
+                        <plan operator="parallel">
+                            <goal id="leaveBUildingImmediately" />
+                            <goal id="call911" min="1" />
+                        </plan>    
+                    </handling-goal>
+                    <handling-goal id="notifyTechSupport" when="raised(_,ovenBroken,_,Args) &amp; .member(status(noHeat),Args)" />
+                </exception-specification>
+            </notification-policy>
+
+            <notification-policy id="np4" target="tartMaking" condition="scheme_id(S) &amp; (failed(S,ingredientsCollection) &amp; failed(S,cookingTemperatureSetup))">
+                <exception-specification id="tartPreparationException">
+                    <exception-argument id="affectedTartTypes" arity="1" />
+                    <raising-goal id="notifyTartPreparationException"/>
+                    <handling-goal id="alertCustomers" />
+                </exception-specification>
+            </notification-policy>
+
+            <mission id="mOvenOperator" min="1" max="1">
+                <goal id="cookingTemperatureSetup" />
+                <goal id="firstTimeBaking" />
+                <goal id="secondTimeBaking" />
+                <goal id="notifyProblemWithOven" />
+            </mission>
+            <mission id="mWarehouse" min="1" max="1">
+                <goal id="ingredientsCollection" />
+                <goal id="notifyIngredientsShortage" />
+                <goal id="notifyIngredientsDelay" />
+            </mission>
+            <mission id="mProductionLineHead" min="1" max="1">
+                <goal id="doughMixingAndFeeding" />
+                <goal id="cutting" />
+                <goal id="jamFilling" />
+                <goal id="packaging" />
+                <goal id="dealWithIngredientsShortage" />
+                <goal id="slowdownProduction" />
+                <goal id="notifyTechSupport" />
+                <goal id="notifyTartPreparationException" />
+            </mission>
+            <mission id="mProductionManager" min="1" max="1">
+                <goal id="tartMaking" />
+                <goal id="alertCustomers" />
+            </mission>
+            <mission id="mWorker" min="4" max="4">
+                <goal id="leaveBUildingImmediately" />
+                <goal id="call911" />
+            </mission>
+
+        </scheme>
+    </functional-specification>
+
+    <normative-specification>
+        <norm id="n1" type="obligation" role="ovenOperator"       mission="mOvenOperator" />
+        <norm id="n2" type="obligation" role="warehouse"          mission="mWarehouse" />
+        <norm id="n3" type="obligation" role="productionLineHead" mission="mProductionLineHead" />
+        <norm id="n4" type="obligation" role="productionManager"  mission="mProductionManager" />
+        <norm id="n5" type="obligation" role="worker"             mission="mWorker" />
+    </normative-specification>
+
+</organisational-specification>

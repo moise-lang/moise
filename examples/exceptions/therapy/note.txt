@@ -1,0 +1,136 @@
+Il protocollo in BSPL è il seguente (da [1]):
+
+Prescription {
+  roles Doctor, Pharmacist, Patient
+  parameters out vID key, out Rx, out package
+
+  Patient -> Doctor: Complain[out vID key, out symptoms]
+  Doctor -> Pharmacist: Prescribe[in vID key, in symptoms, out Rx]
+  Pharmacist -> Patient: Filled[in vID key, in Rx, out package]
+}
+
+[1] S. H. Christie, A. K. Chopra, and M. P. Singh, “Bungie: Improving fault tolerance
+    via extensible application-level protocols ?, Computer, vol. 54, no. 5, pp. 44–53, 2021.
+
+Si può rappresentare tramite un'organizzazione che prevede gli stessi ruoli e
+una decomposizione funzionale come segue:
+
+SendComplain THEN (ReceiveFilled AND (ReceiveComplain THEN SendPrescribe THEN (ReceivePrescribe THEN SendFilled))
+
+Dividere ogni goal in due sottogoal che rappresentano l'invio e la ricezione del
+messaggio implementa automaticamente la policy di acknowledgment definita nell'articolo,
+ovvero l'invio di una conferma di ricezione per ogni messaggio inviato
+
+Si possono definire le seguenti missioni:
+
+Mission id: mPatient
+  goals: [SendComplain, ReceiveFilled]
+Mission id: mDoctor
+  goals: [ReceiveComplain, SendPrescribe]
+Mission id: mPharmacist
+  goals: [ReceivePrescribe, SendFilled]
+
+In Bungie i fallimenti sono modellati come aspettative disattese relative alla ricezione
+di un certo messaggio
+
+Noi possiamo mappare queste aspettative disattese sull'insoddisfacimento di un
+obbligo oppure sul fallimento di un goal
+
+
+----------------
+1) Resend policy
+----------------
+
+In risposta ad un'aspettativa disattesa, vengono reinviati i messaggi che potrebbero essere
+andati persi
+
+Supponiamo che Patient non riceva il messaggio Filled.
+In base a determinati requisiti applicativi (es. un timeout) allora marca il goal
+ReceiveFilled come fallito.
+Questo abilita la policy che prevede il reinvio del messaggio Complain iniziale
+al Doctor (che potrebbe essere andato perso)
+
+Nota: nelle condizioni delle policy utilizzo la seguente convenzione, per semplicità
+  - failure --> il goal target è fallito
+  - timeout --> un obbligo relativo al goal target è scaduto
+  - achievement --> il goal target è stato completato da qualche agente
+
+Notification Policy id: resend
+  target:    ReceiveFilled
+  condition: failure
+  ExceptionSpecification id: resend
+    exception-argument: ...
+    raising-goal:  ResendComplain
+    handling-goal: ReceiveResentComplain
+
+Mission id: mPatient
+  goals: [..., ResendComplain]
+Mission id: mDoctor
+  goals: [..., ReceiveResentComplain]
+
+
+-----------------
+2) Forward Policy
+-----------------
+
+Un agente, invece di inviare un messaggio solo al destinatario previsto, lo invia anche ad altri.
+Es. Doctor non invia Prescribe solo a Pharmacist, ma anche a Patient.
+
+Se l'aspettativa di Patient viene disattesa (non riceve Filled) allora quest'ultimo può inoltrare 
+il messaggio Prescribe (che potrebbe essere andato perso) al destinatario originale.
+
+Per realizzare questo caso è necessario modificare la decomposizione funzionale in modo da incorporare
+l'invio del messaggio Prescribe anche a Patient
+
+SendComplain THEN (ReceiveFilled AND ReceivePrescribePatient AND 
+(ReceiveComplain THEN (SendPrescribePharmacist AND SendPrescribePatient) THEN (ReceivePrescribePharmacist THEN SendFilled))
+
+Notification Policy id: forward
+  target:    ReceiveFilled
+  condition: failure
+  ExceptionSpecification id: forward
+    exception-argument: ...
+    raising-goal:  ForwardPrescribe
+    handling-goal: ReceiveForwardedPrescribe
+
+Mission id: mPatient
+  goals: [..., ReceivePrescribePatient, ForwardPrescribe]
+Mission id: mDoctor
+  goals: [..., SendPrescribePharmacist, SendPrescribePatient]
+Mission id: mPharmacist
+  goals: [..., ReceivePrescribePharmacist, ReceiveForwardedPrescribe]
+
+
+-----------------
+3) Probing Policy
+-----------------
+
+Un agente non riceve un messaggio che si aspetta e allora richiede al mittente
+di reinviarlo
+
+Patient non riceve la Filled da Pharmacist e allora fa polling
+
+Notification Policy id: probe
+  target:    ReceiveFilled
+  condition: failure
+  ExceptionSpecification id: probe
+    exception-argument: ...
+    raising-goal:  PollFilled
+    handling-goal: ResendFilled
+	when: satisfied(ReceivePrescribe)
+    handling-goal: PollPrescribe THEN ResendPrescribe
+	when: not satisfied(ReceivePrescribe)
+
+Mission id: mPatient
+  goals: [..., PollFilled]
+Mission id: mDoctor
+  goals: [..., ResendPrescribe]
+Mission id: mPharmacist
+  goals: [..., ReceivePrescribe, PollPrescribe]
+
+Il raising goal (in carico Patient) corrisponde a fare polling del messaggio non ricevuto.
+A questo punto ci sono due casi (catturati dai due handling goal):
+1) Pharmacist ha ricevuto Prescribe da Doctor, ha inviato Filled, ma questo è andato perso,
+   allora lo reinvia
+2) Pharmacist non ha ricevuto Prescribe da Doctor, allora fa polling a sua volta verso Doctor
+   che dovrà reinviare Prescribe che è andato perso

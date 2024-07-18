@@ -1,0 +1,23 @@
+
+mas therapy {
+
+    agent patient {
+    	roles: patient in therapy_group
+    }
+    agent doctor {
+    	roles: doctor in therapy_group
+    }
+    agent pharmacist {
+    	roles: pharmacist in therapy_group
+    }
+
+    organisation therapy_org : therapy-os.xml {
+		group therapy_group : therapy_group {
+			responsible-for: therapy_sch
+		}
+		scheme therapy_sch : therapy_sch
+	}
+
+	java-path: ., src/env
+
+}

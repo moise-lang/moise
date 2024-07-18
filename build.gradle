@@ -7,13 +7,14 @@ defaultTasks 'jar'
 
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
+apply plugin: 'eclipse'
 
-version '1.1-SNAPSHOT'
+version '1.2-SNAPSHOT'
 group   'org.jacamo'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(15)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
