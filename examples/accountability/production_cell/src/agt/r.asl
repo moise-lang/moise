@@ -15,13 +15,21 @@
 	   goalAchieved(requestStoppedMotorNumber).
 	   
 +!slowDownProduction
+	:	account(stock,[availablePlates(N)])
 	<- .wait(1000);
+	   .print("Worning, stock plates: ", N);
 	   .print("*** TREATING ACCOUNT STOCK: Slowing down production...").
+
++!stopProduction
+	:	account(stock,[availablePlates(N)])
+	<- .wait(1000);
+	   .print("Error, stock plates: ", N);
+	   .print("*** TREATING ACCOUNT STOCK: Stopping production...").
 	
 +!scheduleTableMotorFix
 	 : account(tableFailure,[motorNumber(N)])
 	<- .wait(1000);
-	   .print("*** TREATING ACCOUNT FAILURE: Scheduling fix for table motor n.",N);
+	   .print("*** TREATING ACCOUNT FAILURE: Scheduling fix for table motor n. ", N);
 	   goalReleased(producePlate).
 
 +!extendArm1

@@ -50,7 +50,8 @@
 	<- .print("Temporarily stopping production...").
 	
 +!scheduleTableMotorFix
-	<- .print("Scheduling table motor fix...").
+	:	raised(exMotor,[motorNumber(N)])
+	<- .print("Scheduling table motor fix for motor n. ", N).
 	
 +!pauseProduction
 	<- .print("Pausing production...");
