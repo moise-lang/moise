@@ -54,10 +54,11 @@
 	<- .print("Scheduling table motor fix for motor n. ", N).
 	
 +!pauseProduction
-	<- .print("Pausing production...");
+	:	raised(exMotor,[motorNumber(N)])
+	<- .print("Pausing production due to a problem on motor ", N, "...");
 	   .wait(5000);
 	   goalReleased(turnTableMoveUp);
-	   .print("Problem solved! Production resumed").
+	   .print("Problem solved in motor ", N, "! Production resumed").
 	   
 +!emergencyStop
 	<- .print("***EMERGENCY STOP***");

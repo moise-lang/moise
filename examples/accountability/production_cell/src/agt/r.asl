@@ -17,14 +17,14 @@
 +!slowDownProduction
 	:	account(stock,[availablePlates(N)])
 	<- .wait(1000);
-	   .print("Worning, stock plates: ", N);
-	   .print("*** TREATING ACCOUNT STOCK: Slowing down production...").
+	   .print("Warning, stock plates: ", N);
+	   .print("*** TREATING ACCOUNT STOCK: Slowing down production, only ", N, " plates...").
 
 +!stopProduction
 	:	account(stock,[availablePlates(N)])
 	<- .wait(1000);
 	   .print("Error, stock plates: ", N);
-	   .print("*** TREATING ACCOUNT STOCK: Stopping production...").
+	   .print("*** TREATING ACCOUNT STOCK: Stopping production, available plates ", N, " ...").
 	
 +!scheduleTableMotorFix
 	 : account(tableFailure,[motorNumber(N)])

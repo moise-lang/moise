@@ -87,7 +87,7 @@
                     <exception-argument id="motorNumber" arity="1" />
                     <raising-goal id="notifyStoppedMotorNumber" />
                     <handling-goal id="motorFix">
-                        <plan operator="parallel">
+                        <plan operator="sequence">
                             <goal id="scheduleTableMotorFix" />
                             <goal id="pauseProduction" />
                         </plan>
