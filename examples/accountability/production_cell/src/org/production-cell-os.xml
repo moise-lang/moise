@@ -78,7 +78,7 @@
                     <account-argument id="availablePlates" arity="1" />
                     <requesting-goal id="requestRemainingStock" />
                     <accounting-goal id="notifyRemainingStock" />
-                    <treatment-goal id="slowDownProduction" when="account(stock,_,[availablePlates(N)]) &amp; ( N &lt;= 10 &amp; N &gt; 0)" />
+                    <treatment-goal id="slowDownProduction" when="account(stock,_,[availablePlates(N)]) &amp; ( N &lt;= 10 &amp; N &gt; 0 )" />
                     <treatment-goal id="stopProduction" when="account(stock,_,[availablePlates(0)])" />
                 </account-template>
             </accountability-agreement>
