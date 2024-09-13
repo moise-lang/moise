@@ -39,8 +39,8 @@ Two main kinds of artifacts are implemented: `GroupBoard` and
 `SchemeBoard`. The usage interface (operations, observable
 properties, and signals) of them are available in the following links
 
-- https://moise-lang.github.io/doc/api/ora4mas/nopl/GroupBoard.html[Group API] and
-- https://moise-lang.github.io/doc/api/ora4mas/nopl/SchemeBoard.html[Scheme API] respectively.
+- http://moise.sourceforge.net/doc/api/ora4mas/nopl/GroupBoard.html[Group API] and
+- http://moise.sourceforge.net/doc/api/ora4mas/nopl/SchemeBoard.html[Scheme API] respectively.
 
 image::ora4mas-arts-impl.png[width="60%"]
 
@@ -75,8 +75,8 @@ image::org-bels.png[width="70%"]
 
 The beliefs are the following (see API documentation of artifacts for more details):
 
-- `specification(....)` for https://moise-lang.github.io/doc/api/moise/os/ss/Group.html#getAsProlog--[groups]
-- `specification(....)` for https://moise-lang.github.io/doc/api/moise/os/fs/Scheme.html#getAsProlog--[schemes]
+- `specification(....)` for http://moise.sourceforge.net/doc/api/moise/os/ss/Group.html#getAsProlog--[groups]
+- `specification(....)` for http://moise.sourceforge.net/doc/api/moise/os/fs/Scheme.html#getAsProlog--[schemes]
 - `play(agent, role, group)`
 - `commitment(agent, mission, scheme)`
 - `goalState(scheme, goal, list of committed agents, list of agent that performed the goal, state of the goal)`

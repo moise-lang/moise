@@ -6,7 +6,7 @@
      xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
      version="1.0"
 
-     xmlns:os='https://moise-lang.github.io/os'
+     xmlns:os='http://moise.sourceforge.net/os'
 >
 
 <xsl:output encoding="ISO-8859-1" method="text" />

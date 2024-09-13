@@ -7,10 +7,10 @@
         id="joj"
         os-version="0.7"
 
-        xmlns='https://moise-lang.github.io/os'
+        xmlns='http://moise.sourceforge.net/os'
         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-        xsi:schemaLocation='https://moise-lang.github.io/os
-                       https://moise-lang.github.io/xml/os.xsd'>
+        xsi:schemaLocation='http://moise.sourceforge.net/os
+                       http://moise.sourceforge.net/xml/os.xsd'>
 
     <structural-specification>
         <role-definitions>

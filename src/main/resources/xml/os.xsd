@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xsd:schema xmlns:moise="https://moise-lang.github.io/os"
+<xsd:schema xmlns:moise="http://moise.sourceforge.net/os"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-    targetNamespace="https://moise-lang.github.io/os">
+    targetNamespace="http://moise.sourceforge.net/os">
 
     <xsd:element name="organisational-specification" type="moise:osType"/>
 
