@@ -8,14 +8,8 @@ defaultTasks 'jar'
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
-version '1.1-SNAPSHOT'
+version '1.1'
 group   'org.jacamo'
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
 
 sourceSets {
     main {
@@ -40,10 +34,10 @@ repositories {
 }*/
 
 dependencies {
-    api('org.jason:jason:3.1') {
-     exclude group: 'net.sf.ingenias', module: 'jade'
+    api('io.github.jason-lang:jason-interpreter:3.3.0') {
+        exclude group: 'net.sf.ingenias', module: 'jade'
     }
-    api('org.jacamo:npl:0.6-SNAPSHOT')  {  transitive = false  }
+    api('org.jacamo:npl:0.6')  {  transitive = false  }
     api('org.jacamo:cartago:3.1') {  transitive = false  }
     api('org.jacamo:jaca:3.1') {  transitive = false  }
 
