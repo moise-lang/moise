@@ -53,17 +53,17 @@
                 </plan>
             </goal>
             <notification-policy condition="(scheme_id(S) &amp; failed(S,recoverFromNan))" id="np2" target="recoverFromNan">
-                <exception-specification id="amountUnavailable">
-                    <raising-goal id="raiseAmountUnavailable" type="performance"/>
-                    <handling-goal id="retryLater" type="performance"/>
-                </exception-specification>
+                <report id="amountUnavailable">
+                    <raise-goal id="raiseAmountUnavailable" type="performance"/>
+                    <handle-goal id="retryLater" type="performance"/>
+                </report>
             </notification-policy>
-            <notification-policy condition="(scheme_id(S) &amp; unfulfilled(obligation(_1344,_1345,done(S,parseAmount,_1346),_1347)))" id="np1" target="parseAmount">
-                <exception-specification id="nan">
-                    <exception-argument arity="1" id="index"/>
-                    <raising-goal id="raiseNan" type="performance"/>
-                    <handling-goal id="recoverFromNan" type="performance"/>
-                </exception-specification>
+            <notification-policy condition="(scheme_id(S) &amp; unfulfilled(obligation(_1377,_1378,done(S,parseAmount,_1379),_1380)))" id="np1" target="parseAmount">
+                <report id="nan">
+                    <argument arity="1" id="index"/>
+                    <raise-goal id="raiseNan" type="performance"/>
+                    <handle-goal id="recoverFromNan" type="performance"/>
+                </report>
             </notification-policy>
             <mission id="mWithdraw" max="1" min="1">
                 <goal id="retryLater"/>

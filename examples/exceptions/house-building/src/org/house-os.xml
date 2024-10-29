@@ -97,25 +97,25 @@
                 </plan>
             </goal>
 
-            <notification-policy id="npSitePreparation" target="site_prepared" condition="scheme_id(S) &amp; failed(S,site_prepared)">
-                <exception-specification id="site_preparation_exception">
-                    <exception-argument id="errorCode" arity="1" />
-                    <raising-goal id="notify_site_preparation_problem"/>
-                    <handling-goal id="handle_site_problem">
+            <notification-policy id="npSitePreparation" target="site_prepared" condition="scheme_id(S) &amp; failed(S,site_prepared)"  type="exception">
+                <report id="site_preparation_exception">
+                    <argument id="errorCode" arity="1" />
+                    <raise-goal id="notify_site_preparation_problem"/>
+                    <handle-goal id="handle_site_problem">
                         <plan operator="parallel">
                             <goal id="inspect_site" />
                             <goal id="notify_affected_companies" />
                         </plan>
-                    </handling-goal>
-                </exception-specification>
+                    </handle-goal>
+                </report>
             </notification-policy>
             
-            <notification-policy id="npWindowDelay" target="windows_fitted" condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,windows_fitted,_),_))">
-                <exception-specification id="windows_delay_exception">
-                    <exception-argument id="weeksOfDelay" arity="1" />
-                    <raising-goal id="notify_windows_fitting_delay"/>
-                    <handling-goal id="handle_windows_fitting_delay" when="raised(windows_delay_exception,_,Args) &amp; .member(weeksOfDelay(D),Args) &amp; D &gt;=2" />
-                </exception-specification>
+            <notification-policy id="npWindowDelay" target="windows_fitted" condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,windows_fitted,_),_))"  type="exception">
+                <report id="windows_delay_exception">
+                    <argument id="weeksOfDelay" arity="1" />
+                    <raise-goal id="notify_windows_fitting_delay"/>
+                    <handle-goal id="handle_windows_fitting_delay" when="raised(windows_delay_exception,_,Args) &amp; .member(weeksOfDelay(D),Args) &amp; D &gt;=2" />
+                </report>
             </notification-policy>
 
             <mission id="management_of_house_building" min="1" max="1">

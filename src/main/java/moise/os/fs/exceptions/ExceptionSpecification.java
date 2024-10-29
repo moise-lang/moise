@@ -63,14 +63,14 @@ public class ExceptionSpecification extends moise.common.MoiseElement implements
     }
 
     public static String getXMLTag() {
-        return "exception-specification";
+        return "report";
     }
     
     public void setFromDOM(Element ele) throws MoiseException {
         
         setPropertiesFromDOM(ele);
         
-        for(Element ea: DOMUtils.getDOMDirectChilds(ele, "exception-argument")) {
+        for(Element ea: DOMUtils.getDOMDirectChilds(ele, "argument")) {
             Literal l = new LiteralImpl(ea.getAttribute("id"));
             int nArgs = Integer.parseInt(ea.getAttribute("arity"));
             for(int i = 0; i < nArgs; i++) {
@@ -79,7 +79,7 @@ public class ExceptionSpecification extends moise.common.MoiseElement implements
             exceptionArguments.add(l);
         }
         
-        for(Element tgEle: DOMUtils.getDOMDirectChilds(ele, "raising-goal")) {
+        for(Element tgEle: DOMUtils.getDOMDirectChilds(ele, "raise-goal")) {
             try {
                 LogicalFormula whenFormula = ASSyntax.parseFormula("true");
                 String when = tgEle.getAttribute("when");
@@ -96,7 +96,7 @@ public class ExceptionSpecification extends moise.common.MoiseElement implements
             }  
         }
         
-        for(Element cgEle: DOMUtils.getDOMDirectChilds(ele, "handling-goal")) {
+        for(Element cgEle: DOMUtils.getDOMDirectChilds(ele, "handle-goal")) {
             try {
                 LogicalFormula whenFormula = ASSyntax.parseFormula("true");
                 String when = cgEle.getAttribute("when");
@@ -122,7 +122,7 @@ public class ExceptionSpecification extends moise.common.MoiseElement implements
             ele.appendChild(getPropertiesAsDOM(document));
         }
         for(Literal arg : exceptionArguments) {
-            Element argEle = (Element) document.createElement("exception-argument");
+            Element argEle = (Element) document.createElement("argument");
             argEle.setAttribute("id", arg.getFunctor());
             argEle.setAttribute("arity", String.valueOf(arg.getArity()));
             ele.appendChild(argEle);

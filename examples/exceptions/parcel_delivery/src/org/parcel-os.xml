@@ -64,13 +64,13 @@
             </goal>
             
             <notification-policy id="npParcel" target="reachDestination"
-                                 condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,reachDestination,_),_))">
-                <exception-specification id="exParcel">
-                    <exception-argument id="reason" arity="1" />
-                    <exception-argument id="closedRoads" arity="1" />
-                    <raising-goal id="reportDelayReason" />
-                    <handling-goal id="updateMap" />
-                </exception-specification>
+                                 condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,reachDestination,_),_))"  type="exception">
+                <report id="exParcel">
+                    <argument id="reason" arity="1" />
+                    <argument id="closedRoads" arity="1" />
+                    <raise-goal id="reportDelayReason" />
+                    <handle-goal id="updateMap" />
+                </report>
             </notification-policy>
 
             <mission id="mWarehouseWorker" min="1" max="1">

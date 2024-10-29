@@ -1,7 +1,7 @@
 /*
     This program was automatically generated from
     the organisation specification 'atm'
-    on maggio 29, 2024 - 09:53:43
+    on settembre 03, 2024 - 13:54:28
 
     This is a MOISE tool, see more at https://moise-lang.github.io
 
@@ -204,7 +204,7 @@ scope scheme(cake_sch) {
                     ).
    enabled(S,CG) :- handlingGoal(CG,E,When) &
                     When &
-                    raised(S,E,_,_) &
+                    raised(E,_,_) &
                     raisingGoal(TG,E,_) &
                     satisfied(S,TG) &
                     goal(_, CG,  Dep, _, NP, _) & NP \== 0 &
@@ -257,18 +257,18 @@ scope scheme(cake_sch) {
            not enabled(S,G)
         -> fail(fail_not_enabled_goal(S,G)).
    norm exc_unknown:  
-           raised(S,E,Ag,Args) &
+           raised(E,Ag,Args) &
            not exceptionSpecification(E,_)
         -> fail(exc_unknown(S,E,Ag)).
    norm exc_agent_not_allowed:  
-           raised(S,E,Ag,Args) &
+           raised(E,Ag,Args) &
            exceptionSpecification(E,_) &
            mission_goal(M,TG) &
            raisingGoal(TG,E,_) &
            not committed(Ag,M,S)
         -> fail(exc_agent_not_allowed(S,E,Ag)).
    norm exc_condition_not_holding:  
-           raised(S,E,Ag,Args) &
+           raised(E,Ag,Args) &
            exceptionSpecification(E,NP) &
            notificationPolicy(NP,_,Condition) &
            not (raisingGoal(TG,E,_) &
@@ -278,16 +278,16 @@ scope scheme(cake_sch) {
            done(S,TG,Ag) &
            raisingGoal(TG,E,_) &
            not super_goal(_,TG) &
-           not raised(S,E,_,_)
+           not raised(E,Ag,Args)
         -> fail(ach_thr_goal_exc_not_raised(S,G,E,Ag)).
    norm exc_arg_not_ground:  
-           raised(S,E,Ag,Args) &
+           raised(E,Ag,Args) &
            exceptionSpecification(E,_) &
            .member(Arg,Args) &
            not .ground(Arg)
         -> fail(exc_arg_not_ground(S,E,Arg)).
    norm exc_arg_missing:  
-           raised(S,E,Ag,Args) &
+           raised(E,Ag,Args) &
            exceptionSpecification(E,_) &
            exceptionArgument(E,ArgFunctor,ArgArity) &
            not (.member(Arg,Args) &
@@ -295,7 +295,7 @@ scope scheme(cake_sch) {
            .length(T,ArgArity))
         -> fail(exc_arg_missing(S,E,ArgFunctor,ArgArity)).
    norm exc_arg_unknown:  
-           raised(S,E,Ag,Args) &
+           raised(E,Ag,Args) &
            exceptionSpecification(E,_) &
            .member(Arg,Args) &
            Arg=..[ArgFunctor,T,A] &

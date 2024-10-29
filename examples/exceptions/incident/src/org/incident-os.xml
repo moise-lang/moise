@@ -104,20 +104,20 @@
                 </plan>
             </goal>
 
-            <notification-policy id="np1" target="ask_1st_level_support" condition="scheme_id(S) &amp; failed(S,ask_1st_level_support)">
-                <exception-specification id="account_manager_exception">
-                    <exception-argument id="warrantyStatus" arity="1" />
-                    <raising-goal id="raise_account_manager_exception" />
-                    <handling-goal id="cancel_problem_request" />
-                </exception-specification>
+            <notification-policy id="np1" target="ask_1st_level_support" condition="scheme_id(S) &amp; failed(S,ask_1st_level_support)"  type="exception">
+                <report id="account_manager_exception">
+                    <argument id="warrantyStatus" arity="1" />
+                    <raise-goal id="raise_account_manager_exception" />
+                    <handle-goal id="cancel_problem_request" />
+                </report>
             </notification-policy>
 
             <notification-policy id="np2" target="ask_1st_level_support"
-                                 condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,ask_1st_level_support,_),_))">
-                <exception-specification id="account_manager_timeout">
-                    <raising-goal id="raise_account_manager_timeout" />
-                    <handling-goal id="invite_to_recall" />
-                </exception-specification>
+                                 condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,ask_1st_level_support,_),_))"  type="exception">
+                <report id="account_manager_timeout">
+                    <raise-goal id="raise_account_manager_timeout" />
+                    <handle-goal id="invite_to_recall" />
+                </report>
             </notification-policy>
 
             <mission id="m0" min="1" max="1">
@@ -162,12 +162,12 @@
                 </plan>
             </goal>
 
-            <notification-policy id="np3" target="ask_2nd_level_support" condition="scheme_id(S) &amp; failed(S,ask_2nd_level_support)">
-                <exception-specification id="first_level_exception">
-                    <exception-argument id="warrantyStatus" arity="1" />
-                    <raising-goal id="raise_first_level_exception" />
-                    <handling-goal id="handle_first_level_exception" />
-                </exception-specification>
+            <notification-policy id="np3" target="ask_2nd_level_support" condition="scheme_id(S) &amp; failed(S,ask_2nd_level_support)"  type="exception">
+                <report id="first_level_exception">
+                    <argument id="warrantyStatus" arity="1" />
+                    <raise-goal id="raise_first_level_exception" />
+                    <handle-goal id="handle_first_level_exception" />
+                </report>
             </notification-policy>
 
             <mission id="m5" min="1" max="1">
@@ -221,12 +221,12 @@
                 </plan>
             </goal>
 
-            <notification-policy id="np4" target="ask_developer" condition="scheme_id(S) &amp; failed(S,ask_developer)">
-                <exception-specification id="second_level_exception">
-                    <exception-argument id="warrantyStatus" arity="1" />
-                    <raising-goal id="raise_second_level_exception" />
-                    <handling-goal id="handle_second_level_exception" />
-                </exception-specification>
+            <notification-policy id="np4" target="ask_developer" condition="scheme_id(S) &amp; failed(S,ask_developer)"  type="exception">
+                <report id="second_level_exception">
+                    <argument id="warrantyStatus" arity="1" />
+                    <raise-goal id="raise_second_level_exception" />
+                    <handle-goal id="handle_second_level_exception" />
+                </report>
             </notification-policy>
 
             <mission id="m10" min="1" max="1">
@@ -265,21 +265,21 @@
                 </plan>
             </goal>
 
-            <notification-policy id="np5" target="examine_problem" condition="scheme_id(S) &amp; failed(S,examine_problem)">
-                <exception-specification id="developer_exception">
-                    <exception-argument id="warrantyStatus" arity="1" />
-                    <raising-goal id="raise_developer_exception" />
-                    <handling-goal id="handle_developer_exception" />
-                </exception-specification>
+            <notification-policy id="np5" target="examine_problem" condition="scheme_id(S) &amp; failed(S,examine_problem)"  type="exception">
+                <report id="developer_exception">
+                    <argument id="warrantyStatus" arity="1" />
+                    <raise-goal id="raise_developer_exception" />
+                    <handle-goal id="handle_developer_exception" />
+                </report>
             </notification-policy>
 
             <notification-policy id="np6" target="provide_feedback_for_2nd_level_support"
-                                 condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,provide_feedback_for_2nd_level_support,_),_))">
-                <exception-specification id="developer_feedback_delay">
-                    <exception-argument id="reason" arity="1" />
-                    <raising-goal id="raise_developer_feedback_delay" />
-                    <handling-goal id="handle_developer_feedback_delay" />
-                </exception-specification>
+                                 condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,provide_feedback_for_2nd_level_support,_),_))"  type="exception">
+                <report id="developer_feedback_delay">
+                    <argument id="reason" arity="1" />
+                    <raise-goal id="raise_developer_feedback_delay" />
+                    <handle-goal id="handle_developer_feedback_delay" />
+                </report>
             </notification-policy>
 
             <mission id="m16" min="1" max="1">

@@ -33,12 +33,12 @@
 
             <goal id="task" ttf="5 seconds" />
 
-                <notification-policy id="np1" target="task" condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,task,_),_))">
-                    <exception-specification id="delay">
-                        <exception-argument id="eta" arity="1" />
-                        <raising-goal id="explainDelay"/>
-                        <handling-goal id="handleDelay" />
-                    </exception-specification>
+                <notification-policy id="np1" target="task" condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,task,_),_))"  type="exception">
+                    <report id="delay">
+                        <argument id="eta" arity="1" />
+                        <raise-goal id="explainDelay"/>
+                        <handle-goal id="handleDelay" />
+                    </report>
                 </notification-policy>
 
             <mission id="mWorker" min="1" max="1">

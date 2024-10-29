@@ -74,35 +74,35 @@
             </goal>
             
             <notification-policy id="npStock" target="conveyPlateToTable"
-                                    condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,conveyPlateToTable,_),_))">
-                <exception-specification id="exStock">
-                    <exception-argument id="availablePlates" arity="1" />
-                    <raising-goal id="notifyRemainingStock" />
-                    <handling-goal id="slowDownProduction" when="raised(exStock,_,Args) &amp; .member(availablePlates(N),Args) &amp; N &lt;= 10" />
-                </exception-specification>
+                                    condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,conveyPlateToTable,_),_))"  type="exception">
+                <report id="exStock">
+                    <argument id="availablePlates" arity="1" />
+                    <raise-goal id="notifyRemainingStock" />
+                    <handle-goal id="slowDownProduction" when="raised(exStock,_,Args) &amp; .member(availablePlates(N),Args) &amp; N &lt;= 10" />
+                </report>
             </notification-policy>
         
-            <notification-policy id="npMotor" target="turnTableMoveUp" condition="scheme_id(S) &amp; failed(S,turnTableMoveUp)">
-                <exception-specification id="exMotor">
-                    <exception-argument id="motorNumber" arity="1" />
-                    <raising-goal id="notifyStoppedMotorNumber" />
-                    <handling-goal id="motorFix">
+            <notification-policy id="npMotor" target="turnTableMoveUp" condition="scheme_id(S) &amp; failed(S,turnTableMoveUp)"  type="exception">
+                <report id="exMotor">
+                    <argument id="motorNumber" arity="1" />
+                    <raise-goal id="notifyStoppedMotorNumber" />
+                    <handle-goal id="motorFix">
                         <plan operator="parallel">
                             <goal id="scheduleTableMotorFix" />
                             <goal id="pauseProduction" />
                         </plan>
-                    </handling-goal>
-                </exception-specification>
+                    </handle-goal>
+                </report>
             </notification-policy>
             
             <notification-policy id="npPress" target="movePressDownUp"
-                                    condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,movePressDownUp,_),_))">
-                <exception-specification id="exHuman">
-                    <exception-argument id="slowdownCode" arity="1" />
-                    <exception-argument id="humanCoords"  arity="2" />
-                    <raising-goal id="explainSlowdownReason" />
-                    <handling-goal id="emergencyStop" when="raised(exHuman,_,Args) &amp; .member(humanCoords(X,Y),Args) &amp; X &lt; 2 &amp; Y &lt; 3"/>
-                </exception-specification>
+                                    condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,movePressDownUp,_),_))"  type="exception">
+                <report id="exHuman">
+                    <argument id="slowdownCode" arity="1" />
+                    <argument id="humanCoords"  arity="2" />
+                    <raise-goal id="explainSlowdownReason" />
+                    <handle-goal id="emergencyStop" when="raised(exHuman,_,Args) &amp; .member(humanCoords(X,Y),Args) &amp; X &lt; 2 &amp; Y &lt; 3"/>
+                </report>
             </notification-policy>
 
             <mission id="mFeedBelt" min="1" max="1">

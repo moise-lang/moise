@@ -253,11 +253,12 @@
     <xsd:complexType name="notificationPolicyType">
         <xsd:sequence>
           <xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
-          <xsd:element maxOccurs="unbounded" minOccurs="1" name="exception-specification" type="moise:exceptionSpecificationType"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="1" name="report" type="moise:exceptionSpecificationType"/>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:string" use="required"/>
         <xsd:attribute name="target" type="xsd:string" use="required"/>
         <xsd:attribute name="condition" type="xsd:string" use="required"/>
+        <xsd:attribute name="type" type="xsd:string" use="required"/>
     </xsd:complexType>
 
     <xsd:complexType name="exGoalDefType">
@@ -280,9 +281,9 @@
 
     <xsd:complexType name="exceptionSpecificationType">
         <xsd:sequence>
-           <xsd:element maxOccurs="unbounded" minOccurs="0" name="exception-argument" type="moise:argArityType"/>
-           <xsd:element maxOccurs="unbounded" minOccurs="1" name="raising-goal" type="moise:exGoalDefType"/>
-           <xsd:element maxOccurs="unbounded" minOccurs="1" name="handling-goal" type="moise:exGoalDefType"/>
+           <xsd:element maxOccurs="unbounded" minOccurs="0" name="argument" type="moise:argArityType"/>
+           <xsd:element maxOccurs="unbounded" minOccurs="1" name="raise-goal" type="moise:exGoalDefType"/>
+           <xsd:element maxOccurs="unbounded" minOccurs="1" name="handle-goal" type="moise:exGoalDefType"/>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:string" use="required" />
     </xsd:complexType>

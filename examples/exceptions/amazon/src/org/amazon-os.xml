@@ -94,26 +94,26 @@
                 </plan>
             </goal>
 
-            <notification-policy id="np1" target="payOrder" condition="scheme_id(S) &amp; failed(S,payOrder)">
-                <exception-specification id="paymentRefused">
-                    <exception-argument id="balance" arity="1" />
-                    <raising-goal id="raisePaymentRefused"/>
-                    <handling-goal id="retry" />
-                </exception-specification>
+            <notification-policy id="np1" target="payOrder" condition="scheme_id(S) &amp; failed(S,payOrder)"  type="exception">
+                <report id="paymentRefused">
+                    <argument id="balance" arity="1" />
+                    <raise-goal id="raisePaymentRefused"/>
+                    <handle-goal id="retry" />
+                </report>
             </notification-policy>
 
-            <notification-policy id="np2" target="retry" condition="scheme_id(S) &amp; failed(S,retry)">
-                <exception-specification id="checkoutFailed">
-                    <raising-goal id="raiseCheckoutFailed"/>
-                    <handling-goal id="cancelOrder" />
-                </exception-specification>
+            <notification-policy id="np2" target="retry" condition="scheme_id(S) &amp; failed(S,retry)"  type="exception">
+                <report id="checkoutFailed">
+                    <raise-goal id="raiseCheckoutFailed"/>
+                    <handle-goal id="cancelOrder" />
+                </report>
             </notification-policy>
 
-            <notification-policy id="np3" target="receiveItems" condition="scheme_id(S) &amp; failed(S,receiveItems)">
-                <exception-specification id="itemsNotReceived">
-                    <raising-goal id="raiseItemsNotReceived"/>
-                    <handling-goal id="requestRefund" />
-                </exception-specification>
+            <notification-policy id="np3" target="receiveItems" condition="scheme_id(S) &amp; failed(S,receiveItems)"  type="exception">
+                <report id="itemsNotReceived">
+                    <raise-goal id="raiseItemsNotReceived"/>
+                    <handle-goal id="requestRefund" />
+                </report>
             </notification-policy>
 
             <mission id="mCustomer1" min="1" max="1">
@@ -198,12 +198,12 @@
                 </plan>
             </goal>
 
-            <notification-policy id="np4" target="deliverItems" condition="scheme_id(S) &amp; failed(S,deliverItems)">
-                <exception-specification id="itemsLost">
-                    <exception-argument id="recipient" arity="1" />
-                    <raising-goal id="raiseItemsLost"/>
-                    <handling-goal id="notifyCustomer" />
-                </exception-specification>
+            <notification-policy id="np4" target="deliverItems" condition="scheme_id(S) &amp; failed(S,deliverItems)" type="exception">
+                <report id="itemsLost">
+                    <argument id="recipient" arity="1" />
+                    <raise-goal id="raiseItemsLost"/>
+                    <handle-goal id="notifyCustomer" />
+                </report>
             </notification-policy>
 
             <mission id="mCarrier1" min="1" max="1">

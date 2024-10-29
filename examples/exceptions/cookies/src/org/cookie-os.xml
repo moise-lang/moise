@@ -60,42 +60,42 @@
                 </plan>
             </goal>
 
-            <notification-policy id="np1" target="ingredientsCollection" condition="scheme_id(S) &amp; failed(S,ingredientsCollection)">
-                <exception-specification id="ingredientsShortage">
-                    <exception-argument id="availableFillings" arity="1" />
-                    <raising-goal id="notifyIngredientsShortage"/>
-                    <handling-goal id="dealWithIngredientsShortage" />
-                </exception-specification>
+            <notification-policy id="np1" target="ingredientsCollection" condition="scheme_id(S) &amp; failed(S,ingredientsCollection)"  type="exception">
+                <report id="ingredientsShortage">
+                    <argument id="availableFillings" arity="1" />
+                    <raise-goal id="notifyIngredientsShortage"/>
+                    <handle-goal id="dealWithIngredientsShortage" />
+                </report>
             </notification-policy>
 
-            <notification-policy id="np2" target="ingredientsCollection" condition="scheme_id(S) &amp; scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,ingredientsCollection,_),_))">
-                <exception-specification id="ingredientsDelay">
-                    <exception-argument id="reason" arity="1" />
-                    <raising-goal id="notifyIngredientsDelay"/>
-                    <handling-goal id="slowdownProduction" when="raised(_,ingredientsDelay,_,Args) &amp; .member(reason(healthInspection),Args)" />
-                </exception-specification>
+            <notification-policy id="np2" target="ingredientsCollection" condition="scheme_id(S) &amp; scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,ingredientsCollection,_),_))"  type="exception">
+                <report id="ingredientsDelay">
+                    <argument id="reason" arity="1" />
+                    <raise-goal id="notifyIngredientsDelay"/>
+                    <handle-goal id="slowdownProduction" when="raised(_,ingredientsDelay,_,Args) &amp; .member(reason(healthInspection),Args)" />
+                </report>
             </notification-policy>
 
-            <notification-policy id="np3" target="tartMaking" condition="scheme_id(S) &amp; (failed(S,cookingTemparatureSetup) | failed(S,firstTimeBaking) | failed(S,secondTimeBaking))">
-                <exception-specification id="ovenBroken">
-                    <exception-argument id="status" arity="1" />
-                    <raising-goal id="notifyProblemWithOven"/>
-                    <handling-goal id="emergency" when="raised(_,ovenBroken,_,Args) &amp; .member(status(fire),Args)">
+            <notification-policy id="np3" target="tartMaking" condition="scheme_id(S) &amp; (failed(S,cookingTemparatureSetup) | failed(S,firstTimeBaking) | failed(S,secondTimeBaking))"  type="exception">
+                <report id="ovenBroken">
+                    <argument id="status" arity="1" />
+                    <raise-goal id="notifyProblemWithOven"/>
+                    <handle-goal id="emergency" when="raised(_,ovenBroken,_,Args) &amp; .member(status(fire),Args)">
                         <plan operator="parallel">
                             <goal id="leaveBUildingImmediately" />
                             <goal id="call911" min="1" />
                         </plan>    
-                    </handling-goal>
-                    <handling-goal id="notifyTechSupport" when="raised(_,ovenBroken,_,Args) &amp; .member(status(noHeat),Args)" />
-                </exception-specification>
+                    </handle-goal>
+                    <handle-goal id="notifyTechSupport" when="raised(_,ovenBroken,_,Args) &amp; .member(status(noHeat),Args)" />
+                </report>
             </notification-policy>
 
-            <notification-policy id="np4" target="tartMaking" condition="scheme_id(S) &amp; (failed(S,ingredientsCollection) &amp; failed(S,cookingTemperatureSetup))">
-                <exception-specification id="tartPreparationException">
-                    <exception-argument id="affectedTartTypes" arity="1" />
-                    <raising-goal id="notifyTartPreparationException"/>
-                    <handling-goal id="alertCustomers" />
-                </exception-specification>
+            <notification-policy id="np4" target="tartMaking" condition="scheme_id(S) &amp; (failed(S,ingredientsCollection) &amp; failed(S,cookingTemperatureSetup))"  type="exception">
+                <report id="tartPreparationException">
+                    <argument id="affectedTartTypes" arity="1" />
+                    <raise-goal id="notifyTartPreparationException"/>
+                    <handle-goal id="alertCustomers" />
+                </report>
             </notification-policy>
 
             <mission id="mOvenOperator" min="1" max="1">

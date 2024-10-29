@@ -48,26 +48,26 @@
             </goal>
 
             <notification-policy id="np1" target="provideIngredients" condition="scheme_id(S) &amp; failed(S,provideIngredients)">
-                <exception-specification id="ingredientsUnavailable">
-                    <exception-argument id="missingIngredients" arity="1" />
-                    <raising-goal id="notifyIngredientsUnavailability"/>
-                    <handling-goal id="dealWithMissingIngredients" />
-                </exception-specification>
+                <report id="ingredientsUnavailable">
+                    <argument id="missingIngredients" arity="1" />
+                    <raise-goal id="notifyIngredientsUnavailability"/>
+                    <handle-goal id="dealWithMissingIngredients" />
+                </report>
             </notification-policy>
 
             <notification-policy id="np2" target="switchOnOven" condition="scheme_id(S) &amp; failed(S,switchOnOven)">
-                <exception-specification id="ovenBroken">
-                    <exception-argument id="faultType" arity="1" />
-                    <raising-goal id="notifyProblemWithOven" />
-                    <handling-goal id="checkOven" />
-                </exception-specification>
+                <report id="ovenBroken">
+                    <argument id="faultType" arity="1" />
+                    <raise-goal id="notifyProblemWithOven" />
+                    <handle-goal id="checkOven" />
+                </report>
             </notification-policy>
 
             <notification-policy id="np2" target="workspaceSetup" condition="scheme_id(S) &amp; (failed(S,dealWithMissingIngredients) | failed(S,checkOven))">
-                <exception-specification id="cakePreparationFailure">
-                    <raising-goal id="notifyCakePreparationFailure" />
-                    <handling-goal id="cancelOrder" />
-                </exception-specification>
+                <report id="cakePreparationFailure">
+                    <raise-goal id="notifyCakePreparationFailure" />
+                    <handle-goal id="cancelOrder" />
+                </report>
             </notification-policy>
 
             <mission id="mApprentice" min="1" max="1">

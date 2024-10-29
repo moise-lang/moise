@@ -12,13 +12,13 @@ public class RaisingGoal extends ExceptionGoal {
     }
 
     public static String getXMLTag() {
-        return "raising-goal";
+        return "raise-goal";
     }
     
     @Override
     public Element getAsDOM(Document document) {
         Element ele = super.getAsDOM(document);
-        document.renameNode(ele,null,"raising-goal");
+        document.renameNode(ele,null,"raise-goal");
         return ele;
     }
 

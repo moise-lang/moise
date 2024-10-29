@@ -59,9 +59,9 @@ Notification Policy id: resend
   target:    ReceiveFilled
   condition: failure
   ExceptionSpecification id: resend
-    exception-argument: ...
-    raising-goal:  ResendComplain
-    handling-goal: ReceiveResentComplain
+    argument: ...
+    raise-goal:  ResendComplain
+    handle-goal: ReceiveResentComplain
 
 Mission id: mPatient
   goals: [..., ResendComplain]
@@ -89,9 +89,9 @@ Notification Policy id: forward
   target:    ReceiveFilled
   condition: failure
   ExceptionSpecification id: forward
-    exception-argument: ...
-    raising-goal:  ForwardPrescribe
-    handling-goal: ReceiveForwardedPrescribe
+    argument: ...
+    raise-goal:  ForwardPrescribe
+    handle-goal: ReceiveForwardedPrescribe
 
 Mission id: mPatient
   goals: [..., ReceivePrescribePatient, ForwardPrescribe]
@@ -114,11 +114,11 @@ Notification Policy id: probe
   target:    ReceiveFilled
   condition: failure
   ExceptionSpecification id: probe
-    exception-argument: ...
-    raising-goal:  PollFilled
-    handling-goal: ResendFilled
+    argument: ...
+    raise-goal:  PollFilled
+    handle-goal: ResendFilled
 	when: satisfied(ReceivePrescribe)
-    handling-goal: PollPrescribe THEN ResendPrescribe
+    handle-goal: PollPrescribe THEN ResendPrescribe
 	when: not satisfied(ReceivePrescribe)
 
 Mission id: mPatient

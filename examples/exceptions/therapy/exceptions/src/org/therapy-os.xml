@@ -45,29 +45,29 @@
                 </plan>
             </goal>
 
-            <notification-policy id="np1" target="follow_therapy" condition="unfulfilled(obligation(_,_,done(_,follow_therapy,_),_))">
+            <notification-policy id="np1" target="follow_therapy" condition="unfulfilled(obligation(_,_,done(_,follow_therapy,_),_))" type="exception">
 
-                <exception-specification id="exception_lost_request">
-                    <exception-argument id="date" arity="1" />
-                    <raising-goal id="raise_exception_lost_request" when="not satisfied(_,prescribe)" /> 
-                    <handling-goal id="handle_exception_lost_request" />
-                </exception-specification>
+                <report id="exception_lost_request">
+                    <argument id="date" arity="1" />
+                    <raise-goal id="raise_exception_lost_request" when="not satisfied(_,prescribe)" /> 
+                    <handle-goal id="handle_exception_lost_request" />
+                </report>
 
-                <exception-specification id="exception_no_delivery">
-                    <exception-argument id="date" arity="1" />
-                    <exception-argument id="doctor_name" arity="1" />
-                    <raising-goal id="raise_exception_no_delivery" when="satisfied(_,prescribe) &amp; not raised(exception_lost_request,_,_)" /> 
-                    <handling-goal id="handle_exception_no_delivery" when="satisfied(_,fill_prescription) &amp; not satisfied(handle_exception_no_delivery_no_fill)" /> 
-                    <handling-goal id="handle_exception_no_delivery_no_fill" when="not satisfied(_,fill_prescription) &amp; not satisfied(handle_exception_no_delivery)" /> 
-                </exception-specification>
+                <report id="exception_no_delivery">
+                    <argument id="date" arity="1" />
+                    <argument id="doctor_name" arity="1" />
+                    <raise-goal id="raise_exception_no_delivery" when="satisfied(_,prescribe) &amp; not raised(exception_lost_request,_,_)" /> 
+                    <handle-goal id="handle_exception_no_delivery" when="satisfied(_,fill_prescription) &amp; not satisfied(handle_exception_no_delivery_no_fill)" /> 
+                    <handle-goal id="handle_exception_no_delivery_no_fill" when="not satisfied(_,fill_prescription) &amp; not satisfied(handle_exception_no_delivery)" /> 
+                </report>
 
-                <exception-specification id="exception_missing_prescription">
-                    <exception-argument id="date" arity="1" />
-                    <exception-argument id="patient_name" arity="1" />
-                    <raising-goal id="raise_exception_missing_prescription" when="satisfied(_,prescribe) &amp; failed(_,fill_prescription) &amp; not raised(exception_lost_request,_,_)" />
-                    <!--<raising-goal id="raiseMissingPrescribePharmacist" when="satisfied(_,prescribe) &amp; failed(_,handleMissingMedicine2)" />-->
-                    <handling-goal id="handle_exception_missing_prescription" />
-                </exception-specification>
+                <report id="exception_missing_prescription">
+                    <argument id="date" arity="1" />
+                    <argument id="patient_name" arity="1" />
+                    <raise-goal id="raise_exception_missing_prescription" when="satisfied(_,prescribe) &amp; failed(_,fill_prescription) &amp; not raised(exception_lost_request,_,_)" />
+                    <!--<raise-goal id="raiseMissingPrescribePharmacist" when="satisfied(_,prescribe) &amp; failed(_,handleMissingMedicine2)" />-->
+                    <handle-goal id="handle_exception_missing_prescription" />
+                </report>
 
             </notification-policy>
 

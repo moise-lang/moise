@@ -50,19 +50,19 @@
                 </plan>
             </goal>
 
-            <notification-policy id="np1" target="parseAmount"  condition="scheme_id(S) &amp; failed(S,parseAmount)">
-                <exception-specification id="nan">
-                    <exception-argument id="index" arity="1" />
-                    <raising-goal id="raiseNan"/>
-                    <handling-goal id="recoverFromNan" />
-                </exception-specification>
+            <notification-policy id="np1" target="parseAmount"  condition="scheme_id(S) &amp; failed(S,parseAmount)"  type="exception">
+                <report id="nan">
+                    <argument id="index" arity="1" />
+                    <raise-goal id="raiseNan"/>
+                    <handle-goal id="recoverFromNan" />
+                </report>
             </notification-policy>
 
-            <notification-policy id="np2" target="recoverFromNan" condition="scheme_id(S) &amp; failed(S,recoverFromNan)">
-                <exception-specification id="amountUnavailable">
-                    <raising-goal id="raiseAmountUnavailable"/>
-                    <handling-goal id="retryLater" />
-                </exception-specification>
+            <notification-policy id="np2" target="recoverFromNan" condition="scheme_id(S) &amp; failed(S,recoverFromNan)"  type="exception">
+                <report id="amountUnavailable">
+                    <raise-goal id="raiseAmountUnavailable"/>
+                    <handle-goal id="retryLater" />
+                </report>
             </notification-policy>
 
             <mission id="mGetAmountAsString" min="1" max="1">

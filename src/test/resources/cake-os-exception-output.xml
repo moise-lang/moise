@@ -49,17 +49,17 @@
                 </plan>
             </goal>
             <notification-policy condition="(scheme_id(S) &amp; (failed(S,dealWithMissingIngredients) | failed(S,checkOven)))" id="np2" target="workspaceSetup">
-                <exception-specification id="cakePreparationFailure">
-                    <raising-goal id="notifyCakePreparationFailure" type="performance"/>
-                    <handling-goal id="cancelOrder" type="performance"/>
-                </exception-specification>
+                <report id="cakePreparationFailure">
+                    <raise-goal id="notifyCakePreparationFailure" type="performance"/>
+                    <handle-goal id="cancelOrder" type="performance"/>
+                </report>
             </notification-policy>
             <notification-policy condition="(scheme_id(S) &amp; failed(S,provideIngredients))" id="np1" target="provideIngredients">
-                <exception-specification id="ingredientsUnavailable">
-                    <exception-argument arity="1" id="missingIngredients"/>
-                    <raising-goal id="notifyIngredientsUnavailability" type="performance"/>
-                    <handling-goal id="dealWithMissingIngredients" type="performance"/>
-                </exception-specification>
+                <report id="ingredientsUnavailable">
+                    <argument arity="1" id="missingIngredients"/>
+                    <raise-goal id="notifyIngredientsUnavailability" type="performance"/>
+                    <handle-goal id="dealWithMissingIngredients" type="performance"/>
+                </report>
             </notification-policy>
             <mission id="mBaker" max="1" min="1">
                 <goal id="mixIngredients"/>
