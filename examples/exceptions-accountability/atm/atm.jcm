@@ -14,25 +14,25 @@
 
 mas atm {
 
-    agent bh {
+    agent atmHandler {
     	roles: atmHandler in g1
     }
-    agent rh {
+    agent requestHandler {
     	roles: requestHandler in g1
     }
-    agent p {
+    agent parser {
     	roles: parser in g1
     }
-    agent r {
+    agent reader {
     	roles: reader in g1
     }
-    agent mk {
+    agent moneyKeeper {
     	roles: moneyKeeper in g1
     }
 
     workspace default {
-    	artifact bart: atm.ATMArtifact() {
-        	focused-by: bh, rh, p, r, mk
+    	artifact atmart: atm.ATMArtifact() {
+        	focused-by: atmHandler, requestHandler, parser, reader, moneyKeeper
     	}
 	}
 
