@@ -41,7 +41,7 @@
 
     <functional-specification>
 
-        <scheme id="tarts_sch">
+        <scheme id="cookies_sch">
 
             <goal id="tartMaking">
                 <plan operator="sequence">
@@ -60,7 +60,7 @@
                 </plan>
             </goal>
 
-            <notification-policy id="np1" target="ingredientsCollection" condition="scheme_id(S) &amp; failed(S,ingredientsCollection)"  type="exception">
+            <notification-policy id="np1" target="ingredientsCollection" condition="failed(_,ingredientsCollection)"  type="exception">
                 <report id="ingredientsShortage">
                     <argument id="availableFillings" arity="1" />
                     <raise-goal id="notifyIngredientsShortage"/>
@@ -68,29 +68,29 @@
                 </report>
             </notification-policy>
 
-            <notification-policy id="np2" target="ingredientsCollection" condition="scheme_id(S) &amp; scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,ingredientsCollection,_),_))"  type="exception">
+            <notification-policy id="np2" target="ingredientsCollection" condition="unfulfilled(obligation(_,_,done(_,ingredientsCollection,_),_))"  type="exception">
                 <report id="ingredientsDelay">
                     <argument id="reason" arity="1" />
                     <raise-goal id="notifyIngredientsDelay"/>
-                    <handle-goal id="slowdownProduction" when="raised(_,ingredientsDelay,_,Args) &amp; .member(reason(healthInspection),Args)" />
+                    <handle-goal id="slowdownProduction" when="raised(ingredientsDelay,_,Args) &amp; .member(reason(healthInspection),Args)" />
                 </report>
             </notification-policy>
 
-            <notification-policy id="np3" target="tartMaking" condition="scheme_id(S) &amp; (failed(S,cookingTemparatureSetup) | failed(S,firstTimeBaking) | failed(S,secondTimeBaking))"  type="exception">
+            <notification-policy id="np3" target="tartMaking" condition="failed(_,cookingTemparatureSetup) | failed(_,firstTimeBaking) | failed(_,secondTimeBaking)"  type="exception">
                 <report id="ovenBroken">
                     <argument id="status" arity="1" />
                     <raise-goal id="notifyProblemWithOven"/>
-                    <handle-goal id="emergency" when="raised(_,ovenBroken,_,Args) &amp; .member(status(fire),Args)">
+                    <handle-goal id="emergency" when="raised(ovenBroken,_,Args) &amp; .member(status(fire),Args)">
                         <plan operator="parallel">
-                            <goal id="leaveBUildingImmediately" />
+                            <goal id="leaveBuildingImmediately" />
                             <goal id="call911" min="1" />
                         </plan>    
                     </handle-goal>
-                    <handle-goal id="notifyTechSupport" when="raised(_,ovenBroken,_,Args) &amp; .member(status(noHeat),Args)" />
+                    <handle-goal id="notifyTechSupport" when="raised(ovenBroken,_,Args) &amp; .member(status(noHeat),Args)" />
                 </report>
             </notification-policy>
 
-            <notification-policy id="np4" target="tartMaking" condition="scheme_id(S) &amp; (failed(S,ingredientsCollection) &amp; failed(S,cookingTemperatureSetup))"  type="exception">
+            <notification-policy id="np4" target="tartMaking" condition="failed(_,ingredientsCollection) &amp; failed(_,cookingTemperatureSetup)"  type="exception">
                 <report id="tartPreparationException">
                     <argument id="affectedTartTypes" arity="1" />
                     <raise-goal id="notifyTartPreparationException"/>
@@ -124,7 +124,7 @@
                 <goal id="alertCustomers" />
             </mission>
             <mission id="mWorker" min="4" max="4">
-                <goal id="leaveBUildingImmediately" />
+                <goal id="leaveBuildingImmediately" />
                 <goal id="call911" />
             </mission>
 

@@ -1,14 +1,10 @@
 
-+!cookingTemperatureSetup
-	<- .print("Switching on oven...").
-	
-+!firstTimeBaking
-	<- .print("First time baking...").
-
-+!secondTimeBaking
-	<- .print("Second time baking...").
-	
-
++!leaveBuildingImmediately
+	<- .print("Leaving building!").
+	   
++!call911
+	<- .print("Calling 911!").
+	   
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
 
