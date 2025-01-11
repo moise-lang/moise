@@ -15,8 +15,8 @@ defaultTasks 'run'
 version '1.0'
 group   'it.unito.di'
 
-sourceCompatibility = 17
-targetCompatibility = 17
+sourceCompatibility = 21
+targetCompatibility = 21
 
 repositories {
     mavenCentral()

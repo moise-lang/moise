@@ -20,10 +20,8 @@ import moise.common.MoiseElement;
 import moise.common.MoiseException;
 import moise.os.Cardinality;
 import moise.os.CardinalitySet;
-import moise.os.fs.accountability.AccountTemplate;
-import moise.os.fs.accountability.AccountabilityAgreement;
-import moise.os.fs.exceptions.ExceptionSpecification;
-import moise.os.fs.exceptions.NotificationPolicy;
+import moise.os.fs.robustness.NotificationPolicy;
+import moise.os.fs.robustness.Report;
 import moise.prolog.ToProlog;
 import moise.xml.DOMUtils;
 import moise.xml.ToXML;
@@ -48,7 +46,6 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
     protected FS                       fs       = null;
 
     protected Map<String, NotificationPolicy> notificationPolicies = new HashMap<>();
-    protected Map<String, AccountabilityAgreement> accountabilityAgreements = new HashMap<>();
 
     public Scheme(String id, FS fs) {
         super(id);
@@ -179,15 +176,6 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
         return ms;
     }
 
-    // Accountability agreements methods
-    public void addAccountabilityAgreement(AccountabilityAgreement aa) {
-        accountabilityAgreements.put(aa.getId(), aa);
-    }
-
-    public Collection<AccountabilityAgreement> getAccountabilityAgreements() {
-        return accountabilityAgreements.values();
-    }
-
     // Notification policies methods
     public void addNotificationPolicy(NotificationPolicy np) {
         notificationPolicies.put(np.getId(), np);
@@ -197,26 +185,15 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
         return notificationPolicies.values();
     }
 
-    public ExceptionSpecification getExceptionSpecification(String id) throws MoiseException {
+    public Report getReport(String id) throws MoiseException {
         for (NotificationPolicy np : notificationPolicies.values()) {
-            for(ExceptionSpecification ex : np.getExceptionSpecifications()) {
+            for(Report ex : np.getReports()) {
                 if (ex.getId().equals(id)) {
                     return ex;
                 }
             }
         }
-        throw new MoiseException("Exception spec " + id + " undefined in scheme " + this.getId());
-    }
-    
-    public AccountTemplate getAccountTemplate(String id) throws MoiseException {
-        for (AccountabilityAgreement aa : accountabilityAgreements.values()) {
-            for(AccountTemplate at : aa.getAccountTemplates()) {
-                if (at.getId().equals(id)) {
-                    return at;
-                }
-            }
-        }
-        throw new MoiseException("Account template " + id + " undefined in scheme " + this.getId());
+        throw new MoiseException("Report " + id + " undefined in scheme " + this.getId());
     }
 
     /** returns a string representing the goal in Prolog syntax, format:
@@ -262,11 +239,6 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
         // goals
         ele.appendChild(getRoot().getAsDOM(document));
 
-        // accountability agreements
-        for (AccountabilityAgreement aa : getAccountabilityAgreements()) {
-            ele.appendChild(aa.getAsDOM(document));
-        }
-
         // notification policies
         for (NotificationPolicy np : getNotificationPolicies()) {
             ele.appendChild(np.getAsDOM(document));
@@ -294,46 +266,17 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
         addGoal(rootG);
         setRoot(rootG);
 
-        // accountability agreements
-        //for (Element aaEle : DOMUtils.getDOMDirectChilds(ele, AccountabilityAgreement.getXMLTag())) {
-        //    AccountabilityAgreement aa = new AccountabilityAgreement(aaEle.getAttribute("id"), this);
-        //    aa.setFromDOM(aaEle);
-        //    addAccountabilityAgreement(aa);
-        //}
-        
-        // accountability agreements
-        for (Element aaEle : DOMUtils.getDOMDirectChilds(ele, AccountabilityAgreement.getXMLTag())) {
-            try {
-                LogicalFormula conditionFormula = ASSyntax.parseFormula("true");
-                String condition = aaEle.getAttribute("condition");
-                if(condition != null) {
-                    condition.replace("&amp;", "&");
-                    condition.replace("&lt;", "<");
-                    condition.replace("&gt;", ">");
-                    condition.replace("&apos;", "'");
-                    condition.replace("&quot;", "\"");
-                    conditionFormula = ASSyntax.parseFormula(condition);
-                }
-                AccountabilityAgreement aa = new AccountabilityAgreement(aaEle.getAttribute("id"), aaEle.getAttribute("target"), conditionFormula, this);
-                aa.setFromDOM(aaEle);
-                addAccountabilityAgreement(aa);
-            }
-            catch(ParseException e) {
-                throw new MoiseException(e.getMessage());
-            }
-        }
-
         // notification policies
         for (Element npEle : DOMUtils.getDOMDirectChilds(ele, NotificationPolicy.getXMLTag())) {
             try {
                 LogicalFormula conditionFormula = ASSyntax.parseFormula("true");
                 String condition = npEle.getAttribute("condition");
                 if(condition != null) {
-                	condition.replace("&amp;", "&");
-                	condition.replace("&lt;", "<");
-                	condition.replace("&gt;", ">");
-                	condition.replace("&apos;", "'");
-                	condition.replace("&quot;", "\"");
+                    condition.replace("&amp;", "&");
+                    condition.replace("&lt;", "<");
+                    condition.replace("&gt;", ">");
+                    condition.replace("&apos;", "'");
+                    condition.replace("&quot;", "\"");
                     conditionFormula = ASSyntax.parseFormula(condition);
                 }
                 NotificationPolicy np = new NotificationPolicy(npEle.getAttribute("id"), npEle.getAttribute("target"), conditionFormula, this);

@@ -51,22 +51,22 @@
                 </plan>
             </goal>
 
-            <accountability-agreement id="a1" target="knead" condition="true">
-                <account-template id="ftKneader">
-                    <account-argument id="flourType" arity="1" />
+            <notification-policy id="np1" target="knead" condition="true" type="accountability">
+                <report id="ftKneader">
+                    <argument id="flourType" arity="1" />
                     <requesting-goal id="requestFlourTypeToKneader" />
                     <accounting-goal id="notifyFlourTypeToBaker" />
-                </account-template>
-            </accountability-agreement>
+                </report>
+            </notification-policy>
 
-            <accountability-agreement id="a2" target="preparation" condition="scheme_id(S) &amp; satisfied(S,getAuthorization)">
-                <context-goal id="getAuthorization" />
-                <account-template id="ftBaker">
-                    <account-argument id="flourType" arity="1" />
+            <notification-policy id="np2" target="preparation" condition="satisfied(_,getAuthorization)" type="accountability">
+                <report id="ftBaker">
+                    <argument id="flourType" arity="1" />
+                    <context-goal id="getAuthorization" />
                     <requesting-goal id="requestFlourTypeToBaker" />
                     <accounting-goal id="notifyFlourTypeToSeller" />
-                </account-template>
-            </accountability-agreement>
+                </report>
+            </notification-policy>
 
             <mission id="mKneader" min="1" max="1">
                 <goal id="knead" />

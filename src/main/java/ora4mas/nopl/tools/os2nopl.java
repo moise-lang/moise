@@ -16,12 +16,15 @@ import moise.os.OS;
 import moise.os.fs.Goal;
 import moise.os.fs.Mission;
 import moise.os.fs.Plan.PlanOpType;
-import moise.os.fs.accountability.*;
 import moise.os.fs.Scheme;
-import moise.os.fs.exceptions.HandlingGoal;
-import moise.os.fs.exceptions.ExceptionSpecification;
-import moise.os.fs.exceptions.NotificationPolicy;
-import moise.os.fs.exceptions.RaisingGoal;
+import moise.os.fs.robustness.AccountingGoal;
+import moise.os.fs.robustness.ContextGoal;
+import moise.os.fs.robustness.HandlingGoal;
+import moise.os.fs.robustness.NotificationPolicy;
+import moise.os.fs.robustness.RaisingGoal;
+import moise.os.fs.robustness.Report;
+import moise.os.fs.robustness.RequestingGoal;
+import moise.os.fs.robustness.TreatmentGoal;
 import moise.os.ns.NS;
 import moise.os.ns.NS.OpTypes;
 import moise.os.ns.Norm;
@@ -93,19 +96,19 @@ public class os2nopl {
         condCode.put(PROP_FailNotEnabledGoal, 
                 "failed(S,G) & mission_goal(M,G) & not mission_accomplished(S,M) & not enabled(S,G)");
         condCode.put(PROP_ExcUnknown,
-                "raised(E,Ag,Args) & not exceptionSpecification(E,_)");
+                "raised(E,Ag,Args) & not report(E,_)");
         condCode.put(PROP_ExcAgNotAllowed,
-                "raised(E,Ag,Args) & exceptionSpecification(E,_) & mission_goal(M,TG) & raisingGoal(TG,E,_) & not committed(Ag,M,S)");
+                "raised(E,Ag,Args) & report(E,_) & mission_goal(M,TG) & raisingGoal(TG,E,_) & not committed(Ag,M,S)");
         condCode.put(PROP_ExcCondNotHolding,
-                "raised(E,Ag,Args) & exceptionSpecification(E,NP) & notificationPolicy(NP,_,Condition) & not (raisingGoal(TG,E,_) & (Condition | done(S,TG,Ag)))");
+                "raised(E,Ag,Args) & report(E,NP) & notificationPolicy(NP,_,Condition) & not (raisingGoal(TG,E,_) & (Condition | done(S,TG,Ag)))");
         condCode.put(PROP_AchThrGoalExcNotRaised,
                 "done(S,TG,Ag) & raisingGoal(TG,E,_) & not super_goal(_,TG) & not raised(E,Ag,Args)");
         condCode.put(PROP_ExcArgNotGround,
-                "raised(E,Ag,Args) & exceptionSpecification(E,_) & .member(Arg,Args) & not .ground(Arg)");
+                "raised(E,Ag,Args) & report(E,_) & .member(Arg,Args) & not .ground(Arg)");
         condCode.put(PROP_ExcArgMissing,
-                "raised(E,Ag,Args) & exceptionSpecification(E,_) & exceptionArgument(E,ArgFunctor,ArgArity) & not (.member(Arg,Args) & Arg=..[ArgFunctor,T,A] & .length(T,ArgArity))");
+                "raised(E,Ag,Args) & report(E,_) & argument(E,ArgFunctor,ArgArity) & not (.member(Arg,Args) & Arg=..[ArgFunctor,T,A] & .length(T,ArgArity))");
         condCode.put(PROP_ExcArgUnknown,
-                "raised(E,Ag,Args) & exceptionSpecification(E,_) & .member(Arg,Args) & Arg=..[ArgFunctor,T,A] & .length(T,ArgArity) & not exceptionArgument(E,ArgFunctor,ArgArity)");
+                "raised(E,Ag,Args) & report(E,_) & .member(Arg,Args) & Arg=..[ArgFunctor,T,A] & .length(T,ArgArity) & not argument(E,ArgFunctor,ArgArity)");
         
     }
     // arguments that 'explains' the property
@@ -327,80 +330,74 @@ public class os2nopl {
         }
         np.append(superGoal.toString());
 
-        String accountabilityAgreement = "\n   // accountabilityAgreement(id, target, requesting condition)\n";
-        String accountTemplate =      "\n   // accountTemplate(account template id, agreement id)\n";
-        String accountArgument = "\n   // accountArgument(agreement id, functor, arity)\n";
-        String agreement_goal = "\n   // agreement_goal(agreemen id, goal id)\n";
-        String requestingGoal = "\n   // requestingGoal(id, when)\n";
-        String accountingGoal = "\n   // accountingGoal(id, when)\n";
-        String treatmentGoal = "\n   // treatmentGoal(id, when)\n";
-        String contextGoal = "\n   // contextGoal(id)\n";
-
-        for (AccountabilityAgreement aa : sch.getAccountabilityAgreements()) {
-            accountabilityAgreement += "   accountabilityAgreement(" + aa.getId() + "," + aa.getTarget().getId() + "," + aa.getCondition() + ").\n";
-            for(Goal cg : aa.getContextGoals()) {
-                contextGoal += "   contextGoal("+ cg.getId() + ").\n";
-                agreement_goal += "   agreement_goal("+ aa.getId() + "," + cg.getId() + ").\n";
-            }
-            for(AccountTemplate at : aa.getAccountTemplates()) {
-                accountTemplate += "   accountTemplate(" + at.getId() + "," + aa.getId() + ").\n";
-                for(Literal l : at.getAccountArguments()) {
-                    accountArgument += "   accountArgument("+aa.getId()+","+l.getFunctor().toString()+","+l.getArity()+").\n";
-                }
-                accountingGoal += "   accountingGoal("+at.getAccountingGoal().getId()+ "," + at.getAccountingGoal().getWhenCondition() + ").\n";
-                agreement_goal += "   agreement_goal("+ aa.getId() + "," +at.getAccountingGoal().getId() + ").\n";
-                for(RequestingGoal rg : at.getRequestingGoals()) {
-                    requestingGoal += "   requestingGoal("+ rg.getId() + "," + rg.getWhenCondition() + ").\n";
-                    agreement_goal += "   agreement_goal("+ aa.getId() + "," + rg.getId() + ").\n";
-                }
-                for(TreatmentGoal tg : at.getTreatmentGoals()) {
-                    treatmentGoal += "   treatmentGoal("+ tg.getId() + "," + tg.getWhenCondition() + ").\n";
-                    agreement_goal += "   agreement_goal("+ aa.getId() + "," + tg.getId() + ").\n";
-                }
-            }
-        }
-        
-        np.append(accountabilityAgreement);
-        np.append(accountArgument);
-        np.append(agreement_goal);
-        np.append(requestingGoal);
-        np.append(accountingGoal);
-        np.append(treatmentGoal);
-        np.append(contextGoal);
-
         String notificationPolicy = "\n   // notificationPolicy(policy id, target id, condition formula)\n";
-        String exceptionSpecification =      "\n   // exceptionSpecification(exception spec id, policy id)\n";
-        String exceptionArgument =  "\n   // exceptionArgument(exception spec id, functor, arity)\n";
-        String raisingGoal =        "\n   // raisingGoal(goal id, exception spec id, when condition)\n";
-        String handlingGoal =       "\n   // handlingGoal(goal id, exception spec id, when condition)\n";
+        
+        String report =      "\n   // report(report id, policy id)\n";
+        String argument =  "\n   // argument(report id, functor, arity)\n";
+        
+        String raisingGoal =        "\n   // raisingGoal(goal id, report id, when condition)\n";
+        String handlingGoal =       "\n   // handlingGoal(goal id, report id, when condition)\n";
 
+        String contextGoal = "\n   // contextGoal(goal id, report id)\n";
+        String requestingGoal = "\n   // requestingGoal(goal id, report id, when condition)\n";
+        String accountingGoal = "\n   // accountingGoal(goal id, report id, when condition)\n";
+        String treatmentGoal = "\n   // treatmentGoal(goal id, report id, when condition)\n";
+        
         for (NotificationPolicy npol : sch.getNotificationPolicies()) {
             notificationPolicy += "   notificationPolicy(" + npol.getId() + "," + npol.getTarget() + "," + npol.getCondition().toString() + ").\n";
-            for(ExceptionSpecification ex : npol.getExceptionSpecifications()) {
-                exceptionSpecification += "   exceptionSpecification(" + ex.getId() + "," + npol.getId() + ").\n";
-                for(Literal l : ex.getExceptionArguments()) {
-                    exceptionArgument += "   exceptionArgument("+ex.getId()+","+l.getFunctor().toString()+","+l.getArity()+").\n";
+            for(Report r : npol.getReports()) {
+                report += "   report(" + r.getId() + "," + npol.getId() + ").\n";
+                for(Literal l : r.getArguments()) {
+                    argument += "   argument("+r.getId()+","+l.getFunctor().toString()+","+l.getArity()+").\n";
                 }
-                for(RaisingGoal tg : ex.getRaisingGoals()) {
-                    raisingGoal += "   raisingGoal("+tg.getId()+","+ex.getId()+","+tg.getWhenCondition().toString()+").\n";
-                    for(Goal sg : tg.getSubGoals()) {
-                        raisingGoal += "   raisingGoal("+sg.getId()+","+ex.getId()+","+tg.getWhenCondition().toString()+").\n";
+                for(RaisingGoal raisg : r.getRaisingGoals()) {
+                    raisingGoal += "   raisingGoal("+raisg.getId()+","+r.getId()+","+raisg.getWhenCondition().toString()+").\n";
+                    for(Goal sg : raisg.getSubGoals()) {
+                        raisingGoal += "   raisingGoal("+sg.getId()+","+r.getId()+","+raisg.getWhenCondition().toString()+").\n";
                     }
                 }
-                for(HandlingGoal cg : ex.getHandlingGoals()) {
-                    handlingGoal += "   handlingGoal("+cg.getId()+","+ex.getId()+","+cg.getWhenCondition().toString()+").\n";
+                for(HandlingGoal hg : r.getHandlingGoals()) {
+                    handlingGoal += "   handlingGoal("+hg.getId()+","+r.getId()+","+hg.getWhenCondition().toString()+").\n";
+                    for(Goal sg : hg.getSubGoals()) {
+                        handlingGoal += "   handlingGoal("+sg.getId()+","+r.getId()+","+hg.getWhenCondition().toString()+").\n";
+                    }
+                }
+                for(ContextGoal cg : r.getContextGoals()) {
+                    contextGoal += "   contextGoal("+ cg.getId() + "," + r.getId() + ").\n";
                     for(Goal sg : cg.getSubGoals()) {
-                        handlingGoal += "   handlingGoal("+sg.getId()+","+ex.getId()+","+cg.getWhenCondition().toString()+").\n";
+                        contextGoal += "   contextGoal(" + sg.getId() + "," + r.getId() + ").\n";
+                    }
+                }
+                for(RequestingGoal reqg : r.getRequestingGoals()) {
+                    requestingGoal += "   requestingGoal("+reqg.getId()+","+r.getId()+","+reqg.getWhenCondition().toString()+").\n";
+                    for(Goal sg : reqg.getSubGoals()) {
+                        requestingGoal += "   requestingGoal("+sg.getId()+","+r.getId()+","+reqg.getWhenCondition().toString()+").\n";
+                    }
+                }
+                for(AccountingGoal ag : r.getAccountingGoals()) {
+                    accountingGoal += "   accountingGoal("+ag.getId()+","+r.getId()+","+ag.getWhenCondition().toString()+").\n";
+                    for(Goal sg : ag.getSubGoals()) {
+                        accountingGoal += "   accountingGoal("+sg.getId()+","+r.getId()+","+ag.getWhenCondition().toString()+").\n";
+                    }
+                }
+                for(TreatmentGoal tg : r.getTreatmentGoals()) {
+                    treatmentGoal += "   treatmentGoal("+tg.getId()+","+r.getId()+","+tg.getWhenCondition().toString()+").\n";
+                    for(Goal sg : tg.getSubGoals()) {
+                        treatmentGoal += "   treatmentGoal("+sg.getId()+","+r.getId()+","+tg.getWhenCondition().toString()+").\n";
                     }
                 }
             }
         }
         
         np.append(notificationPolicy);
-        np.append(exceptionSpecification);
-        np.append(exceptionArgument);
+        np.append(report);
+        np.append(argument);
         np.append(raisingGoal);
         np.append(handlingGoal);
+        np.append(contextGoal);
+        np.append(requestingGoal);
+        np.append(accountingGoal);
+        np.append(treatmentGoal);
 
         np.append("\n   // ** Rules\n");
 
@@ -431,40 +428,58 @@ public class os2nopl {
         np.append("   // enabled goals (i.e. dependence between goals)\n");
         //np.append("   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & NP \\== 0 & any_satisfied(S,PCG).\n");
         //np.append("   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & NP \\== 0 & all_satisfied(S,PCG).\n");
-        np.append("   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & not (requestingGoal(G,_) | accountingGoal(G,_) | treatmentGoal(G,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \\== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).\n");
-        np.append("   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & not (requestingGoal(G,_) | accountingGoal(G,_) | treatmentGoal(G,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \\== 0 & all_satisfied_released(S,PCG).\n\n");
+        np.append("   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & not (requestingGoal(G,_,_) | accountingGoal(G,_,_) | treatmentGoal(G,_,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \\== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).\n");
+        np.append("   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & not (requestingGoal(G,_,_) | accountingGoal(G,_,_) | treatmentGoal(G,_,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \\== 0 & all_satisfied_released(S,PCG).\n\n");
 
-        np.append("   enabled(S,TG) :- raisingGoal(TG,E,When) &\r\n"
-                + "                    When &\r\n"             
-                //+ "                    not failed(S,TG) &\r\n"
-                //+ "                    not released(S,TG) &\r\n" 
+        np.append("   enabled(S,RG) :- raisingGoal(RG,E,When) &\r\n"
+                + "                    When &\r\n"
                 + "                    notificationPolicy(NPol,_,Condition) &\r\n"
-                + "                    exceptionSpecification(E,NPol) &\r\n"
+                + "                    report(E,NPol) &\r\n"
                 + "                    Condition &\r\n"   
-                + "                    goal(_, TG,  Dep, _, NP, _) & NP \\== 0 & \r\n"
+                + "                    goal(_, RG,  Dep, _, NP, _) & NP \\== 0 & \r\n"
                 + "                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |\r\n"
                 + "                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))\r\n"
                 + "                    ).\r\n");
-        np.append("   enabled(S,CG) :- handlingGoal(CG,E,When) &\r\n" 
+        
+        np.append("   enabled(S,HG) :- handlingGoal(HG,E,When) &\r\n" 
                 + "                    When &\r\n"
-                //+ "                    not failed(S,CG) &\r\n"
-                //+ "                    not released(S,CG) &\r\n"
                 + "                    raised(E,_,_) &\r\n"
-                + "                    raisingGoal(TG,E,_) &\r\n" 
-                + "                    satisfied(S,TG) &\r\n"
-                + "                    goal(_, CG,  Dep, _, NP, _) & NP \\== 0 &\r\n"
+                + "                    raisingGoal(RG,E,_) &\r\n" 
+                + "                    satisfied(S,RG) &\r\n"
+                + "                    goal(_, HG,  Dep, _, NP, _) & NP \\== 0 &\r\n"
+                + "                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |\r\n"
+                + "                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))\r\n"
+                + "                    ).\r\n");
+        
+        np.append("   enabled(S,RG) :- requestingGoal(RG,A,When) &\r\n"
+                + "                    When &\r\n"
+                + "                    notificationPolicy(NPol,_,Condition) &\r\n"
+                + "                    report(A,NPol) &\r\n"
+                + "                    Condition &\r\n"
+                + "                    (not contextGoal(CG,A) | (contextGoal(CG,A) & satisfied(S,CG))) &\r\n"
+                + "                    goal(_, RG,  Dep, _, NP, _) & NP \\== 0 & \r\n"
+                + "                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |\r\n"
+                + "                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))\r\n"
+                + "                    ).\r\n");
+        
+        np.append("   enabled(S,AG) :- accountingGoal(AG,A,When) &\r\n"
+                + "                    When &\r\n"
+                + "                    requestingGoal(RG,A,_) &\r\n"
+                + "                    satisfied(S,RG) &\r\n"
+                + "                    goal(_, AG,  Dep, _, NP, _) & NP \\== 0 & \r\n"
+                + "                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |\r\n"
+                + "                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))\r\n"
+                + "                    ).\r\n");
+                
+        np.append("   enabled(S,TG) :- treatmentGoal(TG,A,When) &\r\n"
+                + "                    When &\r\n"
+                + "                    account(A,_,_) &\r\n"
+                + "                    accountingGoal(AG,A,_) &\r\n"
+                + "                    satisfied(S,AG) &\r\n"
+                + "                    goal(_, TG,  Dep, _, NP, _) & NP \\== 0 &\r\n"
                 + "                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |\r\n"
                 + "                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))\r\n"
                 + "                    ).\r\n\n");
-        
-        np.append("   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & requestingGoal(G,When) & When & accountabilityAgreement(AA,_,Condition) & Condition & agreement_goal(AA,G) & NP \\== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).\n");
-        np.append("   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & requestingGoal(G,When) & When & accountabilityAgreement(AA,_,Condition) & Condition & agreement_goal(AA,G) & NP \\== 0 & all_satisfied_released(S,PCG).\n");
-        
-        np.append("   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & accountingGoal(G,When) & When & accountabilityAgreement(AA,_,Condition) & Condition & agreement_goal(AA,G) & ((requestingGoal(RG,_) & agreement_goal(AA,RG) & satisfied(S,RG)) | (not (requestingGoal(RG,_) & agreement_goal(AA,RG)))) & NP \\== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).\n");
-        np.append("   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & accountingGoal(G,When) & When & accountabilityAgreement(AA,_,Condition) & Condition & agreement_goal(AA,G) & ((requestingGoal(RG,_) & agreement_goal(AA,RG) & satisfied(S,RG)) | (not (requestingGoal(RG,_) & agreement_goal(AA,RG)))) & NP \\== 0 & all_satisfied_released(S,PCG).\n");
-        
-        np.append("   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & treatmentGoal(G,When) & When & accountabilityAgreement(AA,_,_) & agreement_goal(AA,G) & accountingGoal(AG,_) & agreement_goal(AA,AG) & satisfied(S,AG) & NP \\== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).\n");
-        np.append("   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & treatmentGoal(G,When) & When & accountabilityAgreement(AA,_,_) & agreement_goal(AA,G) & accountingGoal(AG,_) & agreement_goal(AA,AG) & satisfied(S,AG) & NP \\== 0 & all_satisfied_released(S,PCG).\n");
         
         np.append("   super_satisfied(S,G) :- super_goal(SG,G) & satisfied(S,SG).\n");
 
@@ -502,7 +517,7 @@ public class os2nopl {
             np.append("           not satisfied(S,G) & \n");
             np.append("           not failed(_,G) & \n");
             np.append("           not released(_,G) & \n");
-            np.append("           not (requestingGoal(G,_) | contextGoal(G)) & \n");
+            np.append("           not (requestingGoal(G,_,_) | contextGoal(G,_)) & \n");
             np.append("           not super_satisfied(S,G)\n");
             np.append("        -> obligation(A,(enabled(S,G) & not failed(S,G)),What,`now` + D).\n");
             // TODO: maintenance goals

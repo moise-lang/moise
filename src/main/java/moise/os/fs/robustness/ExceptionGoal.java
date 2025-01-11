@@ -1,4 +1,4 @@
-package moise.os.fs.exceptions;
+package moise.os.fs.robustness;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -1,7 +1,7 @@
 /*
     This program was automatically generated from
     the organisation specification 'wp'
-    on December 05, 2023 - 11:50:09
+    on gennaio 11, 2025 - 12:03:12
 
     This is a MOISE tool, see more at https://moise-lang.github.io
 
@@ -131,6 +131,24 @@ scope scheme(writePaperSch) {
    super_goal(sv, wsecs).
    super_goal(fdv, wabs).
 
+   // notificationPolicy(policy id, target id, condition formula)
+
+   // report(report id, policy id)
+
+   // argument(report id, functor, arity)
+
+   // raisingGoal(goal id, report id, when condition)
+
+   // handlingGoal(goal id, report id, when condition)
+
+   // contextGoal(goal id, report id)
+
+   // requestingGoal(goal id, report id, when condition)
+
+   // accountingGoal(goal id, report id, when condition)
+
+   // treatmentGoal(goal id, report id, when condition)
+
    // ** Rules
    mplayers(M,S,V) :- .count(committed(_,M,S),V).
    well_formed(S) :- 
@@ -144,9 +162,57 @@ scope scheme(writePaperSch) {
    any_satisfied(S,[G|_]) :- satisfied(S,G).
    any_satisfied(S,[G|T]) :- not satisfied(S,G) & any_satisfied(S,T).
 
+   all_released(_,[]).
+   all_released(S,[G|T]) :- released(S,G) & all_released(S,T).
+   all_satisfied_released(_,[]).
+   all_satisfied_released(S,[G|T]) :- (satisfied(S,G) | released(S,G)) & all_satisfied_released(S,T).
+
    // enabled goals (i.e. dependence between goals)
-   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & NP \== 0 & any_satisfied(S,PCG).
-   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & NP \== 0 & all_satisfied(S,PCG).
+   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & not (requestingGoal(G,_) | accountingGoal(G,_) | treatmentGoal(G,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).
+   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & not (requestingGoal(G,_) | accountingGoal(G,_) | treatmentGoal(G,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & all_satisfied_released(S,PCG).
+
+   enabled(S,RG) :- raisingGoal(RG,E,When) &
+                    When &
+                    notificationPolicy(NPol,_,Condition) &
+                    report(E,NPol) &
+                    Condition &
+                    goal(_, RG,  Dep, _, NP, _) & NP \== 0 & 
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+   enabled(S,HG) :- handlingGoal(HG,E,When) &
+                    When &
+                    raised(E,_,_) &
+                    raisingGoal(RG,E,_) &
+                    satisfied(S,RG) &
+                    goal(_, HG,  Dep, _, NP, _) & NP \== 0 &
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+   enabled(S,RG) :- requestingGoal(RG,A,When) &
+                    When &
+                    notificationPolicy(NPol,_,Condition) &
+                    report(A,NPol) &
+                    Condition &
+                    (not contextGoal(CG,A) | (contextGoal(CG,A) & satisfied(S,CG))) &
+                    goal(_, RG,  Dep, _, NP, _) & NP \== 0 & 
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+   enabled(S,AG) :- accountingGoal(AG,A,When) &
+                    When &
+                    requestingGoal(RG,A,_) &
+                    satisfied(S,RG) &
+                    goal(_, AG,  Dep, _, NP, _) & NP \== 0 & 
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+   enabled(S,TG) :- treatmentGoal(TG,A,When) &                     When &                     account(A,_,_) &
+                    accountingGoal(AG,A,_) &                     satisfied(S,AG) &                     goal(_, TG,  Dep, _, NP, _) & NP \== 0 & 
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+
    super_satisfied(S,G) :- super_goal(SG,G) & satisfied(S,SG).
 
    // ** Norms
@@ -160,7 +226,7 @@ scope scheme(writePaperSch) {
            done(S,G,Agt) &
            mission_goal(M,G) &
            not mission_accomplished(S,M) &
-           not enabled(S,G)
+           not (enabled(S,G) | satisfied(S,G))
         -> fail(ach_not_enabled_goal(S,G,Agt)).
    norm ach_not_committed_goal:  
            done(S,G,Agt) &
@@ -180,6 +246,58 @@ scope scheme(writePaperSch) {
                mplayers(M,S,MP) &
                MP > MMax,
                `never`).
+   norm fail_not_enabled_goal:  
+           failed(S,G) &
+           mission_goal(M,G) &
+           not mission_accomplished(S,M) &
+           not enabled(S,G)
+        -> fail(fail_not_enabled_goal(S,G)).
+   norm exc_unknown:  
+           raised(E,Ag,Args) &
+           not report(E,_)
+        -> fail(exc_unknown(S,E,Ag)).
+   norm exc_agent_not_allowed:  
+           raised(E,Ag,Args) &
+           report(E,_) &
+           mission_goal(M,TG) &
+           raisingGoal(TG,E,_) &
+           not committed(Ag,M,S)
+        -> fail(exc_agent_not_allowed(S,E,Ag)).
+   norm exc_condition_not_holding:  
+           raised(E,Ag,Args) &
+           report(E,NP) &
+           notificationPolicy(NP,_,Condition) &
+           not (raisingGoal(TG,E,_) &
+           (Condition | done(S,TG,Ag)))
+        -> fail(exc_condition_not_holding(S,E,Ag,Condition)).
+   norm ach_thr_goal_exc_not_raised:  
+           done(S,TG,Ag) &
+           raisingGoal(TG,E,_) &
+           not super_goal(_,TG) &
+           not raised(E,Ag,Args)
+        -> fail(ach_thr_goal_exc_not_raised(S,G,E,Ag)).
+   norm exc_arg_not_ground:  
+           raised(E,Ag,Args) &
+           report(E,_) &
+           .member(Arg,Args) &
+           not .ground(Arg)
+        -> fail(exc_arg_not_ground(S,E,Arg)).
+   norm exc_arg_missing:  
+           raised(E,Ag,Args) &
+           report(E,_) &
+           argument(E,ArgFunctor,ArgArity) &
+           not (.member(Arg,Args) &
+           Arg=..[ArgFunctor,T,A] &
+           .length(T,ArgArity))
+        -> fail(exc_arg_missing(S,E,ArgFunctor,ArgArity)).
+   norm exc_arg_unknown:  
+           raised(E,Ag,Args) &
+           report(E,_) &
+           .member(Arg,Args) &
+           Arg=..[ArgFunctor,T,A] &
+           .length(T,ArgArity) &
+           not argument(E,ArgFunctor,ArgArity)
+        -> fail(exc_arg_unknown(S,E,Arg)).
 
    // agents are obliged to fulfill their enabled goals
    norm ngoal: 
@@ -188,8 +306,11 @@ scope scheme(writePaperSch) {
             (goal(_,G,_,performance,_,D) & What = done(S,G,A))) &
            well_formed(S) & 
            not satisfied(S,G) & 
+           not failed(_,G) & 
+           not released(_,G) & 
+           not (requestingGoal(G,_) | contextGoal(G)) & 
            not super_satisfied(S,G)
-        -> obligation(A,enabled(S,G),What,D).
+        -> obligation(A,(enabled(S,G) & not failed(S,G)),What,`now` + D).
 } // end of scheme writePaperSch
 
 } // end of organisation wp

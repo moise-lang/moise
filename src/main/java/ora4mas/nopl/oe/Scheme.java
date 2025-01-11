@@ -4,10 +4,6 @@ import static jason.asSyntax.ASSyntax.createAtom;
 import static jason.asSyntax.ASSyntax.createLiteral;
 
 import java.io.StringReader;
-import java.util.*;
-import java.util.concurrent.*;
-
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import jaca.ToProlog;
 import jason.asSemantics.Unifier;
@@ -35,13 +32,12 @@ import moise.common.MoiseException;
 import moise.os.fs.Goal;
 import moise.os.fs.Mission;
 import moise.os.fs.Plan.PlanOpType;
-import moise.os.fs.accountability.AccountTemplate;
-import moise.os.fs.accountability.AccountingGoal;
-import moise.os.fs.accountability.RequestingGoal;
-import moise.os.fs.accountability.TreatmentGoal;
-import moise.os.fs.exceptions.HandlingGoal;
-import moise.os.fs.exceptions.ExceptionSpecification;
-import moise.os.fs.exceptions.RaisingGoal;
+import moise.os.fs.robustness.AccountingGoal;
+import moise.os.fs.robustness.HandlingGoal;
+import moise.os.fs.robustness.RaisingGoal;
+import moise.os.fs.robustness.Report;
+import moise.os.fs.robustness.RequestingGoal;
+import moise.os.fs.robustness.TreatmentGoal;
 import npl.NPLInterpreter;
 import npl.parser.nplp;
 
@@ -66,8 +62,8 @@ public class Scheme extends CollectiveOE {
         createLiteral(Group.responsiblePI.getFunctor(), new VarTerm("Gr"), new VarTerm("Sch")),               // from group
         createLiteral("failed",new VarTerm("SID"), new VarTerm("Goal")),
         createLiteral("released", new VarTerm("SID"), new VarTerm("Goal")),
-        createLiteral("raised", new VarTerm("Exception"), new VarTerm("Ag"), new VarTerm("Args")),
-        createLiteral("account", new VarTerm("AccountTemplate"), new VarTerm("Ag"), new VarTerm("Args"))
+        createLiteral("raised", new VarTerm("Report"), new VarTerm("Ag"), new VarTerm("Args")),
+        createLiteral("account", new VarTerm("Report"), new VarTerm("Ag"), new VarTerm("Args"))
     };
 
 
@@ -100,10 +96,10 @@ public class Scheme extends CollectiveOE {
     // values for goal arguments (key = goal + arg, value = value)
     private HashMap<Pair<String,String>,Object> goalArgs = new HashMap<>();
 
-    // the literal is raised(exceptionId, agent name, arguments)
+    // the literal is raised(report id, agent name, arguments)
     private List<Literal> raiseds = new CopyOnWriteArrayList<>();
 
- // the literal is account(accountId, agent name, arguments)
+    // the literal is account(report id, agent name, arguments)
     private List<Literal> accounts = new CopyOnWriteArrayList<>();
 
     // list of satisfied goals
@@ -196,14 +192,6 @@ public class Scheme extends CollectiveOE {
                 r = true;
             }
         }
-//        Iterator<Literal> iFailedGoals = failedGoals.iterator();
-//        while (iFailedGoals.hasNext()) {
-//            Literal l = iFailedGoals.next();
-//            if (l.getTerm(1).equals(gAtom)) {
-//                iFailedGoals.remove();
-//                r = true;
-//            }
-//        }
         return r;
     }
 
@@ -222,23 +210,27 @@ public class Scheme extends CollectiveOE {
         return r;
     }
 
-    public boolean removeRaised(moise.os.fs.exceptions.ExceptionSpecification exceptionSpecification) {
+    public boolean removeRaised(Report report) {
         boolean r = false;
-        Atom eAtom = createAtom(exceptionSpecification.getId());
+        Atom eAtom = createAtom(report.getId());
         for(Literal l : raiseds) {
             if (l.getTerm(1).equals(eAtom)) {
                 raiseds.remove(l);
                 r = true;
             }
         }
-//        Iterator<Literal> iRaiseds = raiseds.iterator();
-//        while (iRaiseds.hasNext()) {
-//            Literal l = iRaiseds.next();
-//            if (l.getTerm(1).equals(eAtom)) {
-//                iRaiseds.remove();
-//                r = true;
-//            }
-//        }
+        return r;
+    }
+    
+    public boolean removeAccount(Report report) {
+        boolean r = false;
+        Atom eAtom = createAtom(report.getId());
+        for(Literal l : accounts) {
+            if (l.getTerm(1).equals(eAtom)) {
+                accounts.remove(l);
+                r = true;
+            }
+        }
         return r;
     }
 
@@ -291,7 +283,7 @@ public class Scheme extends CollectiveOE {
         boolean changed = false;
         for(Literal l : raiseds) {
             try {
-                ExceptionSpecification ex = spec.getExceptionSpecification(l.getTerm(0).toString());
+                Report ex = spec.getReport(l.getTerm(0).toString());
                 boolean anyConditionHolding = false;
                 for(RaisingGoal tg : ex.getRaisingGoals()) {
                 
@@ -327,26 +319,31 @@ public class Scheme extends CollectiveOE {
         boolean changed = false;
         for(Literal l : accounts) {
             try {
-                AccountTemplate at = spec.getAccountTemplate(l.getTerm(0).toString());
-                boolean accountingConditionHolding = false;
-                AccountingGoal ag = at.getAccountingGoal();
-                LogicalFormula whenCondition = ag.getWhenCondition();
-                nplp parser = new nplp(new StringReader(whenCondition.toString()));
-                parser.setDFP(this);
-                LogicalFormula formula = (LogicalFormula)parser.log_expr();
-                if(nengine.holds(formula)) {
-                    accountingConditionHolding = true;
+                Report r = spec.getReport(l.getTerm(0).toString());
+                boolean anyConditionHolding = false;
+                for(AccountingGoal ag : r.getAccountingGoals()) {
+                
+                    LogicalFormula whenCondition = ag.getWhenCondition();
+
+                    nplp parser = new nplp(new StringReader(whenCondition.toString()));
+                    parser.setDFP(this);
+                    LogicalFormula formula = (LogicalFormula)parser.log_expr();
+                    if(nengine.holds(formula)) {
+                        anyConditionHolding = true;
+                    }
                 }
-                if(!accountingConditionHolding) {
+                if(!anyConditionHolding) {
                     accounts.remove(l);
-                    for(RequestingGoal rg : at.getRequestingGoals()) {
+                    for(RequestingGoal rg : r.getRequestingGoals()) {
                         resetGoal(rg);
                     }
-                    resetGoal(ag);
-                    for(TreatmentGoal tg : at.getTreatmentGoals()) {
+                    for(AccountingGoal ag : r.getAccountingGoals()) {
+                        resetGoal(ag);
+                    }
+                    for(TreatmentGoal tg : r.getTreatmentGoals()) {
                         resetGoal(tg);
                     }
-                    resetExceptions(nengine);
+                    resetAccounts(nengine);
                     changed = true;
                 }
             } catch (MoiseException | npl.parser.ParseException e1) {
@@ -421,6 +418,9 @@ public class Scheme extends CollectiveOE {
         } else if (pi.equals(raisedPI)) {
             return consultFromCollection(l, u, raiseds);
 
+        } else if (pi.equals(accountPI)) {
+            return consultFromCollection(l, u, accounts);
+            
         } else if (pi.equals(donePI)) {
             return consultFromCollection(l, u, doneGoals);
 
@@ -449,9 +449,6 @@ public class Scheme extends CollectiveOE {
                 }
                 return lu.iterator();
             }
-        }
-        else if(pi.equals(accountPI)) {
-            return consultFromCollection(l, u, accounts);
         }
         return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
