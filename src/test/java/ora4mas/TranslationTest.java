@@ -85,16 +85,16 @@ public class TranslationTest {
         out.close();
         
         // Cake
-        os = OS.loadOSFromURI("src/test/resources/cake-os-exception.xml");
+        os = OS.loadOSFromURI("src/test/resources/bakery-os-accountability.xml");
         //os = OS.loadOSFromURI("cake-os-exception.xml");
         d = DOMUtils.getAsXmlDocument(os);
-        output = new StreamResult(new File("src/test/resources/cake-os-exception-output.xml"));
+        output = new StreamResult(new File("src/test/resources/bakery-os-accountability-output.xml"));
         //output = new StreamResult(new File("cake-os-exception-output.xml"));
         input = new DOMSource(d);
         transformer.transform(input, output);
         
         np = os2nopl.transform(os);
-        out = new BufferedWriter(new FileWriter("src/test/resources/cake-os-exception.npl"));
+        out = new BufferedWriter(new FileWriter("src/test/resources/bakery-os-accountability.npl"));
         //out = new BufferedWriter(new FileWriter("cake-os-exception.npl"));
         out.write(np);
         out.close();

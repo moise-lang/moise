@@ -1,7 +1,7 @@
 /*
     This program was automatically generated from
     the organisation specification 'atm'
-    on settembre 03, 2024 - 13:54:28
+    on aprile 08, 2025 - 10:53:34
 
     This is a MOISE tool, see more at https://moise-lang.github.io
 
@@ -136,38 +136,32 @@ scope scheme(atm_sch) {
    super_goal(obtainAmount, parseAmount).
    super_goal(withdraw, obtainAmount).
 
-   // accountabilityAgreement(id, target, requesting condition)
-
-   // accountArgument(agreement id, functor, arity)
-
-   // agreement_goal(agreemen id, goal id)
-
-   // requestingGoal(id, when)
-
-   // accountingGoal(id, when)
-
-   // treatmentGoal(id, when)
-
-   // contextGoal(id)
-
    // notificationPolicy(policy id, target id, condition formula)
-   notificationPolicy(np2,recoverFromNan,(scheme_id(S) & failed(S,recoverFromNan))).
-   notificationPolicy(np1,parseAmount,(scheme_id(S) & unfulfilled(obligation(_1377,_1378,done(S,parseAmount,_1379),_1380)))).
+   notificationPolicy(np2,recoverFromNan,failed(_2,recoverFromNan)).
+   notificationPolicy(np1,parseAmount,failed(_1,parseAmount)).
 
-   // exceptionSpecification(exception spec id, policy id)
-   exceptionSpecification(amountUnavailable,np2).
-   exceptionSpecification(nan,np1).
+   // report(report id, policy id)
+   report(amountUnavailable,np2).
+   report(nan,np1).
 
-   // exceptionArgument(exception spec id, functor, arity)
-   exceptionArgument(nan,index,1).
+   // argument(report id, functor, arity)
+   argument(nan,index,1).
 
-   // raisingGoal(goal id, exception spec id, when condition)
+   // raisingGoal(goal id, report id, when condition)
    raisingGoal(raiseAmountUnavailable,amountUnavailable,true).
    raisingGoal(raiseNan,nan,true).
 
-   // handlingGoal(goal id, exception spec id, when condition)
+   // handlingGoal(goal id, report id, when condition)
    handlingGoal(retryLater,amountUnavailable,true).
    handlingGoal(recoverFromNan,nan,true).
+
+   // contextGoal(goal id, report id)
+
+   // requestingGoal(goal id, report id, when condition)
+
+   // accountingGoal(goal id, report id, when condition)
+
+   // treatmentGoal(goal id, report id, when condition)
 
    // ** Rules
    mplayers(M,S,V) :- .count(committed(_,M,S),V).
@@ -190,34 +184,55 @@ scope scheme(atm_sch) {
    all_satisfied_released(S,[G|T]) :- (satisfied(S,G) | released(S,G)) & all_satisfied_released(S,T).
 
    // enabled goals (i.e. dependence between goals)
-   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & not (requestingGoal(G,_) | accountingGoal(G,_) | treatmentGoal(G,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).
-   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & not (requestingGoal(G,_) | accountingGoal(G,_) | treatmentGoal(G,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & all_satisfied_released(S,PCG).
+   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & not (requestingGoal(G,_,_) | accountingGoal(G,_,_) | treatmentGoal(G,_,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).
+   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & not (requestingGoal(G,_,_) | accountingGoal(G,_,_) | treatmentGoal(G,_,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & all_satisfied_released(S,PCG).
 
-   enabled(S,TG) :- raisingGoal(TG,E,When) &
+   enabled(S,RG) :- raisingGoal(RG,E,When) &
                     When &
                     notificationPolicy(NPol,_,Condition) &
-                    exceptionSpecification(E,NPol) &
+                    report(E,NPol) &
                     Condition &
-                    goal(_, TG,  Dep, _, NP, _) & NP \== 0 & 
+                    goal(_, RG,  Dep, _, NP, _) & NP \== 0 & 
                     ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
                      (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
                     ).
-   enabled(S,CG) :- handlingGoal(CG,E,When) &
+   enabled(S,HG) :- handlingGoal(HG,E,When) &
                     When &
                     raised(E,_,_) &
-                    raisingGoal(TG,E,_) &
-                    satisfied(S,TG) &
-                    goal(_, CG,  Dep, _, NP, _) & NP \== 0 &
+                    raisingGoal(RG,E,_) &
+                    satisfied(S,RG) &
+                    goal(_, HG,  Dep, _, NP, _) & NP \== 0 &
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+   enabled(S,RG) :- requestingGoal(RG,A,When) &
+                    When &
+                    notificationPolicy(NPol,_,Condition) &
+                    report(A,NPol) &
+                    Condition &
+                    (not contextGoal(CG,A) | (contextGoal(CG,A) & satisfied(S,CG))) &
+                    goal(_, RG,  Dep, _, NP, _) & NP \== 0 & 
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+   enabled(S,AG) :- accountingGoal(AG,A,When) &
+                    When &
+                    requestingGoal(RG,A,_) &
+                    satisfied(S,RG) &
+                    goal(_, AG,  Dep, _, NP, _) & NP \== 0 & 
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+   enabled(S,TG) :- treatmentGoal(TG,A,When) &
+                    When &
+                    account(A,_,_) &
+                    accountingGoal(AG,A,_) &
+                    satisfied(S,AG) &
+                    goal(_, TG,  Dep, _, NP, _) & NP \== 0 &
                     ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
                      (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
                     ).
 
-   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & requestingGoal(G,When) & When & accountabilityAgreement(AA,_,Condition) & Condition & agreement_goal(AA,G) & NP \== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).
-   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & requestingGoal(G,When) & When & accountabilityAgreement(AA,_,Condition) & Condition & agreement_goal(AA,G) & NP \== 0 & all_satisfied_released(S,PCG).
-   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & accountingGoal(G,When) & When & accountabilityAgreement(AA,_,Condition) & Condition & agreement_goal(AA,G) & ((requestingGoal(RG,_) & agreement_goal(AA,RG) & satisfied(S,RG)) | (not (requestingGoal(RG,_) & agreement_goal(AA,RG)))) & NP \== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).
-   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & accountingGoal(G,When) & When & accountabilityAgreement(AA,_,Condition) & Condition & agreement_goal(AA,G) & ((requestingGoal(RG,_) & agreement_goal(AA,RG) & satisfied(S,RG)) | (not (requestingGoal(RG,_) & agreement_goal(AA,RG)))) & NP \== 0 & all_satisfied_released(S,PCG).
-   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & treatmentGoal(G,When) & When & accountabilityAgreement(AA,_,_) & agreement_goal(AA,G) & accountingGoal(AG,_) & agreement_goal(AA,AG) & satisfied(S,AG) & NP \== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).
-   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & treatmentGoal(G,When) & When & accountabilityAgreement(AA,_,_) & agreement_goal(AA,G) & accountingGoal(AG,_) & agreement_goal(AA,AG) & satisfied(S,AG) & NP \== 0 & all_satisfied_released(S,PCG).
    super_satisfied(S,G) :- super_goal(SG,G) & satisfied(S,SG).
 
    // ** Norms
@@ -258,18 +273,18 @@ scope scheme(atm_sch) {
         -> fail(fail_not_enabled_goal(S,G)).
    norm exc_unknown:  
            raised(E,Ag,Args) &
-           not exceptionSpecification(E,_)
+           not report(E,_)
         -> fail(exc_unknown(S,E,Ag)).
    norm exc_agent_not_allowed:  
            raised(E,Ag,Args) &
-           exceptionSpecification(E,_) &
+           report(E,_) &
            mission_goal(M,TG) &
            raisingGoal(TG,E,_) &
            not committed(Ag,M,S)
         -> fail(exc_agent_not_allowed(S,E,Ag)).
    norm exc_condition_not_holding:  
            raised(E,Ag,Args) &
-           exceptionSpecification(E,NP) &
+           report(E,NP) &
            notificationPolicy(NP,_,Condition) &
            not (raisingGoal(TG,E,_) &
            (Condition | done(S,TG,Ag)))
@@ -282,25 +297,25 @@ scope scheme(atm_sch) {
         -> fail(ach_thr_goal_exc_not_raised(S,G,E,Ag)).
    norm exc_arg_not_ground:  
            raised(E,Ag,Args) &
-           exceptionSpecification(E,_) &
+           report(E,_) &
            .member(Arg,Args) &
            not .ground(Arg)
         -> fail(exc_arg_not_ground(S,E,Arg)).
    norm exc_arg_missing:  
            raised(E,Ag,Args) &
-           exceptionSpecification(E,_) &
-           exceptionArgument(E,ArgFunctor,ArgArity) &
+           report(E,_) &
+           argument(E,ArgFunctor,ArgArity) &
            not (.member(Arg,Args) &
            Arg=..[ArgFunctor,T,A] &
            .length(T,ArgArity))
         -> fail(exc_arg_missing(S,E,ArgFunctor,ArgArity)).
    norm exc_arg_unknown:  
            raised(E,Ag,Args) &
-           exceptionSpecification(E,_) &
+           report(E,_) &
            .member(Arg,Args) &
            Arg=..[ArgFunctor,T,A] &
            .length(T,ArgArity) &
-           not exceptionArgument(E,ArgFunctor,ArgArity)
+           not argument(E,ArgFunctor,ArgArity)
         -> fail(exc_arg_unknown(S,E,Arg)).
 
    // agents are obliged to fulfill their enabled goals
@@ -312,7 +327,7 @@ scope scheme(atm_sch) {
            not satisfied(S,G) & 
            not failed(_,G) & 
            not released(_,G) & 
-           not (requestingGoal(G,_) | contextGoal(G)) & 
+           not (requestingGoal(G,_,_) | contextGoal(G,_)) & 
            not super_satisfied(S,G)
         -> obligation(A,(enabled(S,G) & not failed(S,G)),What,`now` + D).
 } // end of scheme atm_sch

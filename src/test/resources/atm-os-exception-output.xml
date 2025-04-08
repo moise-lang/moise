@@ -52,13 +52,13 @@
                     <goal id="provideMoney" type="performance"/>
                 </plan>
             </goal>
-            <notification-policy condition="(scheme_id(S) &amp; failed(S,recoverFromNan))" id="np2" target="recoverFromNan">
+            <notification-policy condition="failed(_2,recoverFromNan)" id="np2" target="recoverFromNan">
                 <report id="amountUnavailable">
                     <raise-goal id="raiseAmountUnavailable" type="performance"/>
                     <handle-goal id="retryLater" type="performance"/>
                 </report>
             </notification-policy>
-            <notification-policy condition="(scheme_id(S) &amp; unfulfilled(obligation(_1377,_1378,done(S,parseAmount,_1379),_1380)))" id="np1" target="parseAmount">
+            <notification-policy condition="failed(_1,parseAmount)" id="np1" target="parseAmount">
                 <report id="nan">
                     <argument arity="1" id="index"/>
                     <raise-goal id="raiseNan" type="performance"/>

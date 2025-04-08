@@ -1,7 +1,7 @@
 /*
     This program was automatically generated from
     the organisation specification 'wp'
-    on gennaio 11, 2025 - 12:03:12
+    on aprile 08, 2025 - 10:53:43
 
     This is a MOISE tool, see more at https://moise-lang.github.io
 
@@ -168,8 +168,8 @@ scope scheme(writePaperSch) {
    all_satisfied_released(S,[G|T]) :- (satisfied(S,G) | released(S,G)) & all_satisfied_released(S,T).
 
    // enabled goals (i.e. dependence between goals)
-   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & not (requestingGoal(G,_) | accountingGoal(G,_) | treatmentGoal(G,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).
-   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & not (requestingGoal(G,_) | accountingGoal(G,_) | treatmentGoal(G,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & all_satisfied_released(S,PCG).
+   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & not (requestingGoal(G,_,_) | accountingGoal(G,_,_) | treatmentGoal(G,_,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).
+   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & not (requestingGoal(G,_,_) | accountingGoal(G,_,_) | treatmentGoal(G,_,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & all_satisfied_released(S,PCG).
 
    enabled(S,RG) :- raisingGoal(RG,E,When) &
                     When &
@@ -207,8 +207,12 @@ scope scheme(writePaperSch) {
                     ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
                      (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
                     ).
-   enabled(S,TG) :- treatmentGoal(TG,A,When) &                     When &                     account(A,_,_) &
-                    accountingGoal(AG,A,_) &                     satisfied(S,AG) &                     goal(_, TG,  Dep, _, NP, _) & NP \== 0 & 
+   enabled(S,TG) :- treatmentGoal(TG,A,When) &
+                    When &
+                    account(A,_,_) &
+                    accountingGoal(AG,A,_) &
+                    satisfied(S,AG) &
+                    goal(_, TG,  Dep, _, NP, _) & NP \== 0 &
                     ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
                      (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
                     ).
@@ -308,7 +312,7 @@ scope scheme(writePaperSch) {
            not satisfied(S,G) & 
            not failed(_,G) & 
            not released(_,G) & 
-           not (requestingGoal(G,_) | contextGoal(G)) & 
+           not (requestingGoal(G,_,_) | contextGoal(G,_)) & 
            not super_satisfied(S,G)
         -> obligation(A,(enabled(S,G) & not failed(S,G)),What,`now` + D).
 } // end of scheme writePaperSch
