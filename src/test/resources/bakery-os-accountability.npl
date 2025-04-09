@@ -1,7 +1,7 @@
 /*
     This program was automatically generated from
     the organisation specification 'bakery'
-    on aprile 09, 2025 - 11:35:43
+    on aprile 09, 2025 - 12:28:35
 
     This is a MOISE tool, see more at https://moise-lang.github.io
 
@@ -138,7 +138,7 @@ scope scheme(bakery_scheme) {
    super_goal(sellingBread, preparation).
 
    // notificationPolicy(policy id, target id, condition formula)
-   notificationPolicy(np2,preparation,satisfied(_3,getAuthorization)).
+   notificationPolicy(np2,preparation,satisfied(_1277,getAuthorization)).
    notificationPolicy(np1,knead,true).
 
    // report(report id, policy id)

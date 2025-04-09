@@ -52,7 +52,7 @@
                     <goal id="sell" type="performance"/>
                 </plan>
             </goal>
-            <notification-policy condition="satisfied(_3,getAuthorization)" id="np2" target="preparation" type="accountability">
+            <notification-policy condition="satisfied(_1277,getAuthorization)" id="np2" target="preparation" type="accountability">
                 <report id="ftBaker">
                     <argument arity="1" id="flourType"/>
                     <context-goal id="getAuthorization" type="performance"/>
