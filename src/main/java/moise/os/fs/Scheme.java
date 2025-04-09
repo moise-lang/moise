@@ -21,6 +21,7 @@ import moise.common.MoiseException;
 import moise.os.Cardinality;
 import moise.os.CardinalitySet;
 import moise.os.fs.robustness.NotificationPolicy;
+import moise.os.fs.robustness.NotificationPolicyType;
 import moise.os.fs.robustness.Report;
 import moise.prolog.ToProlog;
 import moise.xml.DOMUtils;
@@ -279,7 +280,14 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
                     condition.replace("&quot;", "\"");
                     conditionFormula = ASSyntax.parseFormula(condition);
                 }
-                NotificationPolicy np = new NotificationPolicy(npEle.getAttribute("id"), npEle.getAttribute("target"), conditionFormula, this);
+                NotificationPolicyType type;
+                if(npEle.getAttribute("type").equals("accountability")) {
+                    type = NotificationPolicyType.ACCOUNTABILITY;
+                }
+                else {
+                    type = NotificationPolicyType.EXCEPTION;
+                }
+                NotificationPolicy np = new NotificationPolicy(npEle.getAttribute("id"), npEle.getAttribute("target"), conditionFormula, type, this);
                 np.setFromDOM(npEle);
                 addNotificationPolicy(np);
             }

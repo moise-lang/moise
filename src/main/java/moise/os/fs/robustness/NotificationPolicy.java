@@ -19,14 +19,17 @@ public class NotificationPolicy extends moise.common.MoiseElement implements ToX
     private String id;
     private Goal target;
     private LogicalFormula condition;
+    private NotificationPolicyType type;
     private HashMap<String,Report> reports = new HashMap<>();
     private Scheme sch;
     
-    public NotificationPolicy(String id, String target, LogicalFormula condition, Scheme sch) {
+    public NotificationPolicy(String id, String target, LogicalFormula condition, NotificationPolicyType type, Scheme sch) {
         super();
         this.id = id;
         this.target = sch.getGoal(target);
         this.condition = condition;
+        this.type = type;
+
         this.sch = sch;
     }
 
@@ -40,6 +43,10 @@ public class NotificationPolicy extends moise.common.MoiseElement implements ToX
 
     public LogicalFormula getCondition() {
         return condition;
+    }
+
+    public NotificationPolicyType getType() {
+        return type;
     }
 
     public Collection<Report> getReports() {
@@ -70,6 +77,7 @@ public class NotificationPolicy extends moise.common.MoiseElement implements ToX
         condString.replace("'", "&apos;");
         condString.replace("\"", "&quot;");
         ele.setAttribute("condition", condString);
+        ele.setAttribute("type", type.toString());
         if (getProperties().size() > 0) {
             ele.appendChild(getPropertiesAsDOM(document));
         }

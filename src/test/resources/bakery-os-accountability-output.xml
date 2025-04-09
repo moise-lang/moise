@@ -52,7 +52,7 @@
                     <goal id="sell" type="performance"/>
                 </plan>
             </goal>
-            <notification-policy condition="satisfied(_3,getAuthorization)" id="np2" target="preparation">
+            <notification-policy condition="satisfied(_3,getAuthorization)" id="np2" target="preparation" type="accountability">
                 <report id="ftBaker">
                     <argument arity="1" id="flourType"/>
                     <context-goal id="getAuthorization" type="performance"/>
@@ -60,7 +60,7 @@
                     <accounting-goal id="notifyFlourTypeToSeller" type="performance"/>
                 </report>
             </notification-policy>
-            <notification-policy condition="true" id="np1" target="knead">
+            <notification-policy condition="true" id="np1" target="knead" type="accountability">
                 <report id="ftKneader">
                     <argument arity="1" id="flourType"/>
                     <requesting-goal id="requestFlourTypeToKneader" type="performance"/>

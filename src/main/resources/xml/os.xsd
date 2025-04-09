@@ -238,27 +238,6 @@
         <xsd:attribute name="ttf"      type="xsd:string"             use="optional"/>
         <xsd:attribute name="location" type="xsd:string"             use="optional"/>
     </xsd:complexType>
-    
-    <!--<xsd:complexType name="accountabilityAgreementType">
-        <xsd:sequence>
-          <xsd:element maxOccurs="1" minOccurs="0" name="properties" type="moise:propertiesType"/>
-          <xsd:element maxOccurs="unbounded" minOccurs="0" name="context-goal" type="moise:goalDefType"/>
-          <xsd:element maxOccurs="unbounded" minOccurs="1" name="account-template" type="moise:accountTemplateType"/>
-        </xsd:sequence>
-        <xsd:attribute name="id" type="xsd:string" use="required"/>
-        <xsd:attribute name="target" type="xsd:string" use="required"/>
-        <xsd:attribute name="condition" type="xsd:string" use="required"/>
-    </xsd:complexType>-->
-
-    <!--<xsd:complexType name="accountTemplateType">
-        <xsd:sequence>
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="account-argument" type="moise:argArityType"/>
-           <xsd:element maxOccurs="unbounded" minOccurs="0" name="requesting-goal" type="moise:exGoalDefType"/>
-           <xsd:element maxOccurs="1" minOccurs="1" name="accounting-goal" type="moise:exGoalDefType"/>
-           <xsd:element maxOccurs="unbounded" minOccurs="0" name="treatment-goal" type="moise:exGoalDefType"/>
-        </xsd:sequence>
-        <xsd:attribute name="id" type="xsd:string" use="required" />
-    </xsd:complexType>-->
 
     <xsd:complexType name="notificationPolicyType">
         <xsd:sequence>
@@ -268,7 +247,14 @@
         <xsd:attribute name="id" type="xsd:string" use="required"/>
         <xsd:attribute name="target" type="xsd:string" use="required"/>
         <xsd:attribute name="condition" type="xsd:string" use="required"/>
-        <xsd:attribute name="type" type="xsd:string" use="required"/>
+        <xsd:attribute name="type" use="required">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="exception" />
+                <xsd:enumeration value="accountability" />
+              </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
     </xsd:complexType>
 
     <xsd:complexType name="reportType">
