@@ -8,7 +8,7 @@
     xmlns="https://moise-lang.github.io/os"
     
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://moise-lang.github.io/os https://moise-lang.github.io/os.xsd">
+    xsi:schemaLocation="http://moise.sourceforge.net/os https://moise-lang.github.io/xml/os.xsd">
 
     <structural-specification>
 
@@ -63,15 +63,15 @@
                 </plan>
             </goal>
 
-            <accountability-agreement id="aaDelivery" target="reachDestination" condition="unfulfilled(obligation(_,_,done(_,reachDestination,_),_))">
-                <account-template id="delay">
-                    <account-argument id="reason" arity="1" />
-                    <account-argument id="roads" arity="1" />
+            <notification-policy id="aaDelivery" target="reachDestination" condition="unfulfilled(obligation(_,_,done(_,reachDestination,_),_))" type="accountability">
+                <report id="delay">
+                    <argument id="reason" arity="1" />
+                    <argument id="roads" arity="1" />
                     <requesting-goal id="requestDelayReason" min="1" />
                     <accounting-goal id="reportDelayReason" min="1" />
-                    <!--<treatment-goal id="updateMap" atype="treatment" />-->
-                </account-template>
-            </accountability-agreement>
+                    <treatment-goal id="updateMap"/>
+                </report>
+            </notification-policy>
 
             <mission id="mWarehouseWorker" min="1" max="1">
                 <goal id="takeGoodsFromWarehouse" />
@@ -81,7 +81,7 @@
             <mission id="mRoutePlanner" min="1" max="1">
                 <goal id="locateAddress" />
                 <goal id="planPath" />
-                <!--<goal id="updateMap" />-->
+                <goal id="updateMap" />
             </mission>
             <mission id="mTruckDriver" min="2" max="2">
                 <goal id="reachDestination" />

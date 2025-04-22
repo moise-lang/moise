@@ -14,27 +14,25 @@
 
 mas parcel_delivery {
 	
-	agent alice {
+	agent aliceTruckDriver {
 		roles: truckDriver in g1
 	}
-	agent bob {
+	agent bobTruckDriver {
 		roles: truckDriver in g1
 	}	
-	agent pm {
+	agent parcelManager {
 		roles: parcelManager in g1
 	}
-	agent ww {
+	agent warehouseWorker {
 		roles: warehouseWorker in g1
 	}
-	agent rp {
+	agent routePlanner {
 		roles: routePlanner in g1
 	}
-	agent c {
+	agent carrier {
 		roles: carrier in g1
 	}
 
-    //workspace default {
-	//}
 
     organisation o1 : delivery-os.xml {
 		group g1 : delivery_group {

@@ -10,13 +10,17 @@
 	
 +!planPath
      : ignore(I) &
-       group(GroupName,parcel_delivery_group,_) &
-	   play(T,truck,GroupName)
+       group(GroupName,delivery_group,_) &
+	   .findall(X,play(X,truckDriver,GroupName),L) &
+	   play(T,truckDriver,GroupName)
 	<- .print("Planning path, IGNORING ROADS ",I);
-	   .send(T,tell,alternativePath);.
+	   for ( .member(T,L) ) {
+        .print("Notifying ",T,"...");
+		.send(T,tell,alternativePath);
+	}.
 	
 +!updateMap
-     : raised(exParcel,Args) & .member(closedRoads(I),Args)
+     : account(delay,Args) & .member(roads(I),Args)
 	<- .print("*** Adding closed roads to ignore list...");
 	   +ignore(I).
 

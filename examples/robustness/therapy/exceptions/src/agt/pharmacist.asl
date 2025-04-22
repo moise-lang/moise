@@ -22,7 +22,9 @@
 	   raiseException(exception_missing_prescription,[date(Date),patient_name(Patient)]).
 
 +send(prescription) : goalState(_,fill_prescription,_,_,failed)
-	<- resetGoal(fill_prescription).
+	<- .print("Sending drugs to patient...");
+	   .send(patient,tell,deliver(drugs));
+	   goalReleased(fill_prescription).
 	   
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }

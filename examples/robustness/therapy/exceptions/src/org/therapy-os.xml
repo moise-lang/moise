@@ -57,15 +57,14 @@
                     <argument id="date" arity="1" />
                     <argument id="doctor_name" arity="1" />
                     <raise-goal id="raise_exception_no_delivery" when="satisfied(_,prescribe) &amp; not raised(exception_lost_request,_,_)" /> 
-                    <handle-goal id="handle_exception_no_delivery" when="satisfied(_,fill_prescription) &amp; not satisfied(handle_exception_no_delivery_no_fill)" /> 
-                    <handle-goal id="handle_exception_no_delivery_no_fill" when="not satisfied(_,fill_prescription) &amp; not satisfied(handle_exception_no_delivery)" /> 
+                    <handle-goal id="handle_exception_no_delivery" when="satisfied(_,fill_prescription) &amp; not satisfied(_,handle_exception_no_delivery_no_fill)" /> 
+                    <handle-goal id="handle_exception_no_delivery_no_fill" when="not satisfied(_,fill_prescription) &amp; not satisfied(_,handle_exception_no_delivery)" /> 
                 </report>
 
                 <report id="exception_missing_prescription">
                     <argument id="date" arity="1" />
                     <argument id="patient_name" arity="1" />
                     <raise-goal id="raise_exception_missing_prescription" when="satisfied(_,prescribe) &amp; failed(_,fill_prescription) &amp; not raised(exception_lost_request,_,_)" />
-                    <!--<raise-goal id="raiseMissingPrescribePharmacist" when="satisfied(_,prescribe) &amp; failed(_,handleMissingMedicine2)" />-->
                     <handle-goal id="handle_exception_missing_prescription" />
                 </report>
 
