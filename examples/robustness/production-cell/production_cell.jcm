@@ -14,19 +14,19 @@
 
 mas production_cell {
 
-	agent fb {
+	agent feedBelt {
 		roles: feedBelt in g1
 	}
-	agent ert {
+	agent elevatingRotaryTable {
 		roles: elevatingRotaryTable in g1
 	}
-	agent r {
+	agent robot {
 		roles: robot in g1
 	}
-	agent p {
+	agent press {
 		roles: press in g1
 	}
-	agent db {
+	agent depositBelt {
 		roles: depositBelt in g1
 	}
 
