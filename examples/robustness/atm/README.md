@@ -1,4 +1,4 @@
-# ATM
+# ATM 
 
 The purpose of this example is to show the basics of exception handling by means of a simple GUI.
 
