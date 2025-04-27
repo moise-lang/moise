@@ -49,7 +49,7 @@
                         <plan operator="sequence">
                             <goal id="locateAddress" />
                             <goal id="planPath" />
-                            <goal id="reachDestination" ttf="5 seconds" />
+                            <goal id="reachDestination" />
                             <goal id="handOverToCustomer">
                                 <plan operator="sequence">
                                     <goal id="unloadFromTruck" />
@@ -63,13 +63,13 @@
                 </plan>
             </goal>
 
-            <notification-policy id="aaDelivery" target="reachDestination" condition="unfulfilled(obligation(_,_,done(_,reachDestination,_),_))" type="accountability">
+            <notification-policy id="aaDelivery" target="reachDestination" condition="true" type="accountability">
                 <report id="delay">
                     <argument id="reason" arity="1" />
                     <argument id="roads" arity="1" />
                     <requesting-goal id="requestDelayReason" min="1" />
                     <accounting-goal id="reportDelayReason" min="1" />
-                    <treatment-goal id="updateMap"/>
+                    <!-- <treatment-goal id="updateMap"/> -->
                 </report>
             </notification-policy>
 
@@ -81,7 +81,7 @@
             <mission id="mRoutePlanner" min="1" max="1">
                 <goal id="locateAddress" />
                 <goal id="planPath" />
-                <goal id="updateMap" />
+                <!-- <goal id="updateMap" /> -->
             </mission>
             <mission id="mTruckDriver" min="2" max="2">
                 <goal id="reachDestination" />
