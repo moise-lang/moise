@@ -1,10 +1,4 @@
-+!dealWithIngredientsShortage
-     : raised(ingredientsShortage,Args) &
-       .member(availableFillings(I),Args) &
-       .member(strawberries,I)
-	<- .print("I will use ",strawberries," instead of ",raspberries);
-	   goalReleased(ingredientsCollection).
-	   
+
 +!doughMixingAndFeeding
 	<- .print("Mixing ingredients...").
 
@@ -16,5 +10,17 @@
 
 +!packaging
 	<- .print("Packaging tarts...").
+
++!dealWithIngredientsShortage
+     : raised(ingredientsShortage,Args) &
+       .member(missingFillings(I),Args) &
+       .member(raspberries,I)
+	<- .print("I will use ",strawberries," instead of ",raspberries);
+	   goalReleased(ingredientsCollection).
+
++!notifyProblemWithOven
+	<- .print("FIRE! FIRE! FIRE!");
+	   raiseException(ovenBroken,[status(fire)]).
+	   //raiseException(ovenBroken,[status(noHeat)]).
 
 { include("inc/worker-common.asl") }

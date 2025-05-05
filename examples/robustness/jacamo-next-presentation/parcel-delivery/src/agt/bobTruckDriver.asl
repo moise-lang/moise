@@ -14,6 +14,8 @@ wait.
      : not wait & alternativePath
 	<- .print("Reaching destination ON ALTERNATIVE PATH...").
 
+
+// GIVING THE ACCOUNT
 +!reportDelayReason : not accountRequestedByMe
 	<- .print("*** REPORTING DELAY REASON... ***");
 	   giveAccount(delay,[reason(roadworks),roads([mainStreet,fifthAvenue])]).

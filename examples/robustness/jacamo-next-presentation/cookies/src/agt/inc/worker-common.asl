@@ -2,9 +2,6 @@
 +!leaveBuildingImmediately
 	<- .print("Leaving building!").
 	   
-+!call911
-	<- .print("Calling 911!").
-	   
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
 

@@ -69,7 +69,8 @@
                     <argument id="roads" arity="1" />
                     <requesting-goal id="requestDelayReason" min="1" />
                     <accounting-goal id="reportDelayReason" min="1" />
-                    <!-- <treatment-goal id="updateMap"/> -->
+                    <!-- <treatment-goal id="updateLocalMap"/>
+                    <treatment-goal id="updateGlobalMap"/> -->
                 </report>
             </notification-policy>
 
@@ -81,12 +82,13 @@
             <mission id="mRoutePlanner" min="1" max="1">
                 <goal id="locateAddress" />
                 <goal id="planPath" />
-                <!-- <goal id="updateMap" /> -->
+                <!-- <goal id="updateGlobalMap" /> -->
             </mission>
             <mission id="mTruckDriver" min="2" max="2">
                 <goal id="reachDestination" />
                 <goal id="requestDelayReason" />
                 <goal id="reportDelayReason" />
+                <!-- <goal id="updateLocalMap" /> -->
             </mission>
             <mission id="mCarrier" min="1" max="1">
                 <goal id="unloadFromTruck" />

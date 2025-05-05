@@ -62,7 +62,7 @@
 
             <notification-policy id="np1" target="ingredientsCollection" condition="failed(_,ingredientsCollection)"  type="exception">
                 <report id="ingredientsShortage">
-                    <argument id="availableFillings" arity="1" />
+                    <argument id="missingFillings" arity="1" />
                     <raise-goal id="notifyIngredientsShortage"/>
                     <handle-goal id="dealWithIngredientsShortage" />
                 </report>
@@ -76,7 +76,7 @@
                 </report>
             </notification-policy>
 
-            <notification-policy id="np3" target="tartMaking" condition="failed(_,cookingTemparatureSetup) | failed(_,firstTimeBaking) | failed(_,secondTimeBaking)"  type="exception">
+            <notification-policy id="np3" target="tartMaking" condition="failed(_,cookingTemperatureSetup) | failed(_,firstTimeBaking) | failed(_,secondTimeBaking)"  type="exception">
                 <report id="ovenBroken">
                     <argument id="status" arity="1" />
                     <raise-goal id="notifyProblemWithOven"/>
@@ -86,15 +86,7 @@
                             <goal id="call911" min="1" />
                         </plan>    
                     </handle-goal>
-                    <handle-goal id="notifyTechSupport" when="raised(ovenBroken,_,Args) &amp; .member(status(noHeat),Args)" />
-                </report>
-            </notification-policy>
-
-            <notification-policy id="np4" target="tartMaking" condition="failed(_,ingredientsCollection) &amp; failed(_,cookingTemperatureSetup)"  type="exception">
-                <report id="tartPreparationException">
-                    <argument id="affectedTartTypes" arity="1" />
-                    <raise-goal id="notifyTartPreparationException"/>
-                    <handle-goal id="alertCustomers" />
+                    <handle-goal id="scheduleOvenFix" when="raised(ovenBroken,_,Args) &amp; .member(status(noHeat),Args)" />
                 </report>
             </notification-policy>
 
@@ -102,7 +94,6 @@
                 <goal id="cookingTemperatureSetup" />
                 <goal id="firstTimeBaking" />
                 <goal id="secondTimeBaking" />
-                <goal id="notifyProblemWithOven" />
             </mission>
             <mission id="mWarehouse" min="1" max="1">
                 <goal id="ingredientsCollection" />
@@ -115,17 +106,15 @@
                 <goal id="jamFilling" />
                 <goal id="packaging" />
                 <goal id="dealWithIngredientsShortage" />
-                <goal id="slowdownProduction" />
-                <goal id="notifyTechSupport" />
-                <goal id="notifyTartPreparationException" />
+                <goal id="notifyProblemWithOven" />
             </mission>
             <mission id="mProductionManager" min="1" max="1">
                 <goal id="tartMaking" />
-                <goal id="alertCustomers" />
+                <goal id="scheduleOvenFix" />
+                <goal id="call911" />
             </mission>
             <mission id="mWorker" min="4" max="4">
                 <goal id="leaveBuildingImmediately" />
-                <goal id="call911" />
             </mission>
 
         </scheme>

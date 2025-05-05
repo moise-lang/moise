@@ -5,7 +5,7 @@
 	   .fail.
 	   
 +!notifyIngredientsShortage
-	<- .print("Notifying that raspberries are missing... Strawberries are available instead");
-	   raiseException(ingredientsShortage,[availableFillings([strawberries])]).
+	<- .print("Notifying that raspberries are missing");
+	   raiseException(ingredientsShortage,[missingFillings([raspberries])]).
 
 { include("inc/worker-common.asl") }

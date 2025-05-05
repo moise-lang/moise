@@ -18,11 +18,12 @@
         .print("Notifying ",T,"...");
 		.send(T,tell,alternativePath);
 	}.
-	
-+!updateMap
-     : account(delay,Args) & .member(roads(I),Args)
-	<- .print("*** Adding closed roads to ignore list...");
-	   +ignore(I).
+
+// TREATING THE ACCOUNT
+// +!updateGlobalMap
+//      : account(delay,Args) & .member(roads(I),Args)
+// 	<- .print("*** Adding closed roads to ignore list...");
+// 	   +ignore(I).
 
 // uncomment the include below to have an agent compliant with its organisation
 { include("$moiseJar/asl/org-obedient.asl") }
