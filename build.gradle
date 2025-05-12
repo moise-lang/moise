@@ -44,7 +44,7 @@ dependencies {
     api('org.jason:jason:3.1') {
      exclude group: 'net.sf.ingenias', module: 'jade'
     }
-    api('org.jacamo:npl:0.6')  {  transitive = false  }
+    api('org.jacamo:npl:0.6.1')  {  transitive = false  }
     api('org.jacamo:cartago:3.1') {  transitive = false  }
     api('org.jacamo:jaca:3.1') {  transitive = false  }
 
