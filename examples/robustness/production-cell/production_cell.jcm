@@ -29,9 +29,9 @@ mas production_cell {
 	agent depositBelt {
 		roles: depositBelt in g1
 	}
-
-    //workspace default {
-	//}
+	agent supervisor {
+		roles: supervisor in g1
+	}
 
     organisation o1 : production-cell-os.xml {
 		group g1 : production_cell_group {

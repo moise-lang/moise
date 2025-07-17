@@ -18,6 +18,7 @@
             <role id="robot" />
             <role id="press" />
             <role id="depositBelt" />
+            <role id="supervisor" />
         </role-definitions>
 
         <group-specification id="production_cell_group">
@@ -27,6 +28,7 @@
                 <role id="robot" min="1" max="1" />
                 <role id="press" min="1" max="1" />
                 <role id="depositBelt" min="1" max="1" />
+                <role id="supervisor" min="1" max="1" />
             </roles>
         </group-specification>
 
@@ -74,24 +76,22 @@
             </goal>
 
             <notification-policy id="npStock" target="conveyPlateToTable"
-                                    condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,conveyPlateToTable,_),_))"  type="exception">
-                <report id="exStock">
+                                    condition="true"  type="accountability">
+                <report id="stock">
                     <argument id="availablePlates" arity="1" />
-                    <raise-goal id="notifyRemainingStock" />
-                    <handle-goal id="slowDownProduction" when="raised(exStock,_,Args) &amp; .member(availablePlates(N),Args) &amp; N &lt;= 10" />
+                    <requesting-goal id="requestRemainingStock" />
+                    <accounting-goal id="notifyRemainingStock" />
+                    <treatment-goal id="slowDownProduction" when="account(stock,_,Args) &amp; .member(availablePlates(N),Args) &amp; N &lt;= 10 &amp; N &gt; 0" />
+                    <treatment-goal id="stopProduction" when="account(stock,_,Args) &amp; .member(availablePlates(0),Args)" />
                 </report>
             </notification-policy>
         
-            <notification-policy id="npMotor" target="turnTableMoveUp" condition="failed(_,turnTableMoveUp)"  type="exception">
+            <notification-policy id="npTable" target="turnTableMoveUp" condition="failed(_,turnTableMoveUp)"  type="exception">
                 <report id="exMotor">
                     <argument id="motorNumber" arity="1" />
                     <raise-goal id="notifyStoppedMotorNumber" />
-                    <handle-goal id="motorFix">
-                        <plan operator="sequence">
-                            <goal id="scheduleTableMotorFix" />
-                            <goal id="pauseProduction" />
-                        </plan>
-                    </handle-goal>
+                    <handle-goal id="scheduleTableMotorFix" when="raised(exMotor,_,Args) &amp; .member(motorNumber(1),Args)" />
+                    <handle-goal id="replaceERT" when="raised(exMotor,_,Args) &amp; .member(motorNumber(2),Args)" />
                 </report>
             </notification-policy>
             
@@ -109,7 +109,7 @@
                 <goal id="conveyPlateToTable" />
                 <goal id="notifyRemainingStock" />
             </mission>
-            <mission id="mElevatingRotaryTable" min="1" max="1">
+            <mission id="mERT" min="1" max="1">
                 <goal id="turnTableMoveUp" />
                 <goal id="turnTableMoveDown" />
                 <goal id="notifyStoppedMotorNumber" />
@@ -126,9 +126,6 @@
                 <goal id="movePlateOnBelt" />
                 <goal id="releasePlateOnBelt" />
                 <goal id="retractArm2" />
-                <goal id="slowDownProduction" />
-                <goal id="scheduleTableMotorFix" />
-                <goal id="pauseProduction" />
                 <goal id="emergencyStop" />
             </mission>
             <mission id="mPress" min="1" max="1">
@@ -137,6 +134,13 @@
             </mission>
             <mission id="mDepositBelt" min="1" max="1">
                 <goal id="conveyPlateToDeposit" />
+            </mission>
+            <mission id="mSupervisor" min="1" max="1">
+                <goal id="scheduleTableMotorFix" />
+                <goal id="replaceERT" />
+                <goal id="requestRemainingStock" />
+                <goal id="slowDownProduction" />
+                <goal id="stopProduction" />
             </mission>
 
         </scheme>
@@ -147,13 +151,15 @@
         <norm id="n1" type="obligation" role="feedBelt"
             mission="mFeedBelt" />
         <norm id="n2" type="obligation" role="elevatingRotaryTable"
-            mission="mElevatingRotaryTable" />
+            mission="mERT" />
         <norm id="n3" type="obligation" role="robot"
             mission="mRobot" />
         <norm id="n4" type="obligation" role="press"
             mission="mPress" />
         <norm id="n5" type="obligation" role="depositBelt"
             mission="mDepositBelt" />
+        <norm id="n6" type="obligation" role="supervisor"
+            mission="mSupervisor" />
     </normative-specification>
 
 </organisational-specification>

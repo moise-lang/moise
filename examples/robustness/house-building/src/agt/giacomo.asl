@@ -129,9 +129,12 @@ number_of_tasks(NS) :- .findall( S, task(S), L) & .length(L,NS).
       .
 
 +!handle_windows_fitting_delay
-    : raised(windows_delay_exception,[weeksOfDelay(D)])[raiser(Company)]
+    : raised(windows_delay_exception,[weeksOfDelay(D)])[raiser(Company)] &
+      focused(ora4mas,bhsch,ArtId)
    <- .print("There is a delay in windows fitting by ",Company, " of ",D," weeks!");
       // Do something to handle the delay
+      .send(Company,achieve,windows_fitted);
+      goalReleased(windows_fitted);
       .
 
 { include("$jacamoJar/templates/common-cartago.asl") }

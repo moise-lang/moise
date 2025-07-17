@@ -2,9 +2,9 @@
 { include("$jacamoJar/templates/common-moise.asl") }
 
 inventory([plates(5),screws(100)]).
-//inventory([plates(20),screws(100)]). //this one does not enable the handling policy
+//inventory([plates(20),screws(100)]). //this one does not enable the treatment goals
 //inventory([plates(2),screws(100)]).
-//inventory([plates(1),screws(100)]).
+//inventory([plates(0),screws(100)]).
 
 +!conveyPlateToTable
 	 : not wait
@@ -21,7 +21,7 @@ inventory([plates(5),screws(100)]).
 +!notifyRemainingStock
      : inventory(I) & .member(plates(N),I)
 	<- .print("Notifying available plates...");
-	   raiseException(exStock,[availablePlates(N)]);
+	   giveAccount(stock,[availablePlates(N)]);
 	   goalReleased(conveyPlateToTable).
 
 // uncomment the include below to have an agent compliant with its organisation

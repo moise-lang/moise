@@ -33,32 +33,6 @@
 	
 +!retractArm2
 	<- .print("Retracting robotic arm 2...").
-	
-+!slowDownProduction
-     : raised(exStock,[availablePlates(N)]) &
-       N >= 5
-	<- .print("Setting production speed to 70%...").
-	
-+!slowDownProduction
-     : raised(exStock,[availablePlates(N)]) &
-       N >= 2
-	<- .print("Setting production speed to 30%...").
-	
-+!slowDownProduction
-     : raised(exStock,[availablePlates(N)]) &
-       N <= 1
-	<- .print("Temporarily stopping production...").
-	
-+!scheduleTableMotorFix
-	:	raised(exMotor,[motorNumber(N)])
-	<- .print("Scheduling table motor fix for motor n. ", N).
-	
-+!pauseProduction
-	:	raised(exMotor,[motorNumber(N)])
-	<- .print("Pausing production due to a problem on motor ", N, "...");
-	   .wait(5000);
-	   goalReleased(turnTableMoveUp);
-	   .print("Problem solved in motor ", N, "! Production resumed").
 	   
 +!emergencyStop
 	<- .print("***EMERGENCY STOP***");
