@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="https://moise-lang.github.io/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification
+    id="therapy" os-version="1.0"
+
+    xmlns="https://moise-lang.github.io/os"
+    
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://moise-lang.github.io/os https://moise-lang.github.io/os.xsd">
+
+    <structural-specification>
+
+        <role-definitions>
+            <role id="patient" />
+            <role id="doctor" />
+            <role id="pharmacist" />
+        </role-definitions>
+
+        <group-specification id="therapy_group">
+            <roles>
+                <role id="patient" min="1" max="1" />
+                <role id="doctor" min="1" max="1" />
+                <role id="pharmacist" min="1" max="1" />
+            </roles>
+        </group-specification>
+
+    </structural-specification>
+
+    <functional-specification>
+
+        <scheme id="therapy_sch">
+
+            <goal id="therapy">
+                <plan operator="parallel">
+                    <goal id="cpf">
+                        <plan operator="sequence">
+                            <goal id="consult" />
+                            <goal id="prescribe" />
+                            <goal id="fill_prescription" />
+                        </plan>
+                    </goal>
+                    <goal id="follow_therapy" ttf="5 seconds" /> <!-- 1 second = 1 day in real life -->
+                </plan>
+            </goal>
+
+            <mission id="mPatient" min="1" max="1">
+                <goal id="consult" />
+                <goal id="follow_therapy" />
+            </mission>
+            
+            <mission id="mDoctor" min="1" max="1">
+                <goal id="prescribe" />
+            </mission>
+            
+            <mission id="mPharmacist" min="1" max="1">
+                <goal id="fill_prescription" />
+            </mission>
+
+        </scheme>
+
+    </functional-specification>
+
+    <normative-specification>
+        <norm id="n1" type="obligation" role="patient"    mission="mPatient" />
+        <norm id="n2" type="obligation" role="doctor"     mission="mDoctor" />
+        <norm id="n3" type="obligation" role="pharmacist" mission="mPharmacist" />
+    </normative-specification>
+
+</organisational-specification>

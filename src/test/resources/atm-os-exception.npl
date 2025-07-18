@@ -1,0 +1,335 @@
+/*
+    This program was automatically generated from
+    the organisation specification 'atm'
+    on aprile 09, 2025 - 12:28:35
+
+    This is a MOISE tool, see more at https://moise-lang.github.io
+
+*/
+
+scope organisation(atm) {
+
+
+   // Role hierarchy
+   subrole(moneyKeeper,soc).
+   subrole(requestHandler,soc).
+   subrole(parser,soc).
+   subrole(reader,soc).
+   subrole(atmHandler,soc).
+
+   // f* rules implement the role hierarchy transitivity
+   // t* rules implement the transitivity of some relations
+
+   // fplay(A,R,G) is true if A play R in G or if A play a subrole of R in G
+   fplay(A,R,G) :- play(A,R,G).
+   fplay(A,R,G) :- subrole(R1,R) & fplay(A,R1,G).
+
+   // fcompatible(R1,R2,S) is true if R1 or its sub-roles are compatible with R2 in scope S
+   fcompatible(R1,R2,S) :- tsubrole(R1,R2).
+   fcompatible(R1,R2,S) :- tsubrole(R1,R1a) & tsubrole(R2,R2a) & compatible(R1a,R2a,S).
+   fcompatible(R1,R2,S) :- tcompatible(R1,R2,S,[R1,R2]).
+   tcompatible(R1,R2,S,Path) :- compatible(R1,R3,S) & not .member(R3,Path) & tcompatible(R3,R2,S,[R3|Path]).
+   tsubrole(R,R).
+   tsubrole(R1,R2)    :- subrole(R1,R2).
+   tsubrole(R1,R2)    :- subrole(R1,R3) & tsubrole(R3,R2).
+
+
+scope group(atm_group) {
+
+   // ** Facts from OS
+   role_cardinality(moneyKeeper,1,1).
+   role_cardinality(requestHandler,1,1).
+   role_cardinality(parser,1,1).
+   role_cardinality(reader,1,1).
+   role_cardinality(atmHandler,1,1).
+
+
+   // ** Rules
+   rplayers(R,G,V)    :- .count(play(_,R,G),V).
+   well_formed(G) :-
+      rplayers(moneyKeeper,G,VmoneyKeeper) & VmoneyKeeper >= 1 & VmoneyKeeper <= 1 &
+      rplayers(requestHandler,G,VrequestHandler) & VrequestHandler >= 1 & VrequestHandler <= 1 &
+      rplayers(parser,G,Vparser) & Vparser >= 1 & Vparser <= 1 &
+      rplayers(reader,G,Vreader) & Vreader >= 1 & Vreader <= 1 &
+      rplayers(atmHandler,G,VatmHandler) & VatmHandler >= 1 & VatmHandler <= 1 &
+      .findall(GInst, subgroup(GInst,_,G), ListSubgroups) & all_subgroups_well_formed(ListSubgroups).
+   all_subgroups_well_formed([]).
+   all_subgroups_well_formed([H|T]) :- subgroup_well_formed(H) & all_subgroups_well_formed(T).
+
+   // ** Properties check 
+   norm role_in_group:  
+           play(Agt,R,Gr) &
+           group_id(Gr) &
+           not role_cardinality(R,_,_)
+        -> fail(role_in_group(Agt,R,Gr)).
+   norm role_cardinality:  
+           group_id(Gr) &
+           role_cardinality(R,_,RMax) &
+           rplayers(R,Gr,RP) &
+           RP > RMax
+        -> fail(role_cardinality(R,Gr,RP,RMax)).
+   norm role_compatibility:  
+           play(Agt,R1,Gr) &
+           play(Agt,R2,Gr) &
+           group_id(Gr) &
+           R1 < R2 &
+           not fcompatible(R1,R2,gr_inst)
+        -> fail(role_compatibility(R1,R2,Gr)).
+   norm well_formed_responsible:  
+           responsible(Gr,S) &
+           not well_formed(Gr)
+        -> fail(well_formed_responsible(Gr)).
+   norm subgroup_in_group:  
+           group_id(Gr) &
+           subgroup(G,GT,Gr) &
+           not subgroup_cardinality(GT,_,_)
+        -> fail(subgroup_in_group(G,GT,Gr)).
+   norm subgroup_cardinality:  
+           group_id(Gr) &
+           subgroup_cardinality(SG,_,SGMax) &
+           .count(subgroup(_,SG,Gr),SGP) &
+           SGP > SGMax
+        -> fail(subgroup_cardinality(SG,Gr,SGP,SGMax)).
+} // end of group atm_group
+
+scope scheme(atm_sch) {
+
+   // ** Facts from OS
+
+   // mission_cardinality(mission id, min, max)
+   mission_cardinality(mWithdraw,1,1).
+   mission_cardinality(mProvideMoney,1,1).
+   mission_cardinality(mObtainAmount,1,1).
+   mission_cardinality(mParseAmount,1,1).
+   mission_cardinality(mGetAmountAsString,1,1).
+
+   // mission_role(mission id, role id)
+   mission_role(mWithdraw,atmHandler).
+   mission_role(mObtainAmount,requestHandler).
+   mission_role(mGetAmountAsString,reader).
+   mission_role(mParseAmount,parser).
+   mission_role(mProvideMoney,moneyKeeper).
+
+   // mission_goal(mission id, goal id)
+   mission_goal(mWithdraw,retryLater).
+   mission_goal(mWithdraw,withdraw).
+   mission_goal(mProvideMoney,provideMoney).
+   mission_goal(mObtainAmount,recoverFromNan).
+   mission_goal(mObtainAmount,obtainAmount).
+   mission_goal(mObtainAmount,raiseAmountUnavailable).
+   mission_goal(mParseAmount,parseAmount).
+   mission_goal(mParseAmount,raiseNan).
+   mission_goal(mGetAmountAsString,getAmountAsString).
+
+   // goal(missions, goal id, dependence (on goal statisfaction), type, #ags to satisfy, ttf)
+   goal([mObtainAmount],recoverFromNan,dep(and,[]),performance,all,`1 year`).
+   goal([mProvideMoney],provideMoney,dep(and,[obtainAmount]),performance,all,`1 year`).
+   goal([mGetAmountAsString],getAmountAsString,dep(and,[]),performance,all,`1 year`).
+   goal([mParseAmount],parseAmount,dep(and,[getAmountAsString]),performance,all,`1 year`).
+   goal([mObtainAmount],obtainAmount,dep(and,[parseAmount]),performance,all,`1 year`).
+   goal([mParseAmount],raiseNan,dep(and,[]),performance,all,`1 year`).
+   goal([mWithdraw],retryLater,dep(and,[]),performance,all,`1 year`).
+   goal([mWithdraw],withdraw,dep(and,[provideMoney]),performance,all,`1 year`).
+   goal([mObtainAmount],raiseAmountUnavailable,dep(and,[]),performance,all,`1 year`).
+   super_goal(withdraw, provideMoney).
+   super_goal(obtainAmount, getAmountAsString).
+   super_goal(obtainAmount, parseAmount).
+   super_goal(withdraw, obtainAmount).
+
+   // notificationPolicy(policy id, target id, condition formula)
+   notificationPolicy(np2,recoverFromNan,failed(_1273,recoverFromNan)).
+   notificationPolicy(np1,parseAmount,failed(_1272,parseAmount)).
+
+   // report(report id, policy id)
+   report(amountUnavailable,np2).
+   report(nan,np1).
+
+   // argument(report id, functor, arity)
+   argument(nan,index,1).
+
+   // raisingGoal(goal id, report id, when condition)
+   raisingGoal(raiseAmountUnavailable,amountUnavailable,true).
+   raisingGoal(raiseNan,nan,true).
+
+   // handlingGoal(goal id, report id, when condition)
+   handlingGoal(retryLater,amountUnavailable,true).
+   handlingGoal(recoverFromNan,nan,true).
+
+   // contextGoal(goal id, report id)
+
+   // requestingGoal(goal id, report id, when condition)
+
+   // accountingGoal(goal id, report id, when condition)
+
+   // treatmentGoal(goal id, report id, when condition)
+
+   // ** Rules
+   mplayers(M,S,V) :- .count(committed(_,M,S),V).
+   well_formed(S) :- 
+      (mission_accomplished(S,mWithdraw) | not mission_accomplished(S,mWithdraw) & mplayers(mWithdraw,S,VmWithdraw) & VmWithdraw >= 1 & VmWithdraw <= 1) &
+      (mission_accomplished(S,mProvideMoney) | not mission_accomplished(S,mProvideMoney) & mplayers(mProvideMoney,S,VmProvideMoney) & VmProvideMoney >= 1 & VmProvideMoney <= 1) &
+      (mission_accomplished(S,mObtainAmount) | not mission_accomplished(S,mObtainAmount) & mplayers(mObtainAmount,S,VmObtainAmount) & VmObtainAmount >= 1 & VmObtainAmount <= 1) &
+      (mission_accomplished(S,mParseAmount) | not mission_accomplished(S,mParseAmount) & mplayers(mParseAmount,S,VmParseAmount) & VmParseAmount >= 1 & VmParseAmount <= 1) &
+      (mission_accomplished(S,mGetAmountAsString) | not mission_accomplished(S,mGetAmountAsString) & mplayers(mGetAmountAsString,S,VmGetAmountAsString) & VmGetAmountAsString >= 1 & VmGetAmountAsString <= 1).
+   is_finished(S) :- satisfied(S,withdraw).
+   mission_accomplished(S,M) :- .findall(Goal, mission_goal(M,Goal), MissionGoals) & all_satisfied(S,MissionGoals).
+   all_satisfied(_,[]).
+   all_satisfied(S,[G|T]) :- satisfied(S,G) & all_satisfied(S,T).
+   any_satisfied(S,[G|_]) :- satisfied(S,G).
+   any_satisfied(S,[G|T]) :- not satisfied(S,G) & any_satisfied(S,T).
+
+   all_released(_,[]).
+   all_released(S,[G|T]) :- released(S,G) & all_released(S,T).
+   all_satisfied_released(_,[]).
+   all_satisfied_released(S,[G|T]) :- (satisfied(S,G) | released(S,G)) & all_satisfied_released(S,T).
+
+   // enabled goals (i.e. dependence between goals)
+   enabled(S,G) :- goal(_, G,  dep(or,PCG), _, NP, _) & not (requestingGoal(G,_,_) | accountingGoal(G,_,_) | treatmentGoal(G,_,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & (any_satisfied(S,PCG) | all_released(S,PCG)).
+   enabled(S,G) :- goal(_, G, dep(and,PCG), _, NP, _) & not (requestingGoal(G,_,_) | accountingGoal(G,_,_) | treatmentGoal(G,_,_) | raisingGoal(G,_,_) | handlingGoal(G,_,_)) & NP \== 0 & all_satisfied_released(S,PCG).
+
+   enabled(S,RG) :- raisingGoal(RG,E,When) &
+                    When &
+                    notificationPolicy(NPol,_,Condition) &
+                    report(E,NPol) &
+                    Condition &
+                    goal(_, RG,  Dep, _, NP, _) & NP \== 0 & 
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+   enabled(S,HG) :- handlingGoal(HG,E,When) &
+                    When &
+                    raised(E,_,_) &
+                    raisingGoal(RG,E,_) &
+                    satisfied(S,RG) &
+                    goal(_, HG,  Dep, _, NP, _) & NP \== 0 &
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+   enabled(S,RG) :- requestingGoal(RG,A,When) &
+                    When &
+                    notificationPolicy(NPol,_,Condition) &
+                    report(A,NPol) &
+                    Condition &
+                    (not contextGoal(CG,A) | (contextGoal(CG,A) & satisfied(S,CG))) &
+                    goal(_, RG,  Dep, _, NP, _) & NP \== 0 & 
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+   enabled(S,AG) :- accountingGoal(AG,A,When) &
+                    When &
+                    requestingGoal(RG,A,_) &
+                    satisfied(S,RG) &
+                    goal(_, AG,  Dep, _, NP, _) & NP \== 0 & 
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+   enabled(S,TG) :- treatmentGoal(TG,A,When) &
+                    When &
+                    account(A,_,_) &
+                    accountingGoal(AG,A,_) &
+                    satisfied(S,AG) &
+                    goal(_, TG,  Dep, _, NP, _) & NP \== 0 &
+                    ((Dep = dep(or,PCG)  & (any_satisfied(S,PCG) | all_released(S,PCG))) |
+                     (Dep = dep(and,PCG) & all_satisfied_released(S,PCG))
+                    ).
+
+   super_satisfied(S,G) :- super_goal(SG,G) & satisfied(S,SG).
+
+   // ** Norms
+
+   // --- Properties check ---
+   norm mission_left:  
+           leaved_mission(Agt,M,S) &
+           not mission_accomplished(S,M)
+        -> fail(mission_left(Agt,M,S)).
+   norm ach_not_enabled_goal:  
+           done(S,G,Agt) &
+           mission_goal(M,G) &
+           not mission_accomplished(S,M) &
+           not (enabled(S,G) | satisfied(S,G))
+        -> fail(ach_not_enabled_goal(S,G,Agt)).
+   norm ach_not_committed_goal:  
+           done(S,G,Agt) &
+           .findall(M, mission_goal(M,G) &
+           (committed(Agt,M,S) | mission_accomplished(S,M)), [])
+        -> fail(ach_not_committed_goal(S,G,Agt)).
+   norm mission_permission:  
+           committed(Agt,M,S) &
+           not (mission_role(M,R) &
+           responsible(Gr,S) &
+           fplay(Agt,R,Gr))
+        -> fail(mission_permission(Agt,M,S)).
+   norm mission_cardinality:  
+           scheme_id(S) &
+           mission_cardinality(M,_,MMax) &
+           mplayers(M,S,MP) &
+           MP > MMax
+        -> fail(mission_cardinality(M,S,MP,MMax)).
+   norm fail_not_enabled_goal:  
+           failed(S,G) &
+           mission_goal(M,G) &
+           not mission_accomplished(S,M) &
+           not enabled(S,G)
+        -> fail(fail_not_enabled_goal(S,G)).
+   norm exc_unknown:  
+           raised(E,Ag,Args) &
+           not report(E,_)
+        -> fail(exc_unknown(S,E,Ag)).
+   norm exc_agent_not_allowed:  
+           raised(E,Ag,Args) &
+           report(E,_) &
+           mission_goal(M,TG) &
+           raisingGoal(TG,E,_) &
+           not committed(Ag,M,S)
+        -> fail(exc_agent_not_allowed(S,E,Ag)).
+   norm exc_condition_not_holding:  
+           raised(E,Ag,Args) &
+           report(E,NP) &
+           notificationPolicy(NP,_,Condition) &
+           not (raisingGoal(TG,E,_) &
+           (Condition | done(S,TG,Ag)))
+        -> fail(exc_condition_not_holding(S,E,Ag,Condition)).
+   norm ach_thr_goal_exc_not_raised:  
+           done(S,TG,Ag) &
+           raisingGoal(TG,E,_) &
+           not super_goal(_,TG) &
+           not raised(E,Ag,Args)
+        -> fail(ach_thr_goal_exc_not_raised(S,G,E,Ag)).
+   norm exc_arg_not_ground:  
+           raised(E,Ag,Args) &
+           report(E,_) &
+           .member(Arg,Args) &
+           not .ground(Arg)
+        -> fail(exc_arg_not_ground(S,E,Arg)).
+   norm exc_arg_missing:  
+           raised(E,Ag,Args) &
+           report(E,_) &
+           argument(E,ArgFunctor,ArgArity) &
+           not (.member(Arg,Args) &
+           Arg=..[ArgFunctor,T,A] &
+           .length(T,ArgArity))
+        -> fail(exc_arg_missing(S,E,ArgFunctor,ArgArity)).
+   norm exc_arg_unknown:  
+           raised(E,Ag,Args) &
+           report(E,_) &
+           .member(Arg,Args) &
+           Arg=..[ArgFunctor,T,A] &
+           .length(T,ArgArity) &
+           not argument(E,ArgFunctor,ArgArity)
+        -> fail(exc_arg_unknown(S,E,Arg)).
+
+   // agents are obliged to fulfill their enabled goals
+   norm ngoal: 
+           committed(A,M,S) & mission_goal(M,G) & 
+           ((goal(_,G,_,achievement,_,D) & What = satisfied(S,G)) | 
+            (goal(_,G,_,performance,_,D) & What = done(S,G,A))) &
+           well_formed(S) & 
+           not satisfied(S,G) & 
+           not failed(_,G) & 
+           not released(_,G) & 
+           not (requestingGoal(G,_,_) | contextGoal(G,_)) & 
+           not super_satisfied(S,G)
+        -> obligation(A,(enabled(S,G) & not failed(S,G)),What,`now` + D).
+} // end of scheme atm_sch
+
+} // end of organisation atm

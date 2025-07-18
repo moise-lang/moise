@@ -1,0 +1,48 @@
+/*
+    atm_exceptions
+    ---------------------------
+
+    JaCaMo Application File
+
+    This file defines the initial state of the MAS (initial agents, environment, organisation, ....)
+
+    (see jacamo/doc/jcm.html for more information about what can be defined in this file)
+
+    JaCaMo <VERSION>
+    <DATE>
+*/
+
+mas atm {
+
+    agent atmHandler {
+    	roles: atmHandler in g1
+    }
+    agent requestHandler {
+    	roles: requestHandler in g1
+    }
+    agent parser {
+    	roles: parser in g1
+    }
+    agent reader {
+    	roles: reader in g1
+    }
+    agent moneyKeeper {
+    	roles: moneyKeeper in g1
+    }
+
+    workspace default {
+    	artifact atmart: atm.ATMArtifact() {
+        	focused-by: atmHandler, requestHandler, parser, reader, moneyKeeper
+    	}
+	}
+
+    organisation o1 : atm-os.xml {
+		group g1 : atm_group {
+			responsible-for: atmsch
+		}
+		scheme atmsch : atm_sch
+	}
+
+	java-path: ., src/env
+
+}

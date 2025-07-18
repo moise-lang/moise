@@ -1,0 +1,25 @@
+mas cookies {
+
+    agent warehouse {
+    	roles: warehouse in bakeOff
+    }
+    agent ovenOperator {
+    	roles: ovenOperator in bakeOff
+    }
+    agent productionLineHead {
+    	roles: productionLineHead in bakeOff
+    }
+    agent productionManager {
+    	roles: productionManager in bakeOff
+    }
+
+    organisation cookiesOrg : cookie-os.xml {
+		group bakeOff : factory {
+			responsible-for: cookies
+		}
+		scheme cookies : cookies_sch
+	}
+
+	java-path: ., src/env
+
+}

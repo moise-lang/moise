@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="https://moise-lang.github.io/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification
+    id="production_cell" os-version="1.0"
+
+    xmlns="https://moise-lang.github.io/os"
+    
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://moise.sourceforge.net/os https://moise-lang.github.io/xml/os.xsd">
+
+    <structural-specification>
+
+        <role-definitions>
+            <role id="feedBelt" />
+            <role id="elevatingRotaryTable" />
+            <role id="robot" />
+            <role id="press" />
+            <role id="depositBelt" />
+            <role id="supervisor" />
+        </role-definitions>
+
+        <group-specification id="production_cell_group">
+            <roles>
+                <role id="feedBelt" min="1" max="1" />
+                <role id="elevatingRotaryTable" min="1" max="1" />
+                <role id="robot" min="1" max="1" />
+                <role id="press" min="1" max="1" />
+                <role id="depositBelt" min="1" max="1" />
+                <role id="supervisor" min="1" max="1" />
+            </roles>
+        </group-specification>
+
+    </structural-specification>
+
+    <functional-specification>
+
+        <scheme id="production_cell_scheme">
+
+            <goal id="producePlate">
+                <plan operator="sequence">
+                    <goal id="conveyPlateToTable" ttf="5 seconds" />
+                    <goal id="grabFromTableSetup">
+                        <plan operator="parallel">
+                            <goal id="turnTableMoveUp" />
+                            <goal id="extendArm1" />
+                        </plan>
+                    </goal>
+                    <goal id="grabPlateFromBelt" />
+                    <goal id="unloadTable">
+                        <plan operator="parallel">
+                            <goal id="turnTableMoveDown" />
+                            <goal id="movePlateOnPress" />
+                        </plan>
+                    </goal>
+                    <goal id="releasePlateOnPress" />
+                    <goal id="pressAndRetractArm1">
+                        <plan operator="parallel">
+                            <goal id="movePressDownUp" ttf="5 seconds" />
+                            <goal id="retractArm1" />
+                        </plan>
+                    </goal>
+                    <goal id="turnRobot" />
+                    <goal id="extendArm2" />
+                    <goal id="grabPlateFromPress" />
+                    <goal id="movePlateOnBelt" />
+                    <goal id="releasePlateOnBelt" />
+                    <goal id="storePlate">
+                        <plan operator="parallel">
+                            <goal id="retractArm2" />
+                            <goal id="conveyPlateToDeposit" />
+                        </plan>
+                    </goal>
+                </plan>
+            </goal>
+
+            <notification-policy id="npStock" target="conveyPlateToTable"
+                                    condition="true"  type="accountability">
+                <report id="stock">
+                    <argument id="availablePlates" arity="1" />
+                    <requesting-goal id="requestRemainingStock" />
+                    <accounting-goal id="notifyRemainingStock" />
+                    <treatment-goal id="slowDownProduction" when="account(stock,_,Args) &amp; .member(availablePlates(N),Args) &amp; N &lt;= 10 &amp; N &gt; 0" />
+                    <treatment-goal id="stopProduction" when="account(stock,_,Args) &amp; .member(availablePlates(0),Args)" />
+                </report>
+            </notification-policy>
+        
+            <notification-policy id="npTable" target="turnTableMoveUp" condition="failed(_,turnTableMoveUp)"  type="exception">
+                <report id="exMotor">
+                    <argument id="motorNumber" arity="1" />
+                    <raise-goal id="notifyStoppedMotorNumber" />
+                    <handle-goal id="scheduleTableMotorFix" when="raised(exMotor,_,Args) &amp; .member(motorNumber(1),Args)" />
+                    <handle-goal id="replaceERT" when="raised(exMotor,_,Args) &amp; .member(motorNumber(2),Args)" />
+                </report>
+            </notification-policy>
+            
+            <notification-policy id="npPress" target="movePressDownUp"
+                                    condition="scheme_id(S) &amp; unfulfilled(obligation(_,_,done(S,movePressDownUp,_),_))"  type="exception">
+                <report id="exHuman">
+                    <argument id="slowdownCode" arity="1" />
+                    <argument id="humanCoords"  arity="2" />
+                    <raise-goal id="explainSlowdownReason" />
+                    <handle-goal id="emergencyStop" when="raised(exHuman,_,Args) &amp; .member(humanCoords(X,Y),Args) &amp; X &lt; 2 &amp; Y &lt; 3"/>
+                </report>
+            </notification-policy>
+
+            <mission id="mFeedBelt" min="1" max="1">
+                <goal id="conveyPlateToTable" />
+                <goal id="notifyRemainingStock" />
+            </mission>
+            <mission id="mERT" min="1" max="1">
+                <goal id="turnTableMoveUp" />
+                <goal id="turnTableMoveDown" />
+                <goal id="notifyStoppedMotorNumber" />
+            </mission>
+            <mission id="mRobot" min="1" max="1">
+                <goal id="extendArm1" />
+                <goal id="grabPlateFromBelt" />
+                <goal id="movePlateOnPress" />
+                <goal id="releasePlateOnPress" />
+                <goal id="retractArm1" />
+                <goal id="turnRobot" />
+                <goal id="extendArm2" />
+                <goal id="grabPlateFromPress" />
+                <goal id="movePlateOnBelt" />
+                <goal id="releasePlateOnBelt" />
+                <goal id="retractArm2" />
+                <goal id="emergencyStop" />
+            </mission>
+            <mission id="mPress" min="1" max="1">
+                <goal id="movePressDownUp" />
+                <goal id="explainSlowdownReason" />
+            </mission>
+            <mission id="mDepositBelt" min="1" max="1">
+                <goal id="conveyPlateToDeposit" />
+            </mission>
+            <mission id="mSupervisor" min="1" max="1">
+                <goal id="scheduleTableMotorFix" />
+                <goal id="replaceERT" />
+                <goal id="requestRemainingStock" />
+                <goal id="slowDownProduction" />
+                <goal id="stopProduction" />
+            </mission>
+
+        </scheme>
+
+    </functional-specification>
+
+    <normative-specification>
+        <norm id="n1" type="obligation" role="feedBelt"
+            mission="mFeedBelt" />
+        <norm id="n2" type="obligation" role="elevatingRotaryTable"
+            mission="mERT" />
+        <norm id="n3" type="obligation" role="robot"
+            mission="mRobot" />
+        <norm id="n4" type="obligation" role="press"
+            mission="mPress" />
+        <norm id="n5" type="obligation" role="depositBelt"
+            mission="mDepositBelt" />
+        <norm id="n6" type="obligation" role="supervisor"
+            mission="mSupervisor" />
+    </normative-specification>
+
+</organisational-specification>

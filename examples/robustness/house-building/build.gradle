@@ -1,0 +1,69 @@
+/*
+   example: house building
+
+   Gradle build file for JaCaMo Application
+   September 27, 2018 - 15:33:36
+*/
+
+plugins {
+    id 'java'
+    id 'eclipse'
+}
+
+defaultTasks 'run'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+version '1.0'
+group   'it.unito.di'
+
+sourceCompatibility = 21
+targetCompatibility = 21
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+
+    maven { url "https://repo.gradle.org/gradle/libs-releases" }
+    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+
+    flatDir {
+       dirs 'lib'
+    }
+}
+
+dependencies {
+    implementation group: 'org.jacamo',  name: 'jacamo',           version: '1.3.0'
+    implementation group: 'org.jacamo',  name: 'moise', version: '1.2-SNAPSHOT', changing: true
+
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
+  	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.1'
+
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/env'
+            srcDir 'src/agt'
+            srcDir 'src/org'
+        }
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+}
+
+task run (type: JavaExec, dependsOn: 'classes') {
+    description 'runs the application'
+    group ' JaCaMo'
+    mainClass = 'jacamo.infra.JaCaMoLauncher'
+    args 'house.jcm'
+    classpath sourceSets.main.runtimeClasspath
+}
+
+clean {
+    delete 'bin'
+    delete 'build'
+}

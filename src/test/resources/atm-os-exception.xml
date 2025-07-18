@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="https://moise-lang.github.io/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification
+    id="atm" os-version="1.0"
+
+    xmlns="https://moise-lang.github.io/os"
+    
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://moise.sourceforge.net/os https://moise-lang.github.io/xml/os.xsd">
+
+    <structural-specification>
+
+        <role-definitions>
+            <role id="atmHandler" />
+            <role id="requestHandler" />
+            <role id="reader" />
+            <role id="parser" />
+            <role id="moneyKeeper" />
+        </role-definitions>
+
+        <group-specification id="atm_group">
+            <roles>
+                <role id="atmHandler" min="1" max="1" />
+                <role id="requestHandler" min="1" max="1" />
+                <role id="reader" min="1" max="1" />
+                <role id="parser" min="1" max="1" />
+                <role id="moneyKeeper" min="1" max="1" />
+            </roles>
+        </group-specification>
+
+    </structural-specification>
+
+
+
+    <functional-specification>
+
+        <scheme id="atm_sch">
+
+            <goal id="withdraw">
+                <plan operator="sequence">
+                    <goal id="obtainAmount">
+                        <plan operator="sequence">
+                            <goal id="getAmountAsString" />
+                            <goal id="parseAmount" />
+                        </plan>
+                    </goal>
+                    <goal id="provideMoney" />
+                </plan>
+            </goal>
+
+            <notification-policy id="np1" target="parseAmount"  condition="failed(_,parseAmount)"  type="exception">
+                <report id="nan">
+                    <argument id="index" arity="1" />
+                    <raise-goal id="raiseNan"/>
+                    <handle-goal id="recoverFromNan" />
+                </report>
+            </notification-policy>
+
+            <notification-policy id="np2" target="recoverFromNan" condition="failed(_,recoverFromNan)"  type="exception">
+                <report id="amountUnavailable">
+                    <raise-goal id="raiseAmountUnavailable"/>
+                    <handle-goal id="retryLater" />
+                </report>
+            </notification-policy>
+
+            <mission id="mGetAmountAsString" min="1" max="1">
+                <goal id="getAmountAsString" />
+            </mission>
+            <mission id="mParseAmount" min="1" max="1">
+                <goal id="parseAmount" />
+                <goal id="raiseNan" />
+            </mission>
+            <mission id="mObtainAmount" min="1" max="1">
+                <goal id="obtainAmount" />
+                <goal id="raiseAmountUnavailable" />
+                <goal id="recoverFromNan" />
+            </mission>
+            <mission id="mProvideMoney" min="1" max="1">
+                <goal id="provideMoney" />
+            </mission>
+            <mission id="mWithdraw" min="1" max="1">
+                <goal id="withdraw" />
+                <goal id="retryLater" />
+            </mission>
+
+        </scheme>
+
+    </functional-specification>
+
+    <normative-specification>
+        <norm id="n1" type="obligation" role="atmHandler"
+            mission="mWithdraw" />
+        <norm id="n2" type="obligation" role="requestHandler"
+            mission="mObtainAmount" />
+        <norm id="n3" type="obligation" role="reader"
+            mission="mGetAmountAsString" />
+        <norm id="n4" type="obligation" role="parser"
+            mission="mParseAmount" />
+        <norm id="n5" type="obligation" role="moneyKeeper"
+            mission="mProvideMoney" />
+    </normative-specification>
+
+</organisational-specification>

@@ -1,0 +1,23 @@
+/*
+    JaCaMo Project for the house building scenario used
+    initially in the Multi-Agent Programming Tutorial @ EASSS 2010
+
+*/
+
+mas house_building {
+
+   agent giacomo     // the agent that wants to build a house
+
+   agent companyA   // builder agents (see their code for details)
+   agent companyB
+   agent companyC {
+      instances: 5
+   }
+   agent companyD {
+      instances: 13
+   }
+   agent companyE
+   
+   agent engineer1
+
+}

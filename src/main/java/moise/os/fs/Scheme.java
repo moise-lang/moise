@@ -12,11 +12,17 @@ import java.util.Set;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.LogicalFormula;
+import jason.asSyntax.parser.ParseException;
 import moise.common.MoiseConsistencyException;
 import moise.common.MoiseElement;
 import moise.common.MoiseException;
 import moise.os.Cardinality;
 import moise.os.CardinalitySet;
+import moise.os.fs.robustness.NotificationPolicy;
+import moise.os.fs.robustness.NotificationPolicyType;
+import moise.os.fs.robustness.Report;
 import moise.prolog.ToProlog;
 import moise.xml.DOMUtils;
 import moise.xml.ToXML;
@@ -39,6 +45,8 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
     protected Goal                     root     = null;
     //protected String                   monitoring  = null;
     protected FS                       fs       = null;
+
+    protected Map<String, NotificationPolicy> notificationPolicies = new HashMap<>();
 
     public Scheme(String id, FS fs) {
         super(id);
@@ -169,6 +177,26 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
         return ms;
     }
 
+    // Notification policies methods
+    public void addNotificationPolicy(NotificationPolicy np) {
+        notificationPolicies.put(np.getId(), np);
+    }
+
+    public Collection<NotificationPolicy> getNotificationPolicies() {
+        return notificationPolicies.values();
+    }
+
+    public Report getReport(String id) throws MoiseException {
+        for (NotificationPolicy np : notificationPolicies.values()) {
+            for(Report ex : np.getReports()) {
+                if (ex.getId().equals(id)) {
+                    return ex;
+                }
+            }
+        }
+        throw new MoiseException("Report " + id + " undefined in scheme " + this.getId());
+    }
+
     /** returns a string representing the goal in Prolog syntax, format:
      *     scheme_specification(id, goals tree starting by root goal, missions, properties)
      */
@@ -212,6 +240,11 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
         // goals
         ele.appendChild(getRoot().getAsDOM(document));
 
+        // notification policies
+        for (NotificationPolicy np : getNotificationPolicies()) {
+            ele.appendChild(np.getAsDOM(document));
+        }
+
         // missions
         for (Mission m: getMissions()) {
             ele.appendChild(m.getAsDOM(document));
@@ -233,6 +266,35 @@ public class Scheme extends MoiseElement implements ToXML, ToProlog {
         rootG.setFromDOM(grEle, this);
         addGoal(rootG);
         setRoot(rootG);
+
+        // notification policies
+        for (Element npEle : DOMUtils.getDOMDirectChilds(ele, NotificationPolicy.getXMLTag())) {
+            try {
+                LogicalFormula conditionFormula = ASSyntax.parseFormula("true");
+                String condition = npEle.getAttribute("condition");
+                if(condition != null) {
+                    condition.replace("&amp;", "&");
+                    condition.replace("&lt;", "<");
+                    condition.replace("&gt;", ">");
+                    condition.replace("&apos;", "'");
+                    condition.replace("&quot;", "\"");
+                    conditionFormula = ASSyntax.parseFormula(condition);
+                }
+                NotificationPolicyType type;
+                if(npEle.getAttribute("type").equals("accountability")) {
+                    type = NotificationPolicyType.ACCOUNTABILITY;
+                }
+                else {
+                    type = NotificationPolicyType.EXCEPTION;
+                }
+                NotificationPolicy np = new NotificationPolicy(npEle.getAttribute("id"), npEle.getAttribute("target"), conditionFormula, type, this);
+                np.setFromDOM(npEle);
+                addNotificationPolicy(np);
+            }
+            catch(ParseException e) {
+                throw new MoiseException(e.getMessage());
+            }
+        }
 
         // missions
         for (Element mEle: DOMUtils.getDOMDirectChilds(ele, Mission.getXMLTag())) {

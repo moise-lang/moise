@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="https://moise-lang.github.io/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification
+    id="therapy" os-version="1.0"
+
+    xmlns="https://moise-lang.github.io/os"
+    
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://moise-lang.github.io/os https://moise-lang.github.io/os.xsd">
+
+    <structural-specification>
+
+        <role-definitions>
+            <role id="patient" />
+            <role id="doctor" />
+            <role id="pharmacist" />
+        </role-definitions>
+
+        <group-specification id="therapy_group">
+            <roles>
+                <role id="patient" min="1" max="1" />
+                <role id="doctor" min="1" max="1" />
+                <role id="pharmacist" min="1" max="1" />
+            </roles>
+        </group-specification>
+
+    </structural-specification>
+
+    <functional-specification>
+
+        <scheme id="therapy_sch">
+
+            <goal id="therapy">
+                <plan operator="parallel">
+                    <goal id="cpf">
+                        <plan operator="sequence">
+                            <goal id="consult" />
+                            <goal id="prescribe" />
+                            <goal id="fill_prescription" />
+                        </plan>
+                    </goal>
+                    <goal id="follow_therapy" ttf="5 seconds" /> <!-- 1 second = 1 day in real life -->
+                </plan>
+            </goal>
+
+            <notification-policy id="np1" target="follow_therapy" condition="unfulfilled(obligation(_,_,done(_,follow_therapy,_),_))" type="exception">
+
+                <report id="exception_lost_request">
+                    <argument id="date" arity="1" />
+                    <raise-goal id="raise_exception_lost_request" when="not satisfied(_,prescribe)" /> 
+                    <handle-goal id="handle_exception_lost_request" />
+                </report>
+
+                <report id="exception_no_delivery">
+                    <argument id="date" arity="1" />
+                    <argument id="doctor_name" arity="1" />
+                    <raise-goal id="raise_exception_no_delivery" when="satisfied(_,prescribe) &amp; not raised(exception_lost_request,_,_)" /> 
+                    <handle-goal id="handle_exception_no_delivery" when="satisfied(_,fill_prescription) &amp; not satisfied(_,handle_exception_no_delivery_no_fill)" /> 
+                    <handle-goal id="handle_exception_no_delivery_no_fill" when="not satisfied(_,fill_prescription) &amp; not satisfied(_,handle_exception_no_delivery)" /> 
+                </report>
+
+                <report id="exception_missing_prescription">
+                    <argument id="date" arity="1" />
+                    <argument id="patient_name" arity="1" />
+                    <raise-goal id="raise_exception_missing_prescription" when="satisfied(_,prescribe) &amp; failed(_,fill_prescription) &amp; not raised(exception_lost_request,_,_)" />
+                    <handle-goal id="handle_exception_missing_prescription" />
+                </report>
+
+            </notification-policy>
+
+            <mission id="mPatient" min="1" max="1">
+                <goal id="consult" />
+                <goal id="follow_therapy" />
+                <goal id="raise_exception_lost_request" />
+                <goal id="raise_exception_no_delivery" />
+            </mission>
+            
+            <mission id="mDoctor" min="1" max="1">
+                <goal id="prescribe" />
+                <goal id="handle_exception_lost_request" />
+                <goal id="handle_exception_missing_prescription" />
+            </mission>
+            
+            <mission id="mPharmacist" min="1" max="1">
+                <goal id="fill_prescription" />
+                <goal id="handle_exception_no_delivery" />
+                <goal id="handle_exception_no_delivery_no_fill" />
+                <goal id="raise_exception_missing_prescription" />
+            </mission>
+
+        </scheme>
+
+    </functional-specification>
+
+    <normative-specification>
+        <norm id="n1" type="obligation" role="patient"    mission="mPatient" />
+        <norm id="n2" type="obligation" role="doctor"     mission="mDoctor" />
+        <norm id="n3" type="obligation" role="pharmacist" mission="mPharmacist" />
+    </normative-specification>
+
+</organisational-specification>

@@ -3,6 +3,7 @@ package ora4mas.nopl.oe;
 import static jason.asSyntax.ASSyntax.createAtom;
 import static jason.asSyntax.ASSyntax.createLiteral;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,20 +13,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import jaca.ToProlog;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Literal;
 import jason.asSyntax.LogExpr;
+import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.PredicateIndicator;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
+import jason.asSyntax.parser.ParseException;
+import moise.common.MoiseException;
 import moise.os.fs.Goal;
 import moise.os.fs.Mission;
 import moise.os.fs.Plan.PlanOpType;
+import moise.os.fs.robustness.AccountingGoal;
+import moise.os.fs.robustness.HandlingGoal;
+import moise.os.fs.robustness.RaisingGoal;
+import moise.os.fs.robustness.Report;
+import moise.os.fs.robustness.RequestingGoal;
+import moise.os.fs.robustness.TreatmentGoal;
+import npl.NPLInterpreter;
+import npl.parser.nplp;
 
 /**
  Represents an instance of scheme
@@ -45,7 +59,11 @@ public class Scheme extends CollectiveOE {
         createLiteral("done", new VarTerm("SID"), new VarTerm("Goal"), new VarTerm("Ag") ),
         createLiteral("satisfied", new VarTerm("SID"), new VarTerm("Goal")),
         createLiteral(Group.playPI.getFunctor(), new VarTerm("Ag"), new VarTerm("Role"), new VarTerm("Gr")), // from group
-        createLiteral(Group.responsiblePI.getFunctor(), new VarTerm("Gr"), new VarTerm("Sch"))               // from group
+        createLiteral(Group.responsiblePI.getFunctor(), new VarTerm("Gr"), new VarTerm("Sch")),               // from group
+        createLiteral("failed",new VarTerm("SID"), new VarTerm("Goal")),
+        createLiteral("released", new VarTerm("SID"), new VarTerm("Goal")),
+        createLiteral("raised", new VarTerm("Report"), new VarTerm("Ag"), new VarTerm("Args")),
+        createLiteral("account", new VarTerm("Report"), new VarTerm("Ag"), new VarTerm("Args"))
     };
 
 
@@ -54,6 +72,10 @@ public class Scheme extends CollectiveOE {
     public final static PredicateIndicator exCommittedPI = dynamicFacts[2].getPredicateIndicator();
     public final static PredicateIndicator donePI        = dynamicFacts[3].getPredicateIndicator();
     public final static PredicateIndicator satisfiedPI   = dynamicFacts[4].getPredicateIndicator();
+    public final static PredicateIndicator failedPI      = dynamicFacts[7].getPredicateIndicator();
+    public final static PredicateIndicator releasedPI    = dynamicFacts[8].getPredicateIndicator();
+    public final static PredicateIndicator raisedPI      = dynamicFacts[9].getPredicateIndicator();
+    public final static PredicateIndicator accountPI     = dynamicFacts[10].getPredicateIndicator();
 
     // specification
     private moise.os.fs.Scheme spec;
@@ -64,8 +86,21 @@ public class Scheme extends CollectiveOE {
     // the literal is done(schemeId, goalId, agent name)
     private ConcurrentSkipListSet<Literal> doneGoals = new ConcurrentSkipListSet<>();
 
+
+    // the literal is failed(schemeId, goalId)
+    private List<Literal> failedGoals = new CopyOnWriteArrayList<>();
+
+    // the literal is released(schemeId, goalId)
+    private ConcurrentSkipListSet<Literal> releasedGoals = new ConcurrentSkipListSet<>();
+
     // values for goal arguments (key = goal + arg, value = value)
     private HashMap<Pair<String,String>,Object> goalArgs = new HashMap<>();
+
+    // the literal is raised(report id, agent name, arguments)
+    private List<Literal> raiseds = new CopyOnWriteArrayList<>();
+
+    // the literal is account(report id, agent name, arguments)
+    private List<Literal> accounts = new CopyOnWriteArrayList<>();
 
     // list of satisfied goals
     private Set<String> satisfiedGoals = new HashSet<>(); // we use "contains" a lot, so remains HashSet
@@ -73,7 +108,7 @@ public class Scheme extends CollectiveOE {
     public Scheme(moise.os.fs.Scheme spec, String id) {
         super(id);
         this.spec = spec;
-        
+
         // copy initial values of goal args
         for (Goal g: spec.getGoals()) {
             if (g.getArguments() != null) {
@@ -85,13 +120,53 @@ public class Scheme extends CollectiveOE {
             }
         }
     }
-    
+
     public moise.os.fs.Scheme getSpec() {
         return spec;
     }
 
     public void addDoneGoal(String ag, String goal) {
         doneGoals.add(createLiteral(donePI.getFunctor(), termId, createAtom(goal), createAtom(ag)));
+    }
+
+    public void addFailedGoal(String goal) {
+        failedGoals.add(createLiteral(failedPI.getFunctor(), termId, createAtom(goal)));
+    }
+
+    public void addReleasedGoal(String goal) {
+        releasedGoals.add(createLiteral(releasedPI.getFunctor(), termId, createAtom(goal)));
+    }
+
+    public void addRaised(String ag, String exception, Object[] arguments) throws ParseException {
+        String argS = "[";
+        int i = 0;
+        while(i < arguments.length -1) {
+            argS += arguments[i] + ",";
+            i++;
+        }
+        if(arguments.length > 0) {
+            argS += arguments[arguments.length-1];
+        }
+        argS += "]";
+        raiseds.add(createLiteral(raisedPI.getFunctor(), createAtom(exception), createAtom(ag), ASSyntax.parseList(argS)));
+    }
+
+    public void addAccount(String ag, String account, Object[] arguments) throws ParseException, npl.parser.ParseException {
+        String argS = "[";
+        int i = 0;
+        while(i < arguments.length -1) {
+            argS += arguments[i] + ",";
+            i++;
+        }
+        if(arguments.length > 0) {
+            argS += arguments[arguments.length-1];
+        }
+        argS += "]";
+        accounts.add(createLiteral(accountPI.getFunctor(), createAtom(account), createAtom(ag), ASSyntax.parseList(argS)));
+    }
+
+    public Term getTermId() {
+        return termId;
     }
 
     public boolean removeDoneGoal(Goal goal) {
@@ -107,9 +182,64 @@ public class Scheme extends CollectiveOE {
         }
         return r;
     }
+
+    public boolean removeFailedGoal(Goal goal) {
+        boolean r = false;
+        Atom gAtom = createAtom(goal.getId());
+        for(Literal l :failedGoals) {
+            if (l.getTerm(1).equals(gAtom)) {
+                failedGoals.remove(l);
+                r = true;
+            }
+        }
+        return r;
+    }
+
+    public boolean removeReleasedGoal(Goal goal) {
+        
+        boolean r = false;
+        Atom gAtom = createAtom(goal.getId());
+        Iterator<Literal> iReleasedGoals = releasedGoals.iterator();
+        while (iReleasedGoals.hasNext()) {
+            Literal l = iReleasedGoals.next();
+            if (l.getTerm(1).equals(gAtom)) {
+                iReleasedGoals.remove();
+                r = true;
+            }
+        }
+        return r;
+    }
+
+    public boolean removeRaised(Report report) {
+        boolean r = false;
+        Atom eAtom = createAtom(report.getId());
+        for(Literal l : raiseds) {
+            if (l.getTerm(1).equals(eAtom)) {
+                raiseds.remove(l);
+                r = true;
+            }
+        }
+        return r;
+    }
     
+    public boolean removeAccount(Report report) {
+        boolean r = false;
+        Atom eAtom = createAtom(report.getId());
+        for(Literal l : accounts) {
+            if (l.getTerm(1).equals(eAtom)) {
+                accounts.remove(l);
+                r = true;
+            }
+        }
+        return r;
+    }
+
     public Set<Literal> getDoneGoals() {
         return new HashSet<>(doneGoals);
+    }
+    
+    public Set<Literal> getReleasedGoals() {
+        return releasedGoals;
     }
 
     public boolean resetGoal(Goal goal) {
@@ -132,6 +262,13 @@ public class Scheme extends CollectiveOE {
     protected boolean resetGoalAndPreConditions(Goal goal) {
         boolean changed = removeDoneGoal(goal);
 
+        if(!changed) {
+            changed = removeFailedGoal(goal);
+        }
+        if(!changed) {
+            changed = removeReleasedGoal(goal);
+        }
+
         // recompute for all goals which this goal is pre condition
         for (Goal g: spec.getGoals()) {
             if (g.getPreConditionGoals().contains(goal)) {
@@ -139,6 +276,81 @@ public class Scheme extends CollectiveOE {
             }
         }
 
+        return changed;
+    }
+
+    public boolean resetExceptions(NPLInterpreter nengine) {
+        boolean changed = false;
+        for(Literal l : raiseds) {
+            try {
+                Report ex = spec.getReport(l.getTerm(0).toString());
+                boolean anyConditionHolding = false;
+                for(RaisingGoal tg : ex.getRaisingGoals()) {
+                
+                    LogicalFormula whenCondition = tg.getWhenCondition();
+
+                    nplp parser = new nplp(new StringReader(whenCondition.toString()));
+                    parser.setDFP(this);
+                    LogicalFormula formula = (LogicalFormula)parser.log_expr();
+                    if(nengine.holds(formula)) {
+                        anyConditionHolding = true;
+                    }
+                }
+                if(!anyConditionHolding) {
+                    raiseds.remove(l);
+                    for(RaisingGoal tg : ex.getRaisingGoals()) {
+                        resetGoal(tg);
+                    }
+                    for(HandlingGoal cg : ex.getHandlingGoals()) {
+                        resetGoal(cg);
+                    }
+                    resetExceptions(nengine);
+                    changed = true;
+                }
+            } catch (MoiseException | npl.parser.ParseException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+        return changed;
+    }
+    
+    public boolean resetAccounts(NPLInterpreter nengine) {
+        boolean changed = false;
+        for(Literal l : accounts) {
+            try {
+                Report r = spec.getReport(l.getTerm(0).toString());
+                boolean anyConditionHolding = false;
+                for(AccountingGoal ag : r.getAccountingGoals()) {
+                
+                    LogicalFormula whenCondition = ag.getWhenCondition();
+
+                    nplp parser = new nplp(new StringReader(whenCondition.toString()));
+                    parser.setDFP(this);
+                    LogicalFormula formula = (LogicalFormula)parser.log_expr();
+                    if(nengine.holds(formula)) {
+                        anyConditionHolding = true;
+                    }
+                }
+                if(!anyConditionHolding) {
+                    accounts.remove(l);
+                    for(RequestingGoal rg : r.getRequestingGoals()) {
+                        resetGoal(rg);
+                    }
+                    for(AccountingGoal ag : r.getAccountingGoals()) {
+                        resetGoal(ag);
+                    }
+                    for(TreatmentGoal tg : r.getTreatmentGoals()) {
+                        resetGoal(tg);
+                    }
+                    resetAccounts(nengine);
+                    changed = true;
+                }
+            } catch (MoiseException | npl.parser.ParseException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
         return changed;
     }
 
@@ -203,8 +415,20 @@ public class Scheme extends CollectiveOE {
             else
                 return LogExpr.EMPTY_UNIF_LIST.iterator();
 
+        } else if (pi.equals(raisedPI)) {
+            return consultFromCollection(l, u, raiseds);
+
+        } else if (pi.equals(accountPI)) {
+            return consultFromCollection(l, u, accounts);
+            
         } else if (pi.equals(donePI)) {
             return consultFromCollection(l, u, doneGoals);
+
+        } else if (pi.equals(releasedPI)) {
+            return consultFromCollection(l, u, releasedGoals);
+
+        } else if (pi.equals(failedPI)) {
+            return consultFromCollection(l, u, failedGoals);
 
         } else if (pi.equals(satisfiedPI)) {
             Term lCopy = l.getTerm(1).capply(u);
@@ -272,27 +496,47 @@ public class Scheme extends CollectiveOE {
         satisfiedGoals.remove(g);
     }
 
+    public boolean isReleased(Goal g) {
+        for(Literal l : releasedGoals) {
+            if (l.getTerm(1).toString().equals(g.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public boolean isSatisfied(Goal g) {
         if (satisfiedGoals.contains(g.getId()))
             return true;
 
-        // all pre-conditions
-        //    satisfied(S,G) :-     // no agents have to achieve -- automatically satisfied by its pre-conditions
-        //           goal(_,G,PCG,_,0,_) & all_satisfied(S,PCG).
-
+        //no agents have to achieve -- automatically satisfied if preconditions are satisfied or released
         if (g.getMinAgToSatisfy() == 0) { // goal without mission
             if (!g.hasPlan())   // if no plan is defined, it is never satisfied
                 return false;
             boolean hasChoicePlan = g.getPlan().getOp() == PlanOpType.choice;
+            int nPreconditionsSatisfied = 0;
+            int nPreconditionsReleased = 0;
             for (Goal pg: g.getPreConditionGoals()) {
-                if (hasChoicePlan) {
-                    if (isSatisfied(pg))
-                        return true; // if one of the precondition goals is satisfied, g is also satisfied
-                } else if (! isSatisfied(pg)) {
-                    return false;
+                if(isSatisfied(pg))
+                    nPreconditionsSatisfied++;
+                else if(isReleased(pg)) {
+                    nPreconditionsReleased++;
                 }
+                //if (hasChoicePlan) {
+                //    if (isSatisfied(pg))
+                //        return true; // if one of the precondition goals is satisfied, g is also satisfied
+                    
+                //} else if (!isSatisfied(pg)) {
+                //    return false;
+                //}
             }
-            return !hasChoicePlan;
+            if(hasChoicePlan) {
+                return (nPreconditionsSatisfied != 0) || (nPreconditionsReleased == g.getPreConditionGoals().size());
+            }
+            else {
+                return nPreconditionsReleased + nPreconditionsSatisfied == g.getPreConditionGoals().size();
+            }
+            //return !hasChoicePlan;
         }
 
         int a = 0; // qty of achieved
@@ -326,6 +570,10 @@ public class Scheme extends CollectiveOE {
         g.exPlayers.addAll(this.exPlayers);
         g.groups.addAll(this.groups);
         g.doneGoals.addAll(this.doneGoals);
+        g.failedGoals.addAll(this.failedGoals);
+        g.raiseds.addAll(this.raiseds);
+        g.accounts.addAll(this.accounts);
+        g.releasedGoals.addAll(this.releasedGoals);
         //g.accomplisedMissions.addAll(this.accomplisedMissions);
         g.satisfiedGoals.addAll(this.satisfiedGoals);
         g.goalArgs.putAll(this.goalArgs);
@@ -347,6 +595,12 @@ public class Scheme extends CollectiveOE {
             out.append("    "+g+"\n");
         out.append("  satisfied goals:\n");
         for (String g: satisfiedGoals)
+            out.append("    "+g+"\n");
+        out.append("  failed goals:\n");
+        for (Literal g: failedGoals)
+            out.append("    "+g+"\n");
+        out.append("  released goals:\n");
+        for (Literal g: releasedGoals)
             out.append("    "+g+"\n");
         out.append("  goal arguments:\n");
         for (Pair<String,String> k: goalArgs.keySet())

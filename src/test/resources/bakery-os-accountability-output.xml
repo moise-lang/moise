@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><organisational-specification xmlns="https://moise-lang.github.io/os" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="bakery" os-version="1.0" xsi:schemaLocation="https://moise-lang.github.io/os https://moise-lang.github.io/xml/os.xsd">
+    <structural-specification>
+        <role-definitions>
+            <role id="seller">
+                <extends role="soc"/>
+            </role>
+            <role id="owner">
+                <extends role="soc"/>
+            </role>
+            <role id="baker">
+                <extends role="soc"/>
+            </role>
+            <role id="kneader">
+                <extends role="soc"/>
+            </role>
+        </role-definitions>
+        <link-types>
+            <link-type id="authority"/>
+            <link-type id="acquaintance"/>
+            <link-type id="communication"/>
+        </link-types>
+        <group-specification id="bakery_group">
+            <roles>
+                <role id="seller"/>
+                <role id="owner"/>
+                <role id="baker"/>
+                <role id="kneader"/>
+            </roles>
+            <formation-constraints>
+                <cardinality id="seller" max="1" min="1" object="role"/>
+                <cardinality id="owner" max="1" min="1" object="role"/>
+                <cardinality id="baker" max="1" min="1" object="role"/>
+                <cardinality id="kneader" max="1" min="1" object="role"/>
+            </formation-constraints>
+        </group-specification>
+    </structural-specification>
+    <functional-specification>
+        <scheme id="bakery_scheme">
+            <goal id="sellingBread" type="performance">
+                <plan operator="sequence">
+                    <goal id="preparation" min="0" type="performance">
+                        <plan operator="sequence">
+                            <goal id="setup" min="0" type="performance">
+                                <plan operator="parallel">
+                                    <goal id="knead" type="performance"/>
+                                    <goal id="heatOven" type="performance"/>
+                                </plan>
+                            </goal>
+                            <goal id="bake" type="performance"/>
+                        </plan>
+                    </goal>
+                    <goal id="sell" type="performance"/>
+                </plan>
+            </goal>
+            <notification-policy condition="satisfied(_1277,getAuthorization)" id="np2" target="preparation" type="accountability">
+                <report id="ftBaker">
+                    <argument arity="1" id="flourType"/>
+                    <context-goal id="getAuthorization" type="performance"/>
+                    <requesting-goal id="requestFlourTypeToBaker" type="performance"/>
+                    <accounting-goal id="notifyFlourTypeToSeller" type="performance"/>
+                </report>
+            </notification-policy>
+            <notification-policy condition="true" id="np1" target="knead" type="accountability">
+                <report id="ftKneader">
+                    <argument arity="1" id="flourType"/>
+                    <requesting-goal id="requestFlourTypeToKneader" type="performance"/>
+                    <accounting-goal id="notifyFlourTypeToBaker" type="performance"/>
+                </report>
+            </notification-policy>
+            <mission id="mSeller" max="1" min="1">
+                <goal id="sell"/>
+                <goal id="getAuthorization"/>
+                <goal id="requestFlourTypeToBaker"/>
+            </mission>
+            <mission id="mBaker" max="1" min="1">
+                <goal id="requestFlourTypeToKneader"/>
+                <goal id="bake"/>
+                <goal id="notifyFlourTypeToSeller"/>
+                <goal id="heatOven"/>
+            </mission>
+            <mission id="mOwner" max="1" min="1">
+                <goal id="sellingBread"/>
+            </mission>
+            <mission id="mKneader" max="1" min="1">
+                <goal id="knead"/>
+                <goal id="notifyFlourTypeToBaker"/>
+            </mission>
+        </scheme>
+    </functional-specification>
+    <normative-specification>
+        <norm id="n1" mission="mKneader" role="kneader" type="obligation"/>
+        <norm id="n2" mission="mBaker" role="baker" type="obligation"/>
+        <norm id="n3" mission="mSeller" role="seller" type="obligation"/>
+        <norm id="n4" mission="mOwner" role="owner" type="obligation"/>
+    </normative-specification>
+</organisational-specification>

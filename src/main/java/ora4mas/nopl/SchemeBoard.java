@@ -1,10 +1,15 @@
 package ora4mas.nopl;
 
+import static jason.asSyntax.ASSyntax.createAtom;
+import static jason.asSyntax.ASSyntax.createLiteral;
+
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,9 +29,13 @@ import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Literal;
+import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.PredicateIndicator;
 import jason.asSyntax.Term;
+import jason.asSyntax.VarTerm;
+import jason.asSyntax.parser.TokenMgrError;
+import jason.stdlib.literal;
 import jason.util.Config;
 import moise.common.MoiseException;
 import moise.oe.GoalInstance;
@@ -40,7 +49,9 @@ import moise.tools.os2dot;
 import moise.xml.DOMUtils;
 import npl.NPLLiteral;
 import npl.NormativeFailureException;
+import npl.NormativeProgram;
 import npl.parser.ParseException;
+import npl.parser.nplp;
 import ora4mas.nopl.oe.Group;
 import ora4mas.nopl.oe.Pair;
 import ora4mas.nopl.oe.Player;
@@ -103,6 +114,9 @@ public class SchemeBoard extends OrgArt {
     public static final String obsPropCommitment = "commitment";
 
     public static final PredicateIndicator piGoalState = new PredicateIndicator("goalState", 5);
+
+	private List<ObsProperty> exceptionsObsProps = new ArrayList<>();	
+	private List<ObsProperty> accountsObsProps = new ArrayList<>();
 
     protected static Collection<SchemeBoard> schBoards = new ArrayList<>();
     public static Collection<SchemeBoard> getSchemeBoards() {
@@ -320,6 +334,77 @@ public class SchemeBoard extends OrgArt {
         },"Error achieving goal "+goal);
     }
 
+    @OPERATION
+    public void goalFailed(String goal) throws CartagoException {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                getSchState().addFailedGoal(goal);
+                nengine.verifyNorms();
+                updateGoalStateObsProp();
+            }
+        }, "Error setting goal " + goal + " as failed");
+    }
+
+    @OPERATION
+    public void goalReleased(String goal) throws CartagoException {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                getSchState().addReleasedGoal(goal);
+                getSchState().removeFailedGoal(spec.getGoal(goal));
+                //getSchState().resetExceptions(nengine);
+                if (getSchState().computeSatisfiedGoals()) {
+                    nengine.verifyNorms();
+                }
+                updateGoalStateObsProp();
+                //updateExceptionsObsProp();
+            }
+        }, "Error setting goal " + goal + " as released");
+    }
+
+    @OPERATION
+    public void giveAccount(String accountTemplate, Object[] arguments) throws CartagoException {
+        giveAccount(getOpUserName(), accountTemplate, arguments);
+    }
+    
+    @OPERATION
+    public void giveAccount(final String agent, String accountTemplate, Object[] arguments) throws CartagoException {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                getSchState().addAccount(agent, accountTemplate, arguments);
+                nengine.verifyNorms();
+                List<Term> args = new ArrayList<Term>();
+                for (Object a : arguments) {
+                    args.add(ASSyntax.parseLiteral((String) a));
+                }
+                ObsProperty op = defineObsProperty("account", createAtom(accountTemplate), ASSyntax.createList(args));
+                op.addAnnot(ASSyntax.parseLiteral("accountGiver(" + agent + ")"));
+                accountsObsProps.add(op);
+            }
+        }, "Error giving account " + accountTemplate);
+    }
+
+    @OPERATION
+    public void raiseException(String exception, Object[] arguments) throws CartagoException {
+        raiseException(getOpUserName(), exception, arguments);
+    }
+
+    @OPERATION
+    private void raiseException(final String agent, String exception, Object[] arguments) throws CartagoException {
+        ora4masOperationTemplate(new Operation() {
+            public void exec() throws NormativeFailureException, Exception {
+                getSchState().addRaised(agent, exception, arguments);
+                nengine.verifyNorms();
+                List<Term> args = new ArrayList<Term>();
+                for (Object a : arguments) {
+                    args.add(ASSyntax.parseLiteral((String) a));
+                }
+                ObsProperty op = defineObsProperty("raised", createAtom(exception), ASSyntax.createList(args));
+                op.addAnnot(ASSyntax.parseLiteral("raiser(" + agent + ")"));
+                exceptionsObsProps.add(op);
+            }
+        }, "Error raising exception " + exception);
+    }
+
     /** The agent executing this operation sets a value for a goal argument.
      *
      *  @param goal                     The goal to which the value should be added
@@ -361,14 +446,18 @@ public class SchemeBoard extends OrgArt {
         ora4masOperationTemplate(new Operation() {
             public void exec() throws NormativeFailureException, Exception {
                 if (getSchState().resetGoal(g)) {
+                    getSchState().resetExceptions(nengine);
+                    getSchState().resetAccounts(nengine);
                     getSchState().computeSatisfiedGoals();
                     getNormativeEngine().setAllActivatedNorms(null); // to empty the set of activated norms and thus allow norms to trigger again
                 }
                 nengine.verifyNorms();
                 getSchState().clearExPlayers(); // and an agent quits a mission accomplished, that was ok, the reset goal will turn this mission unaccomplished and produces a norm failure. so we remove the ex players here
                 updateGoalStateObsProp();
+                updateExceptionsObsProp();
+                updateAccountsObsProp();
             }
-        }, "Error reseting goal "+goal);
+        }, "Error resetting goal "+goal);
     }
 
     @OPERATION public void getState(OpFeedbackParam<Scheme> s) {
@@ -592,6 +681,32 @@ public class SchemeBoard extends OrgArt {
         }
     }
 
+    protected void updateExceptionsObsProp() throws jason.asSyntax.parser.ParseException {
+        Iterator<ObsProperty> i = exceptionsObsProps.iterator();
+        while (i.hasNext()) {
+            ObsProperty op = i.next();
+            Literal l = createLiteral("raised", ASSyntax.createAtom(op.getValue(0).toString()), new VarTerm("Ag"), ASSyntax.parseList(op.getValue(1).toString()));
+            
+            if (!nengine.holds(new NPLLiteral(l, this))) {
+                i.remove();
+                removeObsPropertyByTemplate(op.getName(), op.getValues());
+            }
+        }
+    }
+    
+    protected void updateAccountsObsProp() throws jason.asSyntax.parser.ParseException {
+        Iterator<ObsProperty> i = accountsObsProps.iterator();
+        while (i.hasNext()) {
+            ObsProperty op = i.next();
+            Literal l = createLiteral("account", ASSyntax.createAtom(op.getValue(0).toString()), new VarTerm("Ag"), ASSyntax.parseList(op.getValue(1).toString()));
+            
+            if (!nengine.holds(new NPLLiteral(l, this))) {
+                i.remove();
+                removeObsPropertyByTemplate(op.getName(), op.getValues());
+            }
+        }
+    }
+
     protected boolean isObsPropEqualsGoal(Literal g, ObsProperty op) {
         if (!g.getFunctor().equals(op.getName()))
             return false;
@@ -636,6 +751,8 @@ public class SchemeBoard extends OrgArt {
     protected static final Atom aWaiting   = new Atom("waiting");
     protected static final Atom aEnabled   = new Atom("enabled");
     protected static final Atom aSatisfied = new Atom("satisfied");
+    protected static final Atom aFailed = new Atom("failed");
+    protected static final Atom aReleased = new Atom("released");
 
     List<Literal> getGoalStates() {
         List<Literal> all = new ArrayList<>();
@@ -666,8 +783,13 @@ public class SchemeBoard extends OrgArt {
             Atom aState = aWaiting;
             if (nengine.holds(new NPLLiteral(ASSyntax.createLiteral("satisfied", tSch, aGoal), orgState))) {
                 aState = aSatisfied;
-            } else if (isWellFormed() &&
-                nengine.holds(ASSyntax.createLiteral("enabled", tSch, aGoal))) {
+            } else if (isWellFormed()
+                    && nengine.holds(new NPLLiteral(ASSyntax.createLiteral("failed", tSch, aGoal), orgState))) {
+                aState = aFailed;
+            } else if (isWellFormed()
+                    && nengine.holds(new NPLLiteral(ASSyntax.createLiteral("released", tSch, aGoal), orgState))) {
+                aState = aReleased;
+            } else if (isWellFormed() && nengine.holds(ASSyntax.createLiteral("enabled", tSch, aGoal))) {
                 aState = aEnabled;
             }
 

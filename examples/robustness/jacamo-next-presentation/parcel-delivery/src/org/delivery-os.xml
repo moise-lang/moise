@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="https://moise-lang.github.io/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification
+    id="parcel" os-version="1.0"
+
+    xmlns="https://moise-lang.github.io/os"
+    
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://moise.sourceforge.net/os https://moise-lang.github.io/xml/os.xsd">
+
+    <structural-specification>
+
+        <role-definitions>
+            <role id="parcelManager" />
+            <role id="warehouseWorker" />
+            <role id="routePlanner" />
+            <role id="truckDriver" />
+            <role id="carrier" />
+        </role-definitions>
+
+        <group-specification id="delivery_group">
+            <roles>
+                <role id="parcelManager" min="1" max="1" />
+                <role id="warehouseWorker" min="1" max="1" />
+                <role id="routePlanner" min="1" max="1" />
+                <role id="truckDriver" min="2" max="2" />
+                <role id="carrier" min="1" max="1" />
+            </roles>
+        </group-specification>
+
+    </structural-specification>
+
+    <functional-specification>
+
+        <scheme id="delivery_scheme">
+
+            <goal id="delivery">
+                <plan operator="sequence">
+                    <goal id="prepareParcel">
+                        <plan operator="sequence">
+                            <goal id="takeGoodsFromWarehouse" />
+                            <goal id="packUpGoods" />
+                            <goal id="loadOnTruck" />
+                        </plan>
+                    </goal>
+                    <goal id="deliverParcel">
+                        <plan operator="sequence">
+                            <goal id="locateAddress" />
+                            <goal id="planPath" />
+                            <goal id="reachDestination" />
+                            <goal id="handOverToCustomer">
+                                <plan operator="sequence">
+                                    <goal id="unloadFromTruck" />
+                                    <goal id="bringParcelToCustomerDoor" />
+                                    <goal id="collectProofOfDelivery" />
+                                </plan>
+                            </goal>
+                        </plan>
+                    </goal>
+                    <goal id="closeOrder" />
+                </plan>
+            </goal>
+
+            <notification-policy id="aaDelivery" target="reachDestination" condition="true" type="accountability">
+                <report id="delay">
+                    <argument id="reason" arity="1" />
+                    <argument id="roads" arity="1" />
+                    <requesting-goal id="requestDelayReason" min="1" />
+                    <accounting-goal id="reportDelayReason" min="1" />
+                    <!-- <treatment-goal id="updateLocalMap"/>
+                    <treatment-goal id="updateGlobalMap"/> -->
+                </report>
+            </notification-policy>
+
+            <mission id="mWarehouseWorker" min="1" max="1">
+                <goal id="takeGoodsFromWarehouse" />
+                <goal id="packUpGoods" />
+                <goal id="loadOnTruck" />
+            </mission>
+            <mission id="mRoutePlanner" min="1" max="1">
+                <goal id="locateAddress" />
+                <goal id="planPath" />
+                <!-- <goal id="updateGlobalMap" /> -->
+            </mission>
+            <mission id="mTruckDriver" min="2" max="2">
+                <goal id="reachDestination" />
+                <goal id="requestDelayReason" />
+                <goal id="reportDelayReason" />
+                <!-- <goal id="updateLocalMap" /> -->
+            </mission>
+            <mission id="mCarrier" min="1" max="1">
+                <goal id="unloadFromTruck" />
+                <goal id="bringParcelToCustomerDoor" />
+                <goal id="collectProofOfDelivery" />
+            </mission>
+            <mission id="mParcelManager" min="1" max="1">
+                <goal id="closeOrder" />
+            </mission>
+
+        </scheme>
+
+    </functional-specification>
+
+    <normative-specification>
+        <norm id="n1" type="obligation" role="truckDriver"
+            mission="mTruckDriver" />
+        <norm id="n2" type="obligation" role="routePlanner"
+            mission="mRoutePlanner" />
+        <norm id="n3" type="obligation" role="warehouseWorker"
+            mission="mWarehouseWorker" />
+        <norm id="n4" type="obligation" role="carrier"
+            mission="mCarrier" />
+        <norm id="n5" type="obligation" role="parcelManager"
+            mission="mParcelManager" />
+    </normative-specification>
+
+</organisational-specification>

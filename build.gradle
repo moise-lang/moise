@@ -7,9 +7,16 @@ defaultTasks 'jar'
 
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
+apply plugin: 'eclipse'
 
-version '1.1'
+version '1.2-SNAPSHOT'
 group   'org.jacamo'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 sourceSets {
     main {
@@ -34,14 +41,14 @@ repositories {
 }*/
 
 dependencies {
-    api('io.github.jason-lang:jason-interpreter:3.3.0') {
-        exclude group: 'net.sf.ingenias', module: 'jade'
+    api('org.jason:jason:3.1') {
+     exclude group: 'net.sf.ingenias', module: 'jade'
     }
-    api('org.jacamo:npl:0.6')  {  transitive = false  }
+    api('org.jacamo:npl:0.6.1')  {  transitive = false  }
     api('org.jacamo:cartago:3.1') {  transitive = false  }
     api('org.jacamo:jaca:3.1') {  transitive = false  }
 
-    testImplementation('junit:junit:4.13.1')
+    testImplementation('junit:junit:4.12')
 
     api('guru.nidi:graphviz-java:0.7.0') {
      exclude group: 'xml-apis', module: 'xml-apis'
