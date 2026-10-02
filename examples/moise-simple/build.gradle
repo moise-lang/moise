@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation('org.jacamo:jacamo:1.1')
+    implementation('org.jacamo:jacamo:1.3.0')
 }
 
 sourceSets {

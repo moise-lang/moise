@@ -4,7 +4,7 @@ Agent alice wants to coordinate some tasks with bob and tom.
 
 The goals for the tasks are: g0, g1, g2, p, q
 
-With the following dependecies:
+With the following dependencies:
 
                        g2 (or)
   g0 ----> g1 --------- ^
@@ -25,7 +25,7 @@ and the allocation:
     p : bob   (because alice asks him to do so)
     g0: alice (by her own initiative)
     g1: alice (because g0 was achieved and she is committed to it)
-    q : alice (because p was achived   and she is committed to it)
+    q : alice (because p was achieved  and she is committed to it)
     g2: tom   (because g1 and q were achieved and he is committed to it)
 
 */
